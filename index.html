@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<!-- Uros Petrevski, Drasko Draskovic, with kind help for html,css from Angelo Chiacchio,
+Nodesign.net 2013 -->
+<html>
+<head>
+	<title>Weio</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Bootstrap -->
+	<link href="bootstrap/less/bootstrap.css" rel="stylesheet" type="text/css">
+	<script src="js/jquery.js"></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<script src="bootstrap/js/bootstrap-collapse.js"></script>
+	<script src="bootstrap/js/bootstrap-transition.js"></script>
+	<script src="bootstrap/js/bootstrap-modal.js"></script>
+
+	<!-- Font awesome -->
+	<link rel="stylesheet" href="Font-Awesome/css/font-awesome.min.css">
+
+	<!-- Pure JS templating engine -->
+	<script src="js/pure.js"></script>
+
+	<!-- Ace code editor engine -->
+	<script src="ace/ace.js" type="text/javascript" charset="utf-8"></script>
+	
+	<!-- SockJS websocket library -->
+	<script src="js/sockjs-0.3.min.js"></script>
+
+	<script>
+	// Get windows size, get number of collapse elements and calculate maximum height to fill the column
+	var viewportHeight = $(window).height();
+
+	// Global function. Can be recalled when adding a new stripe to recalculate max height value
+	function update_height() {
+		var numRows = $('.codebox').length;
+		//console.log("rows : " + numRows + " array elements " + editors.length);
+		var finalheight = viewportHeight - (numRows * 40) - 60;
+		var widgetheight = viewportHeight - 140;
+		$('.code_wrap').css('min-height', finalheight);
+		$('.fullheight').css('height', widgetheight);
+	}
+
+	// ace code editors are stored in this array
+	var editors = [];
+
+	// this is variable that selects correct index when code strips are manipulated
+	var selectedName = -1;
+
+	// this variable stores compiled template that can be rendered with JSON file
+	// to re-render just call renderTree(), compilation occurs only one inside
+	// ready function
+	var compiledTree;
+
+	// this variable stores compiled template that can be rendered with JSON file
+	// to re-render just call renderEditor(), compilation occurs only one inside
+	// ready function
+	var compiledEditor;
+	
+	// this variable stores currentely focused strip index in editorData.editors array
+	var focusedOne = "weio_main.py";
+	
+
+	// this variable informs if weio_main.py is running on Weio board
+	var isPlaying = false;
+	
+	// this is console data array, stout and stderr
+	var consoleData = [];
+	
+	// maximum lines in console
+	var MAX_LINES_IN_CONSOLE = 1000;
+
+	// first initialization and compilation of templates, compilation only occurs
+	// once, here.
+	// function update_height() is called to recalculate strip dimensions
+	// it has to be recalled each time change occurs
+
+	$(document).ready(function () {
+		
+		updatePlayStatus();
+		
+		$(window).resize(function() {
+			update_height();
+		});
+	});
+	
+	
+	function updatePlayStatus() {
+		if (isPlaying) {
+			$('#play').html('<i class="icon-pause"></i>');
+		} else {
+			$('#play').html('<i class="icon-play"></i>');
+		}
+	}
+	
+	function initEditor() {
+		// EDITOR ZONE
+		update_height();
+		compiledEditor = $('div.accordion').compile(directiveEditors);
+		renderEditors();
+		//insertEditors();
+
+		collapseAllExceptFocusedOne();
+
+		// FILE TREE SIDEBAR ZONE
+		compiledTree = $('ol.tree').compile(directiveFileTree);
+		renderFileTree();	
+	};
+
+	// JSON file, entering point for editors and tree - list of files
+	var editorData = {editors:[], tree:[]};
+	
+	/* EXAMPLE
+	var editorData = {
+		editors:[
+		{name:"weio_main.py", id:"0", type : "python", data : "a = 10"}
+		]
+	};
+	*/
+	
+	/* EXAMPLE
+	var fileTreeData = {
+		tree:[
+		{name:"weio_main.py", id:"0", type : "python"},
+		{name:"index.html", id:"1", type : "html"},
+		{name:"test.py", id:"2", type : "python"},
+		{name:"new.py", id:"3", type : "python"}
+		]
+	};
+	*/
+	
+	// this is directive for templating editors with Pure JS
+	var directiveEditors = {
+		'div.accordion-group' :{
+			'editor<-editors' : {
+				'a.accordion-toggle' : 'editor.name',
+				'a.accordion-toggle@href' : function getter(arg) {return '#'+ arg.item.id;},
+				'div.accordion-body@id' : 'editor.id',
+				'div.editor@id' : 'editor.name',
+				
+				// save button
+				'i.icon-download-alt@onclick' : function getter(arg) {return "save('" + arg.item.name + "')"},
+				
+				// close button
+				'i.icon-remove@onclick' : function getter(arg) {return "prepareToClose('" + arg.item.name + "')"},
+				
+				// modals
+				'h3.removeModalPhrase' : function getter(arg) {return 'Close file ?';},
+				'p.removeModalPhrase' : function getter(arg) {return 'Do you want to save the changes you made in the current document ?';},
+				'button.btn-primary@onclick' : function getter(arg) {return "saveAndClose(true)"},
+				'#dontSave@onclick' : function getter(arg) {return "saveAndClose(false)";}
+			}
+
+		}
+	};
+	
+	// this is directive for templating tree with Pure JS
+	var directiveFileTree = {
+		'li.file' :{
+			'file<-tree' : {
+				'a@onclick' : function getter(arg) {return 'addNewStrip("' + arg.item.name + '")';},
+				'a' : 'file.name'
+			}
+		}
+	};
+
+	/* Example for return function use in templating
+	'div.accordion-inner' : function makeEditorDiv(arg) {
+	//console.log(arg.item.name); // don't delete cos this shit is not documented
+	//console.log(arg.items);
+	return '<div class="editor" id="' + arg.item.name  + '"></div>';}
+	*/
+	
+	// This function collapse all strips except one, that is focused. focusedOne is variable that stores
+	// focused strip index in editorData.editors array
+	function collapseAllExceptFocusedOne() {
+		
+		for (var editor in editorData.editors) {
+			if (editorData.editors[editor].name!=focusedOne) {
+				var name = editorData.editors[editor].id;
+				$('#' + name).collapse("hide");
+			} 
+		}
+		
+	}
+	
+	// call this function each time when change occurs in editors that has to be rendered
+	function renderEditors() {
+		$('div.accordion').render(editorData, compiledEditor);
+	}
+	
+	// call this function each time when change occurs in tree that has to be rendered
+	function renderFileTree() {
+		$('ol.tree').render(editorData, compiledTree);
+	}
+
+	// // this function implements ace editors and dispach data inside empty strips
+	// 	function insertEditors() {
+	// 
+	// 		for (var editor in editorData.editors) {
+	// 			//console.log(editorData.editors[editor].name);
+	// 			var e = ace.edit(editorData.editors[editor].name); // attach to specific #id
+	// 			e.setTheme("ace/theme/textmate"); // design theme
+	// 			e.getSession().setMode("ace/mode/" + editorData.editors[editor].type); // editor language (html, python, css,...)
+	// 			e.setValue(editorData.editors[editor].data); // code to be insered in editor
+	// 			editors.push(e); // add editor to array of editors
+	// 		}
+	// 	}
+	
+	function saveToJSON() {
+		
+		for (var editor in editors) {
+			var content = editors[editor].getValue();
+			editorData.editors[editor].data = content;
+			var line = editors[editor].selection.getCursor().row;
+			//console.log(line);
+			editorData.editors[editor].lastLinePosition = line;
+		}
+		
+	}
+	
+	// this function implements ace editors and dispach data inside empty strips
+	function refreshEditors() {
+		saveToJSON();
+		for (var editor in editors) {
+			//console.log(editorData.editors[editor].name);
+			
+			var e = ace.edit(editorData.editors[editor].name); // attach to specific #id
+			e.setTheme("ace/theme/textmate"); // design theme
+			e.getSession().setMode("ace/mode/" + editorData.editors[editor].type); // editor language (html, python, css,...)
+			e.setValue(editorData.editors[editor].data); // code to be insered in editor
+			
+			e.getSession().setTabSize(4);
+			e.getSession().setUseSoftTabs(true);
+			e.getSession().setUseWrapMode(true);
+			e.setShowPrintMargin(false);
+			
+			e.gotoLine(editorData.editors[editor].lastLinePosition);
+			editors[editor] = e;
+			
+			//editors.push(e); // add editor to array of editors
+		}
+	}
+	
+	
+	
+	function insertNewEditor(fileInfo) {
+		
+		saveToJSON();
+		//console.log(fileInfo.name + " " + fileInfo.data);
+		//console.log(editorData.editors[editor].name);
+		var e = ace.edit(fileInfo.name); // attach to specific #id
+		e.setTheme("ace/theme/textmate"); // design theme
+		e.getSession().setMode("ace/mode/" + fileInfo.type); // editor language (html, python, css,...)
+		e.setValue(fileInfo.data); // code to be insered in editor
+		
+		e.getSession().setTabSize(4);
+		e.getSession().setUseSoftTabs(true);
+		e.getSession().setUseWrapMode(true);
+		e.setShowPrintMargin(false);
+		
+		e.gotoLine(0);
+		editors.push(e); // add editor to array of editors
+	
+	}
+
+	// this function selects name of editor and strip that will be used to close it
+	function prepareToClose(name) {
+		selectedName = name;
+	}
+	
+	function save(name) {
+		saveToJSON();
+		var rawdata = getFileDataByNameFromJson(name);
+		var content = editors[rawdata.index].getValue();
+	
+		var askForFileListRequest = { "request": "saveFile", "data" : rawdata.data};
+		baseFiles.send(JSON.stringify(askForFileListRequest));
+		
+	}
+
+	// This function is called from modal view, it's role is to save file to the server and
+	// to close strip. Strip is destroyed and new render is necessary
+	function saveAndClose(saveFile) {
+		console.log("closing ");
+		if (selectedName!=-1) {
+			
+			saveToJSON(); // save only to memory
+			
+			var data = getFileDataByNameFromJson(selectedName);
+			
+			// TODO save function goes here
+			if (saveFile==true) {
+				save(selectedName);
+			} 
+			// element to kill
+			
+			// kill element in editor
+			editors.splice(data.index, 1);
+
+			// kill element in JSON
+			editorData.editors.splice(data.index, 1);
+
+			// render changes to HTML
+			update_height();
+			renderEditors();
+			collapseAllExceptFocusedOne();
+			refreshEditors();
+
+		}
+
+		selectedName = -1;
+	}
+	
+	function getFileDataByNameFromJson(name) {
+		var index = 0;
+		for (index=0; index<editorData.editors.length; index++) {
+			if (editorData.editors[index].name==name) {
+				break;
+			}
+		}
+		
+		var data = {"data" : editorData.editors[index], "index" : index };
+		return data;
+	}
+	
+	function addNewStrip(filename) {
+		
+		var newData;
+
+		for (var file in editorData.tree) {
+			if (editorData.tree[file].name==filename) {
+				newData = editorData.tree[file];
+				break;
+			}
+		}
+		
+		// check if file is already opened
+		var exists = false;
+		for (var editor in editorData.editors) {
+			if (newData.name==editorData.editors[editor].name) {
+				exists = true;
+				break;
+			} else {
+				exists = false;
+			}
+		}
+		
+		// if file don't exists in the list than add it
+		if (exists==false) {
+			
+			// send request to server to get raw file content
+			// jump to section onmessage to see what happens
+			
+			//console.log(newData)
+			var askForFileListRequest = { "request": "getFile", "data" : newData};
+			baseFiles.send(JSON.stringify(askForFileListRequest));
+			
+		} 
+		
+		// in every case, put focus on that file
+		focusedOne = newData.name;
+		collapseAllExceptFocusedOne();
+		
+	
+	}
+	
+	function play() {
+		save("weio_main.py");
+		var askForFileListRequest = { "request": "play"};
+		baseFiles.send(JSON.stringify(askForFileListRequest));
+		isPlaying = true;
+		updatePlayStatus();
+	}
+	
+	function stop() {
+		var askForFileListRequest = { "request": "stop"};
+		baseFiles.send(JSON.stringify(askForFileListRequest));
+		isPlaying = false;
+		updatePlayStatus();
+	}
+	
+	
+	//////////////////////////////////////////////////////////////// SOCK JS
+	
+	//var baseFiles = new SockJS(document.URL + 'editor/baseFiles');
+	var baseFiles = new SockJS('http://localhost:8081/' + 'editor/baseFiles');
+	var fileList;
+	
+	baseFiles.onopen = function() {
+    	console.log('socket opened for editor');
+		var askForFileListRequest = { "request": "getFileList" };
+		baseFiles.send(JSON.stringify(askForFileListRequest));
+		console.log('sending... ' + JSON.stringify(askForFileListRequest));
+    };
+	
+	baseFiles.onmessage = function(e) {
+    	//console.log('Received: ' + e.data);
+		data = JSON.parse(e.data);
+		
+		// switch
+		
+		if ("requested" in data) {
+			
+			// this is instruction that was echoed from server + data as response
+			instruction = data.requested;
+			if (instruction == "getFileList") {
+				
+				fileList = data.data; 
+				console.log(fileList.allFiles);
+				
+				
+				editorData.tree = fileList.allFiles; 
+				initEditor();
+				
+				
+			} else if (instruction == "getFile") {
+				
+				fileInfo = data.data;
+				
+				editorData.editors.push(fileInfo);
+				
+				// render changes to HTML
+				renderEditors();
+				update_height();
+				insertNewEditor(fileInfo);
+				refreshEditors();
+				collapseAllExceptFocusedOne();
+				
+				
+			} else if (instruction == "play") {
+				//std = 
+			 //$('#console').append(dssds);
+				
+			}
+			
+		} else if ("serverPush" in data) {
+			
+			demand = data.serverPush;
+			if (demand == "stdout") {
+				
+				
+				stdout = data.data;
+				
+				consoleData.push(stdout);
+				
+				if (consoleData.length>MAX_LINES_IN_CONSOLE) {
+				    consoleData.shift();
+				}
+				
+				
+				consoleOutput = "";
+				
+				for (var i=0; i<consoleData.length; i++) {
+				    consoleData[i] = consoleData[i].replace("\n", "<BR>");
+				    consoleOutput+=consoleData[i];
+				}
+				$('#consoleOutput').html(consoleOutput);
+				
+				console.log(stdout);
+				
+				
+			} else if (demand == "stderr") {
+				
+				stderr = data.data;
+				
+				consoleData.push('<font color="red">' + stderr + '</font>');
+				
+				if (consoleData.length>MAX_LINES_IN_CONSOLE) {
+				    consoleData.shift();
+				}
+				
+				consoleOutput = "";
+				
+				for (var i=0; i<consoleData.length; i++) {
+				    consoleData[i] = consoleData[i].replace("\n", "<BR>");
+				    consoleOutput+=consoleData[i];
+				}
+				$('#consoleOutput').html(consoleOutput);
+				
+				//errorInFile = data.errorInFile;
+				//errInLine = data.errInLine;
+				
+				console.log(stderr);
+			} else if (demand == "stopped") {
+				console.log("execution of weio_main.py stopped");
+				isPlaying = false;
+				updatePlayStatus();
+			}
+			
+			
+		}
+		
+		
+		//console.log('Received: ' + data.raw);
+		//editor1.setValue(data.raw);
+		
+    }
+
+    baseFiles.onclose = function() {
+        console.log('socket is closed for editor');
+    };
+
+
+
+	</script>
+
+    
+    
+</head>
+<body>
+	
+	<div id="sidebar"><h1>Weio</h1>
+	    <button id="hide" class="open"><i class="icon-play"></i></button>
+		<a id="play" onclick="play()"></a>
+		<div id="monitor">
+			<aside id="status">ON</aside>
+			<aside>Weio 0.5</aside>
+			<a id="parameters"><i class="icon-cog"></i></a>
+		</div>
+
+<!-- FILE TREE TEMPLATE STARTS HERE -->
+		<ol class="tree">
+			<li>
+				<label for="folder1">my Awesome Project</label> <input type="checkbox" id="folder1" /> 
+				<ol>
+					<li class="file">
+						
+						<a></a>
+					</li>
+				</ol>
+			</li>
+		<ol>
+		
+<!-- FILE TREE TEMPLATE ENDS HERE -->	
+
+
+	
+	</div id="sidebar">
+
+	<div id="main_container">
+	    
+	    <!-- HEADER BAR -->
+	    
+	    <div class="navbar navbar navbar-fixed-top">
+          <div class="navbar-inner">
+            <div class="container-fluid">
+              <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="brand" href="#">Project name</a>
+              <form class="navbar-search pull-right">
+                <input type="text" class="search-query" placeholder="Search">
+              </form>
+                
+              
+            </div>
+          </div>
+        </div class="navbar navbar-inverse navbar-fixed-top">
+    	
+	    
+	    <!-- END HEADER BAR -->
+	    
+		<div id="coding_zone">
+
+<!-- EDITOR TEMPLATE STARTS HERE -->
+			<div class="accordion" id="accordion2">
+				<div class="accordion-group" >
+
+					<div class="accordion-heading" id="template">
+						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne"></a>
+
+						<!-- Button to trigger modal -->
+						<div class="actions">
+						<a href="#closeFileModal" role="button" id="closeButton" data-toggle="modal" ><i class="icon-remove"></i></a>
+						<a href="#saveFile" role="button" id="saveButton" data-toggle="modal"><i class="icon-download-alt"></i></a>
+						</div>
+						
+						<!-- Close Editor Modal -->
+						<div id="closeFileModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon-remove"></i></button>
+								<h3 class = "removeModalPhrase" id="myModalLabel"></h3>
+							</div>
+							<div class="modal-body">
+								<p class = "removeModalPhrase"></p>
+								<p>Your changes will be lost if you don't save them</p>
+							</div>
+							<div class="modal-footer">
+								<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+								<button class="btn" id = "dontSave" data-dismiss="modal" aria-hidden="true">Don't save</button>
+								<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Save</button>
+							</div>
+						</div>
+						<!-- Close Editor Modal  END-->
+
+					</div>
+					<div class="accordion-body collapse in codebox" id="collapseOne">
+						<div class="accordion-inner code_wrap">
+							<div class="editor"></div>
+						</div>
+					</div>
+				</div>
+			</div>	
+
+<!-- EDITOR TEMPLATE ENDS HERE -->		
+
+		</div id="coding_zone">
+
+	
+			<div id="widget_zone">
+
+			  <div class="accordion-right" id="accordionW1">
+			  <div class="accordion-group">
+			    <div class="accordion-heading">
+			      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionW1" href="#collapseW1">
+			        Console
+			      </a>
+			    </div>
+			    <div id="collapseW1" class="accordion-body collapse in">
+			      <div class="accordion-inner">
+			    	<p id="consoleOutput"></p>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="accordion-group">
+			    <div class="accordion-heading">
+			      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionW1" href="#collapseW2">
+			        Documentation
+			      </a>
+			    </div>
+			    <div id="collapseW2" class="accordion-body collapse ">
+			      <div class="accordion-inner">
+			        Anim pariatur cliche...
+			      </div>
+			    </div>
+			  </div>
+			</div>
+
+			</div>
+			</div id="main_container">
+    
+<!--Sidebar Resize animation START -->
+<script>
+$("#hide").click(function(){
+	
+if ($(this).is(".open")) {
+  	$( "#sidebar" ).animate( { left: "-160px" }, { queue: false, duration: 100 });
+    $( "#main_container" ).animate( { paddingLeft: "60px" }, { queue: false, duration: 100 });
+	$(this).attr('class', 'closed');
+} 
+else if ($(this).is(".closed")) {
+ 	$( "#sidebar" ).animate( { left: "0px" }, { queue: false, duration: 100 });
+    $( "#main_container" ).animate( { paddingLeft: "220px" }, { queue: false, duration: 100 });
+	$(this).attr('class', 'open');
+} else {
+}
+
+});
+ 
+</script>
+ <!--Sidebar Resize animation END-->
+		</body>
+</html>
