@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import subprocess
-import os, signal
+import os, signal, sys
 import socket
 import functools
 import errno
 import os
 from tornado import web, ioloop, iostream
+sys.path.append(r'./');
 
 # pure websocket implementation
 #from tornado import websocket
@@ -13,7 +14,8 @@ from tornado import web, ioloop, iostream
 import tornado_subprocess
 
 from sockjs.tornado import SockJSRouter, SockJSConnection
-import WeioFiles
+from weioLib import WeioFiles
+
 import json
 import ast
 
@@ -104,7 +106,7 @@ class WeioEditorHandler(SockJSConnection):
            elif 'play' in rq['request']:
                
                
-               processName = './static/user_weio/weio_main.py'
+               processName = './userProjects/myFirstProject/weio_main.py'
 
                #launch process
             

@@ -1,30 +1,45 @@
 # -*- coding: utf-8 -*-
 import os, sys
-sys.path.append(r'./');
-sys.path.append(r'./static');
-sys.path.append(r'./editor');
-sys.path.append(r'./weioLib');
 
 from tornado import web, ioloop, iostream, options, httpserver, autoreload, websocket
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
-# IMPORT EDITOR CLASSES
+# IMPORT EDITOR CLASSES, this connects editor webapp with tornado server
 from editor import Editor #, WeioEditorStopHandler, WeioEditorPlayHandler 
 
-# IMPORT WEIOAPI BRIDGE CLASS
+# IMPORT WEIOAPI BRIDGE CLASS, this connects user webapp with tornado server
 from weioLib import WeioAPIbridge
 
-class WeioIndexHandler(web.RequestHandler):
-    def get(self):
-        self.render('static/user_weio/index.html', error="")
-        
-class WeioEditorWebHandler(web.RequestHandler):
-    def get(self):
-        self.render('editor/index.html', error="")
+# IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
+from weioLib import weio_config
 
-class WeioPreviewWebHandler(web.RequestHandler):
+
+
+# This is user project index.html
+class WeioIndexHandler(web.RequestHandler):
+    
     def get(self):
-        self.render('static/preview.html', error="")
+        global confFile
+        path = confFile['user_projects_path'] + confFile['last_opened_project'] + "index.html"
+        self.render(path, error="")
+        
+        
+# This is editor web app      
+class WeioEditorWebHandler(web.RequestHandler):
+    
+    def get(self):
+        global confFile
+        path = confFile['editor_html_path']
+        self.render(path, error="")
+        
+# This is preview web app      
+class WeioPreviewWebHandler(web.RequestHandler):
+    
+    def get(self):
+        global confFile
+        path = confFile['preview_html_path']
+        self.render(path, error="")
+
 
 # pure websocket implementation
 #class CloseConnection(websocket.WebSocketHandler):
@@ -47,8 +62,7 @@ if __name__ == '__main__':
 
     # EDITOR ROUTES
     WeioEditorRouter = SockJSRouter(Editor.WeioEditorHandler, '/editor/baseFiles')    
-    #WeioEditorPlayRouter = SockJSRouter(WeioEditorPlayHandler, '/editor/play')
-    #WeioEditorStopRouter = SockJSRouter(WeioEditorStopHandler, '/editor/stop')
+  
     
     #CONFIGURATOR ROUTES
 
@@ -65,7 +79,15 @@ if __name__ == '__main__':
 
     
     
+    # Take configuration from conf file and use it to define parameters
+    global confFile
+    confFile = weio_config.getConfiguration()
 
+    # put absolut path in conf, needed for local testing on PC
+    confFile['absolut_root_path'] = os.path.abspath(".")
+    weio_config.saveConfiguration(confFile)
+ 
+    
     app = web.Application(list(WeioEditorRouter.urls) +
                           list(CloseRouter.urls) +
                           list(WeioAPIBridgeRouter.urls) +
@@ -76,32 +98,22 @@ if __name__ == '__main__':
                           #[(r"/close", CloseConnection)] +
                           [(r"/preview",WeioPreviewWebHandler)] +
                           [(r"/editor",WeioEditorWebHandler)] +
-                          [(r"/", WeioIndexHandler),(r"/(.*)", web.StaticFileHandler,{"path": "./static"})], 
+                          [(r"/", WeioIndexHandler),(r"/(.*)", web.StaticFileHandler,{"path": confFile["dependencies_path"]})], 
                           debug=True
                           )
-                          # DEBUG WILL DECREASE SPEED!!! HOW TO AVOID THIS???
-        
-
-                          # app = web.Application(list(WeioEditorRouter.urls) +
-                          #                       list(CloseRouter.urls) +
-                          #                       #list(WeioAPIBridgeRouter.urls) +
-                          #                       [(r"/editor",WeioEditorWebHandler)] +
-                          #                       [(r"/", WeioIndexHandler),(r"/(.*)", StaticFileHandlerNoCache,
-                          #                                                 {"path": "./static"})
-                          #                       ]
-                          #                       )
-                          # 
-
-    options.define("port", default=8081, type=int)
+                          # DEBUG WILL DECREASE SPEED!!! HOW TO AVOID THIS??? see Watchers section down here
+    
+    options.define("port", default=confFile['port'], type=int)
     
     http_server = httpserver.HTTPServer(app)
-    http_server.listen(options.options.port, address="0.0.0.0")
+    http_server.listen(options.options.port, address=confFile['ip'])
     
-    #app.listen(8081)
-    logging.info(" [*] Listening on 0.0.0.0:8081")
+
+    logging.info(" [*] Listening on " + confFile['ip'] + ":" + str(confFile['port']))
     
-    # WATCHERS ONLY FOR DEBUG MODE, no need in debug=True
+    # WATCHERS works simply with debug=True
     
+    # Other solution is to use autoreload, will be used later for production MAYBE
     # when some of these files change, tornado will reboot to serve all modifications, other files than python modules need to 
     # be specified manually
     #autoreload.watch('./editor/index.html')
