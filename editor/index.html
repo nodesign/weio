@@ -51,12 +51,26 @@ Nodesign.net 2013 -->
         
 		var numRows = $('.codebox').length;
 		//console.log("rows : " + numRows + " array elements " + editors.length);
-		var finalheight = viewportHeight - (numRows * 40) - 75;
+		var finalheight = viewportHeight - (numRows * 40) - 95;
 		var widgetheight = viewportHeight - 140;
 		$('.code_wrap').css('min-height', finalheight);
 		$('.fullheight').css('height', widgetheight);
 		
 		$('#consoleAccordion').css('max-height', viewportHeight - (2 * 40) - 75);
+		
+	}
+	
+	// Global function. This calculate the main_container value depending on window size
+	function main_container_width() {
+	    
+	    // Get windows size, get number of collapse elements and calculate maximum height to fill the column
+    	var viewportWidth = $(window).width();
+        
+		
+		//console.log("rows : " + numRows + " array elements " + editors.length);
+		var finalwidth = viewportWidth - 200;
+		
+		$('#main_container').css('width', finalwidth);
 		
 	}
 
@@ -97,11 +111,14 @@ Nodesign.net 2013 -->
 	$(document).ready(function () {
 		
 		updatePlayStatus();
+		main_container_width();
 		
 		$(window).resize(function() {
 			update_height();
+			main_container_width();
 		});
 	});
+	
 	
 	
 	function updatePlayStatus() {
@@ -648,12 +665,16 @@ Nodesign.net 2013 -->
                         <li><a href="javascript:runPreview();">Preview</a></li>
                         <li class="active"><a href="/editor">Editor</a></li>
 
+                       </ul>
                        
-
-                        <!-- <a class="btn" id="statusBar" onclick="play()"> -->
-                            <span class="label label" id="statusBar">
+                        <span class="label" id="statusBar">
                                 <i id="statusIcon" ></i>
                             </span>
+                       
+                       
+                       <div class="user pull-right">
+                       <!-- <a class="btn" id="statusBar" onclick="play()"> -->
+                           
                             
                             
                             
@@ -682,13 +703,8 @@ Nodesign.net 2013 -->
                          <!--   <form class="navbar-search pull-right">
                                     <input type="text" class="search-query" placeholder="Search in project">
                                 </form> -->
-                            
-                         
-
-                            
-                            
-
-                        </ul>
+                       
+                       </div>
 
                     </div>
                 </div><!--/.nav-collapse -->
@@ -768,7 +784,7 @@ Nodesign.net 2013 -->
 			<div id="widget_zone">
 
 			  <div class="accordion-right" id="accordionW1">
-			  <div class="accordion-group">
+			  <div class="accordion-group console">
 			    <div class="accordion-heading">
 			      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionW1" href="#collapseW1">
 			        Console
@@ -808,13 +824,16 @@ $("#hideLeftSidebar").click(function(){
 if ($(this).is(".open")) {
     
     if ($('#hideRightSidebar').hasClass('open')) {
-        $( "#coding_zone" ).animate( { width: "61.5%" }, { queue: false, duration: 100 });
+        $( "#coding_zone" ).animate( { width: "70%" }, { queue: false, duration: 100 });
+		$( "#main_container" ).animate( { 'left': "-=180px" }, { queue: false, duration: 100 });
     } else {
-        $( "#coding_zone" ).animate( { width: "96%" }, { queue: false, duration: 100 });
+        $( "#coding_zone" ).animate( { width: "100%" }, { queue: false, duration: 100 });
+		$( "#main_container" ).animate( { 'left': "-=180px" }, { queue: false, duration: 100 });
+		
     }
   	
   	$( "#sidebar" ).animate( { left: "-180px" }, { queue: false, duration: 100 });
-    $( "#main_container" ).animate( { paddingLeft: "2.5%" }, { queue: false, duration: 100 });
+   
     
     $( "#leftSidebarIcon" ).attr("class", "icon-chevron-right");
 	$(this).attr('class', 'closed');
@@ -822,14 +841,17 @@ if ($(this).is(".open")) {
 else if ($(this).is(".closed")) {
     
     if ($('#hideRightSidebar').hasClass('open')) {
-        $( "#coding_zone" ).animate( { width: "49%" }, { queue: false, duration: 100 });
+        $( "#coding_zone" ).animate( { width: "55%" }, { queue: false, duration: 100 });
+		$( "#main_container" ).animate( { 'left': "+=180px" }, { queue: false, duration: 100 });
     } else {
-        $( "#coding_zone" ).animate( { width: "83%" }, { queue: false, duration: 100 });
+        $( "#coding_zone" ).animate( { width: "90%" }, { queue: false, duration: 100 });
+		$( "#main_container" ).animate( { 'left': "+=180px" }, { queue: false, duration: 100 });
+
+		
+
     }
     
-    
  	$( "#sidebar" ).animate( { left: "0px" }, { queue: false, duration: 100 });
-    $( "#main_container" ).animate( { paddingLeft: "15%" }, { queue: false, duration: 100 });
     
     $( "#leftSidebarIcon" ).attr("class", "icon-chevron-left");
 	$(this).attr('class', 'open');
@@ -843,14 +865,12 @@ $("#hideRightSidebar").click(function(){
 if ($(this).is(".open")) {
     
     if ($('#hideLeftSidebar').hasClass('open')) {
-        $( "#coding_zone" ).animate( { width: "83%" }, { queue: false, duration: 100 });
-        $( "#main_container" ).animate( { paddingLeft: "15%" }, { queue: false, duration: 100 });
+        $( "#coding_zone" ).animate( { width: "93%" }, { queue: false, duration: 100 });
     } else {
         $( "#coding_zone" ).animate( { width: "96%" }, { queue: false, duration: 100 });
-        $( "#main_container" ).animate( { paddingLeft: "2.5%" }, { queue: false, duration: 100 });
     }
     
-  	$( "#sidebarConsole" ).animate( { right: "-33.8%" }, { queue: false, duration: 100 });
+  	$( "#sidebarConsole" ).animate( { right: "-31%" }, { queue: false, duration: 100 });
     
     
     $( "#rightSidebarIcon" ).attr("class", "icon-chevron-left");
@@ -860,11 +880,9 @@ if ($(this).is(".open")) {
 else if ($(this).is(".closed")) {
     
     if ($('#hideLeftSidebar').hasClass('open')) {
-        $( "#coding_zone" ).animate( { width: "49%" }, { queue: false, duration: 100 });
-        $( "#main_container" ).animate( { paddingLeft: "15%" }, { queue: false, duration: 100 });
+        $( "#coding_zone" ).animate( { width: "55%" }, { queue: false, duration: 100 });
     } else {
-        $( "#coding_zone" ).animate( { width: "61.5%" }, { queue: false, duration: 100 });
-        $( "#main_container" ).animate( { paddingLeft: "2.5%" }, { queue: false, duration: 100 });
+        $( "#coding_zone" ).animate( { width: "65%" }, { queue: false, duration: 100 });
     }
     
     

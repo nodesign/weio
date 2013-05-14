@@ -6,6 +6,12 @@ height:100%;
 a {
     color: rgb(20, 95, 133);
 }
+.label {
+    text-shadow: none;
+    font-weight: normal;
+}
+
+
 .accordion-group {
     background: white;
     margin-bottom: 5px;
@@ -43,11 +49,11 @@ right: 3px;
 }
 
 .navbar .nav {
-	width: 80.5%;
-	position: relative;
-	display: inline-block;
-	float: right;
-
+width: 50%;
+position: fixed;
+left: 185px;
+display: inline-block;
+float: left;
 }
 
 .navbar .btn, .navbar .btn-group {
@@ -74,7 +80,8 @@ right: 3px;
 	width:18%;
 	height:23px;
 	text-align:center;
-	
+    position: fixed;
+    left: 43%;
 	
 }
 
@@ -195,22 +202,21 @@ right: 3px;
 
 #main_container { 
 	
-        width: 100%;
         height: 100%;
         position: fixed;
-        left: 0;
-        padding: 48px;
-        padding-left: 220px;
+        left: 200px;
+        padding: 48px 0px;
 
 	#sidebarConsole {
 		
-		 width: 35%;
+		 width: 33%;
 	     height: 100%;
 	     position: fixed;
 		 top:0px;
 	     right: 0;
 	     background: #999999;
 	     z-index: 999;
+         padding: 0;
 	
 		#hideRightSidebar {
 			color:white;
@@ -238,9 +244,30 @@ right: 3px;
 	    width: 94%;
 	    padding: 25px;
 	    padding-right: 12px;
+        padding-top: 33px;
 	    height: 100%;
 
 	    float: right;
+
+        .console {
+        border-color: rgb(148, 148, 148);
+        -webkit-border-radius: 4px !important;
+        -moz-border-radius: 4px !important;;
+        border-radius: 4px !important;;
+        
+        .accordion-heading {
+            background-color: rgb(116, 116, 116);
+            a {
+                color: white;
+            }
+        }
+
+        .accordion-body {
+            background-color: rgb(88, 88, 88);
+            color: rgb(202, 202, 202);
+        }
+
+        }
 
 	}
 	
@@ -253,10 +280,11 @@ right: 3px;
 
 
 #coding_zone { 
-        width: 48%;
+        width: 56%;
         height: 100%;
-        padding-right: 2%;
+        margin-top: 10px;
         float: left;
+        padding: 0 2%;
     }
 
 #closeButton {
