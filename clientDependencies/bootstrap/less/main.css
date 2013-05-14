@@ -305,7 +305,7 @@ li.file {
   margin-left: -1px !important;
 }
 li.file a {
-  background: url(../img/document.png) 0 0 no-repeat;
+  background: url(../../img/document.png) 0 0 no-repeat;
   color: #c8c8c8;
   padding-left: 21px;
   text-decoration: none;
@@ -316,16 +316,16 @@ li.file a:hover {
   color: white;
 }
 li.file a[href*='.pdf'] {
-  background: url(../img/document.png) 0 0 no-repeat;
+  background: url(../../img/document.png) 0 0 no-repeat;
 }
 li.file a[href*='.html'] {
-  background: url(../img/document.png) 0 0 no-repeat;
+  background: url(../../img/document.png) 0 0 no-repeat;
 }
 li.file a[href$='.css'] {
-  background: url(../img/document.png) 0 0 no-repeat;
+  background: url(../../img/document.png) 0 0 no-repeat;
 }
 li.file a[href$='.js'] {
-  background: url(../img/document.png) 0 0 no-repeat;
+  background: url(../../img/document.png) 0 0 no-repeat;
 }
 li input {
   position: absolute;
@@ -351,7 +351,7 @@ li input + ol > li {
   padding-left: 1px;
 }
 li label {
-  background: url(../img/folder-horizontal.png) 7px 4px no-repeat;
+  background: url(../../img/folder-horizontal.png) 7px 4px no-repeat;
   cursor: pointer;
   display: block;
   padding: 1px;

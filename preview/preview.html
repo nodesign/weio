@@ -13,6 +13,30 @@
     <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
     <meta http-equiv="pragma" content="no-cache" />
 
+    <link href="bootstrap/less/bootstrap.css" rel="stylesheet" type="text/css">
+       <link rel="stylesheet" href="Font-Awesome/css/font-awesome.min.css">
+
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+   	<script src="bootstrap/js/bootstrap.js"></script>
+   	<script src="bootstrap/js/bootstrap-dropdown.js"></script>
+   	<script src="bootstrap/js/bootstrap-collapse.js"></script>
+   	
+	<script src="jquery/jquery-2.0.0.min.js"></script>
+	
+    <script>
+    var confFile = "";
+    
+       $.getJSON('config.json', function(data) {
+           confFile = data;
+           
+           $(".iframeContainer").attr("src", "userProjects/" + confFile.last_opened_project + "index.html");
+          // console.log(confFile.weio_lib_path);
+       });
+
+     </script>
+      
+
+
   </head>
 
   <body>
@@ -86,13 +110,17 @@
     </div>
   </div> <!-- /Fixed navbar -->
   
-
+  
   
   
 
 
 <!--IFRAME -->
-<iframe class="iframeContainer" src="user_weio/index.html"></iframe>
+
+
+
+
+<iframe class="iframeContainer" src=""></iframe>
 
 
  <!-- DEPENDENCIES AND LIBRARIES -->
@@ -102,14 +130,7 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <link href="bootstrap/less/bootstrap.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="Font-Awesome/css/font-awesome.min.css">
-    
-	<script src="js/jquery.js"></script>
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-	<script src="bootstrap/js/bootstrap.js"></script>
-	<script src="bootstrap/js/bootstrap-dropdown.js"></script>
-	<script src="bootstrap/js/bootstrap-collapse.js"></script>
+   
 	
 	
   </body>

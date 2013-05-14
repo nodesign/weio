@@ -1,20 +1,25 @@
 # configuration file
 import json
-from WeioFiles import saveRawContentToFile, getRawContentFromFile
 
 
 def getConfiguration():
-    return json.loads(getRawContentFromFile('config.weio'))
+    inputFile = open("config.weio", 'r')
+    rawData = inputFile.read()
+    inputFile.close()
+    return json.loads(rawData)
 
 
 def saveConfiguration(conf):
-    saveRawContentToFile('config.weio', json.dumps(conf))
+    inputFile = open("config.weio", 'w')
+    print(inputFile)
+    ret = inputFile.write(json.dumps(conf))
+    inputFile.close()
     
  
 #example & test configuration 
 # weio_config = {}
-# weio_config['user_projects_path'] = 'userProjects'
-# weio_config['last_opened_project'] = 'myFirstProject'
+# weio_config['user_projects_path'] = 'userProjects/'
+# weio_config['last_opened_project'] = 'myFirstProject/'
 # weio_config['last_opened_files'] = ['index.html', 'weio_main.py']
 # weio_config['editor_html_path'] = 'editor/editor.html'
 # weio_config['preview_html_path'] = 'preview/preview.html'

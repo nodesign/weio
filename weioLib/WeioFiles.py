@@ -1,6 +1,6 @@
 # Uros Petrevski, Nodesign.net 2013
 import os
-
+import weio_config
 
 
 def scanFolders() :
@@ -24,7 +24,11 @@ def scanFolders() :
     allFiles = []
     allFolders = []
     
-    for dirname, dirnames, filenames in os.walk('./userProjects/myFirstProject'):
+    confFile = weio_config.getConfiguration()
+    
+    pathToCurrentProject = confFile["user_projects_path"] + confFile['last_opened_project'] 
+    
+    for dirname, dirnames, filenames in os.walk(pathToCurrentProject):
         # print path to all subdirectories first.
         for subdirname in dirnames:
             #print os.path.join(dirname, subdirname)
@@ -38,8 +42,11 @@ def scanFolders() :
                 #allFiles.append(os.path.join(dirname, filename))
                 if ".html" in filename :
                     allFiles.append({'name': filename, 'id' : index, 'type' : "html", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
-                elif ".py" in filename :
-                    allFiles.append({'name': filename, 'id' : index, 'type' : "python", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
+                elif ".py" in filename : # NASTY BUG CORRECTED, pyc is also identified here because "py" is in "pyc", solution is provided
+                    if ".pyc" in filename : # ignore this one
+                        pass
+                    else :
+                        allFiles.append({'name': filename, 'id' : index, 'type' : "python", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
                 elif ".js" in filename :
                     allFiles.append({'name': filename, 'id' : index, 'type' : "javascript", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
                 elif ".css" in filename :
