@@ -1,3 +1,40 @@
+<!--
+
+ WEIO Web Of Things Platform
+ Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
+ All rights reserved
+
+               ##      ## ######## ####  #######  
+               ##  ##  ## ##        ##  ##     ## 
+               ##  ##  ## ##        ##  ##     ## 
+               ##  ##  ## ######    ##  ##     ## 
+               ##  ##  ## ##        ##  ##     ## 
+               ##  ##  ## ##        ##  ##     ## 
+                ###  ###  ######## ####  #######
+
+                    Web Of Things Platform
+
+ WEIO is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ WEIO is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ This file is part of WEIO.
+
+ Authors : 
+ Uros PETREVSKI <uros@nodesign.net>
+ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
+
+-->
+
 <!DOCTYPE html>
 <!-- Uros Petrevski, Drasko Draskovic, with kind help for html,css from Angelo Chiacchio,
 Nodesign.net 2013 -->
@@ -644,7 +681,7 @@ Nodesign.net 2013 -->
                     <ul class="nav">
 
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">MyFirstProject <b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" id="projectTitle" data-toggle="dropdown">MyFirstProject <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a tabindex="-1" href="#">Create new project</a></li>
                                 <li class="divider"></li>
@@ -663,8 +700,8 @@ Nodesign.net 2013 -->
                             </ul>
                         </li>
 
-                        <li><a href="javascript:runPreview();">Preview</a></li>
-                        <li class="active"><a href="/editor">Editor</a></li>
+                        <li><a href="javascript:runPreview();"><i class="icon-eye-open icon-2x" ></i></a></li>
+                        <li class="active"><a href="/editor"><i class="icon-edit icon-2x"></i></a></li>
 
                        </ul>
                        
@@ -731,7 +768,7 @@ Nodesign.net 2013 -->
 				<ol>
 					<li class="file">
 						
-						<a></a>
+						<a></a><i class="icon-remove" ></i>
 					</li>
 				</ol>
 			</li>

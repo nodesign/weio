@@ -5253,6 +5253,46 @@ a.badge:focus {
 .affix {
   position: fixed;
 }
+/**
+*
+* WEIO Web Of Things Platform
+* Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
+* All rights reserved
+*
+*               ##      ## ######## ####  #######  
+*               ##  ##  ## ##        ##  ##     ## 
+*               ##  ##  ## ##        ##  ##     ## 
+*               ##  ##  ## ######    ##  ##     ## 
+*               ##  ##  ## ##        ##  ##     ## 
+*               ##  ##  ## ##        ##  ##     ## 
+*                ###  ###  ######## ####  #######
+*
+*                    Web Of Things Platform
+*
+* WEIO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* WEIO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+* 
+* This file is part of WEIO.
+*
+* Authors : 
+* Uros PETREVSKI <uros@nodesign.net>
+* Drasko DRASKOVIC <drasko.draskovic@gmail.com>
+*
+**/
+@font-face {
+  font-family: open_sans;
+  src: url('../../customFonts/OpenSans-Light.ttf');
+}
 body {
   background: #e6e6e6;
   height: 100%;
@@ -5568,7 +5608,25 @@ li.file a {
   margin-bottom: 2px;
 }
 li.file a:hover {
+  cursor: pointer;
   color: white;
+  text-decoration: none;
+}
+li.file i {
+  position: relative;
+  right: 10px;
+  float: right;
+  top: -18px;
+  color: #c8c8c8;
+  display: none;
+}
+li.file i:hover {
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+}
+li.file:hover i {
+  display: block;
 }
 li.file a[href*='.pdf'] {
   background: url(../../img/document.png) 0 0 no-repeat;
