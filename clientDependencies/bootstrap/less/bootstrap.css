@@ -5356,8 +5356,14 @@ a {
   margin-left: 2.5px;
   margin-right: 2.5px;
 }
-.milieu {
-  float: center;
+#editorButton {
+  position: relative;
+  top: -4px;
+}
+#previewButton {
+  position: relative;
+  top: -3px;
+  left: 2px;
 }
 #statusBar {
   margin-left: 7%;
@@ -5416,6 +5422,16 @@ a {
          }
 */
 
+}
+#sidebar #addNewFile {
+  color: white;
+  display: block;
+  padding: 6px;
+  background: transparent;
+  border: 0;
+  position: fixed;
+  float: bottom;
+  z-index: 1000;
 }
 #sidebar #hideLeftSidebar {
   color: white;

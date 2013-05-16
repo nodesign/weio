@@ -112,8 +112,15 @@ float: left;
 	
 }
 
-.milieu {
-    float:center;
+#editorButton {
+    position:relative;
+    top:-4px;
+}
+
+#previewButton {
+    position: relative;
+    top: -3px;
+    left: 2px;
 }
 
 #statusBar {
@@ -160,7 +167,18 @@ float: left;
         left: 0;
         background: #22262e;
         z-index: 1000;
-
+        
+        #addNewFile {
+		    color:white;
+			display: block;
+			padding: 6px;
+			background: transparent;
+			border:0;
+			position: fixed;
+			float:bottom;
+			z-index:1000;
+		}
+		
 
 		#hideLeftSidebar {
 			color:white;
@@ -175,6 +193,9 @@ float: left;
 			left: 89%;
 			z-index:1000;
 		}
+		
+		
+		
 /*
         #play {
          display: block;
