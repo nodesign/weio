@@ -95,7 +95,7 @@ class WeioEditorHandler(SockJSConnection):
                
                # read all files paths from user directories
                data['data'] = WeioFiles.scanFolders()
-               
+               data['status'] = "Project is opened, gimme some awesome code!"
                fileList = data 
                
                #sending
@@ -119,6 +119,7 @@ class WeioEditorHandler(SockJSConnection):
                fileInfo['data'] = rawFile
 
                data['data'] = fileInfo
+              
                self.send(json.dumps(data))
             
            elif 'saveFile' in rq['request']:
@@ -135,7 +136,8 @@ class WeioEditorHandler(SockJSConnection):
                
                #print(pathname + " " + rawData)
                ret = WeioFiles.saveRawContentToFile(pathname, rawData)
-  
+               
+               data['status'] = fileInfo['name'] + " is saved!"
                self.send(json.dumps(data))
                
            elif 'play' in rq['request']:
@@ -185,11 +187,16 @@ class WeioEditorHandler(SockJSConnection):
                callback = functools.partial(self.socket_connection_ready, sock)
                ioloopObj.add_handler(sock.fileno(), callback, ioloopObj.READ)
                
+               data['requestedData'] = rq['request']
+               data['status'] = "weio_main.py is running!"
+               self.send(json.dumps(data))
+               
            elif 'stop' in rq['request']:
                               
                weio_main.cancel()
                data = {}
                data['serverPush'] = 'stopped'
+               data['status'] = "weio_main.py stopped!"
                self.send(json.dumps(data))
                
            elif 'storeProjectPreferences' in rq['request']:
@@ -199,15 +206,15 @@ class WeioEditorHandler(SockJSConnection):
                
                # echo given request
                data['requested'] = rq['request']
+               data['status'] = "Your project is saved"
                self.send(json.dumps(data))
                
            elif 'runPreview' in rq['request']:
                # echo given request
                data['requested'] = rq['request']
+               data['status'] = "Entering preview mode"
                self.send(json.dumps(data))
                
-              
-  
                
     def socket_connection_ready(self, sock, fd, events):
        global stream
@@ -274,6 +281,7 @@ class WeioEditorHandler(SockJSConnection):
        if 'stdout' in rcvd :
            data['serverPush'] = 'stdout'
            data['data'] = rcvd['stdout']
+           data['status'] = "Something is on console"
        elif 'stderr' in rcvd :
            data['serverPush'] = 'stderr'
            data['data'] = rcvd['stderr']

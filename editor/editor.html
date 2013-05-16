@@ -836,10 +836,15 @@ function renderFileTree() {
             setStatus("icon-refresh icon-spin", "Sync")
             //console.log(storeProject);
         }
+        
 
         // This function sets coresponding icon and message inside statusBar in the middle of header. Icon is string format defined in font
         // awesome library, message is string format
         // If icon is not desired you can pass null as argument : setStatus(null, "hello world");
+        
+        // Icons are only used when synchronization is active or weio_main is running
+        
+        // set status is always activated from server push messages, never from client, except when closed socket is detected!
 
         function setStatus(icon, message) {
 

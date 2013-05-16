@@ -38,12 +38,11 @@ from tornado import ioloop
 from tornado import iostream
 import socket
 import time
+
 import sys
 sys.path.append(r'./');
 
 from weioLib import weio_globals, weio_gpio
-
-
 import pickle
 
 def send_request():
@@ -53,7 +52,7 @@ def send_request():
     print "hello"
     #pinMode(pin, OUTPUT)
     
-    for a in range(100) :
+    for a in range(30) :
         #digitalWrite(pin, HIGH)
         #time.sleep(0.5)
         #digitalWrite(pin, LOW)
@@ -63,8 +62,8 @@ def send_request():
     print "waiting"
     time.sleep(3)
     print "reading"
-    pinMode(pin, INPUT)
-    val = digitalRead(pin)
+    #pinMode(pin, INPUT)
+    #val = digitalRead(pin)
     print val
     print "finished"
     
