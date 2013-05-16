@@ -159,7 +159,7 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
     </div> <!-- /Fixed navbar -->
 
 
-    <div id="sidebar"><h1>Weio</h1>
+    <div id="sidebar">
         
         
         
@@ -187,10 +187,14 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
         </ol>
     </li>
 </ol>
-
+<div class="bottom_buttons">
 <button id="addNewFile" class="open">
-    <i class="icon-plus-sign-alt icon-2x"></i>
+    <i class="icon-plus-sign icon-2x"></i>
 </button>
+<button id="exportFile" class="open">
+    <i class="icon-upload icon-2x"></i>
+</button>
+</div class="bottom_buttons">
 
 </div id="sidebar">
 
@@ -260,32 +264,12 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 
     <div id="widget_zone">
 
-        <div class="accordion-right" id="accordionW1">
-            <div class="accordion-group console">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionW1" href="#collapseW1">
-                        Console
-                    </a>
-                </div>
-                <div id="collapseW1" class="accordion-body collapse in">
-                    <div class="accordion-inner" id="consoleAccordion">
-                        <p id="consoleOutput"></p>
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionW1" href="#collapseW2">
-                        Documentation
-                    </a>
-                </div>
-                <div id="collapseW2" class="accordion-body collapse ">
-                    <div class="accordion-inner">
-                        Anim pariatur cliche...
-                    </div>
-                </div>
-            </div>
-        </div>
+        <p id="consoleOutput"></p>
+        
+        <!-- <div id="doc">
+            <h4>Documentation</h4>
+            <article>Text</article>
+        </div> -->
 
     </div>
 </div>
@@ -349,7 +333,8 @@ $("#hideRightSidebar").click(function(){
             $( "#coding_zone" ).animate( { width: "96%" }, { queue: false, duration: 100 });
         }
 
-        $( "#sidebarConsole" ).animate( { right: "-31%" }, { queue: false, duration: 100 });
+        $( "#sidebarConsole" ).animate( { width: "40px" }, { queue: false, duration: 100 });
+        $( "#sidebarConsole" ).animate( { right: "0px" }, { queue: false, duration: 100 });
 
 
         $( "#rightSidebarIcon" ).attr("class", "icon-chevron-left");
@@ -365,7 +350,7 @@ $("#hideRightSidebar").click(function(){
         }
 
 
-        $( "#sidebarConsole" ).animate( { right: "0px" }, { queue: false, duration: 100 });
+        $( "#sidebarConsole" ).animate( { width: "40%" }, { queue: false, duration: 100 });
 
 
         $( "#rightSidebarIcon" ).attr("class", "icon-chevron-right");

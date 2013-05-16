@@ -36,7 +36,7 @@
 **/
 
 @font-face {
-	font-family: open_sans;
+	font-family: "open_sans";
 	src: url('../../customFonts/OpenSans-Light.ttf');
 }
 
@@ -59,6 +59,7 @@ a {
     margin-bottom: 5px;
     box-shadow: 0px 1px 2px rgba(0,0,0,0.04px);
     border-color: rgb(218, 218, 218);
+    border-radius: 2px;
 
 }
 .accordion-heading {
@@ -66,6 +67,7 @@ a {
     position: relative;
     a {
     font-weight: bold;
+    color: rgb(88, 88, 88);
     }
 }
 .accordion-body.in.collapse {
@@ -81,9 +83,20 @@ right: 3px;
 }
 
 /* MAIN HEADER NAV BAR */
+.navbar-inner {
+min-height: 50px;
+background: white;
+box-shadow: none;
+    
+    .container {
+min-height: 50px;
+
+    }
+}
 
 .navbar .brand {
-	margin-left:0px;
+	margin-left:-8px;
+    margin-top: 4px;
 }
 
 .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
@@ -96,13 +109,35 @@ position: fixed;
 left: 185px;
 display: inline-block;
 float: left;
+
+
+li.dropdown {
+    font-size: 20px;
+    line-height: 28px;
+        text-shadow: 0px 1px 0px rgba(255, 255, 255, 1);
+
+
+    .dropdown-menu {
+        font-size: 13px;
+        line-height: 18px;
+
+    }
+    .caret {
+        top: 5px;
+position: relative;
+
+    }
+}
+
 }
 
 .navbar .btn, .navbar .btn-group {
     display: inline-block;
-	margin-top:5px;
+	margin-top:10px;
 	margin-left:2.5px;
-	margin-right:2.5px;
+	margin-right:4px;
+    background: white; 
+
 }
 
 .navbar-search {
@@ -114,23 +149,28 @@ float: left;
 
 #editorButton {
     position:relative;
-    top:-4px;
+    top:0px;
 }
 
 #previewButton {
     position: relative;
-    top: -3px;
+    top: 2px;
     left: 2px;
 }
 
 #statusBar {
-	margin-left:7%;
-	margin-top:7px;
+    color: #666;
 	width:18%;
 	height:23px;
 	text-align:center;
     position: fixed;
-    left: 43%;
+    top:11px;
+    left: 49%;
+    background-color: rgb(230, 230, 230);
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.15) inset, 0px 1px 0px rgba(255, 255, 255, 1) ;
+    text-shadow: 0px 1px 0px rgba(255, 255, 255, 1);
+    border-radius: 2px;
+
 	
 }
 
@@ -165,20 +205,34 @@ float: left;
         height: 100%;
         position: fixed;
         left: 0;
-        background: #22262e;
+        background: rgb(15, 17, 20);
         z-index: 1000;
         
-        #addNewFile {
-		    color:white;
-			display: block;
-			padding: 6px;
-			background: transparent;
-			border:0;
-			position: fixed;
-			float:bottom;
-			z-index:1000;
+        .bottom_buttons {
+            width: 100%;
+            height: 32px;
+            background-color: rgba(255,255,255, 0.2);
+            position: absolute;
+            bottom: 0px;
+            z-index:1000;
+
+
+            button {
+                display: block;
+                float: left;
+    		    color:white;
+    			padding: 6px;
+    			background: transparent;
+    			border:0;
+                font-size: 80%;
+                opacity: 0.5;
+
+                &:hover {
+                    opacity: 1;
+                };
+    			
+		  }
 		}
-		
 
 		#hideLeftSidebar {
 			color:white;
@@ -268,18 +322,21 @@ float: left;
         height: 100%;
         position: fixed;
         left: 200px;
-        padding: 48px 0px;
+        padding: 58px 0px;
 
 	#sidebarConsole {
-		
-		 width: 33%;
+		color: rgb(236, 236, 236);
+        font-size: 0.9em;
+		 width: 40%;
 	     height: 100%;
-	     position: fixed;
-		 top:0px;
+	     float: right;
+         position: relative;
+		 top:-15px;
 	     right: 0;
-	     background: #999999;
+	     background: rgb(82, 82, 82);
 	     z-index: 999;
          padding: 0;
+         box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.3) inset, -1px 0px 0px rgba(255, 255, 255, 1); ;
 	
 		#hideRightSidebar {
 			color:white;
@@ -294,10 +351,30 @@ float: left;
 			z-index:1000;
 		}
 		
-		#consoleAccordion {
-			max-height:40%;
+		#consoleOutput {
+			height:100%;
 			overflow:auto;
+            padding: 15px;
 		}
+
+        #doc {
+            display: block;
+            width: 100%;
+            height: 40px;
+            background-color: white;
+            position: absolute;
+            bottom: 40px;
+            z-index: 2000;
+            box-shadow: 0px 1px 20px rgba(0, 0, 0, 0.3);
+            padding-top: 2px;
+
+            h4 {
+                color: #999;
+                padding-left: 12px;
+                
+
+            }
+        }
 		
 	
 	}
@@ -307,7 +384,7 @@ float: left;
 	    width: 94%;
 	    padding: 25px;
 	    padding-right: 12px;
-        padding-top: 33px;
+        padding-top: 0px;
 	    height: 100%;
 
 	    float: right;
@@ -343,7 +420,7 @@ float: left;
 
 
 #coding_zone { 
-        width: 56%;
+        min-width: 56%;
         height: 100%;
         margin-top: 10px;
         float: left;
@@ -414,7 +491,7 @@ ol.tree
     padding: 0;
     width: 200px;
     margin-left: 0px;
-	margin-top:-36px;
+	margin-top:34px;
     font-size: 12px;
 }
     li 

@@ -35,7 +35,7 @@
 *
 **/
 @font-face {
-  font-family: open_sans;
+  font-family: "open_sans";
   src: url('../../customFonts/OpenSans-Light.ttf');
 }
 body {
@@ -54,6 +54,7 @@ a {
   margin-bottom: 5px;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.04);
   border-color: #dadada;
+  border-radius: 2px;
 }
 .accordion-heading {
   display: block;
@@ -61,6 +62,7 @@ a {
 }
 .accordion-heading a {
   font-weight: bold;
+  color: #585858;
 }
 .accordion-body.in.collapse {
   min-height: 85%;
@@ -74,8 +76,17 @@ a {
   margin: 10px 5px;
 }
 /* MAIN HEADER NAV BAR */
+.navbar-inner {
+  min-height: 50px;
+  background: white;
+  box-shadow: none;
+}
+.navbar-inner .container {
+  min-height: 50px;
+}
 .navbar .brand {
-  margin-left: 0px;
+  margin-left: -8px;
+  margin-top: 4px;
 }
 .navbar-static-top .container,
 .navbar-fixed-top .container,
@@ -89,12 +100,26 @@ a {
   display: inline-block;
   float: left;
 }
+.navbar .nav li.dropdown {
+  font-size: 20px;
+  line-height: 28px;
+  text-shadow: 0px 1px 0px #ffffff;
+}
+.navbar .nav li.dropdown .dropdown-menu {
+  font-size: 13px;
+  line-height: 18px;
+}
+.navbar .nav li.dropdown .caret {
+  top: 5px;
+  position: relative;
+}
 .navbar .btn,
 .navbar .btn-group {
   display: inline-block;
-  margin-top: 5px;
+  margin-top: 10px;
   margin-left: 2.5px;
-  margin-right: 2.5px;
+  margin-right: 4px;
+  background: white;
 }
 .navbar-search {
   margin-top: 5px;
@@ -103,21 +128,25 @@ a {
 }
 #editorButton {
   position: relative;
-  top: -4px;
+  top: 0px;
 }
 #previewButton {
   position: relative;
-  top: -3px;
+  top: 2px;
   left: 2px;
 }
 #statusBar {
-  margin-left: 7%;
-  margin-top: 7px;
+  color: #666;
   width: 18%;
   height: 23px;
   text-align: center;
   position: fixed;
-  left: 43%;
+  top: 11px;
+  left: 49%;
+  background-color: #e6e6e6;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.15) inset, 0px 1px 0px #ffffff;
+  text-shadow: 0px 1px 0px #ffffff;
+  border-radius: 2px;
 }
 #statusIcon {
   margin-right: 8px;
@@ -145,7 +174,7 @@ a {
   height: 100%;
   position: fixed;
   left: 0;
-  background: #22262e;
+  background: #0f1114;
   z-index: 1000;
   /*
         #play {
@@ -168,15 +197,26 @@ a {
 */
 
 }
-#sidebar #addNewFile {
-  color: white;
+#sidebar .bottom_buttons {
+  width: 100%;
+  height: 32px;
+  background-color: rgba(255, 255, 255, 0.2);
+  position: absolute;
+  bottom: 0px;
+  z-index: 1000;
+}
+#sidebar .bottom_buttons button {
   display: block;
+  float: left;
+  color: white;
   padding: 6px;
   background: transparent;
   border: 0;
-  position: fixed;
-  float: bottom;
-  z-index: 1000;
+  font-size: 80%;
+  opacity: 0.5;
+}
+#sidebar .bottom_buttons button:hover {
+  opacity: 1;
 }
 #sidebar #hideLeftSidebar {
   color: white;
@@ -237,17 +277,21 @@ a {
   height: 100%;
   position: fixed;
   left: 200px;
-  padding: 48px 0px;
+  padding: 58px 0px;
 }
 #main_container #sidebarConsole {
-  width: 33%;
+  color: #ececec;
+  font-size: 0.9em;
+  width: 40%;
   height: 100%;
-  position: fixed;
-  top: 0px;
+  float: right;
+  position: relative;
+  top: -15px;
   right: 0;
-  background: #999999;
+  background: #525252;
   z-index: 999;
   padding: 0;
+  box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.3) inset, -1px 0px 0px #ffffff;
 }
 #main_container #sidebarConsole #hideRightSidebar {
   color: white;
@@ -261,15 +305,31 @@ a {
   left: 0%;
   z-index: 1000;
 }
-#main_container #sidebarConsole #consoleAccordion {
-  max-height: 40%;
+#main_container #sidebarConsole #consoleOutput {
+  height: 100%;
   overflow: auto;
+  padding: 15px;
+}
+#main_container #sidebarConsole #doc {
+  display: block;
+  width: 100%;
+  height: 40px;
+  background-color: white;
+  position: absolute;
+  bottom: 40px;
+  z-index: 2000;
+  box-shadow: 0px 1px 20px rgba(0, 0, 0, 0.3);
+  padding-top: 2px;
+}
+#main_container #sidebarConsole #doc h4 {
+  color: #999;
+  padding-left: 12px;
 }
 #main_container #widget_zone {
   width: 94%;
   padding: 25px;
   padding-right: 12px;
-  padding-top: 33px;
+  padding-top: 0px;
   height: 100%;
   float: right;
 }
@@ -290,7 +350,7 @@ a {
   color: #cacaca;
 }
 #coding_zone {
-  width: 56%;
+  min-width: 56%;
   height: 100%;
   margin-top: 10px;
   float: left;
@@ -349,7 +409,7 @@ ol.tree {
   padding: 0;
   width: 200px;
   margin-left: 0px;
-  margin-top: -36px;
+  margin-top: 34px;
   font-size: 12px;
 }
 li {
