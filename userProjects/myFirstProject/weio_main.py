@@ -53,7 +53,7 @@ def send_request():
     print "hello"
     #pinMode(pin, OUTPUT)
     
-    for a in range(200) :
+    for a in range(100) :
         #digitalWrite(pin, HIGH)
         #time.sleep(0.5)
         #digitalWrite(pin, LOW)

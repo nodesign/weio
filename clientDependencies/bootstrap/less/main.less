@@ -137,6 +137,7 @@ position: relative;
 	margin-left:2.5px;
 	margin-right:4px;
     background: white; 
+    border:0;
 
 }
 
@@ -205,7 +206,7 @@ position: relative;
         height: 100%;
         position: fixed;
         left: 0;
-        background: rgb(15, 17, 20);
+        background: rgb(0,0,0);
         z-index: 1000;
         
         .bottom_buttons {
@@ -243,7 +244,7 @@ position: relative;
 			background: transparent;
 			border:0;
 			position: relative;
-			top: 40%;
+			top: 50%;
 			left: 89%;
 			z-index:1000;
 		}
@@ -325,8 +326,8 @@ position: relative;
         padding: 58px 0px;
 
 	#sidebarConsole {
-		color: rgb(236, 236, 236);
-        font-size: 0.9em;
+	     color: rgb(236, 236, 236);
+         font-size: 0.9em;
 		 width: 40%;
 	     height: 100%;
 	     float: right;
@@ -337,7 +338,17 @@ position: relative;
 	     z-index: 999;
          padding: 0;
          box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.3) inset, -1px 0px 0px rgba(255, 255, 255, 1); ;
-	
+	    
+	    #consoleTitle {
+	        position : relative;
+            top:0px;
+            color: rgb(51, 51, 51, 0.74);
+            padding-left: 12px;
+            font-size:20px;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            
+        }
+        
 		#hideRightSidebar {
 			color:white;
 			display: block;
@@ -352,14 +363,29 @@ position: relative;
 		}
 		
 		#consoleOutput {
+		    display:block;
 			height:100%;
 			overflow:auto;
             padding: 15px;
 		}
+		
+		#trashConsole {
+		    color:white;
+			background: transparent;
+			border:0;
+			position: relative;
+			top: 0px;
+			float:right;
+			z-index:1000;
+			opacity:0.5;
+			 &:hover {
+                    opacity: 1; 
+             };
+                
+		}
 
         #doc {
-            display: block;
-            width: 100%;
+            width: 93%;
             height: 40px;
             background-color: white;
             position: absolute;
@@ -368,9 +394,13 @@ position: relative;
             box-shadow: 0px 1px 20px rgba(0, 0, 0, 0.3);
             padding-top: 2px;
 
-            h4 {
+            p {
+                position : relative;
+                top:8px;
                 color: #999;
                 padding-left: 12px;
+                font-size:20px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
                 
 
             }

@@ -120,6 +120,7 @@ a {
   margin-left: 2.5px;
   margin-right: 4px;
   background: white;
+  border: 0;
 }
 .navbar-search {
   margin-top: 5px;
@@ -174,7 +175,7 @@ a {
   height: 100%;
   position: fixed;
   left: 0;
-  background: #0f1114;
+  background: #000000;
   z-index: 1000;
   /*
         #play {
@@ -227,7 +228,7 @@ a {
   background: transparent;
   border: 0;
   position: relative;
-  top: 40%;
+  top: 50%;
   left: 89%;
   z-index: 1000;
 }
@@ -293,6 +294,14 @@ a {
   padding: 0;
   box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.3) inset, -1px 0px 0px #ffffff;
 }
+#main_container #sidebarConsole #consoleTitle {
+  position: relative;
+  top: 0px;
+  color: #333333;
+  padding-left: 12px;
+  font-size: 20px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
 #main_container #sidebarConsole #hideRightSidebar {
   color: white;
   display: block;
@@ -306,13 +315,26 @@ a {
   z-index: 1000;
 }
 #main_container #sidebarConsole #consoleOutput {
+  display: block;
   height: 100%;
   overflow: auto;
   padding: 15px;
 }
+#main_container #sidebarConsole #trashConsole {
+  color: white;
+  background: transparent;
+  border: 0;
+  position: relative;
+  top: 0px;
+  float: right;
+  z-index: 1000;
+  opacity: 0.5;
+}
+#main_container #sidebarConsole #trashConsole:hover {
+  opacity: 1;
+}
 #main_container #sidebarConsole #doc {
-  display: block;
-  width: 100%;
+  width: 93%;
   height: 40px;
   background-color: white;
   position: absolute;
@@ -321,9 +343,13 @@ a {
   box-shadow: 0px 1px 20px rgba(0, 0, 0, 0.3);
   padding-top: 2px;
 }
-#main_container #sidebarConsole #doc h4 {
+#main_container #sidebarConsole #doc p {
+  position: relative;
+  top: 8px;
   color: #999;
   padding-left: 12px;
+  font-size: 20px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 #main_container #widget_zone {
   width: 94%;

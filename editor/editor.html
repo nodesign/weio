@@ -89,7 +89,7 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
                     <ul class="nav">
 
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" id="projectTitle" data-toggle="dropdown">MyFirstProject <b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" id="projectTitle" data-toggle="dropdown">MyFirstProject</a>
                             <ul class="dropdown-menu">
                                 <li><a tabindex="-1" href="#">Create new project</a></li>
                                 <li class="divider"></li>
@@ -126,7 +126,7 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 
                             <div class="btn-group pull-right">
                                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                                    <i class="icon-user"></i> root	<span class="caret"></span>
+                                    <i class="icon-user"></i> root	
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#"><i class="icon-wrench"></i> Settings</a></li>
@@ -140,7 +140,6 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
                                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                                     <i class="icon-signal"></i>
                                     AP WEIO
-                                    <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a tabindex="-1" href="#">Refresh wireless</a></li>    
@@ -203,7 +202,7 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 <div id="deleteFile" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Delete this file</h3>
+        <h3 id="myModalDeleteFileLabel"></h3>
     </div>
     <div class="modal-body">
         <p>Are you sure that you want to delete this file?</p>
@@ -263,13 +262,19 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
     </button>
 
     <div id="widget_zone">
-
+        
+        <button id="trashConsole" class="open" onclick="clearConsole()">
+            <i class="icon-trash"></i>
+        </button>
+        
+        <p id="consoleTitle">Console</p>
+        
         <p id="consoleOutput"></p>
         
-        <!-- <div id="doc">
-            <h4>Documentation</h4>
+         <div id="doc">
+            <p>Documentation</p>
             <article>Text</article>
-        </div> -->
+        </div>
 
     </div>
 </div>
@@ -339,6 +344,15 @@ $("#hideRightSidebar").click(function(){
 
         $( "#rightSidebarIcon" ).attr("class", "icon-chevron-left");
         $(this).attr('class', 'closed');
+        
+
+
+        $( "#trashConsole" ).css("display", "none");
+        $( "#consoleOutput" ).css("display", "none");
+        $( "#doc" ).css("display", "none");
+        $( "#consoleTitle" ).css("display", "none");
+        
+        
     }
 
     else if ($(this).is(".closed")) {
@@ -349,14 +363,21 @@ $("#hideRightSidebar").click(function(){
             $( "#coding_zone" ).animate( { width: "65%" }, { queue: false, duration: 100 });
         }
 
-
         $( "#sidebarConsole" ).animate( { width: "40%" }, { queue: false, duration: 100 });
+
 
 
         $( "#rightSidebarIcon" ).attr("class", "icon-chevron-right");
         $(this).attr('class', 'open');
-    }
 
+
+        
+        $( "#trashConsole" ).css("display", "block");
+        $( "#consoleOutput" ).css("display", "block");
+        $( "#doc" ).css("display", "block");
+        $( "#consoleTitle" ).css("display", "block");
+    }
+    
 
 });
 
@@ -657,6 +678,7 @@ function renderFileTree() {
         function prepareToDelete(name) {
             console.log("preparing to delete " + name);
             selectedName = name;
+            $('#myModalDeleteFileLabel').html("Delete " + selectedName + " file?");
         }
 
         function save(name) {
@@ -828,6 +850,12 @@ function renderFileTree() {
 
 
         }
+        
+        // This function clears console output
+        function clearConsole(){
+            consoleData = [];
+            $('#consoleOutput').html("");
+        }
 
 
         //////////////////////////////////////////////////////////////// SOCK JS
@@ -919,12 +947,10 @@ function renderFileTree() {
                         consoleData[i] = consoleData[i].replace("\n", "<BR>");
                         consoleOutput+=consoleData[i];
                     }
+                    // this function outputs console to screen
                     $('#consoleOutput').html(consoleOutput);
 
-                    console.log(stdout);
-
-                    //statusBar("icon-eye-open", "Console output");
-
+                    //console.log(stdout);
 
                 } else if (demand == "stderr") {
 
