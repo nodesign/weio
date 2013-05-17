@@ -5532,8 +5532,8 @@ a {
 #main_container {
   height: 100%;
   position: fixed;
-  left: 200px;
   padding: 58px 0px;
+  padding-left: 200px;
 }
 #main_container #sidebarConsole {
   color: #ececec;

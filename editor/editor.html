@@ -289,16 +289,16 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 
 $("#hideLeftSidebar").click(function(){
 
+var viewportWidth2 = $(window).width();
+
     if ($(this).is(".open")) {
 
-        if ($('#hideRightSidebar').hasClass('open')) {
-            $( "#coding_zone" ).animate( { width: "70%" }, { queue: false, duration: 100 });
-            $( "#main_container" ).animate( { 'left': "-=180px" }, { queue: false, duration: 100 });
-        } else {
-            $( "#coding_zone" ).animate( { width: "100%" }, { queue: false, duration: 100 });
-            $( "#main_container" ).animate( { 'left': "-=180px" }, { queue: false, duration: 100 });
+    
 
-        }
+
+        $( "#main_container" ).animate( { 'padding-left': "20px" }, { queue: false, duration: 100 });
+        $( "#main_container" ).animate( { 'width': viewportWidth2 - 20 }, { queue: false, duration: 100 });
+       
 
         $( "#sidebar" ).animate( { left: "-180px" }, { queue: false, duration: 100 });
 
@@ -308,16 +308,10 @@ $("#hideLeftSidebar").click(function(){
     } 
     else if ($(this).is(".closed")) {
 
-        if ($('#hideRightSidebar').hasClass('open')) {
-            $( "#coding_zone" ).animate( { width: "55%" }, { queue: false, duration: 100 });
-            $( "#main_container" ).animate( { 'left': "+=180px" }, { queue: false, duration: 100 });
-        } else {
-            $( "#coding_zone" ).animate( { width: "90%" }, { queue: false, duration: 100 });
-            $( "#main_container" ).animate( { 'left': "+=180px" }, { queue: false, duration: 100 });
+        
+        $( "#main_container" ).animate( { 'padding-left': "200px" }, { queue: false, duration: 100 });
+        $( "#main_container" ).animate( { 'width': viewportWidth2 - 200 }, { queue: false, duration: 100 });
 
-
-
-        }
 
         $( "#sidebar" ).animate( { left: "0px" }, { queue: false, duration: 100 });
 
@@ -335,11 +329,10 @@ $("#hideRightSidebar").click(function(){
         if ($('#hideLeftSidebar').hasClass('open')) {
             $( "#coding_zone" ).animate( { width: "93%" }, { queue: false, duration: 100 });
         } else {
-            $( "#coding_zone" ).animate( { width: "96%" }, { queue: false, duration: 100 });
+            $( "#coding_zone" ).animate( { width: "93%" }, { queue: false, duration: 100 });
         }
 
-        $( "#sidebarConsole" ).animate( { width: "40px" }, { queue: false, duration: 100 });
-        $( "#sidebarConsole" ).animate( { right: "0px" }, { queue: false, duration: 100 });
+        $( "#sidebarConsole" ).animate( { width: "3%" }, { queue: false, duration: 100 });
 
 
         $( "#rightSidebarIcon" ).attr("class", "icon-chevron-left");
@@ -360,7 +353,7 @@ $("#hideRightSidebar").click(function(){
         if ($('#hideLeftSidebar').hasClass('open')) {
             $( "#coding_zone" ).animate( { width: "55%" }, { queue: false, duration: 100 });
         } else {
-            $( "#coding_zone" ).animate( { width: "65%" }, { queue: false, duration: 100 });
+            $( "#coding_zone" ).animate( { width: "55%" }, { queue: false, duration: 100 });
         }
 
         $( "#sidebarConsole" ).animate( { width: "40%" }, { queue: false, duration: 100 });
@@ -394,6 +387,9 @@ $("#hideRightSidebar").click(function(){
     var baseFiles = new SockJS('http://localhost:8081/' + 'editor/baseFiles');
 
 
+    
+ 
+
     // Global function. Can be recalled when adding a new stripe to recalculate max height value
     function update_height() {
 
@@ -416,7 +412,6 @@ $("#hideRightSidebar").click(function(){
 
         // Get windows size, get number of collapse elements and calculate maximum height to fill the column
         var viewportWidth = $(window).width();
-
 
         //console.log("rows : " + numRows + " array elements " + editors.length);
         var finalwidth = viewportWidth - 200;
