@@ -49,19 +49,15 @@ from weioLib import WeioAPIbridge
 from weioLib import weio_config
 
 
-
 # This is user project index.html
 class WeioIndexHandler(web.RequestHandler):
-    
     def get(self):
         global confFile
         path = confFile['user_projects_path'] + confFile['last_opened_project'] + "index.html"
         self.render(path, error="")
         
-        
 # This is editor web app      
 class WeioEditorWebHandler(web.RequestHandler):
-    
     def get(self):
         global confFile
         path = confFile['editor_html_path']
@@ -69,7 +65,6 @@ class WeioEditorWebHandler(web.RequestHandler):
         
 # This is preview web app      
 class WeioPreviewWebHandler(web.RequestHandler):
-    
     def get(self):
         global confFile
         path = confFile['preview_html_path']
@@ -79,7 +74,6 @@ class WeioPreviewWebHandler(web.RequestHandler):
 # pure websocket implementation
 #class CloseConnection(websocket.WebSocketHandler):
 class CloseConnection(SockJSConnection):
-
     def on_open(self, info):
         self.close()
 
@@ -112,7 +106,6 @@ if __name__ == '__main__':
     CloseRouter = SockJSRouter(CloseConnection, '/close')
 
     
-    
     # Take configuration from conf file and use it to define parameters
     global confFile
     confFile = weio_config.getConfiguration()
@@ -123,17 +116,19 @@ if __name__ == '__main__':
  
     
     app = web.Application(list(WeioEditorRouter.urls) +
-                          list(CloseRouter.urls) +
-                          list(WeioAPIBridgeRouter.urls) +
-                          #list(WeioAPIBridgeRouter.urls) +
+                            list(CloseRouter.urls) +
+                            list(WeioAPIBridgeRouter.urls) +
+                            #list(WeioAPIBridgeRouter.urls) +
                           
-                          # pure websocket implementation
-                          #[(r"/editor/baseFiles", Editor.WeioEditorHandler)] +
-                          #[(r"/close", CloseConnection)] +
-                          [(r"/preview",WeioPreviewWebHandler)] +
-                          [(r"/editor",WeioEditorWebHandler)] +
-                          [(r"/", WeioIndexHandler),(r"/(.*)", web.StaticFileHandler,{"path": confFile["dependencies_path"]})], 
-                          debug=True
+                            # pure websocket implementation
+                            #[(r"/editor/baseFiles", Editor.WeioEditorHandler)] +
+                            #[(r"/close", CloseConnection)] +
+                            [(r"/preview",WeioPreviewWebHandler)] +
+                            [(r"/editor",WeioEditorWebHandler)] +
+                            [(r"/", WeioIndexHandler),
+                                (r"/(.*)", web.StaticFileHandler,
+                                {"path": confFile["dependencies_path"]})], 
+                            debug=True
                           )
                           # DEBUG WILL DECREASE SPEED!!! HOW TO AVOID THIS??? see Watchers section down here
     
@@ -148,8 +143,8 @@ if __name__ == '__main__':
     # WATCHERS works simply with debug=True
     
     # Other solution is to use autoreload, will be used later for production MAYBE
-    # when some of these files change, tornado will reboot to serve all modifications, other files than python modules need to 
-    # be specified manually
+    # when some of these files change, tornado will reboot to serve all modifications,
+    # other files than python modules need to be specified manually
     #autoreload.watch('./editor/index.html')
     #autoreload.watch('./static/user_weio/index.html')
     

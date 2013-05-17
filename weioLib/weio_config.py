@@ -48,7 +48,7 @@ def getConfiguration():
 def saveConfiguration(conf):
     inputFile = open("config.weio", 'w')
     print(inputFile)
-    ret = inputFile.write(json.dumps(conf))
+    ret = inputFile.write(json.dumps(conf, indent=4, sort_keys=True))
     inputFile.close()
     
  
