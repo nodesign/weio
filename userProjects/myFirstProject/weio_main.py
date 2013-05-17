@@ -38,71 +38,41 @@ from tornado import ioloop
 from tornado import iostream
 import socket
 import time
-
 import sys
-sys.path.append(r'./');
-
-from weioLib import weio_globals, weio_gpio
-import pickle
+import json
 
 def send_request():
-   
-    pin = 16
     
     print "hello"
-    #pinMode(pin, OUTPUT)
-    
-    for a in range(30) :
-        #digitalWrite(pin, HIGH)
-        #time.sleep(0.5)
-        #digitalWrite(pin, LOW)
-        print(a)
+    for a in range(5) :
+        print(str(a))
         time.sleep(0.1)
-    
-    print "waiting"
-    time.sleep(3)
-    print "reading"
-    #pinMode(pin, INPUT)
-    #val = digitalRead(pin)
-    print val
-    print "finished"
-    
         
     stream.close()
+    #stream.read_until("\r\n\r\n", on_headers)
+    #stream.read_until_close(on_body, None)
     ioloop.IOLoop.instance().stop()
 
 class StdOutputToSocket():
-    global out
-    out = {}
-    
-    def write(self, msg):
-        global out
-        if "\n" in msg :
-            out['stdout'] = out['stdout'] + msg
-            stream.write(pickle.dumps(out))
-            #stream.write(json.dumps(out))
-        else :
-            out['stdout'] = msg
+     def write(self, msg):
+         #out = {}
+         #out['stdout'] = msg
+         stream.write(json.dumps(msg))
          
 class StdErrToSocket():
-    global out
-    out = {}
-    
     def write(self, msg):
-        global out
-        if "\n" in msg :
-            out['stdout'] = out['stdout'] + msg
-            stream.write(pickle.dumps(out))
-            #stream.write(json.dumps(out))
-        else :
-            out['stdout'] = msg
-            
-            
+        out = {}
+        out['stderr'] = msg
+        stream.write(json.dumps(out))
+
+
 s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM, 0)
 stream = iostream.IOStream(s)
-stream.connect("uds_weio_main", send_request)
+stream.connect("uds_weio_mainStdOut", send_request)
 
 sys.stdout = StdOutputToSocket()
-sys.stderr = StdErrToSocket()
+#sys.stderr = StdErrToSocket()
 
 ioloop.IOLoop.instance().start()
+
+

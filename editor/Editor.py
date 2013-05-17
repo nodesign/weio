@@ -54,7 +54,7 @@ from weioLib import WeioFiles
 import json
 import ast
 
-import pickle
+
 
 
 # pure websocket implementation    
@@ -169,7 +169,7 @@ class WeioEditorHandler(SockJSConnection):
                sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM, 0)
                sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                sock.setblocking(0)
-               server_address = "uds_weio_main"
+               server_address = "uds_weio_mainStdOut"
 
                # Make sure the socket does not already exist
                try:
@@ -219,7 +219,6 @@ class WeioEditorHandler(SockJSConnection):
     def socket_connection_ready(self, sock, fd, events):
        global stream
 
-
        print "CONNECTION READY"
        while True:
            print "AAA"
@@ -238,17 +237,25 @@ class WeioEditorHandler(SockJSConnection):
            stream.read_until_close(self.socket_on_close, self.socket_on_headers)
           
            
-    def socket_on_headers(self, data):
+    def socket_on_headers(self, msg):
        print "-> ENTER on_headers()"
        
-       rcvd = pickle.loads(data)
-       print rcvd
+       # parse incoming data
+       stdout = msg.rstrip()
+       print(stdout)
        
-       self.sendToBrowser(rcvd)
-  
-       #global stream
-       #stream.write("OK, zatvori Mile...")
-       #stream.read_until("\t", on_close)
+       #pack and go
+       data = {}
+       
+       data['serverPush'] = 'stdout'
+       data['data'] = stdout
+       
+       # TODO, send this only once, at the beginning
+       data['status'] = "Check output console"
+       
+       # this is raw output, some basic parsing is needed in javascript \n etc...
+       self.send(json.dumps(data))
+       
        print "<- EXIT on_headers()"
 
     def socket_on_close(self, data):
@@ -256,55 +263,28 @@ class WeioEditorHandler(SockJSConnection):
        
        print "-> ENTER on_close()"
        
-       rcvd = pickle.loads(data)
-       
-       #print "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
-       #print rcvd
-       #print "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
-        
-       err = {}
-       err['stderr'] = rcvd['stdout']
-       self.sendToBrowser(err) 
-       
+       print(data.rstrip())
+
            
        global stream
        stream.close()
+       
        print "closed socket"
        print "<- EXIT on_close()"
-       
-#TODO change this name cos it leads to confusion
-    def sendToBrowser(self, rcvd) :
-      # pack and send to client
-      
-       data = {}
-
-       if 'stdout' in rcvd :
-           data['serverPush'] = 'stdout'
-           data['data'] = rcvd['stdout']
-           data['status'] = "Check output console"
-       elif 'stderr' in rcvd :
-           data['serverPush'] = 'stderr'
-           data['data'] = rcvd['stderr']
-
-       self.send(json.dumps(data))
            
     def on_subprocess_result(self, status, stdout, stderr, has_timed_out ):
+        
+        data = {}
         
         print status, stdout, stderr
         if status == 0:
             print "OK:"
-            print stdout
-        
+            data['status'] = "weio_main finished in peace"
         
         else:
-            print "ERROR:"
-            
-            print stdout
-            print stderr
-            
-        data = {}
+            data['status'] = "aieee ERROR, see console"
+        
         data['serverPush'] = 'stopped'
-        data['status'] = "Check output console"
         self.send(json.dumps(data))
         
         # 
@@ -369,11 +349,11 @@ class WeioEditorHandler(SockJSConnection):
         #         
         #     ioloop.IOLoop.instance().add_callback(self.on_subprocess_result)
     
-    def checkProcessPlayState(self) :
-        #print(str(self.pipe.poll()))
-        if (self.pipe.poll()==0) :
-            print("yupiiii")
-            data = {}
-            data['serverPush'] = 'stopped'
-        
-            self.send(json.dumps(data))
+    # def checkProcessPlayState(self) :
+    #       #print(str(self.pipe.poll()))
+    #       if (self.pipe.poll()==0) :
+    #           print("yupiiii")
+    #           data = {}
+    #           data['serverPush'] = 'stopped'
+    #       
+    #           self.send(json.dumps(data))

@@ -914,18 +914,23 @@ function renderFileTree() {
 
 
                     stdout = data.data;
-
+                    stdout = stdout.replace(/"/g, '');
+                    stdout = stdout.replace(/\\n/g, '<BR>');
+                    
+                    
+                    console.log(stdout);
+                    
+                    
                     consoleData.push(stdout);
 
                     if (consoleData.length>MAX_LINES_IN_CONSOLE) {
                         consoleData.shift();
                     }
 
-
+                   
                     consoleOutput = "";
 
                     for (var i=0; i<consoleData.length; i++) {
-                        consoleData[i] = consoleData[i].replace("\n", "<BR>");
                         consoleOutput+=consoleData[i];
                     }
                     // this function outputs console to screen
