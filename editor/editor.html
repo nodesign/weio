@@ -941,9 +941,13 @@ function renderFileTree() {
                 } else if (demand == "stderr") {
 
                     stderr = data.data;
-
+                    //stderr = stderr.replace(/"/g, '');
+                    stderr = stderr.replace(/\\n/g, '<BR>');
+                    
+                    console.log(stderr)
+                    
                     consoleData.push('<font color="red">' + stderr + '</font>');
-
+                                        
                     if (consoleData.length>MAX_LINES_IN_CONSOLE) {
                         consoleData.shift();
                     }
@@ -951,16 +955,13 @@ function renderFileTree() {
                     consoleOutput = "";
 
                     for (var i=0; i<consoleData.length; i++) {
-                        consoleData[i] = consoleData[i].replace("\n", "<BR>");
                         consoleOutput+=consoleData[i];
                     }
                     $('#consoleOutput').html(consoleOutput);
 
                     //errorInFile = data.errorInFile;
                     //errInLine = data.errInLine;
-                    statusBar("icon-eye-open", "Console output : Error");
-
-                    console.log(stderr);
+                    
                 } else if (demand == "stopped") {
                     console.log("execution of weio_main.py stopped");
                     isPlaying = false;

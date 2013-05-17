@@ -279,12 +279,14 @@ class WeioEditorHandler(SockJSConnection):
         print status, stdout, stderr
         if status == 0:
             print "OK:"
+            data['serverPush'] = 'stopped'
             data['status'] = "weio_main finished in peace"
-        
+            
         else:
+            data['serverPush'] = 'stderr'
+            data['data'] = stderr
             data['status'] = "aieee ERROR, see console"
-        
-        data['serverPush'] = 'stopped'
+            
         self.send(json.dumps(data))
         
         # 
