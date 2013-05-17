@@ -102,7 +102,6 @@ if __name__ == '__main__':
     #CONFIGURATOR ROUTES
 
 
-    
     #SETTINGS ROUTES
     
     
