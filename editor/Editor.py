@@ -82,11 +82,11 @@ class WeioEditorHandler(SockJSConnection):
            
            global weio_main
            
+           # parsing strings from browser
            rq = ast.literal_eval(request)
-           
         
-           data = {}
-           #print(rq)
+           # answer dictionary object
+           data = {}          
            
            if 'getFileList' in rq['request'] :
                
@@ -95,12 +95,12 @@ class WeioEditorHandler(SockJSConnection):
                
                # read all files paths from user directories
                data['data'] = WeioFiles.scanFolders()
-               data['status'] = "Project is opened, gimme some awesome code!"
+               # notify what is happening at this moment
+               data['status'] = "I'm ready, gimme some awesome code!"
                fileList = data 
                
                #sending
                self.send(json.dumps(data))
-               #print('server sends...', json.dumps(data))
                
            elif 'getFile' in rq['request'] :
 
@@ -281,7 +281,7 @@ class WeioEditorHandler(SockJSConnection):
        if 'stdout' in rcvd :
            data['serverPush'] = 'stdout'
            data['data'] = rcvd['stdout']
-           data['status'] = "Something is on console"
+           data['status'] = "Check output console"
        elif 'stderr' in rcvd :
            data['serverPush'] = 'stderr'
            data['data'] = rcvd['stderr']
@@ -304,6 +304,7 @@ class WeioEditorHandler(SockJSConnection):
             
         data = {}
         data['serverPush'] = 'stopped'
+        data['status'] = "Check output console"
         self.send(json.dumps(data))
         
         # 

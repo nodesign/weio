@@ -461,7 +461,6 @@ $("#hideRightSidebar").click(function(){
 
     $(document).ready(function () {
 
-        updatePlayStatus();
         main_container_width();
 
         $(window).resize(function() {
@@ -471,15 +470,6 @@ $("#hideRightSidebar").click(function(){
     });
 
 
-
-    function updatePlayStatus() {
-        if (isPlaying) {
-            setStatus("icon-spinner icon-spin", "Running weio_main");
-        } else {
-            setStatus("icon-stop", "weio_main stopped");
-            window.setTimeout("setStatus(null, 'Ready')", 3000);
-        }
-    }
 
     function initEditor() {
         // EDITOR ZONE
@@ -671,7 +661,6 @@ function renderFileTree() {
             console.log("preparing to close " + name);
             selectedName = name;
             saveAndClose(true);
-            setStatus("icon-refresh icon-spin", "Sync");
         }
         
         // this function selects name of file that will be deleted
@@ -797,8 +786,6 @@ function renderFileTree() {
             var askForFileListRequest = { "request": "play"};
             baseFiles.send(JSON.stringify(askForFileListRequest));
             isPlaying = true;
-            updatePlayStatus();
-
         }
 
 
@@ -808,7 +795,6 @@ function renderFileTree() {
             var askForFileListRequest = { "request": "stop"};
             baseFiles.send(JSON.stringify(askForFileListRequest));
             isPlaying = false;
-            updatePlayStatus();
         }
 
         function backupOpenedFiles() {
@@ -832,8 +818,6 @@ function renderFileTree() {
 
             //console.log(nameList);
 
-            // when storing is confirmed than preview will be activated
-            setStatus("icon-refresh icon-spin", "Sync")
             //console.log(storeProject);
         }
         
@@ -843,7 +827,6 @@ function renderFileTree() {
         // If icon is not desired you can pass null as argument : setStatus(null, "hello world");
         
         // Icons are only used when synchronization is active or weio_main is running
-        
         // set status is always activated from server push messages, never from client, except when closed socket is detected!
 
         function setStatus(icon, message) {
@@ -873,14 +856,14 @@ function renderFileTree() {
             var askForFileListRequest = { "request": "getFileList" };
             baseFiles.send(JSON.stringify(askForFileListRequest));
             setStatus("icon-link", "Connected");
-            window.setTimeout("setStatus(null, 'Ready')",1000);
             console.log('sending... ' + JSON.stringify(askForFileListRequest));
         };
 
         baseFiles.onmessage = function(e) {
             //console.log('Received: ' + e.data);
+            
+            // JSON data is parsed into object
             data = JSON.parse(e.data);
-
 
             // switch
 
@@ -896,10 +879,9 @@ function renderFileTree() {
 
                     editorData.tree = fileList.allFiles; 
                     initEditor();
-
+                    
                     // install first index.html
                     addNewStrip("index.html");
-
 
                 } else if (instruction == "getFile") {
 
@@ -921,12 +903,11 @@ function renderFileTree() {
 
                 } else if (instruction == "storeProjectPreferences") {
 
-                    setStatus(null, "Ready");
                     window.location.href = "/preview";
 
 
                 } else if (instruction == "saveFile") {
-                    if (isPlaying==false) setStatus(null, "Ready");
+                    // nothing
 
                 }
 
@@ -983,12 +964,16 @@ function renderFileTree() {
                 } else if (demand == "stopped") {
                     console.log("execution of weio_main.py stopped");
                     isPlaying = false;
-                    updatePlayStatus();
+                    
                 }
 
 
-            } 
-
+            }
+            
+            // get Status message from server
+            if ("status" in data) {
+                setStatus(null, data.status);
+            }
 
             //console.log('Received: ' + data.raw);
             //editor1.setValue(data.raw);
