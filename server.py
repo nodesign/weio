@@ -55,6 +55,7 @@ class WeioIndexHandler(web.RequestHandler):
         global confFile
         path = confFile['user_projects_path'] + confFile['last_opened_project'] + "index.html"
         self.render(path, error="")
+        #self.redirect(path)
         
 # This is editor web app      
 class WeioEditorWebHandler(web.RequestHandler):

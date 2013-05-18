@@ -34,44 +34,22 @@
 #
 ###
 
-from tornado import ioloop
-from tornado import iostream
-import socket
 import time
-import sys
-import json
+#import socket
 
-def send_request():
-    
-    print "Connected via UDS Socket"
-    for a in range(5) :
-        print(str(a))
-        time.sleep(0.1)
+
+#s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM, 0)
+#s.connect("uds_weio_mainStdOut")
+
+
+print "Connected via UDS Socket"
+for a in range(50) :
+    print(str(a))
+#    s.send(a)
+    time.sleep(0.5)
+
+
+#s.close()
+
              
-         #stream.read_until("\r\n\r\n", on_headers)
-         #stream.read_until_close(on_body, None)
-    
-    stream.close()
-    ioloop.IOLoop.instance().stop()
 
-class StdOutputToSocket():
-     def write(self, msg):
-         #out = {}
-         #out['stdout'] = msg
-         stream.write(json.dumps(msg))
-         
-class StdErrToSocket():
-    def write(self, msg):
-        out = {}
-        out['stderr'] = msg
-        stream.write(json.dumps(out))
-
-
-s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM, 0)
-stream = iostream.IOStream(s)
-stream.connect("uds_weio_mainStdOut", send_request)
-
-sys.stdout = StdOutputToSocket()
-#sys.stderr = StdErrToSocket()
-
-ioloop.IOLoop.instance().start()

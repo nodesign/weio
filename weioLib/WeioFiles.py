@@ -73,25 +73,27 @@ def scanFolders() :
         index = 0
         for filename in filenames:
             #ignore this mac shit, TODO delete this condition when porting to electronics
-            if (".DS_Store"!= filename) :
-                #allFiles.append(os.path.join(dirname, filename))
-                if ".html" in filename :
-                    allFiles.append({'name': filename, 'id' : index, 'type' : "html", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
-                elif ".py" in filename : # NASTY BUG CORRECTED, pyc is also identified here because "py" is in "pyc", solution is provided
-                    if ".pyc" in filename : # ignore this one
-                        pass
-                    else :
-                        allFiles.append({'name': filename, 'id' : index, 'type' : "python", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
-                elif ".js" in filename :
-                    allFiles.append({'name': filename, 'id' : index, 'type' : "javascript", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
-                elif ".css" in filename :
-                    allFiles.append({'name': filename, 'id' : index, 'type' : "css", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0}) 
-                elif ".txt" in filename :
-                    allFiles.append({'name': filename, 'id' : index, 'type' : "text", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
+            if (".DS_Store" == filename) :
+                continue
+            
+            #allFiles.append(os.path.join(dirname, filename))
+            if ".html" in filename :
+                allFiles.append({'name': filename, 'id' : index, 'type' : "html", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
+            elif ".py" in filename : # NASTY BUG CORRECTED, pyc is also identified here because "py" is in "pyc", solution is provided
+                if ".pyc" in filename : # ignore this one
+                    pass
                 else :
-                    allFiles.append({'name': filename, 'id' : index, 'type' : "other", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
-                
-                index = index+1
+                    allFiles.append({'name': filename, 'id' : index, 'type' : "python", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
+            elif ".js" in filename :
+                allFiles.append({'name': filename, 'id' : index, 'type' : "javascript", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
+            elif ".css" in filename :
+                allFiles.append({'name': filename, 'id' : index, 'type' : "css", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0}) 
+            elif ".txt" in filename :
+                allFiles.append({'name': filename, 'id' : index, 'type' : "text", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
+            else :
+                allFiles.append({'name': filename, 'id' : index, 'type' : "other", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
+            
+            index = index+1
               
             # parse filenames and sort them into arrays
             # if ".html" in filename :

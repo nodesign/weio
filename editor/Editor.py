@@ -62,14 +62,12 @@ import ast
 class WeioEditorHandler(SockJSConnection):
     global weio_main
     
-    
     """Opens editor route."""
     def on_open(self, data):
         """On open asks weio for last saved project. List of files are scaned and sent to editor.
         Only contents of weio_main.py is sent at first time"""
         print "WebSocket opened!"
         pass
-        
         
     def on_message(self, data):
         self.serve(data)
@@ -79,201 +77,267 @@ class WeioEditorHandler(SockJSConnection):
 #        self.write_message(message)
         
     def serve(self, request) :
-           
-           global weio_main
-           
-           # parsing strings from browser
-           rq = ast.literal_eval(request)
+        global weio_main
         
-           # answer dictionary object
-           data = {}          
-           
-           if 'getFileList' in rq['request'] :
-               
-               # echo given request
-               data['requested'] = rq['request']
-               
-               # read all files paths from user directories
-               data['data'] = WeioFiles.scanFolders()
-               # notify what is happening at this moment
-               data['status'] = "I'm ready, gimme some awesome code!"
-               fileList = data 
-               
-               #sending
-               self.send(json.dumps(data))
-               
-           elif 'getFile' in rq['request'] :
-
-               # echo given request
-               data['requested'] = rq['request']
-
-               # echo given data
-               data['requestedData'] = rq['data']
-
-               fileInfo = rq['data']
-
-               pathname = fileInfo['path']
-
-               rawFile = WeioFiles.getRawContentFromFile(pathname)
-
-               fileInfo['data'] = rawFile
-
-               data['data'] = fileInfo
-              
-               self.send(json.dumps(data))
+        # parsing strings from browser
+        rq = ast.literal_eval(request)
+        
+        # answer dictionary object
+        data = {}          
+        
+        if 'getFileList' in rq['request'] :
+            # echo given request
+            data['requested'] = rq['request']
             
-           elif 'saveFile' in rq['request']:
+            # read all files paths from user directories
+            data['data'] = WeioFiles.scanFolders()
 
-               # echo given request
-               data['requested'] = rq['request']
-
-               # don't echo given data to spare unnecessary communication, just return name 
-               fileInfo = rq['data']
-               data['requestedData'] = fileInfo['name']
-
-               pathname = fileInfo['path']
-               rawData = fileInfo['data']
-               
-               #print(pathname + " " + rawData)
-               ret = WeioFiles.saveRawContentToFile(pathname, rawData)
-               
-               data['status'] = fileInfo['name'] + " is saved!"
-               self.send(json.dumps(data))
-               
-           elif 'play' in rq['request']:
-               
-               
-               processName = './userProjects/myFirstProject/weio_main.py'
-
-               #launch process
+            # notify what is happening at this moment
+            data['status'] = "I'm ready, gimme some awesome code!"
+            fileList = data 
             
-               weio_main = tornado_subprocess.Subprocess(self.on_subprocess_result, args=['python', processName])
-               weio_main.start()
-               
-               print("weio_main indipendent process launching...")
-               
-               # classic blocking method without vukasin tornado-subprocess
-               # self.pipe = subprocess.Popen(['python', '-u', processName],
-               #                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-               #                ioloop.IOLoop.instance().add_callback(self.on_subprocess_result)
-               #                
-               #                self.runningState = ioloop.PeriodicCallback(self.checkProcessPlayState, 1000)
-               #                self.runningState.start()
-               #                
-               
-               #####################################
-               # open UNIX DOMAIN SOCKET
-               #####################################
-               
-               # TODO pass type of socket in constructor
-               sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM, 0)
-               sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-               sock.setblocking(0)
-               server_address = "uds_weio_mainStdOut"
+            #sending
+            self.send(json.dumps(data))
+            
+        elif 'getFile' in rq['request'] :
+            # echo given request
+            data['requested'] = rq['request']
 
-               # Make sure the socket does not already exist
-               try:
-                   os.unlink(server_address)
-               except OSError:
-                   if os.path.exists(server_address):
-                       raise
+            # echo given data
+            data['requestedData'] = rq['data']
+            
+            fileInfo = rq['data']
+            pathname = fileInfo['path']
+            
+            rawFile = WeioFiles.getRawContentFromFile(pathname)
+            
+            fileInfo['data'] = rawFile
+            data['data'] = fileInfo
 
-               sock.bind(server_address)
-               # how many connections I can accept
-               sock.listen(10)
-               
-               ioloopObj = ioloop.IOLoop.instance()
-               
-               callback = functools.partial(self.socket_connection_ready, sock)
-               ioloopObj.add_handler(sock.fileno(), callback, ioloopObj.READ)
-               
-               data['requestedData'] = rq['request']
-               data['status'] = "weio_main.py is running!"
-               self.send(json.dumps(data))
-               
-           elif 'stop' in rq['request']:
-                              
-               weio_main.cancel()
-               data = {}
-               data['serverPush'] = 'stopped'
-               data['status'] = "weio_main.py stopped!"
-               self.send(json.dumps(data))
-               
-           elif 'storeProjectPreferences' in rq['request']:
-               projectStore = rq['data']
-               
-               print(rq['data'])
-               
-               # echo given request
-               data['requested'] = rq['request']
-               data['status'] = "Your project is saved"
-               self.send(json.dumps(data))
-               
-           elif 'runPreview' in rq['request']:
-               # echo given request
-               data['requested'] = rq['request']
-               data['status'] = "Entering preview mode"
-               self.send(json.dumps(data))
-               
-               
+            self.send(json.dumps(data))
+            
+        elif 'saveFile' in rq['request']:
+            # echo given request
+            data['requested'] = rq['request']
+
+            # don't echo given data to spare unnecessary communication, just return name 
+            fileInfo = rq['data']
+            data['requestedData'] = fileInfo['name']
+
+            pathname = fileInfo['path']
+            rawData = fileInfo['data']
+            
+            #print(pathname + " " + rawData)
+            ret = WeioFiles.saveRawContentToFile(pathname, rawData)
+            
+            data['status'] = fileInfo['name'] + " is saved!"
+            self.send(json.dumps(data))
+
+            
+        elif 'play' in rq['request']:
+            """ This is where all the magic happens.
+
+                "Play" button will spawn a new subprocess
+                which will execute users program written in the editor.
+                This subprocess will communicate with Tornado wia non-blocking pipes,
+                so that Tornado can simply transfer subprocess's `stdout` and `stderr`
+                to the client via WebSockets. """
+                    
+            
+            processName = './userProjects/myFirstProject/weio_main.py'
+
+            #launch process
+            
+            #weio_main = tornado_subprocess.Subprocess(self.on_subprocess_result, args=['python', processName])
+            #weio_main.start()
+
+
+            
+            print("weio_main indipendent process launching...")
+            
+            # classic blocking method without vukasin tornado-subprocess
+            # self.pipe = subprocess.Popen(['python', '-u', processName],
+            #                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            #                ioloop.IOLoop.instance().add_callback(self.on_subprocess_result)
+            #                
+            #                self.runningState = ioloop.PeriodicCallback(self.checkProcessPlayState, 1000)
+            #                self.runningState.start()
+            #                
+            
+            #####################################
+            # open UNIX DOMAIN SOCKET
+            #####################################
+            
+            # TODO pass type of socket in constructor
+            sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM, 0)
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            sock.setblocking(0)
+            server_address = "uds_weio_mainStdOut"
+
+            # Make sure the socket does not already exist
+            try:
+                os.unlink(server_address)
+            except OSError:
+                if os.path.exists(server_address):
+                    raise
+
+            sock.bind(server_address)
+            # how many connections I can accept
+            sock.listen(10)               
+
+
+            #subprocess.call("python " + processName, shell=True)
+            self.pipe = p = subprocess.Popen(['python', '-u', processName], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+
+
+            
+            ioloopObj = ioloop.IOLoop.instance()
+            
+            #callback = functools.partial(self.socket_connection_ready, sock)
+            callback = functools.partial(self.weio_main_handler, data)
+            #ioloopObj.add_handler(sock.fileno(), callback, ioloopObj.READ)
+            ioloopObj.add_handler(p.stdout.fileno(), callback, ioloopObj.READ)
+
+
+            
+            # Inform client the we run subprocess
+            data['requestedData'] = rq['request']
+            data['status'] = "weio_main.py is running!"
+            self.send(json.dumps(data))
+            
+        elif 'stop' in rq['request']:
+                            
+            weio_main.cancel()
+            data = {}
+            data['serverPush'] = 'stopped'
+            data['status'] = "weio_main.py stopped!"
+            self.send(json.dumps(data))
+            
+        elif 'storeProjectPreferences' in rq['request']:
+            projectStore = rq['data']
+            
+            print(rq['data'])
+            
+            # echo given request
+            data['requested'] = rq['request']
+            data['status'] = "Your project is saved"
+            self.send(json.dumps(data))
+            
+        elif 'runPreview' in rq['request']:
+            # echo given request
+            data['requested'] = rq['request']
+            data['status'] = "Entering preview mode"
+            self.send(json.dumps(data))
+
+
+    def weio_main_handler(self, data, fd, events):
+        line = self.pipe.stdout.readline()
+        if line :
+            # parse incoming data
+            #stdout = line.rstrip()
+            stdout = line
+            print(stdout)
+    
+            #pack and go
+            data = {}
+    
+            data['serverPush'] = 'stdout'
+            data['data'] = stdout
+    
+            # TODO, send this only once, at the beginning
+            data['status'] = "Check output console"
+    
+            # this is raw output, some basic parsing is needed in javascript \n etc...
+            self.send(json.dumps(data))
+
+
+        if self.pipe.poll() is not None :
+            """ Child is terminated """
+            print "Child has terminated - removing handler"
+            ioloop.IOLoop.instance().remove_handler(self.pipe.stdout.fileno())
+            return
+            
+            
     def socket_connection_ready(self, sock, fd, events):
-       global stream
+        global stream
 
-       print "CONNECTION READY"
-       while True:
-           print "AAA"
-           try:
-               connection, address = sock.accept()
-               print "client connected to UNIX domain socket"
-           except socket.error, e:
-               print "HERE"
-               if e[0] not in (errno.EWOULDBLOCK, errno.EAGAIN):
-                   raise
-               return
-           connection.setblocking(0)
-           global stream
-           stream = iostream.IOStream(connection)
-          
-           stream.read_until_close(self.socket_on_close, self.socket_on_headers)
-          
-           
+        print "CONNECTION READY"
+        while True:
+            print "AAA"
+            try:
+                connection, address = sock.accept()
+                print "client connected to UNIX domain socket " + address
+            except socket.error, e:
+                print "HERE"
+                if e[0] not in (errno.EWOULDBLOCK, errno.EAGAIN):
+                    raise
+                return
+            
+            connection.setblocking(0)
+
+            try:
+                print >>sys.stderr, 'connection from', address
+
+                # Receive the data in small chunks and retransmit it
+                while True:
+                    data = connection.recv(16)
+                    print >>sys.stderr, 'received "%s"' % data
+
+                    if not data:
+                        print >>sys.stderr, 'no more data from', address
+                        break
+            
+            finally:
+                # Clean up the connection
+                connection.close()
+
+        #global stream
+        #stream = iostream.IOStream(connection)
+        
+        #stream.read_until_close(self.socket_on_close, self.socket_on_headers)
+        
+        
     def socket_on_headers(self, msg):
-       print "-> ENTER on_headers()"
-       
-       # parse incoming data
-       stdout = msg.rstrip()
-       print(stdout)
-       
-       #pack and go
-       data = {}
-       
-       data['serverPush'] = 'stdout'
-       data['data'] = stdout
-       
-       # TODO, send this only once, at the beginning
-       data['status'] = "Check output console"
-       
-       # this is raw output, some basic parsing is needed in javascript \n etc...
-       self.send(json.dumps(data))
-       
-       print "<- EXIT on_headers()"
+        print "-> ENTER on_headers()"
+        
+        # parse incoming data
+        stdout = msg.rstrip()
+        print(stdout)
+        
+        #pack and go
+        data = {}
+        
+        data['serverPush'] = 'stdout'
+        data['data'] = stdout
+        
+        # TODO, send this only once, at the beginning
+        data['status'] = "Check output console"
+        
+        # this is raw output, some basic parsing is needed in javascript \n etc...
+        self.send(json.dumps(data))
+        
+        print "<- EXIT on_headers()"
 
     def socket_on_close(self, data):
-       # here error happens and socket will be closed
-       
-       print "-> ENTER on_close()"
-       
-       print(data.rstrip())
-
-           
-       global stream
-       stream.close()
-       
-       print "closed socket"
-       print "<- EXIT on_close()"
-           
-    def on_subprocess_result(self, status, stdout, stderr, has_timed_out ):
+        # here error happens and socket will be closed
         
+        print "-> ENTER on_close()"
+        
+        print(data.rstrip())
+
+            
+        global stream
+        stream.close()
+        
+        print "closed socket"
+        print "<- EXIT on_close()"
+        
+
+
+###########################
+###########################
+###########################
+    def OLD_on_subprocess_result(self, status, stdout, stderr, has_timed_out ):
         data = {}
         
         print status, stdout, stderr
