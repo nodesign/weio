@@ -1,0 +1,541 @@
+/**
+*
+* WEIO Web Of Things Platform
+* Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
+* All rights reserved
+*
+*               ##      ## ######## ####  #######  
+*               ##  ##  ## ##        ##  ##     ## 
+*               ##  ##  ## ##        ##  ##     ## 
+*               ##  ##  ## ######    ##  ##     ## 
+*               ##  ##  ## ##        ##  ##     ## 
+*               ##  ##  ## ##        ##  ##     ## 
+*                ###  ###  ######## ####  #######
+*
+*                    Web Of Things Platform
+*
+* WEIO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* WEIO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+* 
+* This file is part of WEIO.
+*
+* Authors : 
+* Uros PETREVSKI <uros@nodesign.net>
+* Drasko DRASKOVIC <drasko.draskovic@gmail.com>
+*
+**/
+@font-face {
+  font-family: "open_sans";
+  src: url('../../customFonts/OpenSans-Light.ttf');
+}
+body {
+  background: #e6e6e6;
+  height: 100%;
+}
+a {
+  color: #145f85;
+}
+.label {
+  text-shadow: none;
+  font-weight: normal;
+}
+.accordion-group {
+  background: white;
+  margin-bottom: 5px;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.04);
+  border-color: #dadada;
+  border-radius: 2px;
+}
+.accordion-heading {
+  display: block;
+  position: relative;
+}
+.accordion-heading a {
+  font-weight: bold;
+  color: #585858;
+}
+.accordion-body.in.collapse {
+  min-height: 85%;
+}
+.actions {
+  display: block;
+  position: absolute;
+  right: 3px;
+}
+.actions #saveButton {
+  margin: 10px 5px;
+}
+/* MAIN HEADER NAV BAR */
+.navbar-inner {
+  min-height: 50px;
+  background: white;
+  box-shadow: none;
+}
+.navbar-inner .container {
+  min-height: 50px;
+}
+.navbar .brand {
+  margin-left: -8px;
+  margin-top: 4px;
+}
+.navbar-static-top .container,
+.navbar-fixed-top .container,
+.navbar-fixed-bottom .container {
+  width: 100%;
+}
+.navbar .nav {
+  width: 50%;
+  position: fixed;
+  left: 185px;
+  display: inline-block;
+  float: left;
+}
+.navbar .nav li.dropdown {
+  font-size: 20px;
+  line-height: 28px;
+  text-shadow: 0px 1px 0px #ffffff;
+}
+.navbar .nav li.dropdown .dropdown-menu {
+  font-size: 13px;
+  line-height: 18px;
+}
+.navbar .nav li.dropdown .caret {
+  top: 5px;
+  position: relative;
+}
+.navbar .btn,
+.navbar .btn-group {
+  display: inline-block;
+  margin-top: 10px;
+  margin-left: 2.5px;
+  margin-right: 4px;
+  background: white;
+  border: 0;
+}
+.navbar-search {
+  margin-top: 5px;
+  margin-left: 2.5px;
+  margin-right: 2.5px;
+}
+#editorButton {
+  position: relative;
+  top: 0px;
+}
+#previewButton {
+  position: relative;
+  top: 2px;
+  left: 2px;
+}
+#statusBar {
+  color: #666;
+  width: 18%;
+  height: 36px;
+  text-align: center;
+  position: fixed;
+  top: 5px;
+  left: 49%;
+  background-color: #d6d8d1;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.38) inset, 0px 1px 0px #ffffff;
+  text-shadow: 0px 1px 0px #ffffff;
+  border-radius: 2px;
+}
+#statusIcon {
+  margin-right: 8px;
+}
+#statusBarText {
+  margin-top: 14px;
+}
+/* IFRAME */
+.iframeContainer {
+  width: 100%;
+  height: 100%;
+  border: 0px;
+  margin-top: 39px;
+}
+/* EDITOR */
+.editor {
+  position: relative;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+#sidebar {
+  width: 200px;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  background: #000000;
+  z-index: 1000;
+  /*
+        #play {
+         display: block;
+         position: absolute;
+         left: 168px;
+         top: 12px;
+         width: 20px;
+         height: 22px;
+         text-decoration : none;
+         color : white;
+         margin: 0;
+         opacity: 0.7;
+         cursor: pointer;
+         &:hover {
+           opacity: 1; 
+         };
+        
+         }
+*/
+
+}
+#sidebar .bottom_buttons {
+  width: 100%;
+  height: 32px;
+  background-color: rgba(255, 255, 255, 0.2);
+  position: absolute;
+  bottom: 0px;
+  z-index: 1000;
+}
+#sidebar .bottom_buttons button {
+  display: block;
+  float: left;
+  color: white;
+  padding: 6px;
+  background: transparent;
+  border: 0;
+  font-size: 80%;
+  opacity: 0.5;
+}
+#sidebar .bottom_buttons button:hover {
+  opacity: 1;
+}
+#sidebar #hideLeftSidebar {
+  color: white;
+  display: block;
+  width: 23px;
+  height: 25px;
+  padding: 6px;
+  background: transparent;
+  border: 0;
+  position: relative;
+  top: 50%;
+  left: 89%;
+  z-index: 1000;
+}
+#sidebar #monitor {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 34px;
+  line-height: 34px;
+  background: rgba(0, 0, 0, 0.2);
+}
+#sidebar #monitor aside {
+  color: #999;
+  padding-left: 0px;
+  float: left;
+}
+#sidebar #monitor #status {
+  display: block;
+  height: 10px;
+  width: 10px;
+  border-radius: 10px;
+  background-color: #2ac74f;
+  float: left;
+  margin: 12px 8px;
+  text-indent: -1000em;
+}
+#sidebar #monitor #parameters {
+  position: absolute;
+  right: 8px;
+  bottom: 12px;
+  width: 20px;
+  height: 22px;
+  /*background: url(../img/bt_parametres.png) no-repeat 2px 0px;
+            text-indent: -1000em;*/
+
+  opacity: 0.3;
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
+#sidebar #monitor #parameters:hover {
+  opacity: 1;
+}
+#main_container {
+  height: 100%;
+  position: fixed;
+  padding: 58px 0px;
+  padding-left: 200px;
+}
+#main_container #sidebarConsole {
+  color: #ececec;
+  font-size: 0.9em;
+  width: 40%;
+  height: 100%;
+  float: right;
+  position: relative;
+  top: -15px;
+  right: 0;
+  background: #525252;
+  z-index: 999;
+  padding: 0;
+  box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.3) inset, -1px 0px 0px #ffffff;
+}
+#main_container #sidebarConsole #consoleTitle {
+  position: relative;
+  top: 0px;
+  color: #333333;
+  padding-left: 12px;
+  font-size: 20px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+#main_container #sidebarConsole #hideRightSidebar {
+  color: white;
+  display: block;
+  width: 23px;
+  height: 25px;
+  background: transparent;
+  border: 0;
+  position: relative;
+  top: 50%;
+  left: 0%;
+  z-index: 1000;
+}
+#main_container #sidebarConsole #consoleOutput {
+  display: block;
+  height: 100%;
+  overflow: auto;
+  padding: 15px;
+}
+#main_container #sidebarConsole #trashConsole {
+  color: white;
+  background: transparent;
+  border: 0;
+  position: relative;
+  top: 0px;
+  float: right;
+  z-index: 1000;
+  opacity: 0.5;
+}
+#main_container #sidebarConsole #trashConsole:hover {
+  opacity: 1;
+}
+#main_container #sidebarConsole #doc {
+  width: 93%;
+  height: 40px;
+  background-color: white;
+  position: absolute;
+  bottom: 40px;
+  z-index: 2000;
+  box-shadow: 0px 1px 20px rgba(0, 0, 0, 0.3);
+  padding-top: 2px;
+}
+#main_container #sidebarConsole #doc p {
+  position: relative;
+  top: 8px;
+  color: #999;
+  padding-left: 12px;
+  font-size: 20px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+#main_container #widget_zone {
+  width: 94%;
+  padding: 25px;
+  padding-right: 12px;
+  padding-top: 0px;
+  height: 100%;
+  float: right;
+}
+#main_container #widget_zone .console {
+  border-color: #949494;
+  -webkit-border-radius: 4px !important;
+  -moz-border-radius: 4px !important;
+  border-radius: 4px !important;
+}
+#main_container #widget_zone .console .accordion-heading {
+  background-color: #747474;
+}
+#main_container #widget_zone .console .accordion-heading a {
+  color: white;
+}
+#main_container #widget_zone .console .accordion-body {
+  background-color: #585858;
+  color: #cacaca;
+}
+#coding_zone {
+  min-width: 56%;
+  height: 100%;
+  margin-top: 10px;
+  float: left;
+  padding: 0 2%;
+}
+#closeButton {
+  display: block;
+  position: relative;
+  float: right;
+  top: -38px;
+  margin: 10px;
+  opacity: 0.7;
+  cursor: pointer;
+  text-decoration: none;
+}
+#closeButton:hover {
+  opacity: 1;
+}
+#playStopButton {
+  display: block;
+  position: relative;
+  float: left;
+  top: -38px;
+  margin: 10px;
+  /*opacity: 0.7;*/
+
+  cursor: pointer;
+  text-decoration: black;
+  z-index: 1000;
+}
+#playStopButton:hover {
+  opacity: 1;
+}
+#playButton {
+  display: block;
+  position: relative;
+  float: center;
+  /*margin: 10px;*/
+
+  margin-left: 184px;
+  margin-top: -22px;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+  z-index: 1000;
+}
+#playButton:hover {
+  opacity: 1;
+}
+.fullheight {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+/* CSS Tree menu styles */
+ol.tree {
+  padding: 0;
+  width: 200px;
+  margin-left: 0px;
+  margin-top: 34px;
+  font-size: 12px;
+}
+li {
+  position: relative;
+  margin-left: 0px;
+  list-style: none;
+}
+li.file {
+  margin-left: -1px !important;
+}
+li.file a {
+  background: url(../../img/document.png) 0 0 no-repeat;
+  color: #c8c8c8;
+  padding-left: 21px;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 2px;
+}
+li.file a:hover {
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+}
+li.file i {
+  position: relative;
+  right: 10px;
+  float: right;
+  top: -18px;
+  color: #c8c8c8;
+  display: none;
+}
+li.file i:hover {
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+}
+li.file:hover i {
+  display: block;
+}
+li.file a[href*='.pdf'] {
+  background: url(../../img/document.png) 0 0 no-repeat;
+}
+li.file a[href*='.html'] {
+  background: url(../../img/document.png) 0 0 no-repeat;
+}
+li.file a[href$='.css'] {
+  background: url(../../img/document.png) 0 0 no-repeat;
+}
+li.file a[href$='.js'] {
+  background: url(../../img/document.png) 0 0 no-repeat;
+}
+li input {
+  position: absolute;
+  left: 0;
+  margin-left: 0;
+  opacity: 0;
+  z-index: 1000;
+  cursor: pointer;
+  height: 1em;
+  width: 1em;
+  top: 0;
+}
+li input + ol {
+  background: 40px 0 no-repeat;
+  margin: -0.938em 0 0 -44px;
+  /* 15px */
+
+  height: 1em;
+}
+li input + ol > li {
+  display: none;
+  margin-left: -14px !important;
+  padding-left: 1px;
+}
+li label {
+  background: url(../../img/folder-horizontal.png) 7px 4px no-repeat;
+  cursor: pointer;
+  display: block;
+  padding: 1px;
+  padding-left: 28px;
+  color: white;
+  font-weight: bold;
+  font-size: 10px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+li input:checked + ol {
+  background: 40px 5px no-repeat;
+  margin: -1.25em 0 15px -44px;
+  /* 20px */
+
+  padding: 1.563em 0 0 60px;
+  height: auto;
+}
+li input:checked + ol > li {
+  display: block;
+  margin: 0 0 6px;
+  /* 2px */
+}
+li input:checked + ol > li:last-child {
+  margin: 0 0 6px;
+  /* 1px */
+}

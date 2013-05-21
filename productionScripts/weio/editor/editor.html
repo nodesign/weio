@@ -1,0 +1,384 @@
+<!--
+
+WEIO Web Of Things Platform
+Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
+All rights reserved
+
+##      ## ######## ####  #######  
+##  ##  ## ##        ##  ##     ## 
+##  ##  ## ##        ##  ##     ## 
+##  ##  ## ######    ##  ##     ## 
+##  ##  ## ##        ##  ##     ## 
+##  ##  ## ##        ##  ##     ## 
+###  ###  ######## ####  #######
+
+Web Of Things Platform
+
+WEIO is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+WEIO is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+This file is part of WEIO.
+
+Authors : 
+Uros PETREVSKI <uros@nodesign.net>
+Drasko DRASKOVIC <drasko.draskovic@gmail.com>
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+
+
+    <title>Weio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="bootstrap/less/bootstrap.css" rel="stylesheet" type="text/css">
+    <!-- weio Editor API -->
+
+
+    <script src="jquery/jquery-2.0.0.min.js"></script>
+
+
+    <script src="bootstrap/js/bootstrap.js"></script>
+    <script src="bootstrap/js/bootstrap-collapse.js"></script>
+    <script src="bootstrap/js/bootstrap-transition.js"></script>
+    
+
+    <!-- Font awesome -->
+    <link rel="stylesheet" href="Font-Awesome/css/font-awesome.min.css">
+
+    <!-- Pure JS templating engine -->
+    <script src="pure/pure_min.js"></script>
+
+    <!-- Ace code editor engine -->
+    <script src="ace/ace.js" type="text/javascript" charset="utf-8"></script>
+
+    <!-- SockJS websocket library -->
+    <script src="sockJS/sockjs-0.3.min.js"></script>
+
+     <!-- SockJS websocket library -->
+    <script src="weio/drasko_editorApi.js"></script>
+
+  <!-- main javascript code is at the end of this file-->
+    
+
+</head>
+<body>
+    
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+
+                <a class="brand" href="#"><img src="./img/weioLogo.png"></img> <span class="label">Alpha</span> </a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" id="projectTitle" data-toggle="dropdown">MyFirstProject</a>
+                            <ul class="dropdown-menu">
+                                <li><a tabindex="-1" href="#">Create new project</a></li>
+                                <li class="divider"></li>
+                                <li><a tabindex="-1" href="#">MyFirstProject</a></li>
+
+                                <li class="divider"></li>
+
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">Examples</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a tabindex="-1" href="#">iPhoneHelloWorld</a></li>
+                                        <li><a tabindex="-1" href="#">Oscilloscope</a></li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                        <li><a href="javascript:runPreview();"><i class="icon-eye-open icon-2x" id="editorButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Preview" ></i></a></li>
+                        <li class="active"><a href="/editor"><i class="icon-edit icon-2x" id="previewButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Edit" ></i></a></li>
+
+                    </ul>
+
+                    <span class="label" id="statusBar">
+                        <i id="statusIcon" ></i>
+                    </span>
+
+
+                    <div class="user pull-right">
+                        <!-- <a class="btn" id="statusBar" onclick="play()"> -->
+
+
+
+
+                            <div class="btn-group pull-right">
+                                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <i class="icon-user"></i> root	
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#"><i class="icon-wrench"></i> Settings</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#"><i class="icon-share"></i> Logout</a></li>
+                                </ul>
+                            </div>
+
+
+                            <div class="btn-group pull-right">
+                                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <i class="icon-signal"></i>
+                                    AP WEIO
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a tabindex="-1" href="#">Refresh wireless</a></li>    
+                                </ul>
+                            </div>
+                            <!--   <form class="navbar-search pull-right">
+                            <input type="text" class="search-query" placeholder="Search in project">
+                            </form> -->
+
+                        </div>
+
+                    </div>
+                </div><!--/.nav-collapse -->
+            </div>
+        </div>
+    </div> <!-- /Fixed navbar -->
+
+
+    <div id="sidebar">
+        
+        
+        
+        
+        <button id="hideLeftSidebar" class="open">
+            <i id="leftSidebarIcon" class="icon-chevron-left"></i>
+        </button>
+
+        
+
+<!-- FILE TREE TEMPLATE STARTS HERE -->
+<ol class="tree">
+    <li>
+        <label for="folder1">MyFirstProject</label> <input type="checkbox" id="folder1" checked />
+        <!--<a href="javascript:play();" role="button" id="playButton"><i class="icon-play-circle icon-large" ></i></a> -->
+        <!--	<a href="javascript:stop();" role="button" id="stopButton"><i class="icon-stop-circle icon-large" ></i></a> -->
+        <ol>
+            <li class="file">
+                
+                <a></a>
+                <i class="icon-remove" id="deleteFileButton" href="#deleteFile" role="button" data-toggle="modal"></i>
+                
+            </li>
+            
+        </ol>
+    </li>
+</ol>
+<div class="bottom_buttons">
+<button id="addNewFile" class="open">
+    <i class="icon-plus-sign icon-2x"></i>
+</button>
+<button id="exportFile" class="open">
+    <i class="icon-upload icon-2x"></i>
+</button>
+</div class="bottom_buttons">
+
+</div id="sidebar">
+
+
+<!-- Modal DELETE FILE-->
+<div id="deleteFile" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalDeleteFileLabel"></h3>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure that you want to delete this file?</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+        <button class="btn btn-primary" onclick="deleteFile()" data-dismiss="modal">Yes</button>
+    </div>
+</div>
+<!-- END Modal DELETE FILE-->
+
+
+
+
+
+<!-- FILE TREE TEMPLATE ENDS HERE -->	
+
+
+
+<div id="main_container">
+
+    <div id="coding_zone">
+
+<!-- EDITOR TEMPLATE STARTS HERE -->
+<div class="accordion" id="accordion2">
+    <div class="accordion-group" >
+
+        <div class="accordion-heading" id="template">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne"></a>
+
+            <!-- Button to close strip -->
+            <div class="actions">
+
+                <a role="button" id="playStopButton" style="display:none;"><i id="playStopIcon" class="icon-play" onclick="play()"></i></a>
+                <a role="button" id="closeButton"><i class="icon-remove"></i></a>
+                <!-- <a href="#closeFileModal" role="button" id="playButton"><i class="icon-play" ></i></a> -->
+            </div>
+
+        </div>
+        <div class="accordion-body collapse in codebox" id="collapseOne">
+            <div class="accordion-inner code_wrap">
+                <div class="editor"></div>
+            </div>
+        </div>
+    </div>
+</div>	
+
+<!-- EDITOR TEMPLATE ENDS HERE -->		
+
+
+
+</div id="coding_zone">
+
+<div id="sidebarConsole">
+    <button id="hideRightSidebar" class="open">
+        <i id="rightSidebarIcon" class="icon-chevron-right"></i>
+    </button>
+
+    <div id="widget_zone">
+        
+        <button id="trashConsole" class="open" onclick="clearConsole()">
+            <i class="icon-trash"></i>
+        </button>
+        
+        <p id="consoleTitle">Console</p>
+        
+        <p id="consoleOutput"></p>
+        
+         <div id="doc">
+            <p>Documentation</p>
+            <article>Text</article>
+        </div>
+
+    </div>
+</div>
+</div id="main_container">
+
+</body>
+
+<!--Sidebar Resize animation START -->
+<script>
+
+
+
+$("#hideLeftSidebar").click(function(){
+
+var viewportWidth2 = $(window).width();
+
+    if ($(this).is(".open")) {
+
+    
+
+
+        $( "#main_container" ).animate( { 'padding-left': "20px" }, { queue: false, duration: 100 });
+        $( "#main_container" ).animate( { 'width': viewportWidth2 - 20 }, { queue: false, duration: 100 });
+       
+
+        $( "#sidebar" ).animate( { left: "-180px" }, { queue: false, duration: 100 });
+
+
+        $( "#leftSidebarIcon" ).attr("class", "icon-chevron-right");
+        $(this).attr('class', 'closed');
+    } 
+    else if ($(this).is(".closed")) {
+
+        
+        $( "#main_container" ).animate( { 'padding-left': "200px" }, { queue: false, duration: 100 });
+        $( "#main_container" ).animate( { 'width': viewportWidth2 - 200 }, { queue: false, duration: 100 });
+
+
+        $( "#sidebar" ).animate( { left: "0px" }, { queue: false, duration: 100 });
+
+        $( "#leftSidebarIcon" ).attr("class", "icon-chevron-left");
+        $(this).attr('class', 'open');
+    }
+
+});
+
+
+$("#hideRightSidebar").click(function(){
+
+    if ($(this).is(".open")) {
+
+        if ($('#hideLeftSidebar').hasClass('open')) {
+            $( "#coding_zone" ).animate( { width: "93%" }, { queue: false, duration: 100 });
+        } else {
+            $( "#coding_zone" ).animate( { width: "93%" }, { queue: false, duration: 100 });
+        }
+
+        $( "#sidebarConsole" ).animate( { width: "3%" }, { queue: false, duration: 100 });
+
+
+        $( "#rightSidebarIcon" ).attr("class", "icon-chevron-left");
+        $(this).attr('class', 'closed');
+        
+
+
+        $( "#trashConsole" ).css("display", "none");
+        $( "#consoleOutput" ).css("display", "none");
+        $( "#doc" ).css("display", "none");
+        $( "#consoleTitle" ).css("display", "none");
+        
+        
+    }
+
+    else if ($(this).is(".closed")) {
+
+        if ($('#hideLeftSidebar').hasClass('open')) {
+            $( "#coding_zone" ).animate( { width: "55%" }, { queue: false, duration: 100 });
+        } else {
+            $( "#coding_zone" ).animate( { width: "55%" }, { queue: false, duration: 100 });
+        }
+
+        $( "#sidebarConsole" ).animate( { width: "40%" }, { queue: false, duration: 100 });
+
+
+
+        $( "#rightSidebarIcon" ).attr("class", "icon-chevron-right");
+        $(this).attr('class', 'open');
+
+
+        
+        $( "#trashConsole" ).css("display", "block");
+        $( "#consoleOutput" ).css("display", "block");
+        $( "#doc" ).css("display", "block");
+        $( "#consoleTitle" ).css("display", "block");
+    }
+    
+
+});
+
+</script>
+
+<!--Sidebar Resize animation END-->
+
+</html>

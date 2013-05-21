@@ -34,46 +34,38 @@
 #
 ###
 
-# -*- coding: utf-8 -*-
-import subprocess
-import os, signal
-import socket
-import functools
-import errno
-import os
-from tornado import web, ioloop, iostream
-
-from sockjs.tornado import SockJSRouter, SockJSConnection
+# configuration file
 import json
-import ast
-
-from weioLib import weio_gpio
-from weioLib import weio_globals
 
 
-class WeioAPIBridgeHandler(SockJSConnection):
+def getConfiguration():
+    inputFile = open("config.weio", 'r')
+    rawData = inputFile.read()
+    inputFile.close()
+    return json.loads(rawData)
+
+
+def saveConfiguration(conf):
+    inputFile = open("config.weio", 'w')
+    print(inputFile)
+    ret = inputFile.write(json.dumps(conf, indent=4, sort_keys=True))
+    inputFile.close()
     
-    """Opens editor route."""
-    def on_open(self, data):
-        """On open asks weio for last saved project. List of files are scaned and sent to editor.
-        Only contents of weio_main.py is sent at first time"""
-        print "Opened WEIO API socket"
-        
-        
-        
-    def on_message(self, data):
-        self.serve(data)
-        
-    def serve(self, request) :
-        
-        rq = ast.literal_eval(request)
-        
-        if 'digitalWrite' in rq['request'] :
-            
-            ins = rq['data']
-            weio_gpio.digitalWrite(str(ins[0]), str(ins[1]))
-            #print ins
-            
-        elif 'pinMode' in rq['request'] :
-            ins = rq['data']
-            weio_gpio.digitalWrite(ins[0], ins[1])
+ 
+#example & test configuration 
+# weio_config = {}
+# weio_config['user_projects_path'] = 'userProjects/'
+# weio_config['last_opened_project'] = 'myFirstProject/'
+# weio_config['last_opened_files'] = ['index.html', 'weio_main.py']
+# weio_config['editor_html_path'] = 'editor/editor.html'
+# weio_config['preview_html_path'] = 'preview/preview.html'
+# weio_config['dependencies_path'] = 'clientDependencies'
+# weio_config['weio_lib_path'] = 'weioLib'
+# weio_config['absolut_root_path'] = '/tmp/weio'
+# weio_config['port'] = 8081
+# weio_config['ip'] = '0.0.0.0'
+# 
+# # 
+# saveConfiguration(weio_config)
+# a = getConfiguration()
+# print a['user_projects_path']

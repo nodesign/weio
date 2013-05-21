@@ -34,46 +34,56 @@
 #
 ###
 
-# -*- coding: utf-8 -*-
-import subprocess
-import os, signal
+# Weio client connects 
+from tornado import ioloop
+from tornado import iostream
 import socket
-import functools
-import errno
-import os
-from tornado import web, ioloop, iostream
+import time
+import sys
+sys.path.append(r'./');
 
-from sockjs.tornado import SockJSRouter, SockJSConnection
-import json
-import ast
+from weioLib import weio_globals, weio_gpio
 
-from weioLib import weio_gpio
-from weioLib import weio_globals
+# TODO don't use pickle
+import pickle
 
+def send_request():
+    pass
+    #stream.close()
+    #ioloop.IOLoop.instance().stop()
 
-class WeioAPIBridgeHandler(SockJSConnection):
+class StdOutputToSocket():
+    global out
+    out = {}
     
-    """Opens editor route."""
-    def on_open(self, data):
-        """On open asks weio for last saved project. List of files are scaned and sent to editor.
-        Only contents of weio_main.py is sent at first time"""
-        print "Opened WEIO API socket"
-        
-        
-        
-    def on_message(self, data):
-        self.serve(data)
-        
-    def serve(self, request) :
-        
-        rq = ast.literal_eval(request)
-        
-        if 'digitalWrite' in rq['request'] :
+    def write(self, msg):
+        global out
+        if "\n" in msg :
+            out['stdout'] = out['stdout'] + msg
+            stream.write(pickle.dumps(out))
+            #stream.write(json.dumps(out))
+        else :
+            out['stdout'] = msg
+         
+class StdErrToSocket():
+    global out
+    out = {}
+    
+    def write(self, msg):
+        global out
+        if "\n" in msg :
+            out['stdout'] = out['stdout'] + msg
+            stream.write(pickle.dumps(out))
+            #stream.write(json.dumps(out))
+        else :
+            out['stdout'] = msg
             
-            ins = rq['data']
-            weio_gpio.digitalWrite(str(ins[0]), str(ins[1]))
-            #print ins
             
-        elif 'pinMode' in rq['request'] :
-            ins = rq['data']
-            weio_gpio.digitalWrite(ins[0], ins[1])
+s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM, 0)
+stream = iostream.IOStream(s)
+stream.connect("uds_weio_main", send_request)
+
+sys.stdout = StdOutputToSocket()
+sys.stderr = StdErrToSocket()
+
+ioloop.IOLoop.instance().start()
