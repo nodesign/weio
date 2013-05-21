@@ -1,12 +1,4 @@
-    //var baseFiles = new SockJS(document.URL + '/baseFiles');
-    //var baseFiles = new WebSocket('ws://192.168.10.183:8081/' + 'editor/baseFiles');
-    var baseFiles = new SockJS('http://localhost:8081/' + 'editor/baseFiles');
-
-
-    
- 
-
-    // Global function. Can be recalled when adding a new stripe to recalculate max height value
+  // Global function. Can be recalled when adding a new stripe to recalculate max height value
     function update_height() {
 
         // Get windows size, get number of collapse elements and calculate maximum height to fill the column
@@ -35,7 +27,10 @@
         $('#main_container').css('width', finalwidth);
 
     }
-
+    
+    // SockJS object
+    var baseFiles = new SockJS('http://localhost:8081/editor/baseFiles');
+    
     // ace code editors are stored in this array
     var editors = [];
 
@@ -64,6 +59,18 @@
 
     // maximum lines in console
     var MAX_LINES_IN_CONSOLE = 1000;
+    
+        
+    $(window).load(function () {
+        
+ 
+    
+       baseFiles = new SockJS();
+
+
+      
+    });
+
 
     // first initialization and compilation of templates, compilation only occurs
     // once, here.
@@ -72,6 +79,9 @@
 
     $(document).ready(function () {
 
+    
+       
+        
         main_container_width();
 
         $(window).resize(function() {

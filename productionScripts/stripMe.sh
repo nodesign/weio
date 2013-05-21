@@ -157,19 +157,19 @@ rm weioStripped/clientDependencies/ace/worker-xquery.js
 sed 's/localhost:8081/weio.local:8081/' weioStripped/clientDependencies/weio/weioApi.js > out
 mv out weioStripped/clientDependencies/js/weioApi.js
 
-sed 's/localhost:8081/weio.local:8081/' weioStripped/editor/index.html > out
-mv out weioStripped/editor/index.html
+sed 's/localhost:8081/weio.local:8081/' weioStripped/editor/editor.html > out
+mv out weioStripped/editor/editor.html
 
 # rename to weio
 mv weioStripped/ weio
 
 # make tar archive 
-# tar -zcvf weioStripped.tar.gz weioStripped/
+tar -zcvf weioStripped.tar.gz weioStripped/
 
 # MAXIMUM COMPRESSION
-tar cf - weio/ | bzip2 -9 - > weioStripped.tar.bz2 
+#tar cf - weio/ | bzip2 -9 - > weioStripped.tar.bz2 
 
 # delete stripped folder
-rm -r weio/
+#rm -r weio/
 
 # to decompress type : tar -zxvf weioStripped.tar.gz

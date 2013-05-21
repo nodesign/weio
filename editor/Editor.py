@@ -36,7 +36,6 @@
 
 import subprocess
 import os, signal, sys
-import socket
 import functools
 import errno
 import os
@@ -154,42 +153,8 @@ class WeioEditorHandler(SockJSConnection):
 
             
             print("weio_main indipendent process launching...")
-            
-            # classic blocking method without vukasin tornado-subprocess
-            # self.pipe = subprocess.Popen(['python', '-u', processName],
-            #                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            #                ioloop.IOLoop.instance().add_callback(self.on_subprocess_result)
-            #                
-            #                self.runningState = ioloop.PeriodicCallback(self.checkProcessPlayState, 1000)
-            #                self.runningState.start()
-            #                
-            
-            #####################################
-            # open UNIX DOMAIN SOCKET
-            #####################################
-            
-            # TODO pass type of socket in constructor
-            sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM, 0)
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            sock.setblocking(0)
-            server_address = "uds_weio_mainStdOut"
-
-            # Make sure the socket does not already exist
-            try:
-                os.unlink(server_address)
-            except OSError:
-                if os.path.exists(server_address):
-                    raise
-
-            sock.bind(server_address)
-            # how many connections I can accept
-            sock.listen(10)               
-
-
             #subprocess.call("python " + processName, shell=True)
             self.pipe = p = subprocess.Popen(['python', '-u', processName], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-
-
             
             ioloopObj = ioloop.IOLoop.instance()
             
