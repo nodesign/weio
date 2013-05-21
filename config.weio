@@ -1,1 +1,15 @@
-{"weio_lib_path": "weioLib", "ip": "localhost", "dependencies_path": "clientDependencies/", "preview_html_path": "preview/preview.html", "last_opened_files": ["index.html", "weio_main.py"], "absolut_root_path": "/Users/uros/workNow/nodesign/weIO/weio", "last_opened_project": "myFirstProject/", "port": 8081, "user_projects_path": "userProjects/", "editor_html_path": "editor/editor.html"}
+{
+    "absolut_root_path": "/Users/uros/workNow/nodesign/weIO/weio", 
+    "dependencies_path": "clientDependencies/", 
+    "editor_html_path": "editor/editor.html", 
+    "ip": "localhost", 
+    "last_opened_files": [
+        "index.html", 
+        "weio_main.py"
+    ], 
+    "last_opened_project": "myFirstProject/", 
+    "port": 8081, 
+    "preview_html_path": "preview/preview.html", 
+    "user_projects_path": "userProjects/", 
+    "weio_lib_path": "weioLib"
+}
