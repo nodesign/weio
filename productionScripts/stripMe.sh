@@ -48,114 +48,114 @@ mkdir weioStripped
 rsync -av --exclude=".*" ../ weioStripped
 
 # strip uds_main
-rm weioStripped/uds_weio_main
+rm weioStripped/uds*
 
 # delete production scripts
 rm -r weioStripped/productionScripts
 
 # strip boostrap
-rm -r weioStripped/static/bootstrap/docs
-rm -r weioStripped/static/bootstrap/js/tests
-rm -r weioStripped/static/bootstrap/node_modules
-rm -r weioStripped/static/bootstrap/less/tests
-rm weioStripped/static/bootstrap/less/*.less
-rm weioStripped/static/bootstrap/*
+rm -r weioStripped/clientDependencies/bootstrap/docs
+rm -r weioStripped/clientDependencies/bootstrap/js/tests
+rm -r weioStripped/clientDependencies/bootstrap/node_modules
+rm -r weioStripped/clientDependencies/bootstrap/less/tests
+rm weioStripped/clientDependencies/bootstrap/less/*.less
+rm weioStripped/clientDependencies/bootstrap/*
 
 # font awesome
-rm -r weioStripped/static/Font-Awesome/docs
+rm -r weioStripped/clientDependencies/Font-Awesome/docs
 
 # ace
 
-rm weioStripped/static/ace/mode-abap.js
-rm weioStripped/static/ace/mode-asciidoc.js
-rm weioStripped/static/ace/mode-c_cpp.js
-rm weioStripped/static/ace/mode-c9search.js
-rm weioStripped/static/ace/mode-clojure.js
-rm weioStripped/static/ace/mode-coffee.js
-rm weioStripped/static/ace/mode-coldfusion.js
-rm weioStripped/static/ace/mode-csharp.js
-rm weioStripped/static/ace/mode-dart.js
-rm weioStripped/static/ace/mode-diff.js
-rm weioStripped/static/ace/mode-dot.js
-rm weioStripped/static/ace/mode-glsl.js
-rm weioStripped/static/ace/mode-golang.js
-rm weioStripped/static/ace/mode-groovy.js
-rm weioStripped/static/ace/mode-haml.js
-rm weioStripped/static/ace/mode-haxe.js
-rm weioStripped/static/ace/mode-jade.js
-rm weioStripped/static/ace/mode-java.js
-rm weioStripped/static/ace/mode-json.js
-rm weioStripped/static/ace/mode-jsp.js
-rm weioStripped/static/ace/mode-jsx.js
-rm weioStripped/static/ace/mode-latex.js
-rm weioStripped/static/ace/mode-less.js
-rm weioStripped/static/ace/mode-liquid.js
-rm weioStripped/static/ace/mode-lisp.js
-rm weioStripped/static/ace/mode-lua.js
-rm weioStripped/static/ace/mode-luapage.js
-rm weioStripped/static/ace/mode-lucene.js
-rm weioStripped/static/ace/mode-makefile.js
-rm weioStripped/static/ace/mode-markdown.js
-rm weioStripped/static/ace/mode-objectivec.js
-rm weioStripped/static/ace/mode-ocaml.js
-rm weioStripped/static/ace/mode-perl.js
-rm weioStripped/static/ace/mode-pgsql.js
-rm weioStripped/static/ace/mode-php.js
-rm weioStripped/static/ace/mode-powershell.js
-rm weioStripped/static/ace/mode-r.js
-rm weioStripped/static/ace/mode-rdoc.js
-rm weioStripped/static/ace/mode-rhtml.js
-rm weioStripped/static/ace/mode-ruby.js
-rm weioStripped/static/ace/mode-sass.js
-rm weioStripped/static/ace/mode-scad.js
-rm weioStripped/static/ace/mode-scala.js
-rm weioStripped/static/ace/mode-scss.js
-rm weioStripped/static/ace/mode-sh.js
-rm weioStripped/static/ace/mode-sql.js
-rm weioStripped/static/ace/mode-stylus.js
-rm weioStripped/static/ace/mode-svg.js
-rm weioStripped/static/ace/mode-tcl.js
-rm weioStripped/static/ace/mode-text.js
-rm weioStripped/static/ace/mode-textile.js
-rm weioStripped/static/ace/mode-typescript.js
-rm weioStripped/static/ace/mode-xml.js
-rm weioStripped/static/ace/mode-xquery.js
-rm weioStripped/static/ace/mode-yaml.js
-rm weioStripped/static/ace/theme-ambiance.js
-rm weioStripped/static/ace/theme-chaos.js
-rm weioStripped/static/ace/theme-chrome.js
-rm weioStripped/static/ace/theme-clouds_midnight.js
-rm weioStripped/static/ace/theme-clouds.js
-rm weioStripped/static/ace/theme-cobalt.js
-rm weioStripped/static/ace/theme-crimson_editor.js
-rm weioStripped/static/ace/theme-dawn.js
-rm weioStripped/static/ace/theme-dreamweaver.js
-rm weioStripped/static/ace/theme-eclipse.js
-rm weioStripped/static/ace/theme-github.js
-rm weioStripped/static/ace/theme-idle_fingers.js
-rm weioStripped/static/ace/theme-kr.js
-rm weioStripped/static/ace/theme-merbivore_soft.js
-rm weioStripped/static/ace/theme-merbivore.js
-rm weioStripped/static/ace/theme-mono_industrial.js
-rm weioStripped/static/ace/theme-monokai.js
-rm weioStripped/static/ace/theme-pastel_on_dark.js
-rm weioStripped/static/ace/theme-solarized_dark.js
-rm weioStripped/static/ace/theme-solarized_light.js
-rm weioStripped/static/ace/theme-tomorrow_night_blue.js
-rm weioStripped/static/ace/theme-tomorrow_night_bright.js
-rm weioStripped/static/ace/theme-tomorrow_night_eighties.js
-rm weioStripped/static/ace/theme-tomorrow_night.js
-rm weioStripped/static/ace/theme-tomorrow.js
-rm weioStripped/static/ace/theme-twilight.js
-rm weioStripped/static/ace/theme-vibrant_ink.js
-rm weioStripped/static/ace/theme-xcode.js
-rm weioStripped/static/ace/worker-coffee.js
-rm weioStripped/static/ace/worker-json.js
-rm weioStripped/static/ace/worker-xquery.js
+rm weioStripped/clientDependencies/ace/mode-abap.js
+rm weioStripped/clientDependencies/ace/mode-asciidoc.js
+rm weioStripped/clientDependencies/ace/mode-c_cpp.js
+rm weioStripped/clientDependencies/ace/mode-c9search.js
+rm weioStripped/clientDependencies/ace/mode-clojure.js
+rm weioStripped/clientDependencies/ace/mode-coffee.js
+rm weioStripped/clientDependencies/ace/mode-coldfusion.js
+rm weioStripped/clientDependencies/ace/mode-csharp.js
+rm weioStripped/clientDependencies/ace/mode-dart.js
+rm weioStripped/clientDependencies/ace/mode-diff.js
+rm weioStripped/clientDependencies/ace/mode-dot.js
+rm weioStripped/clientDependencies/ace/mode-glsl.js
+rm weioStripped/clientDependencies/ace/mode-golang.js
+rm weioStripped/clientDependencies/ace/mode-groovy.js
+rm weioStripped/clientDependencies/ace/mode-haml.js
+rm weioStripped/clientDependencies/ace/mode-haxe.js
+rm weioStripped/clientDependencies/ace/mode-jade.js
+rm weioStripped/clientDependencies/ace/mode-java.js
+rm weioStripped/clientDependencies/ace/mode-json.js
+rm weioStripped/clientDependencies/ace/mode-jsp.js
+rm weioStripped/clientDependencies/ace/mode-jsx.js
+rm weioStripped/clientDependencies/ace/mode-latex.js
+rm weioStripped/clientDependencies/ace/mode-less.js
+rm weioStripped/clientDependencies/ace/mode-liquid.js
+rm weioStripped/clientDependencies/ace/mode-lisp.js
+rm weioStripped/clientDependencies/ace/mode-lua.js
+rm weioStripped/clientDependencies/ace/mode-luapage.js
+rm weioStripped/clientDependencies/ace/mode-lucene.js
+rm weioStripped/clientDependencies/ace/mode-makefile.js
+rm weioStripped/clientDependencies/ace/mode-markdown.js
+rm weioStripped/clientDependencies/ace/mode-objectivec.js
+rm weioStripped/clientDependencies/ace/mode-ocaml.js
+rm weioStripped/clientDependencies/ace/mode-perl.js
+rm weioStripped/clientDependencies/ace/mode-pgsql.js
+rm weioStripped/clientDependencies/ace/mode-php.js
+rm weioStripped/clientDependencies/ace/mode-powershell.js
+rm weioStripped/clientDependencies/ace/mode-r.js
+rm weioStripped/clientDependencies/ace/mode-rdoc.js
+rm weioStripped/clientDependencies/ace/mode-rhtml.js
+rm weioStripped/clientDependencies/ace/mode-ruby.js
+rm weioStripped/clientDependencies/ace/mode-sass.js
+rm weioStripped/clientDependencies/ace/mode-scad.js
+rm weioStripped/clientDependencies/ace/mode-scala.js
+rm weioStripped/clientDependencies/ace/mode-scss.js
+rm weioStripped/clientDependencies/ace/mode-sh.js
+rm weioStripped/clientDependencies/ace/mode-sql.js
+rm weioStripped/clientDependencies/ace/mode-stylus.js
+rm weioStripped/clientDependencies/ace/mode-svg.js
+rm weioStripped/clientDependencies/ace/mode-tcl.js
+rm weioStripped/clientDependencies/ace/mode-text.js
+rm weioStripped/clientDependencies/ace/mode-textile.js
+rm weioStripped/clientDependencies/ace/mode-typescript.js
+rm weioStripped/clientDependencies/ace/mode-xml.js
+rm weioStripped/clientDependencies/ace/mode-xquery.js
+rm weioStripped/clientDependencies/ace/mode-yaml.js
+rm weioStripped/clientDependencies/ace/theme-ambiance.js
+rm weioStripped/clientDependencies/ace/theme-chaos.js
+rm weioStripped/clientDependencies/ace/theme-chrome.js
+rm weioStripped/clientDependencies/ace/theme-clouds_midnight.js
+rm weioStripped/clientDependencies/ace/theme-clouds.js
+rm weioStripped/clientDependencies/ace/theme-cobalt.js
+rm weioStripped/clientDependencies/ace/theme-crimson_editor.js
+rm weioStripped/clientDependencies/ace/theme-dawn.js
+rm weioStripped/clientDependencies/ace/theme-dreamweaver.js
+rm weioStripped/clientDependencies/ace/theme-eclipse.js
+rm weioStripped/clientDependencies/ace/theme-github.js
+rm weioStripped/clientDependencies/ace/theme-idle_fingers.js
+rm weioStripped/clientDependencies/ace/theme-kr.js
+rm weioStripped/clientDependencies/ace/theme-merbivore_soft.js
+rm weioStripped/clientDependencies/ace/theme-merbivore.js
+rm weioStripped/clientDependencies/ace/theme-mono_industrial.js
+rm weioStripped/clientDependencies/ace/theme-monokai.js
+rm weioStripped/clientDependencies/ace/theme-pastel_on_dark.js
+rm weioStripped/clientDependencies/ace/theme-solarized_dark.js
+rm weioStripped/clientDependencies/ace/theme-solarized_light.js
+rm weioStripped/clientDependencies/ace/theme-tomorrow_night_blue.js
+rm weioStripped/clientDependencies/ace/theme-tomorrow_night_bright.js
+rm weioStripped/clientDependencies/ace/theme-tomorrow_night_eighties.js
+rm weioStripped/clientDependencies/ace/theme-tomorrow_night.js
+rm weioStripped/clientDependencies/ace/theme-tomorrow.js
+rm weioStripped/clientDependencies/ace/theme-twilight.js
+rm weioStripped/clientDependencies/ace/theme-vibrant_ink.js
+rm weioStripped/clientDependencies/ace/theme-xcode.js
+rm weioStripped/clientDependencies/ace/worker-coffee.js
+rm weioStripped/clientDependencies/ace/worker-json.js
+rm weioStripped/clientDependencies/ace/worker-xquery.js
 
 # change web socket address from localhost to weio.local
-sed 's/localhost:8081/weio.local:8081/' weioStripped/static/weio/weioApi.js > out
-mv out weioStripped/static/js/weioApi.js
+sed 's/localhost:8081/weio.local:8081/' weioStripped/clientDependencies/weio/weioApi.js > out
+mv out weioStripped/clientDependencies/js/weioApi.js
 
 sed 's/localhost:8081/weio.local:8081/' weioStripped/editor/index.html > out
 mv out weioStripped/editor/index.html
