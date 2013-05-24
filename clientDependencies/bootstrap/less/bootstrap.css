@@ -5410,6 +5410,20 @@ a {
 #statusBarText {
   margin-top: 14px;
 }
+.dropdown-menu {
+  width: 300px;
+}
+#wifiIcons {
+  float: right;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+#wifiPrefixIcons {
+  float: left;
+  margin-left: -16px;
+  margin-top: 5px;
+  font-size: 90%;
+}
 /* IFRAME */
 .iframeContainer {
   width: 100%;

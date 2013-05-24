@@ -54,17 +54,14 @@ import json
 import ast
 
 
-
-
 # pure websocket implementation    
 #class WeioEditorHandler(websocket.WebSocketHandler):
-class WeioEditorHandler(SockJSConnection):
+class WeioHeaderHandler(SockJSConnection):
     global weio_main
     
     """Opens editor route."""
     def on_open(self, data):
-        """On open asks weio for last saved project. List of files are scaned and sent to editor.
-        Only contents of weio_main.py is sent at first time"""
+        """On open asks weio for"""
         print "WebSocket opened!"
         pass
         
@@ -241,78 +238,3 @@ class WeioEditorHandler(SockJSConnection):
             print "Child has terminated - removing handler"
             ioloop.IOLoop.instance().remove_handler(self.pipe.stdout.fileno())
             return
-            
-
-###########################
-
-        
-        # 
-        # data  = {}
-        # 
-        # global errorBuffer
-        # 
-        # errInFile = ""
-        # errInLine = ""
-        # 
-        # line = self.pipe.stdout.readline()
-        # err = self.pipe.stderr.readline()
-        # 
-        # if line :
-        #     print line
-        #     
-        #     # pack and send to client
-        #     data['serverPush'] = 'stdout'
-        #     data['data'] = line
-        #     self.send(json.dumps(data))
-        #     
-        #     ioloop.IOLoop.instance().add_callback(self.on_subprocess_result)
-        #     
-        # if err :
-        #     
-        #     if 'Traceback (most recent call last):' in err :
-        #         print "traceback info is comming"
-        #         errorBuffer = err
-        # 
-        #         
-        #     elif  'File "' in err :
-        #         arg = err.split(",")
-        #         errInFile = arg[0].split('"')
-        #         errInFile = errInFile[1]
-        #         
-        #         #print errInFile
-        #         
-        #         errInLine = arg[1].split("line")
-        #         errInLine = errInLine[1]
-        #         
-        #         errorBuffer = errorBuffer + err
-        #         print errInLine
-        #     elif 'NameError:' in err :
-        #         #last message
-        #         errorBuffer = errorBuffer + err
-        #        
-        #         # pack and send error to client
-        #         data['serverPush'] = 'stderr'
-        #         data['data'] = errorBuffer
-        #         data['errorInFile'] = errInFile
-        #         data['errorInLine'] = errInLine
-        #         
-        #         self.send(json.dumps(data))
-        #        
-        #         if (self.pipe.poll()==1) :
-        #             # process has been terminated due to an error
-        #             # inform client
-        #             data = {}
-        #             data['serverPush'] = 'stopped'
-        #             
-        #             self.send(json.dumps(data))
-        #         
-        #     ioloop.IOLoop.instance().add_callback(self.on_subprocess_result)
-    
-    # def checkProcessPlayState(self) :
-    #       #print(str(self.pipe.poll()))
-    #       if (self.pipe.poll()==0) :
-    #           print("yupiiii")
-    #           data = {}
-    #           data['serverPush'] = 'stopped'
-    #       
-    #           self.send(json.dumps(data))

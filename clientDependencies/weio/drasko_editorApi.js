@@ -60,17 +60,64 @@
     // maximum lines in console
     var MAX_LINES_IN_CONSOLE = 1000;
     
-        
-    $(window).load(function () {
-        
- 
+    // this is wifi json file. Interesting keys are : ssid (string), 
+    // quality (0-70 integer), opened (true - for networks without security)
+    var wifi = {
+        "cells":[
+        {"ssid" : "domus master", "quality" : 60, "opened" : "true", "id" : "8768768"},
+        {"ssid" : "NoDesignNet", "quality" : 30, "opened" : "false", "id" : "7628392"},
+        {"ssid" : "ddwifi", "quality" : 10, "opened" : "true", "id" : "5537920"}  
+               ]
+               };
+               
+    // Weio can be in two modes Acess Point AP and STA mode (client of one wifi network)
+    var wifiCurrentMode = "STA"; // "STA" or "AP"
     
-       baseFiles = new SockJS();
-
-
+    // This is identifier of wifi network that Weio is currently connected to.
+    // We can't distinguish wifis only by their ssid because there can be
+    // two networks that have same name
+    var connectedToWifiId = "8768768";
+    
+    // This function generates drop down menu for wifi networks
+    // first line in drop down menu will be status line that informs
+    // user what is happening in network detection
+    // for example : Detecting wifi networks...
+    // List of wifi networks is shown directely from cache memory
+    // At the same time new scan is launched and will update list
+    // when he gets new data
+    
+    // TODO
+    // list will be rescaned and updated (if dropdown is selected) 
+    // each 10sec
       
-    });
+    function injectWifiNetworksInDropMenu() {
+        
+        $("#wifiNetworks").empty();
+        
+        $("#wifiNetworks").append('<li class="disabled"><a tabindex="-1" href="#">Scanning networks <i class="icon-spinner icon-spin" id="wifiIcons"></i></a></li>');
+        $("#wifiNetworks").append('<li class="divider"></li>');
+       
+       for (var i=0; i<wifi.cells.length; i++) {
+           var secureWifi = (wifi.cells[i].opened=="true") ? '<i class="icon-lock" id="wifiIcons"></i>' : '';
+           
+           // detect where is my current network
+           var currentConnection = (wifi.cells[i].id==connectedToWifiId) ? '<i class="icon-check" id="wifiPrefixIcons"></i>' : '';
+           
+           // wifi quality signals are from 0-70, we have icons for total of 4 levels (icons from 0-3). 3/70 = 0.042857142857143
+           var wifiQuality = Math.round(wifi.cells[i].quality * 0.042857142857143);
+           // transform wifiQuality object into html
+           wifiQuality = '<img src="img/wifi' + wifiQuality + '.png" id="wifiIcons"></img>';
+           
+           $("#wifiNetworks").append('<li><a tabindex="-1" href="#">' + currentConnection + wifi.cells[i].ssid + wifiQuality + secureWifi + '</a></li>');
+       }
+       $("#wifiNetworks").append('<li class="divider"></li>');
+       $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Connect to another network</a></li>');
+       $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Create network</a></li>');
+       
+    };
 
+    // 
+    
 
     // first initialization and compilation of templates, compilation only occurs
     // once, here.
@@ -78,19 +125,16 @@
     // it has to be recalled each time change occurs
 
     $(document).ready(function () {
-
-    
-       
         
         main_container_width();
-
+        
+        //console.log(wifi.cells.length);
+       
         $(window).resize(function() {
             update_height();
             main_container_width();
         });
     });
-
-
 
     function initEditor() {
         // EDITOR ZONE

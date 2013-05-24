@@ -42,6 +42,9 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 # IMPORT EDITOR CLASSES, this connects editor webapp with tornado server
 from editor import Editor #, WeioEditorStopHandler, WeioEditorPlayHandler 
 
+# IMPORT HEADER CLASSES, this connects header webapp with tornado server
+from header import Header
+
 # IMPORT WEIOAPI BRIDGE CLASS, this connects user webapp with tornado server
 from weioLib import WeioAPIbridge
 
@@ -56,6 +59,7 @@ class WeioIndexHandler(web.RequestHandler):
         path = confFile['user_projects_path'] + confFile['last_opened_project'] + "index.html"
         self.render(path, error="")
         #self.redirect(path)
+        
         
 # This is editor web app      
 class WeioEditorWebHandler(web.RequestHandler):
@@ -93,6 +97,9 @@ if __name__ == '__main__':
     # EDITOR ROUTES
     WeioEditorRouter = SockJSRouter(Editor.WeioEditorHandler, '/editor/baseFiles')    
   
+    # HEADER WEB SOCKET
+    WeioHeaderRouter = SockJSRouter(Header.WeioHeaderHandler, '/header')
+    
     
     #CONFIGURATOR ROUTES
 
@@ -119,6 +126,7 @@ if __name__ == '__main__':
     app = web.Application(list(WeioEditorRouter.urls) +
                             list(CloseRouter.urls) +
                             list(WeioAPIBridgeRouter.urls) +
+                            list(WeioHeaderRouter.urls) +
                             #list(WeioAPIBridgeRouter.urls) +
                           
                             # pure websocket implementation

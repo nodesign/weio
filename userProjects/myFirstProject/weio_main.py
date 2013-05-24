@@ -46,7 +46,7 @@ print "Connected via UDS Socket"
 for a in range(50) :
     print(str(a))
 #    s.send(a)
-    time.sleep(0.1)
+    time.sleep(1.1)
 
 
 #s.close()
