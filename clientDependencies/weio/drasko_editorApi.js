@@ -60,8 +60,14 @@
     // maximum lines in console
     var MAX_LINES_IN_CONSOLE = 1000;
     
-    // this is wifi json file. Interesting keys are : ssid (string), 
-    // quality (0-70 integer), opened (true - for networks without security)
+    
+    /**
+    * Wifi Json structure. Interesting keys are : 
+    * ssid (string), 
+    * quality (0-70 integer),
+    * opened (true - for networks without security)
+    **/
+    
     var wifi = {
         "cells":[
         {"ssid" : "domus master", "quality" : 60, "opened" : "true", "id" : "8768768"},
@@ -70,26 +76,38 @@
                ]
                };
                
-    // Weio can be in two modes Acess Point AP and STA mode (client of one wifi network)
+    /**
+    * Weio can be in two modes Acess Point AP and STA mode (client of one wifi network)
+    **/
     var wifiCurrentMode = "STA"; // "STA" or "AP"
     
-    // This is identifier of wifi network that Weio is currently connected to.
-    // We can't distinguish wifis only by their ssid because there can be
-    // two networks that have same name
+    /**
+    * Wifi network identifier that Weio is currently connected to.
+    * We can't distinguish wifis only by their ssid because there can be
+    * two networks that have same name
+    **/
     var connectedToWifiId = "8768768";
     
-    // This function generates drop down menu for wifi networks
-    // first line in drop down menu will be status line that informs
-    // user what is happening in network detection
-    // for example : Detecting wifi networks...
-    // List of wifi networks is shown directely from cache memory
-    // At the same time new scan is launched and will update list
-    // when he gets new data
+    /** 
+    * Wifi cell object that has been selected
+    **/
+    var selectedCell = -1;
     
-    // TODO
-    // list will be rescaned and updated (if dropdown is selected) 
-    // each 10sec
-      
+    /**
+    * Generates drop down menu for wifi networks
+    * first line in drop down menu will be status line that informs
+    * user what is happening in network detection
+    * for example : Detecting wifi networks...
+    * List of wifi networks is shown directely from cache memory
+    * At the same time new scan is launched and will update list
+    * when he gets new data
+    *
+    * TODO
+    * list will be rescaned and updated (if dropdown is selected) 
+    * each 10sec
+    **/
+    
+     
     function injectWifiNetworksInDropMenu() {
         
         $("#wifiNetworks").empty();
@@ -107,23 +125,67 @@
            var wifiQuality = Math.round(wifi.cells[i].quality * 0.042857142857143);
            // transform wifiQuality object into html
            wifiQuality = '<img src="img/wifi' + wifiQuality + '.png" id="wifiIcons"></img>';
-           
-           $("#wifiNetworks").append('<li><a tabindex="-1" href="#">' + currentConnection + wifi.cells[i].ssid + wifiQuality + secureWifi + '</a></li>');
+        
+           $("#wifiNetworks").append('<li><a tabindex="-1" onclick="prepareToChangeWifi('+ wifi.cells[i].id + ')" role="button" data-toggle="modal">' + currentConnection + wifi.cells[i].ssid + wifiQuality + secureWifi + '</a></li>');
        }
        $("#wifiNetworks").append('<li class="divider"></li>');
        $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Connect to another network</a></li>');
        $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Create network</a></li>');
        
     };
-
-    // 
     
-
-    // first initialization and compilation of templates, compilation only occurs
-    // once, here.
-    // function update_height() is called to recalculate strip dimensions
-    // it has to be recalled each time change occurs
-
+    /**
+    * Prepare to change Wifi : store selected wifi cell in selectedCell 
+    * object then call modal view to confirm. Once confirmed, modal view will
+    * call changeWifiNetwork() that will give final instruction to server
+    * to change network
+    *
+    **/
+    
+    function prepareToChangeWifi(id) {
+        var cell = -1;
+        
+        // verify if you are already connected to this network
+        if (id!=connectedToWifiId) { 
+            for (var i=0; i<wifi.cells.length; i++) {
+                
+                if (wifi.cells[i].id == id) {
+                    // gotcha selected cell
+                    cell = wifi.cells[i];
+                    break;
+                }
+            }
+        
+            $("#myModalChangeWifiLabel").html("Join " + cell.ssid + " wireless network?");
+            // put selected cell into object that will be used
+            // in changeWifiNetwork()
+            // in the case that modal is confirmed
+            selectedCell = cell;
+        
+            $("#changeWifi").modal("show");
+        }
+    }
+    
+    /**
+    * Send back chosen wifi network. Network has been previously chosed
+    * by prepareToChange(id) function and stored in selectedCell object
+    **/
+    
+    function changeWifiNetwork() {
+        var changeWifi = { "request": "changeWifi", "data" : selectedCell};
+        baseFiles.send(JSON.stringify(changeWifi));
+        
+        selectedCell = -1; // reset selection
+    }
+    
+    
+    /**
+    * First initialization and compilation of templates, compilation only occurs
+    * once, here.
+    * function update_height() is called to recalculate strip dimensions
+    * it has to be recalled each time change occurs
+    **/
+    
     $(document).ready(function () {
         
         main_container_width();
