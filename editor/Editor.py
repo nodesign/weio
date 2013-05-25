@@ -218,6 +218,7 @@ class WeioEditorHandler(SockJSConnection):
             data['status'] = fileInfo['name'] + " has been created"
             self.send(json.dumps(data))
         elif 'deleteFile' in rq['request']:
+            data['requested'] = rq['request']
             
             fileInfo = rq['data']
             pathname = fileInfo['name']
@@ -226,6 +227,7 @@ class WeioEditorHandler(SockJSConnection):
             
             WeioFiles.removeFile(pathCurrentProject+pathname)
             
+            data['status'] = fileInfo['name'] + " has been removed"
 
 
     def weio_main_handler(self, data, fd, events):

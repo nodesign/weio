@@ -458,34 +458,26 @@ function save(name) {
 * Strip is destroyed after and new render is applied
 **/
 function saveAndClose(saveFile) {
-    console.log("closing ");
-    if (selectedName!=-1) {
+    console.log("closing " + saveFile);
+    
+    saveToJSON(); // save only to memory
 
-        saveToJSON(); // save only to memory
+    var data = getFileDataByNameFromJson(saveFile);
 
-        var data = getFileDataByNameFromJson(selectedName);
+    save(saveFile);
 
-        // TODO save function goes here
-        if (saveFile==true) {
-            save(selectedName);
-        } 
-        // element to kill
+    // kill element in editor
+    editors.splice(data.index, 1);
 
-        // kill element in editor
-        editors.splice(data.index, 1);
+    // kill element in JSON
+    editorData.editors.splice(data.index, 1);
 
-        // kill element in JSON
-        editorData.editors.splice(data.index, 1);
-
-        // render changes to HTML
-        update_height();
-        renderEditors();
-        collapseAllExceptFocusedOne();
-        refreshEditors();
-
-    }
-
-    selectedName = -1;
+    // render changes to HTML
+    update_height();
+    renderEditors();
+    collapseAllExceptFocusedOne();
+    refreshEditors();
+        
 }
 
 /**
@@ -549,6 +541,7 @@ function deleteFile() {
     };
     var askServer = { "request": "deleteFile", "data" : data};
     baseFiles.send(JSON.stringify(askServer));
+    selectedName = -1;
 }
 
 
