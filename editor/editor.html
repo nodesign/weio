@@ -189,8 +189,10 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
         </ol>
     </li>
 </ol>
+<!-- FILE TREE TEMPLATE ENDS HERE -->
+
 <div class="bottom_buttons">
-<button id="addNewFile" class="open" onclick="addNewFile()">
+<button id="addNewFile" class="open" href="#createNewFile" role="button" data-toggle="modal">
     <i class="icon-plus-sign icon-2x"></i>
 </button>
 <button id="exportFile" class="open">
@@ -233,6 +235,38 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
     </div>
 </div>
 <!-- END Modal Change Wifi Network -->
+
+
+
+<!-- Modal Create new file -->
+<div id="createNewFile" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalCreateNewFileLabel">Create new file</h3>
+    </div>
+    <div class="modal-body">
+        <p>Chose file name and it's type</p>
+        
+        <div class="input-append" >
+          <input type="text" value="myFile" id="newFileName"/>
+            <div class="btn-group" data-toggle="buttons-radio">
+              <button type="button" class="btn active" onclick="setFileType('html')">.html</button>
+              <button type="button" class="btn" onclick="setFileType('css')">.css</button>
+              <button type="button" class="btn" onclick="setFileType('js')">.js</button>
+              <button type="button" class="btn" onclick="setFileType('py')">.py</button>
+              <button type="button" class="btn" onclick="setFileType('txt')">.txt</button>
+              <button type="button" class="btn" onclick="setFileType('json')">.json</button>
+            </div>
+        
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button class="btn btn-primary" onclick="addNewFile()" data-dismiss="modal">Continue</button>
+    </div>
+</div>
+<!-- END Modal Create new file -->
+
 
 
 

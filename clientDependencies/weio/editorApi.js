@@ -440,9 +440,8 @@ function backupOpenedFiles() {
 
 
 /**
-* Saves all client local JSON data on the server
-* see saveToJSON function if you want to save 
-* editor data localy but not on the server
+* Saves opened file on the server
+* All opened editor files are saved localu to json structure
 **/
 function save(name) {
     saveToJSON();
@@ -490,6 +489,44 @@ function saveAndClose(saveFile) {
 }
 
 /**
+* Stores file type from modal view before creation
+* Default type is html
+**/
+var newfileType = "html";
+
+/**
+* Selecting file type from modal view before creation
+* default value has to be html
+**/
+function setFileType(ext) {
+    newfileType = ext;
+}
+
+/**
+* Adds new file into server and opens it inside editor
+**/
+function addNewFile() {
+
+    // add more key if needed here, like directory etc...
+    var name = $("#newFileName").val();
+    
+    // Checks for strings that are either empty or filled with whitespace
+    if((/^\s*$/).test(name)) { 
+        alert("I can't make file with empty name!");
+    } else {
+        
+        var data = {
+            "name" : name + "." + newfileType
+            };
+    
+        var askServer = { "request": "addNewFile", "data" : data};
+        baseFiles.send(JSON.stringify(askServer));
+    }
+    
+}
+
+
+/**
 * Selects name of file that will be deleted
 * File is deleted only after modal view 
 * confirmation
@@ -506,12 +543,17 @@ function prepareToDelete(name) {
 **/
 function deleteFile() {
     console.log("file to delete " + selectedName);
+    
+    var data = {
+        "name" : selectedName
+    };
+    var askServer = { "request": "deleteFile", "data" : data};
+    baseFiles.send(JSON.stringify(askServer));
 }
 
 
 /**
-* Get file contents from server
-* File path is send, data is response
+* Get file contents from local json
 **/
 function getFileDataByNameFromJson(name) {
     var index = 0;
@@ -735,6 +777,11 @@ function clearConsole(){
                 } else if (instruction == "saveFile") {
                     // nothing
 
+                } else if (instruction == "addNewFile") {
+                    // We crated a new file, OK now refresh file tree
+                    $(".tree").empty();
+                    var askForFileListRequest = { "request": "getFileList" };
+                    baseFiles.send(JSON.stringify(askForFileListRequest));
                 }
 
 

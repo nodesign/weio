@@ -49,6 +49,8 @@ import tornado_subprocess
 
 from sockjs.tornado import SockJSRouter, SockJSConnection
 from weioLib import WeioFiles
+from weioLib import weio_config
+
 
 import json
 import ast
@@ -202,17 +204,28 @@ class WeioEditorHandler(SockJSConnection):
             fileInfo = rq['data']
             data['requestedData'] = fileInfo['name']
 
-            pathname = fileInfo['path']
+            pathname = fileInfo['name']
+            
+            confFile = weio_config.getConfiguration()
+            pathCurrentProject = confFile["user_projects_path"] + confFile["last_opened_project"]
+            
+            #print (pathCurrentProject+pathname)
             # in new file there are no data, it will be an empty string
             rawData = ""
             
-            #rawData = fileInfo['data']
-            
-            #print(pathname + " " + rawData)
-            ret = WeioFiles.saveRawContentToFile(pathname, rawData)
+            WeioFiles.saveRawContentToFile(pathCurrentProject+pathname, rawData)
             
             data['status'] = fileInfo['name'] + " has been created"
             self.send(json.dumps(data))
+        elif 'deleteFile' in rq['request']:
+            
+            fileInfo = rq['data']
+            pathname = fileInfo['name']
+            confFile = weio_config.getConfiguration()
+            pathCurrentProject = confFile["user_projects_path"] + confFile["last_opened_project"]
+            
+            WeioFiles.removeFile(pathCurrentProject+pathname)
+            
 
 
     def weio_main_handler(self, data, fd, events):

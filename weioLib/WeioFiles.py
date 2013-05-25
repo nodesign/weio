@@ -39,7 +39,7 @@ import weio_config
 
 
 def scanFolders() :
-    """This function scans ./user_weio folder and all folders inside that folder in search for files.
+    """Scans user folder and all folders inside that folder in search for files.
     Recognized file formats are html, py, js, css, txt all other file formats will be called other
     
     scanFolders() returns dictionary. 
@@ -118,7 +118,7 @@ def scanFolders() :
     
 def getRawContentFromFile(path):
     
-    """This function reads contents from given filename and returns it. Be aware that this function
+    """Reads contents from given filename and returns it. Be aware that this function
      can explore the whole OS. Use checkIfPathIsInUserFolder(path) function to check if path is in user
      only folder."""
     
@@ -129,7 +129,7 @@ def getRawContentFromFile(path):
     
 def saveRawContentToFile(path, data):
     
-    """This function writes contents to given filename. Be aware that this function
+    """Writes contents to given filename. Be aware that this function
      can explore the whole OS. Use checkIfPathIsInUserFolder(path) function to check if path is in user
      only folder."""
     
@@ -141,11 +141,17 @@ def saveRawContentToFile(path, data):
         
 def checkIfPathIsInUserFolder(path):
     
-    """This function checks if given path is in user folder user_weio/"""
+    """Checks if given path is in user folder"""
+    confFile = weio_config.getConfiguration()
+    pathToCurrentProject = confFile["user_projects_path"] + confFile['last_opened_project'] 
     
-    if "./static/user_weio" in (path) :
+    if pathToCurrentProject in (path) :
         return True
     else :
         return False
+        
+def removeFile(path):
+    """Removes specified file, if folder path is passed exception is rised"""
+    os.remove(path)
         
 #print(scanFolders())
