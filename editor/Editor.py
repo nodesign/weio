@@ -46,7 +46,7 @@ sys.path.append(r'./');
 
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
-from weioLib import WeioFiles
+from weioLib import weioFiles
 from weioLib import weio_config
 
 import json
@@ -84,7 +84,7 @@ class WeioEditorHandler(SockJSConnection):
             data['requested'] = rq['request']
             
             # read all files paths from user directories
-            data['data'] = WeioFiles.scanFolders()
+            data['data'] = weioFiles.scanFolders()
 
             # notify what is happening at this moment
             data['status'] = "I'm ready, gimme some awesome code!"
@@ -103,7 +103,7 @@ class WeioEditorHandler(SockJSConnection):
             fileInfo = rq['data']
             pathname = fileInfo['path']
             
-            rawFile = WeioFiles.getRawContentFromFile(pathname)
+            rawFile = weioFiles.getRawContentFromFile(pathname)
             
             fileInfo['data'] = rawFile
             data['data'] = fileInfo
@@ -122,7 +122,7 @@ class WeioEditorHandler(SockJSConnection):
             rawData = fileInfo['data']
             
             #print(pathname + " " + rawData)
-            ret = WeioFiles.saveRawContentToFile(pathname, rawData)
+            ret = weioFiles.saveRawContentToFile(pathname, rawData)
             
             data['status'] = fileInfo['name'] + " is saved!"
             self.send(json.dumps(data))
@@ -206,7 +206,7 @@ class WeioEditorHandler(SockJSConnection):
             # in new file there are no data, it will be an empty string
             rawData = ""
             
-            WeioFiles.saveRawContentToFile(pathCurrentProject+pathname, rawData)
+            weioFiles.saveRawContentToFile(pathCurrentProject+pathname, rawData)
             
             data['status'] = fileInfo['name'] + " has been created"
             self.send(json.dumps(data))
@@ -218,7 +218,7 @@ class WeioEditorHandler(SockJSConnection):
             confFile = weio_config.getConfiguration()
             pathCurrentProject = confFile["user_projects_path"] + confFile["last_opened_project"]
             
-            WeioFiles.removeFile(pathCurrentProject+pathname)
+            weioFiles.removeFile(pathCurrentProject+pathname)
             
             data['status'] = fileInfo['name'] + " has been removed"
 

@@ -37,15 +37,12 @@
 # -*- coding: utf-8 -*-
 import subprocess
 import os, signal
-import socket
-import functools
-import errno
-import os
+
 from tornado import web, ioloop, iostream
 
 from sockjs.tornado import SockJSRouter, SockJSConnection
 import json
-import ast
+
 
 from weioLib import weio_gpio
 from weioLib import weio_globals
@@ -62,11 +59,12 @@ class WeioAPIBridgeHandler(SockJSConnection):
         
         
     def on_message(self, data):
-        self.serve(data)
+        """Parsing JSON data that is comming from browser into python object"""
+        req = json.loads(data)
+        self.serve(req)
         
-    def serve(self, request) :
+    def serve(self, rq) :
         
-        rq = ast.literal_eval(request)
         
         if 'digitalWrite' in rq['request'] :
             

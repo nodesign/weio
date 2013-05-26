@@ -40,13 +40,10 @@ from tornado import web, ioloop, iostream, options, httpserver, autoreload, webs
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
 # IMPORT EDITOR CLASSES, this connects editor webapp with tornado server
-from editor import Editor #, WeioEditorStopHandler, WeioEditorPlayHandler 
-
-# IMPORT HEADER CLASSES, this connects header webapp with tornado server
-from header import Header
+from editor import editor #, WeioEditorStopHandler, WeioEditorPlayHandler 
 
 # IMPORT WEIOAPI BRIDGE CLASS, this connects user webapp with tornado server
-from weioLib import WeioAPIbridge
+from weioLib import weioAPIbridge
 
 # IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
 from weioLib import weio_config
@@ -104,10 +101,7 @@ class WeioWifiHandler(SockJSConnection):
         if (platform.machine() is 'mips') :
             """We have obtained essid, psswd and encryption
             so we can try to connect"""
-            request = json.loads(msg)
-
-            # parsing strings from browser
-            rq = ast.literal_eval(request)
+            rq = json.loads(msg)
 
             if 'scan' in rq['request'] :
                 data = wifi.scan()
@@ -139,13 +133,13 @@ if __name__ == '__main__':
     logging.getLogger().setLevel(logging.DEBUG)
 
     # WEIO API BRIDGE
-    WeioAPIBridgeRouter = SockJSRouter(WeioAPIbridge.WeioAPIBridgeHandler, '/api')
+    WeioAPIBridgeRouter = SockJSRouter(weioAPIbridge.WeioAPIBridgeHandler, '/api')
 
     # EDITOR ROUTES
-    WeioEditorRouter = SockJSRouter(Editor.WeioEditorHandler, '/editor/baseFiles')    
+    WeioEditorRouter = SockJSRouter(editor.WeioEditorHandler, '/editor/baseFiles')    
   
     # HEADER WEB SOCKET
-    WeioHeaderRouter = SockJSRouter(Header.WeioHeaderHandler, '/header')
+    #WeioHeaderRouter = SockJSRouter(Header.WeioHeaderHandler, '/header')
 
     # WIFI DETECTION ROUTES
     WeioWifiRouter = SockJSRouter(WeioWifiHandler, '/wifi')
@@ -176,7 +170,7 @@ if __name__ == '__main__':
     app = web.Application(list(WeioEditorRouter.urls) +
                             list(CloseRouter.urls) +
                             list(WeioAPIBridgeRouter.urls) +
-                            list(WeioHeaderRouter.urls) +
+                            #list(WeioHeaderRouter.urls) +
                             #list(WeioAPIBridgeRouter.urls) +
                           
                             # pure websocket implementation
