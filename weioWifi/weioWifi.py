@@ -58,7 +58,7 @@ def weioCommand(command) :
         print("Comand ERROR : " + str(output))
         output = "ERR_CMD"
 	
-    #print output
+    print output
     return output
 
 
@@ -72,6 +72,8 @@ class WeioWifi() :
 
     def checkConnection(self) :
         command = "iwconfig " + self.interface
+
+        print "CHECK CONNECTION"
 
         status = weioCommand(command)
 
@@ -108,7 +110,7 @@ class WeioWifi() :
                 self.essid = word.split('\"')[1]
                 break
 
-    def setConnection(mode) :
+    def setConnection(self, mode) :
         """ First shut down the WiFi on Carambola """
         weioCommand("wifi down")
 
@@ -135,6 +137,6 @@ class WeioWifi() :
 
             weioCommand("/weio/wifi_set_mode.sh sta")
 
-    def scan() :
-        iwl = IWInfo.IWInfo(self.interface)
-        return iwl.getData()
+    def scan(self) :
+        iwi = iwInfo.IWInfo(self.interface)
+        return iwi.getData()

@@ -70,7 +70,7 @@ def weioWifiParseScan() :
         s['essid'] = scaninfo[cell]['ESSID']
         s['quality'] = scaninfo[cell]['Quality']
         s['encryption'] = scaninfo[cell]['Encryption']
-        if (s['encryption'] is 'none') :
+        if (s['encryption'] == 'none') :
             s['opened'] = True
 
         # Check if we are connected to this ESSID
@@ -94,6 +94,7 @@ class WeioWifiHandler(SockJSConnection):
 
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
+        
         req = json.loads(data)
         self.serve(req)
     
@@ -104,11 +105,11 @@ class WeioWifiHandler(SockJSConnection):
         data = {}
         
         # We do WiFi setup __ONLY__ for WEIO machine. PC host should use it's OS tools.
-        if (platform.machine() is 'mips') :
+        if (platform.machine() == 'mips') :
             """We have obtained essid, psswd and encryption
             so we can try to connect"""
             
-            if 'scan' in rq['request'] :
+            if (rq['request'] == 'scan') :
                 data = weioWifiParseScan()
             else :
                 if 'goAp' in rq['request'] :
@@ -125,7 +126,6 @@ class WeioWifiHandler(SockJSConnection):
                 wifi.checkConnection()
                 data['mode'] = wifi.mode
         
-        print rq["request"]
         # Send response to the browser
         rsp={}
         rsp['requested'] = rq['request']

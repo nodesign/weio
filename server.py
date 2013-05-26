@@ -148,7 +148,7 @@ if __name__ == '__main__':
     options.define("port", default=confFile['port'], type=int)
 
     # If we are on the WEIO machine, we have to assure connection before doing anything
-    if (platform.machine() is 'mips') :
+    if (platform.machine() == 'mips') :
         weioWifiHandler.wifi.checkConnection()
     
     http_server = httpserver.HTTPServer(app)
