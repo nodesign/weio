@@ -225,6 +225,8 @@ class WeioEditorHandler(SockJSConnection):
             data['status'] = fileInfo['name'] + " has been removed"
             self.send(json.dumps(data))
 
+
+
     def weio_main_handler(self, data, fd, events):
         line = self.pipe.stdout.readline()
         if line :

@@ -758,165 +758,165 @@ function clearConsole(){
         //////////////////////////////////////////////////////////////// SOCK JS EDITOR
 
 
-        var fileList;
+var fileList;
 
-        baseFiles.onopen = function() {
-            console.log('socket opened for editor');
+baseFiles.onopen = function() {
+    console.log('socket opened for editor');
+    var askForFileListRequest = { "request": "getFileList" };
+    baseFiles.send(JSON.stringify(askForFileListRequest));
+    setStatus("icon-link", "Connected");
+    console.log('sending... ' + JSON.stringify(askForFileListRequest));
+};
+
+baseFiles.onmessage = function(e) {
+    //console.log('Received: ' + e.data);
+    
+    // JSON data is parsed into object
+    data = JSON.parse(e.data);
+
+    // switch
+
+    if ("requested" in data) {
+
+        // this is instruction that was echoed from server + data as response
+        instruction = data.requested;
+        if (instruction == "getFileList") {
+
+            fileList = data.data; 
+            console.log(fileList.allFiles);
+
+
+            editorData.tree = fileList.allFiles; 
+            
+            // init editors only once
+            if (firstTime==true) {
+                initEditor();
+                // install first index.html
+                addNewStrip("index.html");
+                firstTime = false;
+            }
+            
+            renderFileTree();
+
+        } else if (instruction == "getFile") {
+
+            fileInfo = data.data;
+
+            editorData.editors.push(fileInfo);
+
+            // render changes to HTML
+            renderEditors();
+            update_height();
+            insertNewEditor(fileInfo);
+            refreshEditors();
+            collapseAllExceptFocusedOne();
+
+
+        } else if (instruction == "play") {
+            //std = 
+            //$('#console').append(dssds);
+
+        } else if (instruction == "storeProjectPreferences") {
+
+            window.location.href = "/preview";
+
+
+        } else if (instruction == "saveFile") {
+            // nothing
+
+        } else if (instruction == "addNewFile") {
+            // We created a new file, OK now refresh file tree
             var askForFileListRequest = { "request": "getFileList" };
             baseFiles.send(JSON.stringify(askForFileListRequest));
-            setStatus("icon-link", "Connected");
-            console.log('sending... ' + JSON.stringify(askForFileListRequest));
-        };
-
-        baseFiles.onmessage = function(e) {
-            //console.log('Received: ' + e.data);
             
-            // JSON data is parsed into object
-            data = JSON.parse(e.data);
-
-            // switch
-
-            if ("requested" in data) {
-
-                // this is instruction that was echoed from server + data as response
-                instruction = data.requested;
-                if (instruction == "getFileList") {
-
-                    fileList = data.data; 
-                    console.log(fileList.allFiles);
-
-
-                    editorData.tree = fileList.allFiles; 
-                    
-                    // init editors only once
-                    if (firstTime==true) {
-                        initEditor();
-                        // install first index.html
-                        addNewStrip("index.html");
-                        firstTime = false;
-                    }
-                    
-                    renderFileTree();
-
-                } else if (instruction == "getFile") {
-
-                    fileInfo = data.data;
-
-                    editorData.editors.push(fileInfo);
-
-                    // render changes to HTML
-                    renderEditors();
-                    update_height();
-                    insertNewEditor(fileInfo);
-                    refreshEditors();
-                    collapseAllExceptFocusedOne();
-
-
-                } else if (instruction == "play") {
-                    //std = 
-                    //$('#console').append(dssds);
-
-                } else if (instruction == "storeProjectPreferences") {
-
-                    window.location.href = "/preview";
-
-
-                } else if (instruction == "saveFile") {
-                    // nothing
-
-                } else if (instruction == "addNewFile") {
-                    // We created a new file, OK now refresh file tree
-                    var askForFileListRequest = { "request": "getFileList" };
-                    baseFiles.send(JSON.stringify(askForFileListRequest));
-                    
-                } else if (instruction == "deleteFile") {
-                    // We deleted one file, OK now refresh file tree
-                    var askForFileListRequest = { "request": "getFileList" };
-                    baseFiles.send(JSON.stringify(askForFileListRequest));
-                }
-
-
-            } else if ("serverPush" in data) {
-
-                demand = data.serverPush;
-                if (demand == "stdout") {
-
-
-                    stdout = data.data;
-                    //stdout = stdout.replace(/"/g, '');
-                    //stdout = stdout.replace(/\\n/g, '<BR>');
-                    
-                    
-                    //console.log(stdout); 
-                    //consoleData.push(stdout);
-
-
-                    ///XXX
-                    // DD:
-                    // DO THE EDITOR WRAPPING !!!
-                    //if (consoleData.length > MAX_LINES_IN_CONSOLE) {
-                    //   consoleData.shift();
-                    //}
-                   
-                    //consoleOutput = "";
-
-                    //for (var i=0; i<consoleData.length; i++) {
-                    //    consoleOutput+=consoleData[i];
-                    //}
-                    // this function outputs console to screen
-                    //$('#consoleOutput').html(consoleOutput);
-
-                    $('#consoleOutput').append(stdout + "<br>");
-
-                } else if (demand == "stderr") {
-
-                    stderr = data.data;
-                    //stderr = stderr.replace(/"/g, '');
-                    stderr = stderr.replace(/\\n/g, '<BR>');
-                    
-                    console.log(stderr)
-                    
-                    consoleData.push('<font color="red">' + stderr + '</font>');
-                                        
-                    if (consoleData.length>MAX_LINES_IN_CONSOLE) {
-                        consoleData.shift();
-                    }
-
-                    consoleOutput = "";
-
-                    for (var i=0; i<consoleData.length; i++) {
-                        consoleOutput+=consoleData[i];
-                    }
-                    $('#consoleOutput').html(consoleOutput);
-
-                    //errorInFile = data.errorInFile;
-                    //errInLine = data.errInLine;
-                    
-                } else if (demand == "stopped") {
-                    console.log("execution of weio_main.py stopped");
-                    isPlaying = false;
-                    
-                }
-
-
-            }
-            
-            // get Status message from server
-            if ("status" in data) {
-                setStatus(null, data.status);
-            }
-
-            //console.log('Received: ' + data.raw);
-            //editor1.setValue(data.raw);
-
+        } else if (instruction == "deleteFile") {
+            // We deleted one file, OK now refresh file tree
+            var askForFileListRequest = { "request": "getFileList" };
+            baseFiles.send(JSON.stringify(askForFileListRequest));
         }
 
-        baseFiles.onclose = function() {
-            console.log('socket is closed for editor');
-            setStatus("icon-ban-circle", "Connection closed")
 
-        };
-        
+    } else if ("serverPush" in data) {
+
+        demand = data.serverPush;
+        if (demand == "stdout") {
+
+
+            stdout = data.data;
+            //stdout = stdout.replace(/"/g, '');
+            //stdout = stdout.replace(/\\n/g, '<BR>');
+            
+            
+            //console.log(stdout); 
+            //consoleData.push(stdout);
+
+
+            ///XXX
+            // DD:
+            // DO THE EDITOR WRAPPING !!!
+            //if (consoleData.length > MAX_LINES_IN_CONSOLE) {
+            //   consoleData.shift();
+            //}
+           
+            //consoleOutput = "";
+
+            //for (var i=0; i<consoleData.length; i++) {
+            //    consoleOutput+=consoleData[i];
+            //}
+            // this function outputs console to screen
+            //$('#consoleOutput').html(consoleOutput);
+
+            $('#consoleOutput').append(stdout + "<br>");
+
+        } else if (demand == "stderr") {
+
+            stderr = data.data;
+            //stderr = stderr.replace(/"/g, '');
+            stderr = stderr.replace(/\\n/g, '<BR>');
+            
+            console.log(stderr)
+            
+            consoleData.push('<font color="red">' + stderr + '</font>');
+                                
+            if (consoleData.length>MAX_LINES_IN_CONSOLE) {
+                consoleData.shift();
+            }
+
+            consoleOutput = "";
+
+            for (var i=0; i<consoleData.length; i++) {
+                consoleOutput+=consoleData[i];
+            }
+            $('#consoleOutput').html(consoleOutput);
+
+            //errorInFile = data.errorInFile;
+            //errInLine = data.errInLine;
+            
+        } else if (demand == "stopped") {
+            console.log("execution of weio_main.py stopped");
+            isPlaying = false;
+            
+        }
+
+
+    }
+    
+    // get Status message from server
+    if ("status" in data) {
+        setStatus(null, data.status);
+    }
+
+    //console.log('Received: ' + data.raw);
+    //editor1.setValue(data.raw);
+
+}
+
+baseFiles.onclose = function() {
+    console.log('socket is closed for editor');
+    setStatus("icon-ban-circle", "Connection closed")
+
+};
+    
         //////////////////////////////////////////////////////////////// SOCK JS WIFI        
         
 /*
@@ -942,6 +942,7 @@ wifiSocket.onmessage = function(e) {
 
     if ("requested" in data) {
     }
+    
 };
 
 wifiSocket.onclose = function() {

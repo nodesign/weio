@@ -50,11 +50,7 @@ from weioLib import weioAPIbridge
 # IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
 from weioLib import weio_config
 
-# Wifi detection and configuration module
-from weioWifi import weioWifi
-
-# Global weioWifi object
-wifi = weioWifi.WeioWifi("wlan0")
+from weioWifi import weioWifiHandler
 
 # This is user project index.html
 class WeioIndexHandler(web.RequestHandler):
@@ -90,53 +86,6 @@ class WeioCloseConnection(SockJSConnection):
         pass
         
 
-# Wifi detection route handler  
-class WeioWifiHandler(SockJSConnection):
-    def on_open(self, info) :
-        msg = {}
-        msg['mode'] = wifi.mode
-        self.send(json.dumps(msg))
-
-    def on_message(self, data):
-        """Parsing JSON data that is comming from browser into python object"""
-        req = json.loads(data)
-        self.serve(req)
-    
-    def serve(self, rq):
-        """Parsed input from browser ready to be served"""
-        global wifi
-        
-        # We do WiFi setup __ONLY__ for WEIO machine. PC host should use it's OS tools.
-        if (platform.machine() is 'mips') :
-            """We have obtained essid, psswd and encryption
-            so we can try to connect"""
-            
-            if 'scan' in rq['request'] :
-                data = wifi.scan()
-            else :
-                if 'goAp' in rq['request'] :
-                    wifi.setConnection("ap")
-                elif 'goSta' in rq['request'] : 
-                    wifi.essid = rq['data']['essid']
-                    wifi.passwd = rq['data']['passwd']
-                    wifi.encryption = rq['data']['encryption']
-                    wifi.setConnection("sta")
-                else :
-                    print "WeioConnection() handler : UNKNOWN REQ"
-
-                # Check if everything went well, or go to AP mode in case of error
-                wifi.checkConnection()
-                data['mode'] = wifi.mode
-        
-        print rq["request"]
-        # Send response to the browser
-        rsp={}
-        rsp['requested'] = rq['request']
-        rsp['data'] = "blabla"
-
-        # Send connection information to the client
-        self.send(json.dumps(rsp))
-
 if __name__ == '__main__':
     import logging
     logging.getLogger().setLevel(logging.DEBUG)
@@ -151,7 +100,7 @@ if __name__ == '__main__':
     #WeioHeaderRouter = SockJSRouter(Header.WeioHeaderHandler, '/header')
 
     # WIFI DETECTION ROUTES
-    WeioWifiRouter = SockJSRouter(WeioWifiHandler, '/wifi')
+    WeioWifiRouter = SockJSRouter(weioWifiHandler.WeioWifiHandler, '/wifi')
     
     
     #CONFIGURATOR ROUTES
@@ -199,7 +148,7 @@ if __name__ == '__main__':
 
     # If we are on the WEIO machine, we have to assure connection before doing anything
     if (platform.machine() is 'mips') :
-        wifi.checkConnection()
+        weioWifiHandler.wifi.checkConnection()
     
     http_server = httpserver.HTTPServer(app)
     http_server.listen(options.options.port, address=confFile['ip'])
