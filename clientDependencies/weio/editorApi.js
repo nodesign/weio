@@ -1,6 +1,6 @@
 /**
-* Can be recalled when adding a new stripe to recalculate max height value
-**/
+ * Can be recalled when adding a new stripe to recalculate max height value
+ */
 function update_height() {
 
     // Get windows size, get number of collapse elements and calculate maximum height to fill the column
@@ -8,18 +8,18 @@ function update_height() {
 
     var numRows = $('.codebox').length;
     //console.log("rows : " + numRows + " array elements " + editors.length);
-    var finalheight = viewportHeight - (numRows * 40) - 95;
+    var finalheight = viewportHeight - (numRows  * 40) - 95;
     var widgetheight = viewportHeight - 140;
     $('.code_wrap').css('min-height', finalheight);
     $('.fullheight').css('height', widgetheight);
 
-    $('#consoleAccordion').css('max-height', viewportHeight - (2 * 40) - 75);
+    $('#consoleAccordion').css('max-height', viewportHeight - (2  * 40) - 75);
 
 }
 
 /**
-* Calculate the main_container (editor + console) value depending on window size
-**/
+ * Calculate the main_container (editor + console) value depending on window size
+ */
 
 function main_container_width() {
 
@@ -34,63 +34,63 @@ function main_container_width() {
 }
 
 /*
-* SockJS object, Web socket
-**/
+ * SockJS object, Web socket
+ */
 var baseFiles = new SockJS('http://localhost:8081/editor/baseFiles');
 
 /**
-* ace code editors are stored in this array
-**/
+ * ace code editors are stored in this array
+ */
 var editors = [];
 
 /**
-* Selects correct index when code strips are manipulated
-**/
+ * Selects correct index when code strips are manipulated
+ */
 var selectedName = -1;
 
-/** 
-* Stores compiled template that can be rendered with JSON file
-* to re-render just call renderTree(), compilation occurs only one inside
-* ready function
-**/
+/* * 
+ * Stores compiled template that can be rendered with JSON file
+ * to re-render just call renderTree(), compilation occurs only one inside
+ * ready function
+ */
 var compiledTree;
 
 /**
-* Stores compiled template that can be rendered with JSON file
-* to re-render just call renderEditor(), compilation occurs only one inside
-* ready function
-**/
+ * Stores compiled template that can be rendered with JSON file
+ * to re-render just call renderEditor(), compilation occurs only one inside
+ * ready function
+ */
 var compiledEditor;
 
 /**
-* Stores currentely focused strip index in editorData.editors array
-**/
+ * Stores currentely focused strip index in editorData.editors array
+ */
 var focusedOne = "weio_main.py";
 
 
 /**
-* Informs if weio_main.py is running on Weio board
-**/
+ * Informs if weio_main.py is running on Weio board
+ */
 var isPlaying = false;
 
 /**
-* Console data array, stout and stderr
-**/
+ * Console data array, stout and stderr
+ */
 var consoleData = [];
 
 /**
-* maximum lines in console
-**/
+ * maximum lines in console
+ */
 var MAX_LINES_IN_CONSOLE = 1000;
 
 
 /**
-* Wifi Json structure. Interesting keys are : 
-* ssid (string), 
-* quality (0-70 integer),
-* opened (true - for networks without security)
-* connected (true if Weio is connected to that network)
-**/
+ * Wifi Json structure. Interesting keys are : 
+ * ssid (string), 
+ * quality (0-70 integer),
+ * opened (true - for networks without security)
+ * connected (true if Weio is connected to that network)
+ */
 
 var wifi = {
     "cells":[
@@ -101,32 +101,32 @@ var wifi = {
 };
 
 /**
-* Weio can be in two modes Acess Point AP and STA mode (client of one wifi network)
-**/
+ * Weio can be in two modes Acess Point AP and STA mode (client of one wifi network)
+ */
 var wifiCurrentMode = "STA"; // "STA" or "AP"
 
 /**
-* Wifi network identifier that Weio is currently connected to.
-* We can't distinguish wifis only by their ssid because there can be
-* two networks that have same name
-**/
+ * Wifi network identifier that Weio is currently connected to.
+ * We can't distinguish wifis only by their ssid because there can be
+ * two networks that have same name
+ */
 var connectedToWifiId = "";
 
-/** 
-* Wifi cell object that has been selected to be joined
-* not to confound with connectedToWifiId
-**/
+/* * 
+ * Wifi cell object that has been selected to be joined
+ * not to confound with connectedToWifiId
+ */
 var selectedCell = -1;
 
 /**
-* Generates drop down menu for wifi networks
-* first line in drop down menu will be status line that informs
-* user what is happening in network detection
-* for example : Detecting wifi networks...
-* List of wifi networks is shown directely from cache memory
-* At the same time new scan is launched and will update list
-* when he gets new data
-**/
+ * Generates drop down menu for wifi networks
+ * first line in drop down menu will be status line that informs
+ * user what is happening in network detection
+ * for example : Detecting wifi networks...
+ * List of wifi networks is shown directely from cache memory
+ * At the same time new scan is launched and will update list
+ * when he gets new data
+ */
 
 
 function injectWifiNetworksInDropMenu() {
@@ -147,7 +147,7 @@ function injectWifiNetworksInDropMenu() {
         var currentConnection = (wifi.cells[i].id==connectedToWifiId) ? '<i class="icon-check" id="wifiPrefixIcons"></i>' : '';
 
         // wifi quality signals are from 0-70, we have icons for total of 4 levels (icons from 0-3). 3/70 = 0.042857142857143
-        var wifiQuality = Math.round(wifi.cells[i].quality * 0.042857142857143);
+        var wifiQuality = Math.round(wifi.cells[i].quality  * 0.042857142857143);
         // transform wifiQuality object into html
         wifiQuality = '<img src="img/wifi' + wifiQuality + '.png" id="wifiIcons"></img>';
 
@@ -167,12 +167,12 @@ function scanWifiNetworks() {
 }
 
 /**
-* Prepare to change Wifi : store selected wifi cell in selectedCell 
-* object then call modal view to confirm. Once confirmed, modal view will
-* call changeWifiNetwork() that will give final instruction to server
-* to change network
+ * Prepare to change Wifi : store selected wifi cell in selectedCell 
+ * object then call modal view to confirm. Once confirmed, modal view will
+ * call changeWifiNetwork() that will give final instruction to server
+ * to change network
 *
-**/
+ */
 
 function prepareToChangeWifi(id) {
     var cell = -1;
@@ -199,9 +199,9 @@ function prepareToChangeWifi(id) {
 }
 
 /**
-* Send back chosen wifi network. Network has been previously chosed
-* by prepareToChange(id) function and stored in selectedCell object
-**/
+ * Send back chosen wifi network. Network has been previously chosed
+ * by prepareToChange(id) function and stored in selectedCell object
+ */
 
 function changeWifiNetwork() {
     var changeWifi = { "request": "changeWifi", "data" : selectedCell};
@@ -212,11 +212,11 @@ function changeWifiNetwork() {
 
 
 /**
-* First initialization and compilation of templates, compilation only occurs
-* once, here.
-* function update_height() is called to recalculate strip dimensions
-* it has to be recalled each time change occurs
-**/
+ * First initialization and compilation of templates, compilation only occurs
+ * once, here.
+ * function update_height() is called to recalculate strip dimensions
+ * it has to be recalled each time change occurs
+ */
 
 $(document).ready(function () {
 
@@ -245,8 +245,8 @@ function initEditor() {
 };
 
 /**
-* JSON file, entering point for editors and tree - list of files
-**/
+ * JSON file, entering point for editors and tree - list of files
+ */
 var editorData = {editors:[], tree:[]};
 
 /* EXAMPLE
@@ -269,8 +269,8 @@ tree:[
 */
 
 /**
-* Directive for templating editors with Pure JS
-**/
+ * Directive for templating editors with Pure JS
+ */
 var directiveEditors = {
     'div.accordion-group' :{
         'editor<-editors' : {
@@ -295,7 +295,7 @@ var directiveEditors = {
 'p.removeModalPhrase' : function getter(arg) {return 'Do you want to save the changes you made in the current document ?';},
 'button.btn-primary@onclick' : function getter(arg) {return "saveAndClose(true)"},
 '#dontSave@onclick' : function getter(arg) {return "saveAndClose(false)";}
-*/
+ */
 }
 
 }
@@ -307,8 +307,8 @@ var directiveEditors = {
 
 
 /**
-* Directive for templating tree with Pure JS
-**/
+ * Directive for templating tree with Pure JS
+ */
 var directiveFileTree = {
     'li.file' :{
         'file<-tree' : {
@@ -330,9 +330,9 @@ return '<div class="editor" id="' + arg.item.name  + '"></div>';}
 */
 
 /**
-* This function collapse all strips except one, that is focused. focusedOne is variable that stores
-* focused strip index in editorData.editors array
-**/
+ * This function collapse all strips except one, that is focused. focusedOne is variable that stores
+ * focused strip index in editorData.editors array
+ */
 
 function collapseAllExceptFocusedOne() {
 
@@ -346,17 +346,17 @@ function collapseAllExceptFocusedOne() {
 }
 
 /**
-* Renderer Editors
-* Call this function each time when change occurs in editors that has to be rendered
-**/
+ * Renderer Editors
+ * Call this function each time when change occurs in editors that has to be rendered
+ */
 function renderEditors() {
     $('div.accordion').render(editorData, compiledEditor);
 }
 
 /**
-* Renderer file tree
-* call this function each time when change occurs in tree that has to be rendered
-**/
+ * Renderer file tree
+ * call this function each time when change occurs in tree that has to be rendered
+ */
 function renderFileTree() {
     $('ol.tree').render(editorData, compiledTree);
 }
@@ -377,8 +377,8 @@ function renderFileTree() {
 
 
 /**
-* Implements ace editors and dispach data inside empty strips
-**/
+ * Implements ace editors and dispach data inside empty strips
+ */
 function refreshEditors() {
     saveToJSON();
     for (var editor in editors) {
@@ -403,10 +403,10 @@ function refreshEditors() {
 }
 
 /**
-* Takes data from editors and saves inside json object
-* Data is not send to the server by this function
-* It's local client save
-**/
+ * Takes data from editors and saves inside json object
+ * Data is not send to the server by this function
+ * It's local client save
+ */
 function saveToJSON() {
 
     for (var editor in editors) {
@@ -421,8 +421,8 @@ function saveToJSON() {
 
 
 /**
-* Takes data from editors and saves them on server
-**/
+ * Takes data from editors and saves them on server
+ */
 function backupOpenedFiles() {
     var nameList = [];
 
@@ -440,9 +440,9 @@ function backupOpenedFiles() {
 
 
 /**
-* Saves opened file on the server
-* All opened editor files are saved localu to json structure
-**/
+ * Saves opened file on the server
+ * All opened editor files are saved localu to json structure
+ */
 function save(name) {
     saveToJSON();
     var rawdata = getFileDataByNameFromJson(name);
@@ -454,9 +454,9 @@ function save(name) {
 }
 
 /**
-* Save file on the server and close strip. 
-* Strip is destroyed after and new render is applied
-**/
+ * Save file on the server and close strip. 
+ * Strip is destroyed after and new render is applied
+ */
 function saveAndClose(saveFile) {
     console.log("closing " + saveFile);
     
@@ -481,22 +481,22 @@ function saveAndClose(saveFile) {
 }
 
 /**
-* Stores file type from modal view before creation
-* Default type is html
-**/
+ * Stores file type from modal view before creation
+ * Default type is html
+ */
 var newfileType = "html";
 
 /**
-* Selecting file type from modal view before creation
-* default value has to be html
-**/
+ * Selecting file type from modal view before creation
+ * default value has to be html
+ */
 function setFileType(ext) {
     newfileType = ext;
 }
 
 /**
-* Adds new file into server and opens it inside editor
-**/
+ * Adds new file into server and opens it inside editor
+ */
 function addNewFile() {
 
     // add more key if needed here, like directory etc...
@@ -519,10 +519,10 @@ function addNewFile() {
 
 
 /**
-* Selects name of file that will be deleted
-* File is deleted only after modal view 
-* confirmation
-**/
+ * Selects name of file that will be deleted
+ * File is deleted only after modal view 
+ * confirmation
+ */
 function prepareToDelete(name) {
     console.log("preparing to delete " + name);
     selectedName = name;
@@ -530,9 +530,9 @@ function prepareToDelete(name) {
 }
 
 /**
-* Deletes file permanently from server and from local client json 
-* Normally called after modal view confirmation
-**/
+ * Deletes file permanently from server and from local client json 
+ * Normally called after modal view confirmation
+ */
 function deleteFile() {
     console.log("file to delete " + selectedName);
     
@@ -546,8 +546,8 @@ function deleteFile() {
 
 
 /**
-* Get file contents from local json
-**/
+ * Get file contents from local json
+ */
 function getFileDataByNameFromJson(name) {
     var index = 0;
     for (index=0; index<editorData.editors.length; index++) {
@@ -562,11 +562,11 @@ function getFileDataByNameFromJson(name) {
 
 
 /**
-* Inserts new strip with editor into the scene
-* Called from server response and injected to coresponding strip 
-* Setting editor caracteristics and language parameters needed
-* only once for each file
-**/
+ * Inserts new strip with editor into the scene
+ * Called from server response and injected to coresponding strip 
+ * Setting editor caracteristics and language parameters needed
+ * only once for each file
+ */
 function insertNewEditor(fileInfo) {
 
     saveToJSON();
@@ -589,10 +589,10 @@ function insertNewEditor(fileInfo) {
         
         
 /**
-* Inserts existing editor in new strip if file is on the server
-* It asks server to send file. As server response insertNewEditor 
-* is called
-**/ 
+ * Inserts existing editor in new strip if file is on the server
+ * It asks server to send file. As server response insertNewEditor 
+ * is called
+ */ 
 
 function addNewStrip(filename) {
 
@@ -636,8 +636,8 @@ function addNewStrip(filename) {
 }
 
 /**
-* Play weio_main.py standalone application
-**/
+ * Play weio_main.py standalone application
+ */
 function play() {
     // don't work, don't know why
     $('#playStopIcon').attr("class", "icon-stop");
@@ -657,8 +657,8 @@ function play() {
 }
 
 /**
-* Stop weio_main.py standalone application
-**/
+ * Stop weio_main.py standalone application
+ */
 function stop() {
     var askForFileListRequest = { "request": "stop"};
     baseFiles.send(JSON.stringify(askForFileListRequest));
@@ -666,9 +666,9 @@ function stop() {
 }
 
 /**
-* Backup of all opened files on the server and launching of 
-* the preview screen
-**/
+ * Backup of all opened files on the server and launching of 
+ * the preview screen
+ */
 function runPreview() {
 
     backupOpenedFiles();
@@ -680,14 +680,14 @@ function runPreview() {
 
 
 /**
-* Sets coresponding icon and message inside statusBar in the middle of header. 
-* Icon is string format defined in font awesome library, message is string format
-* If icon is not desired you can pass null as argument : setStatus(null, "hello world");
-*
-* Icons are only used when synchronization is active or weio_main is running
-* Set status is always activated from server push messages, never from client,
-* except when closed socket is detected!
-**/
+ * Sets coresponding icon and message inside statusBar in the middle of header. 
+ * Icon is string format defined in font awesome library, message is string format
+ * If icon is not desired you can pass null as argument : setStatus(null, "hello world");
+ *
+ * Icons are only used when synchronization is active or weio_main is running
+ * Set status is always activated from server push messages, never from client,
+ * except when closed socket is detected!
+ */
 function setStatus(icon, message) {
 
     if (icon!=null) 
@@ -699,8 +699,8 @@ function setStatus(icon, message) {
 }
 
 /**
-* This function clears console output
-**/
+ * This function clears console output
+ */
 function clearConsole(){
     consoleData = [];
     $('#consoleOutput').html("");
