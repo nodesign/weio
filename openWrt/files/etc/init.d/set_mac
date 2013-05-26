@@ -1,0 +1,13 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006 OpenWrt.org
+
+START=14
+start() {
+    echo "Setting MAC address"
+    # Detect MAC
+    MAC=`ifconfig -a | grep wlan0 | grep HWaddr | awk '{print $5}'`
+
+    sed "s/option macaddr.*$/option macaddr ${MAC}/" -i /etc/config/wireless.sta
+    sed "s/option macaddr.*$/option macaddr ${MAC}/" -i /etc/config/wireless.ap
+
+}

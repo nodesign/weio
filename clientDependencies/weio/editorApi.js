@@ -106,9 +106,9 @@ var MAX_LINES_IN_CONSOLE = 1000;
 
 var wifi = {
     "cells":[
-    {"essid" : "domus master", "quality" : 60, "opened" : "true", "id" : "8768768", "connected" : "false", "password" : ""},
-    {"essid" : "NoDesignNet", "quality" : 30, "opened" : "false", "id" : "7628392", "connected" : "true", "password" : ""},
-    {"essid" : "ddwifi", "quality" : 10, "opened" : "false", "id" : "5537920", "connected" : "false", "password" : ""}  
+    {"essid" : "domus master", "quality" : 60, "opened" : true, "id" : "8768768", "connected" : false, "password" : ""},
+    {"essid" : "NoDesignNet", "quality" : 30, "opened" : false, "id" : "7628392", "connected" : true, "password" : ""},
+    {"essid" : "ddwifi", "quality" : 10, "opened" : false, "id" : "5537920", "connected" : false, "password" : ""}  
     ]
 };
 
@@ -151,9 +151,9 @@ function injectWifiNetworksInDropMenu() {
     for (var i=0; i<wifi.cells.length; i++) {
 
         // update current connected object
-        if (wifi.cells[i].connected == "true") connectedToWifiId = wifi.cells[i].id;
+        if (wifi.cells[i].connected == true) connectedToWifiId = wifi.cells[i].id;
 
-        var secureWifi = (wifi.cells[i].opened=="false") ? '<i class="icon-lock" id="wifiIcons"></i>' : '';
+        var secureWifi = (wifi.cells[i].opened==false) ? '<i class="icon-lock" id="wifiIcons"></i>' : '';
 
         // detect where is my current network
         var currentConnection = (wifi.cells[i].id==connectedToWifiId) ? '<i class="icon-check" id="wifiPrefixIcons"></i>' : '';
@@ -203,7 +203,7 @@ function prepareToChangeWifi(id) {
         $("#myModalChangeWifiLabel").html("Join " + cell.essid + " wireless network?");
        
         // if password is required add password field 
-        if (cell.opened=="false") {
+        if (cell.opened==false) {
              $("#wifiPassword").css("display", "block");
         }else {
             $("#wifiPassword").css("display", "none");
@@ -226,7 +226,7 @@ function prepareToChangeWifi(id) {
 function changeWifiNetwork() {
     
     var changeWifi = 0;
-    if (selectedCell.opened=="false") {
+    if (selectedCell.opened==false) {
         var password = $("#wifiPassword").val();
     
         // Checks for strings that are either empty or filled with whitespace
