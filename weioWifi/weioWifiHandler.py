@@ -100,6 +100,8 @@ class WeioWifiHandler(SockJSConnection):
     def serve(self, rq):
         """Parsed input from browser ready to be served"""
         global wifi
+
+        data = {}
         
         # We do WiFi setup __ONLY__ for WEIO machine. PC host should use it's OS tools.
         if (platform.machine() is 'mips') :
