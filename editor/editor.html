@@ -192,7 +192,7 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 <!-- FILE TREE TEMPLATE ENDS HERE -->
 
 <div class="bottom_buttons">
-<button id="addNewFile" class="open" href="#createNewFile" role="button" data-toggle="modal">
+<button id="addNewFile" class="open" href="#createNewFile" role="button" data-toggle="modal" onmouseover="$(this).tooltip()" data-placement="top" title="Create new file">
     <i class="icon-plus-sign icon-2x"></i>
 </button>
 <button id="exportFile" class="open">
@@ -250,12 +250,12 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
         <div class="input-append" >
           <input type="text" value="myFile" id="newFileName"/>
             <div class="btn-group" data-toggle="buttons-radio">
-              <button type="button" class="btn active" onclick="setFileType('html')">.html</button>
-              <button type="button" class="btn" onclick="setFileType('css')">.css</button>
-              <button type="button" class="btn" onclick="setFileType('js')">.js</button>
-              <button type="button" class="btn" onclick="setFileType('py')">.py</button>
-              <button type="button" class="btn" onclick="setFileType('txt')">.txt</button>
-              <button type="button" class="btn" onclick="setFileType('json')">.json</button>
+              <button type="button" class="btn active" onclick="setFileType('html')" onmouseover="$(this).tooltip()" data-placement="bottom" title="Hypertext Markup Language">.html</button>
+              <button type="button" class="btn" onclick="setFileType('css')" onmouseover="$(this).tooltip()" data-placement="bottom" title="Cascading Style Sheets">.css</button>
+              <button type="button" class="btn" onclick="setFileType('js')" onmouseover="$(this).tooltip()" data-placement="bottom" title="Javascript">.js</button>
+              <button type="button" class="btn" onclick="setFileType('py')" onmouseover="$(this).tooltip()" data-placement="bottom" title="Python">.py</button>
+              <button type="button" class="btn" onclick="setFileType('txt')" onmouseover="$(this).tooltip()" data-placement="bottom" title="Text file">.txt</button>
+              <button type="button" class="btn" onclick="setFileType('json')" onmouseover="$(this).tooltip()" data-placement="bottom" title="Javascript object notation">.json</button>
             </div>
         
         </div>

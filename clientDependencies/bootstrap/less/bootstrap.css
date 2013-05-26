@@ -5413,6 +5413,10 @@ a {
 .dropdown-menu {
   width: 300px;
 }
+.modal-body {
+  width: 550px;
+  height: 100px;
+}
 #wifiIcons {
   float: right;
   margin-left: 3px;
