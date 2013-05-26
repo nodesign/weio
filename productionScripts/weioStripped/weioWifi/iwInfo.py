@@ -184,7 +184,7 @@ class IWInfo():
     def getCellQuality(self, s):
         # Example: for "Quality=74/100  Signal level=-77 dBm  Noise level=-69 dBm" returns "74/100"
         s = s.split("Quality")[1]
-        return s.strip().split(" ")[1]
+        return s.strip().split(" ")[1][1:]
 
     def getCellMAC(self, s):
         # Example: for "Cell 07 - Address: 00:02:6F:44:XX:XX" returns "00:02:6F:44:XX:XX"

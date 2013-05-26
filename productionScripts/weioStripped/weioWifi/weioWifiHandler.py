@@ -72,9 +72,6 @@ def weioWifiParseScan() :
         s['encryption'] = scaninfo[cell]['Encryption']
         if (s['encryption'] == 'none') :
             s['opened'] = True
-        else :
-            s['opened'] = False
-          
 
         # Check if we are connected to this ESSID
         if (scaninfo[cell]['ESSID'] == wifi.essid) :

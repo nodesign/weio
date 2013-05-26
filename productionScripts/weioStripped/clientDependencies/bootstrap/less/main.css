@@ -186,7 +186,7 @@ a {
 }
 #wifiNetworks {
   overflow: auto;
-  max-height: 400px;
+  min-height: 400px;
 }
 /* IFRAME */
 .iframeContainer {

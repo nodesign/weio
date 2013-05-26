@@ -36,12 +36,12 @@ function main_container_width() {
 /*
  * SockJS object, Web socket
  */
-var baseFiles = new SockJS('http://weio.local:8081/editor/baseFiles');
+var baseFiles = new SockJS('http://localhost:8081/editor/baseFiles');
 
 /**
  * Wifi SockJS object, Web socket for scaning and changing wifi parameters
  */
-var wifiSocket = new SockJS('http://weio.local:8081/wifi');
+var wifiSocket = new SockJS('http://localhost:8081/wifi');
 
 
 /*
@@ -139,8 +139,8 @@ function injectWifiNetworksInDropMenu() {
 //{"mac": "7656757", "essid": "ddwifi", "quality" : "50/70", "encryption" : "WPA2 PSK (CCMP)", "opened" : True, "connected": False}
     $("#wifiNetworks").empty();
 
-   // $("#wifiNetworks").append('<li class="disabled"><a tabindex="-1" href="#">Scanning networks <i class="icon-spinner icon-spin" id="wifiIcons"></i></a></li>');
-   // $("#wifiNetworks").append('<li class="divider"></li>');
+    $("#wifiNetworks").append('<li class="disabled"><a tabindex="-1" href="#">Scanning networks <i class="icon-spinner icon-spin" id="wifiIcons"></i></a></li>');
+    $("#wifiNetworks").append('<li class="divider"></li>');
     
     $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Connect to another network</a></li>');
     $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Create network</a></li>');
@@ -175,10 +175,8 @@ function injectWifiNetworksInDropMenu() {
 function getCellQuality(cell) {
     // parse quality signal, original examples : 4/70, 50/70
     var rawStringQuality = cell.quality;
-    var n = rawStringQuality.split("/");
+    var n = rawStringQuality.split("/70");
     var wifiQuality = n[0];
-     
-    //console.log(parseInt(wifiQuality) + " " + cell.quality);
    
     // wifi quality signals are from 0-70, we have icons for total of 4 levels (icons from 0-3). 3/70 = 0.042857142857143
     wifiQuality = Math.round(parseInt(wifiQuality) * 0.042857142857143);
