@@ -144,6 +144,7 @@ function injectWifiNetworksInDropMenu() {
     
     $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Connect to another network</a></li>');
     $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Create network</a></li>');
+    $("#wifiNetworks").append('<li><a tabindex="-1" href="#" onclick="scanWifiNetworks()">Rescan wifi networks</a></li>');
     $("#wifiNetworks").append('<li class="divider"></li>');
     
     for (var cell in wifi) {
@@ -162,9 +163,9 @@ function injectWifiNetworksInDropMenu() {
         $("#wifiNetworks").append('<li><a tabindex="-1" onclick="prepareToChangeWifi('+ wifi[cell].mac + ')" role="button" data-toggle="modal">' + currentConnection + wifi[cell].essid  + wifiQuality + secureWifi + '</a></li>');
     }
    
-
+    // don't do it here avoid infinite loop
     // scan wifi networks 
-    scanWifiNetworks();
+   // scanWifiNetworks();
 };
 
 

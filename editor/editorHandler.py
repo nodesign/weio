@@ -81,7 +81,7 @@ class WeioEditorHandler(SockJSConnection):
         # answer dictionary object
         data = {}          
         
-        if 'getFileList' in rq['request'] :
+        if ('getFileList' == rq['request']) :
             # echo given request
             data['requested'] = rq['request']
             
@@ -95,7 +95,7 @@ class WeioEditorHandler(SockJSConnection):
             #sending
             self.send(json.dumps(data))
             
-        elif 'getFile' in rq['request'] :
+        elif ('getFile' == rq['request'] ):
             # echo given request
             data['requested'] = rq['request']
 
@@ -112,7 +112,7 @@ class WeioEditorHandler(SockJSConnection):
 
             self.send(json.dumps(data))
             
-        elif 'saveFile' in rq['request']:
+        elif ('saveFile'==rq['request']):
             # echo given request
             data['requested'] = rq['request']
 
@@ -130,7 +130,7 @@ class WeioEditorHandler(SockJSConnection):
             self.send(json.dumps(data))
 
             
-        elif 'play' in rq['request']:
+        elif ('play'==rq['request']):
             """ This is where all the magic happens.
 
                 "Play" button will spawn a new subprocess
@@ -165,7 +165,7 @@ class WeioEditorHandler(SockJSConnection):
             data['status'] = "weio_main.py is running!"
             self.send(json.dumps(data))
             
-        elif 'stop' in rq['request']:
+        elif ('stop'== rq['request']):
             # not yet implemented                
             ##weio_main.cancel()
             data = {}
@@ -173,7 +173,7 @@ class WeioEditorHandler(SockJSConnection):
             data['status'] = "weio_main.py stopped!"
             self.send(json.dumps(data))
             
-        elif 'storeProjectPreferences' in rq['request']:
+        elif ('storeProjectPreferences'== rq['request']):
             projectStore = rq['data']
             
             print(rq['data'])
@@ -183,13 +183,13 @@ class WeioEditorHandler(SockJSConnection):
             data['status'] = "Your project is saved"
             self.send(json.dumps(data))
             
-        elif 'runPreview' in rq['request']:
+        elif ('runPreview'== rq['request']):
             # echo given request
             data['requested'] = rq['request']
             data['status'] = "Entering preview mode"
             self.send(json.dumps(data))
             
-        elif 'addNewFile' in rq['request']:
+        elif ('addNewFile'== rq['request']):
             # this function is similar to saveFile
             
             # echo given request
@@ -212,7 +212,7 @@ class WeioEditorHandler(SockJSConnection):
             
             data['status'] = fileInfo['name'] + " has been created"
             self.send(json.dumps(data))
-        elif 'deleteFile' in rq['request']:
+        elif ('deleteFile'== rq['request']):
             data['requested'] = rq['request']
             
             fileInfo = rq['data']
