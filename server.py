@@ -39,6 +39,8 @@ import os, sys, platform
 from tornado import web, ioloop, iostream, options, httpserver, autoreload, websocket
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
+import json, functools
+
 # IMPORT EDITOR CLASSES, this connects editor webapp with tornado server
 from editor import editor #, WeioEditorStopHandler, WeioEditorPlayHandler 
 
@@ -91,18 +93,24 @@ class WeioCloseConnection(SockJSConnection):
 # Wifi detection route handler  
 class WeioWifiHandler(SockJSConnection):
     def on_open(self, info) :
+        msg = {}
         msg['mode'] = wifi.mode
         self.send(json.dumps(msg))
 
-    def on_message(self, msg):
+    def on_message(self, data):
+        """Parsing JSON data that is comming from browser into python object"""
+        req = json.loads(data)
+        self.serve(req)
+    
+    def serve(self, rq):
+        """Parsed input from browser ready to be served"""
         global wifi
-
+        
         # We do WiFi setup __ONLY__ for WEIO machine. PC host should use it's OS tools.
         if (platform.machine() is 'mips') :
             """We have obtained essid, psswd and encryption
             so we can try to connect"""
-            rq = json.loads(msg)
-
+            
             if 'scan' in rq['request'] :
                 data = wifi.scan()
             else :
@@ -119,11 +127,12 @@ class WeioWifiHandler(SockJSConnection):
                 # Check if everything went well, or go to AP mode in case of error
                 wifi.checkConnection()
                 data['mode'] = wifi.mode
-
+        
+        print rq["request"]
         # Send response to the browser
         rsp={}
         rsp['requested'] = rq['request']
-        rsp['data'] = data
+        rsp['data'] = "blabla"
 
         # Send connection information to the client
         self.send(json.dumps(rsp))
@@ -170,6 +179,7 @@ if __name__ == '__main__':
     app = web.Application(list(WeioEditorRouter.urls) +
                             list(CloseRouter.urls) +
                             list(WeioAPIBridgeRouter.urls) +
+                            list(WeioWifiRouter.urls) +
                             #list(WeioHeaderRouter.urls) +
                             #list(WeioAPIBridgeRouter.urls) +
                           

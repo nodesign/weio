@@ -35,21 +35,7 @@
 ###
 
 import time
-#import socket
 
-
-#s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM, 0)
-#s.connect("uds_weio_mainStdOut")
-
-
-print "Connected via UDS Socket"
 for a in range(50) :
     print(str(a))
-#    s.send(a)
-    time.sleep(1.1)
-
-
-#s.close()
-
-             
-
+    time.sleep(0.1)

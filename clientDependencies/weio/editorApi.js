@@ -38,6 +38,12 @@ function main_container_width() {
  */
 var baseFiles = new SockJS('http://localhost:8081/editor/baseFiles');
 
+/**
+ * Wifi SockJS object, Web socket for scaning and changing wifi parameters
+ */
+var wifiSocket = new SockJS('http://localhost:8081/wifi');
+
+
 /*
  * First time initialisation of editors
  */
@@ -230,14 +236,14 @@ function changeWifiNetwork() {
             selectedCell.password = password;
             changeWifi = { "request": "changeWifi", "data" : selectedCell};
             console.log(changeWifi);
-            baseFiles.send(JSON.stringify(changeWifi));
+            wifiSocket.send(JSON.stringify(changeWifi));
         }
     
     } else {
         
         changeWifi = { "request": "changeWifi", "data" : selectedCell};
         console.log(changeWifi);
-        baseFiles.send(JSON.stringify(changeWifi));
+        wifiSocket.send(JSON.stringify(changeWifi));
     }
     
     selectedCell = -1; // reset selection
@@ -749,7 +755,7 @@ function clearConsole(){
 }
 
 
-        //////////////////////////////////////////////////////////////// SOCK JS
+        //////////////////////////////////////////////////////////////// SOCK JS EDITOR
 
 
         var fileList;
@@ -910,3 +916,34 @@ function clearConsole(){
             setStatus("icon-ban-circle", "Connection closed")
 
         };
+        
+        //////////////////////////////////////////////////////////////// SOCK JS WIFI        
+        
+/*
+ * On opening of wifi web socket ask server to scan wifi networks
+ */
+wifiSocket.onopen = function() {
+    console.log('Wifi Web socket is opened');
+    var askScan = { "request": "scan" };
+    wifiSocket.send(JSON.stringify(askScan));
+};
+
+/*
+ * Wifi web socket parser, what we got from server
+ */
+wifiSocket.onmessage = function(e) {
+    //console.log('Received: ' + e.data);
+
+    // JSON data is parsed into object
+    data = JSON.parse(e.data);
+    console.log(data);
+
+    // switch
+
+    if ("requested" in data) {
+    }
+};
+
+wifiSocket.onclose = function() {
+    console.log('Wifi Web socket is closed');
+};
