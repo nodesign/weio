@@ -106,7 +106,7 @@ class WeioWifi() :
         for word in status.split(" ") :
             if word.startswith("ESSID") :
                 self.essid = word.split('\"')[1]
-                    break
+                break
 
     def setConnection(mode) :
         """ First shut down the WiFi on Carambola """
