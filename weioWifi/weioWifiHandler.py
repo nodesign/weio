@@ -57,6 +57,29 @@ import weioWifi
 # Global weioWifi object
 wifi = weioWifi.WeioWifi("wlan0")
 
+def weioWifiParseScan() :
+    global wifi
+
+    scaninfo = wifi.scan()
+
+    data = {}
+
+    for cell in  scaninfo.keys :
+        data[cell]['mac'] = scaninfo[cell]['MAC']
+        data[cell]['essid'] = scaninfo[cell]['ESSID']
+        data[cell]['quality'] = scaninfo[cell]['Quality']
+        data[cell]['encryption'] = scaninfo[cell]['Encryption']
+
+        if (data[cell]['encryption'] is 'none') :
+            data[cell]['opened'] = True
+
+        # Check if we are connected to this ESSID
+        if (scaninfo[cell]['ESSID'] == wifi.essid) :
+            data[cell]['connected'] = True
+        
+        # Placeholeder for client to fill
+        data[cell]['passwd'] = None
+
 
 # Wifi detection route handler  
 class WeioWifiHandler(SockJSConnection):
@@ -80,7 +103,7 @@ class WeioWifiHandler(SockJSConnection):
             so we can try to connect"""
             
             if 'scan' in rq['request'] :
-                data = wifi.scan()
+                data = weioWifiParseScan()
             else :
                 if 'goAp' in rq['request'] :
                     wifi.setConnection("ap")
@@ -100,7 +123,7 @@ class WeioWifiHandler(SockJSConnection):
         # Send response to the browser
         rsp={}
         rsp['requested'] = rq['request']
-        rsp['data'] = "blabla"
+        rsp['data'] = data
 
         # Send connection information to the client
         self.send(json.dumps(rsp))

@@ -64,7 +64,6 @@ def weioCommand(command) :
 
 class WeioWifi() :
     def __init__(self, interface):
-        self.rawdata = ""
         self.data = None
         self.interface = interface
         self.mode = None
@@ -86,6 +85,7 @@ class WeioWifi() :
         elif "Mode:Master" in status :
             print "AP Mode"
             self.mode = "ap"
+            self.essid = status.strip().startswith("ESSID:").split(':')[1]
         elif "Mode:Managed" in status :
             if "Access Point: Not-Associated" in status :
                 self.mode = None
@@ -102,27 +102,38 @@ class WeioWifi() :
             # Check what happened
             self.checkConnection()
 
-    def setConnection(essid, passwd, encryption) :
+        # Ath this point connection has been maid, and all we have to do is check ESSID
+        for word in status.split(" ") :
+            if word.startswith("ESSID") :
+                self.essid = word.split('\"')[1]
+                    break
+
+    def setConnection(mode) :
         """ First shut down the WiFi on Carambola """
         weioCommand("wifi down")
-        
 
-        """ Change the /etc/config/wireless.sta : replace the params """
-        fname = "/etc/config/wireless.sta"
-
-        with open(fname) as f:
-            out_fname = fname + ".tmp"
-            out = open(out_fname, "w")
-            for line in f:
-                line = re.sub(r'option\s+ssid\s.*$', r'option ssid ' + essid, line)
-                line = re.sub(r'option\s+key\s.*$', r'option key ' + passwd, line)
-                line = re.sub(r'option\s+encryption\s.*$', r'option encryption ' + encryption, line)
-                out.write(line)
-            out.close()
-            os.rename(out_fname, fname)
+        if (mode is 'ap') :
+            fname = "/etc/config/wireless.ap"
             shutil.copy(fname, "/etc/config/wireless")
+            self.essid = 'WEIO'
+            weioCommand("/weio/wifi_set_mode.sh ap")
+        elif (mode is 'sta') :
+            """ Change the /etc/config/wireless.sta : replace the params """
+            fname = "/etc/config/wireless.sta"
 
-        weioCommand("/weio/wifi_set_mode.sh sta")
+            with open(fname) as f:
+                out_fname = fname + ".tmp"
+                out = open(out_fname, "w")
+                for line in f:
+                    line = re.sub(r'option\s+ssid\s.*$', r'option ssid ' + self.essid, line)
+                    line = re.sub(r'option\s+key\s.*$', r'option key ' + self.passwd, line)
+                    line = re.sub(r'option\s+encryption\s.*$', r'option encryption ' + self.encryption, line)
+                    out.write(line)
+                out.close()
+                os.rename(out_fname, fname)
+                shutil.copy(fname, "/etc/config/wireless")
+
+            weioCommand("/weio/wifi_set_mode.sh sta")
 
     def scan() :
         iwl = IWInfo.IWInfo(self.interface)
