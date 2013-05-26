@@ -1,0 +1,1966 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.7" />
+<title>WEIO SW User Guide</title>
+<style type="text/css">
+/* Shared CSS for AsciiDoc xhtml11 and html5 backends */
+
+/* Default font. */
+body {
+  font-family: Georgia,serif;
+}
+
+/* Title font. */
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+h5 {
+  font-size: 1.0em;
+}
+
+div.sectionbody {
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+ul > li     { color: #aaa; }
+ul > li > * { color: black; }
+
+pre {
+  padding: 0;
+  margin: 0;
+}
+
+#author {
+  color: #527bbd;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+#email {
+}
+#revnumber, #revdate, #revremark {
+}
+
+#footer {
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid #dddddd;
+  border-left: 4px solid #f0f0f0;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid #dddddd;
+  border-left: 5px solid #f0f0f0;
+  background: #f8f8f8;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #f0f0f0;
+  color: #888;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > pre.content {
+  font-family: inherit;
+  font-size: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+div.colist td {
+  padding-right: 0.5em;
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+div.colist td img {
+  margin-top: 0.3em;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toc {
+  margin-bottom: 2.5em;
+}
+
+#toctitle {
+  color: #527bbd;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
+
+span.underline { text-decoration: underline; }
+span.overline { text-decoration: overline; }
+span.line-through { text-decoration: line-through; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+tt {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+}
+
+div.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+.monospaced {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+}
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #527bbd;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+/*
+ * manpage specific
+ *
+ * */
+
+body.manpage h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="article">
+<div id="header">
+<h1>WEIO SW User Guide</h1>
+<span id="author">Drasko DRASKOVIC</span><br />
+<span id="email"><tt>&lt;<a href="mailto:drasko.draskovic@gmail.com">drasko.draskovic@gmail.com</a>&gt;</tt></span><br />
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_installation">Installation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>OpenWRT Linux distribution can be git-cloned from 8devices site :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt; git clone https://github.com/8devices/carambola carambola
+&gt; cd carambola</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_adding_more_packages">Adding more packages</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Edit file feeds.conf.default :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>src-git packages git://github.com/8devices/packages.git
+#src-git luci https://github.com/8devices/luci.git
+src-git luci src-git git://nbd.name/luci.git
+#src-svn packages svn://svn.openwrt.org/openwrt/packages
+src-svn xwrt http://x-wrt.googlecode.com/svn/trunk/package
+#src-svn luci http://svn.luci.subsignal.org/luci/trunk/contrib/package
+#src-svn phone svn://svn.openwrt.org/openwrt/feeds/phone
+#src-svn efl svn://svn.openwrt.org/openwrt/feeds/efl
+#src-svn xorg svn://svn.openwrt.org/openwrt/feeds/xorg
+#src-svn desktop svn://svn.openwrt.org/openwrt/feeds/desktop
+#src-svn xfce svn://svn.openwrt.org/openwrt/feeds/xfce
+#src-svn lxde svn://svn.openwrt.org/openwrt/feeds/lxde
+#src-link custom /usr/src/openwrt/custom-feed</tt></pre>
+</div></div>
+<div class="paragraph"><p>Update and install packages using feeds :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt; ./scripts/feeds update -a
+&gt; ./scripts/feeds install -a</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_build_image">Build image</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>To configure only kernel image :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt; make kernel_menuconfig</tt></pre>
+</div></div>
+<div class="paragraph"><p>To configure OpenWRT image :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt; make menuconfig</tt></pre>
+</div></div>
+<div class="paragraph"><p>To build the image :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt; make -j 4</tt></pre>
+</div></div>
+<div class="paragraph"><p>Set up TFTP server</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>sudo apt-get install xinetd tftpd tftp
+sudo touch /etc/xinetd.d/tftp
+sudo nano /etc/xinetd.d/tftp</tt></pre>
+</div></div>
+<div class="paragraph"><p>Paste this code:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>service tftp
+{
+ protocol = udp
+ port = 69
+ socket_type = dgram
+ wait = yes
+ user = nobody
+ server = /usr/sbin/in.tftpd
+ server_args = /home/tftpboot
+ disable = no
+}</tt></pre>
+</div></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>sudo mkdir /home/tftpboot
+sudo chmod -R 777 /home/tftpboot
+sudo chown -R nobody /home/tftpboot
+sudo service xinetd restart</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_test_tftp_connection">Test TFTP connection</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre><tt>drasko@Marx:~/carambola/carambola$ cp bin/ramips/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin /home/tftpboot/carambola.bin</tt></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Connect to either ETH RJ45 jacks
+</p>
+</li>
+<li>
+<p>
+Enter U-Boot by pressing 4 when this menu appears after reset :
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>U-Boot 1.1.3 (Feb 20 2012 - 16:20:22)
+
+Board: Ralink APSoC DRAM:  32 MB
+relocate_code Pointer at: 81fb0000
+config usb..
+flash_protect ON: from 0xBF000000 to 0xBF01E757
+flash_protect ON: from 0xBF030000 to 0xBF030FFF
+*** Warning - bad CRC, using default environment
+
+============================================
+Ralink UBoot Version: 3.5.0.0
+--------------------------------------------
+ASIC 3052_MP2 (Port5&lt;-&gt;None)
+DRAM component: 256 Mbits SDR
+DRAM bus: 16 bit
+Total memory: 32 MBytes
+Flash component: NOR Flash
+Date:Feb 20 2012  Time:16:20:22
+============================================
+icache: sets:256, ways:4, linesz:32 ,total:32768
+dcache: sets:128, ways:4, linesz:32 ,total:16384
+
+ ##### The CPU freq = 320 MHZ ####
+ estimate memory size =32 Mbytes
+
+Please choose the operation:
+   1: Load system code to SDRAM via TFTP.
+   2: Load system code then write to Flash via TFTP.
+   3: Boot system code via Flash (default).
+   4: Entr boot command line interface.
+   7: Load Boot Loader code then write to Flash via Serial.
+   9: Load Boot Loader code then write to Flash via TFTP.
+ 4</tt></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Check ipaddr and tftpaddr in U-Boot using <tt>printenv</tt>
+Usually they are like this :
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>ipaddr=10.10.10.123
+serverip=10.10.10.3</tt></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+On the PC host, set up local eth0 interface&#8217;s ip address to match address of TFTP server set
+up in u-boot :
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>Marx:/home/drasko/carambola# ifconfig eth0 10.10.10.3</tt></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Test the TFTP transfer in U-Boot :
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>RT3052 # tftp 0x100 carambola.bin
+
+ netboot_common, argc= 3
+
+ KSEG1ADDR(NetTxPacket) = 0xA1FE6A00
+
+ NetLoop,call eth_halt !
+
+ NetLoop,call eth_init !
+Trying Eth0 (10/100-M)
+
+ ETH_STATE_ACTIVE!!
+Using Eth0 (10/100-M) device
+TFTP from server 10.10.10.3; our IP address is 10.10.10.123
+Filename 'carambola.bin'.
+
+ TIMEOUT_COUNT=10,Load address: 0x100
+Loading: checksum bad
+checksum bad
+Got ARP REPLY, set server/gtwy eth addr (00:1d:09:61:6c:23)
+Got it
+#################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         ####
+done
+Bytes transferred = 3014660 (2e0004 hex)
+NetBootFileXferSize= 002e0004
+RT3052 #</tt></pre>
+</div></div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph"><p>N.B.
+Do not try just :</p></div>
+<div class="paragraph"><p>RT3052 # tftp                  &#8592; no dst address nor filename given</p></div>
+<div class="paragraph"><p>or</p></div>
+<div class="paragraph"><p>RT3052 # tftp carambola.bin    &#8592; filename given, but no dst address given</p></div>
+<div class="paragraph"><p>because U-Boot&#8217;s TFTP client inthat case always falls for the test.bin, which
+is probably not present in your /home/tftpboot and is not what you want</p></div>
+</div></div>
+<div class="paragraph"><p>Hitting &lt;ENTER&gt; on after the reset skips waiting time of 5 secs and boots
+normal Linux.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_update_linux_image_via_u_boot">Update Linux image via U-Boot</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre><tt>drasko@Marx:~/carambola/carambola$ cp bin/ramips/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin /home/tftpboot/carambola.bin</tt></pre>
+</div></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>Board: Ralink APSoC DRAM:  32 MB
+relocate_code Pointer at: 81fb0000
+config usb..
+flash_protect ON: from 0xBF000000 to 0xBF01E757
+flash_protect ON: from 0xBF030000 to 0xBF030FFF
+============================================
+Ralink UBoot Version: 3.5.0.0
+--------------------------------------------
+ASIC 3052_MP2 (Port5&lt;-&gt;None)
+DRAM component: 256 Mbits SDR
+DRAM bus: 16 bit
+Total memory: 32 MBytes
+Flash component: NOR Flash
+Date:Feb 20 2012  Time:16:20:22
+============================================
+icache: sets:256, ways:4, linesz:32 ,total:32768
+dcache: sets:128, ways:4, linesz:32 ,total:16384
+
+ ##### The CPU freq = 320 MHZ ####
+ estimate memory size =32 Mbytes
+
+Please choose the operation:
+   1: Load system code to SDRAM via TFTP.
+   2: Load system code then write to Flash via TFTP.
+   3: Boot system code via Flash (default).
+   4: Entr boot command line interface.
+   7: Load Boot Loader code then write to Flash via Serial.
+   9: Load Boot Loader code then write to Flash via TFTP.                                                                                                                                                       2
+You choosed 2
+                                                                                                                                                                                                                0
+
+
+2: System Load Linux Kernel then write to Flash via TFTP.
+ Warning!! Erase Linux in Flash then burn new one. Are you sure?(Y/N)
+ Please Input new ones /or Ctrl-C to discard
+        Input device IP (10.10.10.123) ==:10.10.10.123
+        Input server IP (10.10.10.3) ==:10.10.10.3
+        Input Linux Kernel filename (carambola.bin) ==:carambola.bin
+
+ netboot_common, argc= 3
+
+ NetTxPacket = 0x81FE6A00
+
+ KSEG1ADDR(NetTxPacket) = 0xA1FE6A00
+
+ NetLoop,call eth_halt !
+
+ NetLoop,call eth_init !
+Trying Eth0 (10/100-M)
+
+ Waitting for RX_DMA_BUSY status Start... done
+
+
+ Header Payload scatter function is Disable !!
+
+ ETH_STATE_ACTIVE!!
+Using Eth0 (10/100-M) device
+TFTP from server 10.10.10.3; our IP address is 10.10.10.123
+Filename 'carambola.bin'.
+
+ TIMEOUT_COUNT=10,Load address: 0x80100000
+Loading: *
+ArpTimeoutCheck
+checksum bad
+T T T checksum bad
+T Got ARP REPLY, set server/gtwy eth addr (00:1d:09:61:6c:23)
+Got it
+#################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+done
+Bytes transferred = 4325380 (420004 hex)
+NetBootFileXferSize= 00420004
+Erase linux kernel block !!
+From 0xBF050000 To 0xBF47FFFF
+
+ b_end =BF7FFFFF
+Erase Flash from 0xbf050000 to 0xb</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_serial_cable_transfer_with_gnu_screen">Serial cable transfer with GNU Screen</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Add package in Carambola :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&lt;*&gt; lrzsz.......................................... X,Y and Z-modem protocols</tt></pre>
+</div></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Set-up Gnu Screen&#8217;s zmodem in "catch" mode (not pass, because we are not having 2 GNU Screens on distant hosts)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/#
+:zmodem catch                   &lt;---  Set up this in Screen with ^A:</tt></pre>
+</div></div>
+</li>
+<li>
+<p>
+When <tt>rz</tt> command is issued, GNU Screen detects Z-Modem transfer and asks for filename on PC host to be transfered to remote host wich expcts it (because it issued <tt>rz</tt> command)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# rz
+rz waiting to receive
+:!!! sz -vv -b           &lt;--- Screen "catches" the Z-Modem transfer and expects filename</tt></pre>
+</div></div>
+</li>
+<li>
+<p>
+Upong giving a filename, trasaction is done
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# rz
+rz waiting to receive
+Sending: wireless
+Bytes Sent:    640   BPS:295
+Sending:
+Ymodem sectors/kbytes sent:   0/ 0k
+Transfer complete
+root@OpenWrt:/# ls
+bin       etc       mnt       proc      root      sys       usr       wireless
+dev       lib       overlay   rom       sbin      tmp       var       www</tt></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_network_configuration">Network Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Change two files :</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+<tt>/etc/config/wireless</tt> from :
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>config wifi-device  radio0
+        option type     mac80211
+        option channel  11
+        option macaddr  c4:93:00:00:03:55
+        option hwmode   11ng
+        option txpower  10
+        option htmode   HT20
+        list ht_capab   GF
+        list ht_capab   SHORT-GI-20
+        list ht_capab   SHORT-GI-40
+        list ht_capab   RX-STBC1
+        # REMOVE THIS LINE TO ENABLE WIFI:
+        option disabled 1
+
+config wifi-iface
+        option device   radio0
+        option network  lan
+        option mode     ap
+        option ssid     OpenWrt
+        option encryption none</tt></pre>
+</div></div>
+<div class="paragraph"><p>to :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>config wifi-device  radio0
+        option type     mac80211
+        option channel  11
+        option macaddr  c4:93:00:00:03:55
+        option hwmode   11ng
+        option txpower  10
+        option htmode   HT20
+        list ht_capab   GF
+        list ht_capab   SHORT-GI-20
+        list ht_capab   SHORT-GI-40
+        list ht_capab   RX-STBC1
+        # REMOVE THIS LINE TO ENABLE WIFI:
+
+        #####################################
+        # N.B.
+        #   LINE BELOW __MUST__ BE COMMENTED
+        #####################################
+        #option disabled 1
+
+config wifi-iface
+        option device   'radio0'
+        option network  'wwan'
+        option mode     'sta'
+        option ssid     'ddwifi'
+        option encryption 'psk'
+        option key      'YOURPASSHERE'</tt></pre>
+</div></div>
+</li>
+<li>
+<p>
+<tt>/etc/config/network</tt> from :
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>config interface 'loopback'
+        option ifname 'lo'
+        option proto 'static'
+        option ipaddr '127.0.0.1'
+        option netmask '255.0.0.0'
+
+config interface 'lan'
+        option ifname 'eth0.1'
+        option type 'bridge'
+        option proto 'static'
+        option ipaddr '192.168.1.1'
+        option netmask '255.255.255.0'
+        option macaddr 'c4:93:00:00:03:53'
+
+config interface 'wan'
+        option ifname 'eth0.2'
+        option proto 'dhcp'
+
+config switch
+        option name 'rt305x'
+        option reset '1'
+        option enable_vlan '1'
+
+config switch_vlan
+        option device 'rt305x'
+        option vlan '1'
+        option ports '1 2 3 4  6t'
+
+config switch_vlan
+        option device 'rt305x'
+        option vlan '2'
+        option ports '0  6t'</tt></pre>
+</div></div>
+<div class="paragraph"><p>to :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>config interface 'loopback'
+        option ifname 'lo'
+        option proto 'static'
+        option ipaddr '127.0.0.1'
+        option netmask '255.0.0.0'
+
+config interface 'lan'
+        option ifname 'eth0.1'
+        option type 'bridge'
+        option proto 'static'
+        option ipaddr '192.168.1.1'
+        option netmask '255.255.255.0'
+        option macaddr 'c4:93:00:00:03:53'
+
+config interface 'wan'
+        option ifname 'eth0.2'
+        option proto 'dhcp'
+
+# Added for WiFi
+config interface 'wwan'
+                        option proto 'dhcp'
+
+config switch
+        option name 'rt305x'
+        option reset '1'
+        option enable_vlan '1'
+
+config switch_vlan
+        option device 'rt305x'
+        option vlan '1'
+        option ports '1 2 3 4  6t'
+
+config switch_vlan
+        option device 'rt305x'
+        option vlan '2'
+        option ports '0  6t'</tt></pre>
+</div></div>
+</li>
+</ol></div>
+<div class="paragraph"><p>Now restart the network system to take up new configuration :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# /etc/init.d/network restart
+[  868.670000] br-lan: port 1(eth0.1) entered disabled state
+[  868.690000] device eth0.1 left promiscuous mode
+[  868.690000] device eth0 left promiscuous mode
+[  868.700000] br-lan: port 1(eth0.1) entered disabled state
+[  870.340000] device eth0.1 entered promiscuous mode
+[  870.350000] device eth0 entered promiscuous mode
+[  870.360000] br-lan: port 1(eth0.1) entered forwarding state
+[  870.360000] br-lan: port 1(eth0.1) entered forwarding state
+[  872.360000] br-lan: port 1(eth0.1) entered forwarding state
+command failed: Device or resource busy (-16)
+[  872.870000] phy0 -&gt; rt2x00mac_conf_tx: Info - Configured TX queue 0 - CWmin: 5, CWmax: 10, Aifs: 2, TXop: 0.
+[  872.880000] phy0 -&gt; rt2x00mac_conf_tx: Info - Configured TX queue 1 - CWmin: 5, CWmax: 10, Aifs: 2, TXop: 0.
+[  872.890000] phy0 -&gt; rt2x00mac_conf_tx: Info - Configured TX queue 2 - CWmin: 5, CWmax: 10, Aifs: 2, TXop: 0.
+[  872.900000] phy0 -&gt; rt2x00mac_conf_tx: Info - Configured TX queue 3 - CWmin: 5, CWmax: 10, Aifs: 2, TXop: 0.
+Successfully initialized wpa_supplicant
+root@OpenWrt:/# [  877.640000] wlan0: authenticate with 6e:e9:d4:81:2d:e4
+[  877.760000] wlan0: direct probe to 6e:e9:d4:81:2d:e4 (try 1/3)
+[  877.970000] wlan0: send auth to 6e:e9:d4:81:2d:e4 (try 2/3)
+[  877.970000] wlan0: authenticated
+[  877.980000] rt2800_wmac rt2800_wmac.0: wlan0: disabling HT as WMM/QoS is not supported by the AP
+[  877.990000] rt2800_wmac rt2800_wmac.0: wlan0: disabling VHT as WMM/QoS is not supported by the AP
+[  878.010000] wlan0: associate with 6e:e9:d4:81:2d:e4 (try 1/3)
+[  878.010000] wlan0: RX AssocResp from 6e:e9:d4:81:2d:e4 (capab=0x411 status=0 aid=2)
+[  878.020000] phy0 -&gt; rt2x00mac_conf_tx: Info - Configured TX queue 0 - CWmin: 4, CWmax: 10, Aifs: 2, TXop: 0.
+[  878.030000] phy0 -&gt; rt2x00mac_conf_tx: Info - Configured TX queue 1 - CWmin: 4, CWmax: 10, Aifs: 2, TXop: 0.
+[  878.040000] phy0 -&gt; rt2x00mac_conf_tx: Info - Configured TX queue 2 - CWmin: 4, CWmax: 10, Aifs: 2, TXop: 0.
+[  878.050000] phy0 -&gt; rt2x00mac_conf_tx: Info - Configured TX queue 3 - CWmin: 4, CWmax: 10, Aifs: 2, TXop: 0.
+[  878.060000] wlan0: associated
+
+root@OpenWrt:/# ifconfig
+br-lan    Link encap:Ethernet  HWaddr C4:93:00:00:03:53
+          inet addr:192.168.1.1  Bcast:192.168.1.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+eth0      Link encap:Ethernet  HWaddr C4:93:00:00:03:53
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:289 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0.0 B)  TX bytes:117334 (114.5 KiB)
+          Interrupt:5
+
+eth0.1    Link encap:Ethernet  HWaddr C4:93:00:00:03:53
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+eth0.2    Link encap:Ethernet  HWaddr C4:93:00:00:03:53
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:4 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 B)  TX bytes:1608 (1.5 KiB)
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+wlan0     Link encap:Ethernet  HWaddr C4:93:00:00:03:55
+          inet addr:192.168.0.12  Bcast:192.168.0.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:6 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:5 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:32
+          RX bytes:1647 (1.6 KiB)  TX bytes:1269 (1.2 KiB)
+
+root@OpenWrt:/# ping google.com
+PING google.com (173.194.34.0): 56 data bytes
+64 bytes from 173.194.34.0: seq=0 ttl=53 time=31.494 ms
+64 bytes from 173.194.34.0: seq=1 ttl=53 time=27.503 ms
+64 bytes from 173.194.34.0: seq=2 ttl=53 time=27.412 ms
+^C
+--- google.com ping statistics ---
+3 packets transmitted, 3 packets received, 0% packet loss
+round-trip min/avg/max = 27.412/28.803/31.494 ms
+root@OpenWrt:/#</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ssh_connection">SSH Connection</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>To use SSH connection, first set the root&#8217;s password on Carmabola :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# passwd
+Changing password for root
+New password:
+Bad password: too short
+Retype password:
+Password for root changed by root
+root@OpenWrt:/#</tt></pre>
+</div></div>
+<div class="paragraph"><p>Then connect from the PC host terminal</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>drasko@Marx:~/carambola$ ssh root@192.168.0.12
+root@192.168.0.12's password:
+
+
+BusyBox v1.19.4 (2013-01-12 19:01:31 CET) built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+
+  _______                     ________        __
+ |       |.-----.-----.-----.|  |  |  |.----.|  |_
+ |   -   ||  _  |  -__|     ||  |  |  ||   _||   _|
+ |_______||   __|_____|__|__||________||__|  |____|
+          |__| W I R E L E S S   F R E E D O M
+ -----------------------------------------------------
+ BARRIER BREAKER (Bleeding Edge, r33735)
+ -----------------------------------------------------
+  * 1/2 oz Galliano         Pour all ingredients into
+  * 4 oz cold Coffee        an irish coffee mug filled
+  * 1 1/2 oz Dark Rum       with crushed ice. Stir.
+  * 2 tsp. Creme de Cacao
+ -----------------------------------------------------
+root@OpenWrt:~#</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_banner">Banner</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Place ascii banner to a file called :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>package/base-files/files/etc/banner</tt></pre>
+</div></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>drasko@Marx:~/carambola/carambola$ cat package/base-files/files/etc/banner
+      ___           ___                       ___
+     /\  \         /\__\                     /\  \
+    _\:\  \       /:/ _/_       ___         /::\  \
+   /\ \:\  \     /:/ /\__\     /\__\       /:/\:\  \
+  _\:\ \:\  \   /:/ /:/ _/_   /:/__/      /:/  \:\  \
+ /\ \:\ \:\__\ /:/_/:/ /\__\ /::\  \     /:/__/ \:\__\
+ \:\ \:\/:/  / \:\/:/ /:/  / \/\:\  \__  \:\  \ /:/  /
+  \:\ \::/  /   \::/_/:/  /   ~~\:\/\__\  \:\  /:/  /
+   \:\/:/  /     \:\/:/  /       \::/  /   \:\/:/  /
+    \::/  /       \::/  /        /:/  /     \::/  /
+     \/__/         \/__/         \/__/       \/__/
+------------------------------------------------------
+  NoDesign.net | WEIO - Internet of things platform
+------------------------------------------------------
+  Uros Petrevski | Drasko Draskovic | 2012
+------------------------------------------------------
+
+drasko@Marx:~/carambola/carambola$</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sysupgrade">Sysupgrade</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Copy upgrade image to Carmabola&#8217;s RAM (not FLASH - because there is not enough space in flash)</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>drasko@Marx:~/carambola/carambola/bin/ramips$ scp openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin root@192.168.0.12:/tmp
+root@192.168.0.12's password:
+openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin                                         100% 3968KB 793.6KB/s   00:05</tt></pre>
+</div></div>
+<div class="paragraph"><p>N.B.
+Putting just :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>rasko@Marx:~/carambola/carambola/bin/ramips$ scp openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin root@192.168.0.12:/
+root@192.168.0.12's password:
+openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin                                        100% 3968KB  58.4KB/s   01:08</tt></pre>
+</div></div>
+<div class="paragraph"><p>would try to copy image to FLASH, which can be seen by observing the time needed for write and throughput used</p></div>
+<div class="paragraph"><p>Destructive sysupgrade :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# sysupgrade -v -n /tmp/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin
+Sending TERM to remaining processes ... dnsmasq syslogd klogd hotplug2 ubusd netifd
+Sending KILL to remaining processes ...
+Switching to ramdisk...
+Performing system upgrade...
+Unlocking firmware ...
+
+Writing from &lt;stdin&gt; to firmware ...
+Upgrade completed
+Rebooting system...
+[  476.200000] Restarting system.</tt></pre>
+</div></div>
+<div class="paragraph"><p>For non-destructive use options "-c -v".</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_telnet">Telnet</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre><tt>Plug into ETH1, not into ETH0</tt></pre>
+</div></div>
+<div class="paragraph"><p>It is because by default eth0 iface does not have ipaddr, and eth1 iface is
+configured as a bridge with ipaddr 192.168.1.1.</p></div>
+<div class="paragraph"><p>That&#8217;s why before telnet we must configue host eth0 to 192.168.1.2 :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>Marx:/home/drasko# ifconfig eth0 192.168.1.2
+Marx:/home/drasko# ping 192.168.1.1
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_req=1 ttl=64 time=2.27 ms
+64 bytes from 192.168.1.1: icmp_req=2 ttl=64 time=0.566 ms
+^C
+--- 192.168.1.1 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 0.566/1.418/2.270/0.852 ms
+Marx:/home/drasko# telnet 192.168.1.1
+Trying 192.168.1.1...
+Connected to 192.168.1.1.
+Escape character is '^]'.
+ === IMPORTANT ============================
+  Use 'passwd' to set your login password
+  this will disable telnet and enable SSH
+ ------------------------------------------
+
+
+BusyBox v1.19.4 (2013-01-12 19:01:31 CET) built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+
+      ___           ___                       ___
+     /\  \         /\__\                     /\  \
+    _\:\  \       /:/ _/_       ___         /::\  \
+   /\ \:\  \     /:/ /\__\     /\__\       /:/\:\  \
+  _\:\ \:\  \   /:/ /:/ _/_   /:/__/      /:/  \:\  \
+ /\ \:\ \:\__\ /:/_/:/ /\__\ /::\  \     /:/__/ \:\__\
+ \:\ \:\/:/  / \:\/:/ /:/  / \/\:\  \__  \:\  \ /:/  /
+  \:\ \::/  /   \::/_/:/  /   ~~\:\/\__\  \:\  /:/  /
+   \:\/:/  /     \:\/:/  /       \::/  /   \:\/:/  /
+    \::/  /       \::/  /        /:/  /     \::/  /
+     \/__/         \/__/         \/__/       \/__/
+------------------------------------------------------
+  NoDesign.net | WEIO - Internet of things platform
+------------------------------------------------------
+  Uros Petrevski | Drasko Draskovic | 2012
+------------------------------------------------------
+
+root@OpenWrt:/#</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_automatic_mount_of_python_usb">Automatic mount of Python USB</h2>
+<div class="sectionbody">
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Add /etc/init.d/python_usb file
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# cat /etc/init.d/python_usb
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2013 WEIO
+
+START=70
+start() {
+        [ -d /mnt/usb ] &amp;&amp; {
+                /bin/mount -t ext2 /dev/sda1 /mnt/usb
+        }
+}
+root@OpenWrt:/#</tt></pre>
+</div></div>
+</li>
+<li>
+<p>
+Change file to executable :
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@WEIO:/# chmod +x /etc/init.d/python_usb</tt></pre>
+</div></div>
+</li>
+<li>
+<p>
+Add softlink by calling thist script with argument <tt>enable</tt> :
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWRT:/# /etc/init.d/python_usb enable</tt></pre>
+</div></div>
+<div class="paragraph"><p>and this produces :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# ls -la /etc/rc.d/S61python_usb
+lrwxrwxrwx    1 root     root            20 Jan 27 15:31 /etc/rc.d/S61python_usb -&gt; ../init.d/python_usb
+root@OpenWrt:/#</tt></pre>
+</div></div>
+<div class="paragraph"><p>This is explained in the documentation:</p></div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph"><p>1.3.2 Init scripts</p></div>
+<div class="paragraph"><p>Enabling and disabling init scripts is done by running /etc/init.d/name en-
+able or /etc/init.d/name disable. This creates or removes symbolic links
+to the init script in /etc/rc.d, which is processed by /etc/init.d/rcS at boot
+time.</p></div>
+</div></div>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_automatic_set_up_of_path_environment_variable">Automatic set-up of PATH environment variable</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>According to this exmplanation : <a href="http://www.cesareriva.com/archives/977">http://www.cesareriva.com/archives/977</a>
+edit <tt>/etc/profile</tt> and change PATH exporting to :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/mnt/usb/usr/bin</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_set_up_of_opkg_installation_destination">Set-up of opkg installation destination</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>As there are almost no place left on flash we have to say to <tt>opkg</tt> to install python on the usb flash.
+New destination must be specified in <tt>/etc/opkg.conf</tt> file like this :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>dest root /
+/dest ram /tmp
+dest usb /mnt/usb</tt></pre>
+</div></div>
+<div class="paragraph"><p>We added usb destination here</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_setting_up_timezone">Setting up timezone</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>According to : <a href="http://wiki.openwrt.org/doc/uci/system">http://wiki.openwrt.org/doc/uci/system</a>, section Time Zones,
+change <tt>/etc/config/system</tt> :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# cat /etc/config/system
+config system
+        option hostname OpenWrt
+#       option timezone UTC
+        option timezone CET-1CEST,M3.5.0,M10.5.0/3</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_uninstalling_python_files">Uninstalling Python files</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Refering to the
+<a href="http://kmandla.wordpress.com/2009/01/08/there-is-no-setuppy-uninstall/">http://kmandla.wordpress.com/2009/01/08/there-is-no-setuppy-uninstall/</a> :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt; python setup.py install --record files.txt
+&gt; cat files.txt | xargs rm -rf</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_making_openwrt_documentation">Making OpenWRT documentation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>OpenWRT documentation is located in the folder <tt>docs</tt> :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>drasko@Marx:~/carambola/carambola$ ls docs/
+adding.tex  build.tex   debugging.tex     Makefile             network.tex  openwrt.html  openwrt.sty  submitting-patches.tex  working.tex
+bugs.tex    config.tex  init-scripts.tex  network-scripts.tex  openwrt.css  openwrt.pdf   openwrt.tex  wireless.tex
+drasko@Marx:~/carambola/carambola$</tt></pre>
+</div></div>
+<div class="paragraph"><p>and this documentation ahould be build from Latex sources.</p></div>
+<div class="paragraph"><p>This is done by issuing command :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>drasko@Marx:~/carambola/carambola$ make docs
+ make[1] -C docs compile
+drasko@Marx:~/carambola/carambola$</tt></pre>
+</div></div>
+<div class="paragraph"><p>After that a docbook in pdf format is produced (and many other pdf files) :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>drasko@Marx:~/carambola/carambola$ acroread ./docs/openwrt.pdf</tt></pre>
+</div></div>
+<div class="paragraph"><p>N.B. A problem might arise if some .sty files for Latex is missing on the system.
+One example is :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>! LaTeX Error: File `aeguill.sty' not found.</tt></pre>
+</div></div>
+<div class="paragraph"><p>which can be solved by installing missing Latex packages into the system :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>drasko@Marx:~/carambola/carambola$ apt-cache search aeguill
+texlive-lang-french - TeX Live: French
+Marx:/home/drasko/carambola/carambola# apt-get install texlive-lang-french</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installing_easy_install_python_tool">Installing easy_install Python tool</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>One of the most important tools for python is packet manager easy_install. It
+is part of the Python package called setuptools (<a href="http://pypi.python.org/pypi/setuptool">http://pypi.python.org/pypi/setuptool</a>)</p></div>
+<div class="paragraph"><p>But in order to correctly install and use easy_install you have to update date and clock on your weio board.
+WeIO board don’t have RTC module that keeps time using battery. That means that at every launch weio will connect time server and get the fresh date.
+In order to use this feature it’s necessary to have ntpdclient. Hopefully this package is aleready embedded in weioBase system and it works.
+Check tour time by typping :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# date
+Sun Jan 27 21:25:02 CET 2013
+root@OpenWrt:/#</tt></pre>
+</div></div>
+<div class="paragraph"><p>However you can check and correct your timezone in file /etc/config/system. Find timezone strings at this link <a href="http://wiki.openwrt.org/doc/uci/system">http://wiki.openwrt.org/doc/uci/system</a></p></div>
+<div class="paragraph"><p>To get a correct link for wget-ing Python setuptools EGG, go to the page :
+<a href="http://pypi.python.org/pypi/setuptools">http://pypi.python.org/pypi/setuptools</a>, scroll down to correct Python version
+and copy link.
+Then setuptools can be wget-ed :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# wget http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11-py2.7.egg#md5=fe1f997bc722265116870bc7919059ea
+--2013-01-27 21:26:04--  http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11-py2.7.egg
+Resolving pypi.python.org... 140.211.10.73
+Connecting to pypi.python.org|140.211.10.73|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 332005 (324K) [application/octet-stream]
+Saving to: 'setuptools-0.6c11-py2.7.egg'
+
+100%[======================================&gt;] 332,005     41.8KB/s   in 7.5s
+
+2013-01-27 21:26:12 (43.2 KB/s) - 'setuptools-0.6c11-py2.7.egg' saved [332005/332005]
+
+root@OpenWrt:/#</tt></pre>
+</div></div>
+<div class="paragraph"><p>Finally, install the Python EGG :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# sh setuptools-0.6c11-py2.7.egg</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installing_python_pip">Installing Python PIP</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><tt>pip</tt> is a modern replacement for easy_install. It has many advantages ove
+easy_install (descripbed here:
+                <a href="http://www.pip-installer.org/en/latest/other-tools.html">http://www.pip-installer.org/en/latest/other-tools.html</a>), one of which is
+a package uinstallation, for example.</p></div>
+<div class="paragraph"><p>A procedure of installing <tt>pip</tt> on Posix machines can be found on this site (<a href="http://www.pip-installer.org/en/latest/installing.html">http://www.pip-installer.org/en/latest/installing.html</a>, at the end of page) :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@Weio:/mnt/usb/temp# opkg install curl -d root</tt></pre>
+</div></div>
+<div class="paragraph"><p>There are two methods of installing pip, by automatic script get-pip.py or
+manually downloading sources and running setup.py.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@Weio:/mnt/usb/temp# curl -O -k https://raw.github.com/pypa/pip/master/contrib/get-pip.py</tt></pre>
+</div></div>
+<div class="paragraph"><p>Curl needs -k parameter to turn off curl&#8217;s verification of the certificate because he will not be able to verify it.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@Weio:/mnt/usb/temp# python get-pip.py</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installing_tornado_websocket_server">Installing Tornado WebSocket Server</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Tornado WebSocket server can be installed via easy_install which will select
+the most appropriate Python EGG version, download it and install it :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# easy_install tornado</tt></pre>
+</div></div>
+<div class="paragraph"><p>Installation can be tested dyrectly in Python :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# python
+Python 2.7.3 (default, Oct 13 2012, 05:56:22)
+[GCC 4.7.1 20120402 (prerelease)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+&gt;&gt;&gt; import tornado
+&gt;&gt;&gt;</tt></pre>
+</div></div>
+<div class="paragraph"><p>N.B. There can be problems with easy_install, when it tries to get the sources
+from the https links (GitHub uses them, for example):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# easy_install tornado
+Searching for tornado
+Reading http://pypi.python.org/simple/tornado/
+Reading http://www.tornadoweb.org/
+Best match: tornado 2.4.1
+Downloading http://github.com/downloads/facebook/tornado/tornado-2.4.1.tar.gz
+error: Download error for http://github.com/downloads/facebook/tornado/tornado-2.4.1.tar.gz: unknown url type: https</tt></pre>
+</div></div>
+<div class="paragraph"><p>This is an indication that <tt>python-openssl</tt> package is missing on WeIO system
+and that it must be installed :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# opkg install python-openssl -d usb
+Installing python-openssl (2.7.3-1) to usb...
+Downloading http://pkg.8devices.com/v2.3/carambola/packages/python-openssl_2.7.3-1_ramips.ipk.
+Configuring python-openssl.
+root@OpenWrt:/#</tt></pre>
+</div></div>
+<div class="paragraph"><p>N.B. Do not forget to put the Python packages to correct destination on USB
+stick with <tt>-d usb</tt> option given to <tt>opkg</tt>. Otherwise packages will be
+installed on the WeIO flash and will not work correctly (Python paths are wrong).</p></div>
+<div class="paragraph"><p>If you installed a package without <tt>-d usb</tt> switch you should remove it and
+re-install correctly :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# opkg remove python-openssl
+Removing package python-openssl from root...
+root@OpenWrt:/#</tt></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installing_sockjs">Installing SockJS</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Git clone sockjs-tornado sources from GitHub and copy them to WeIO system, onto
+the USB key :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>drasko@Marx:~/carambola$ git clone git://github.com/mrjoes/sockjs-tornado.git
+Cloning into sockjs-tornado...
+remote: Counting objects: 878, done.
+remote: Compressing objects: 100% (439/439), done.
+remote: Total 878 (delta 542), reused 748 (delta 412)
+Receiving objects: 100% (878/878), 137.77 KiB, done.
+Resolving deltas: 100% (542/542), done.
+drasko@Marx:~/carambola$ scp -r sockjs-tornado root@192.168.0.12:/mnt/usb</tt></pre>
+</div></div>
+<div class="paragraph"><p>Now, in the WeIO system in the directory <tt>/mnt/usb/sockjs-tornado</tt> run the <tt>setup.py</tt> script with
+<tt>install</tt> argument (this argument does both <tt>build</tt> and <tt>install</tt>):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/mnt/usb/sockjs-tornado# python setup.py install</tt></pre>
+</div></div>
+<div class="paragraph"><p>To test the installation, go to the <tt>/mnt/usb/sockjs-tornado/examples/chat</tt> and
+run :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/mnt/usb/sockjs-tornado/examples/chat# python chat.py</tt></pre>
+</div></div>
+<div class="paragraph"><p>Go to the browser on the PC host and poit it to <a href="http://192.168.0.12:8080">http://192.168.0.12:8080</a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_avahi_zeroconf">Avahi Zeroconf</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>From make menuconf : <tt>PACKAGE_avahi-daemon</tt>, located in Network &#8594; IP Addresses and Names and recompile image.</p></div>
+<div class="paragraph"><p>Or cahnge install package via opkg. As avahi is not present in 8devices repository, we can switch to official OpenWRT barrier-braker (OpenWRT blleding edge repo, equivalent to Debian sid) package repo by chaning <tt>/etc/opkg.conf</tt></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# cat /etc/opkg.conf
+#src/gz snapshots http://pkg.8devices.com/v2.3/carambola/packages
+src/gz barrier_breaker http://downloads.openwrt.org/snapshots/trunk/ramips/packages
+dest root /
+dest ram /tmp
+dest usb /mnt/usb
+lists_dir ext /var/opkg-lists
+option overlay_root /overlay
+root@OpenWrt:/#</tt></pre>
+</div></div>
+<div class="paragraph"><p>Update <tt>opkg</tt> :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# opkg update
+Downloading http://downloads.openwrt.org/snapshots/trunk/ramips/packages/Packages.gz.
+Inflating http://downloads.openwrt.org/snapshots/trunk/ramips/packages/Packages.gz.
+Updated list of available packages in /var/opkg-lists/barrier_breaker.
+root@OpenWrt:/#</tt></pre>
+</div></div>
+<div class="paragraph"><p>And then install <tt>avahi-daemon</tt> :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# opkg install avahi-daemon
+Installing avahi-daemon (0.6.31-5) to root...
+Downloading http://downloads.openwrt.org/snapshots/trunk/ramips/packages/avahi-daemon_0.6.31-5_ramips.ipk.
+Installing libavahi (0.6.31-5) to root...
+Downloading http://downloads.openwrt.org/snapshots/trunk/ramips/packages/libavahi_0.6.31-5_ramips.ipk.
+Installing libdaemon (0.14-2) to root...
+Downloading http://downloads.openwrt.org/snapshots/trunk/ramips/packages/libdaemon_0.14-2_ramips.ipk.
+Installing libgdbm (1.9.1-2) to root...
+Downloading http://downloads.openwrt.org/snapshots/trunk/ramips/packages/libgdbm_1.9.1-2_ramips.ipk.
+Installing libexpat (2.0.1-1) to root...
+Downloading http://downloads.openwrt.org/snapshots/trunk/ramips/packages/libexpat_2.0.1-1_ramips.ipk.
+Installing libdbus (1.4.14-2) to root...
+Downloading http://downloads.openwrt.org/snapshots/trunk/ramips/packages/libdbus_1.4.14-2_ramips.ipk.
+Configuring libdbus.
+Configuring libdaemon.
+Configuring libgdbm.
+Configuring libavahi.
+Configuring libexpat.
+Configuring avahi-daemon.
+root@OpenWrt:/#</tt></pre>
+</div></div>
+<div class="paragraph"><p>Enable and start avahi-daemon :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# /etc/init.d/avahi-daemon enable
+root@OpenWrt:/# /etc/init.d/avahi-daemon start
+root@OpenWrt:/#</tt></pre>
+</div></div>
+<div class="paragraph"><p>Edit <tt>hostname</tt> in <tt>/etc/config/system</tt>  to WEIO:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# cat /etc/config/system
+config system
+        option hostname WEIO
+#       option timezone UTC
+        option timezone CET-1CEST,M3.5.0,M10.5.0/3
+
+config timeserver ntp
+        list server     0.openwrt.pool.ntp.org
+        list server     1.openwrt.pool.ntp.org
+        list server     2.openwrt.pool.ntp.org
+        list server     3.openwrt.pool.ntp.org
+        option enable_server 0
+root@OpenWrt:/#</tt></pre>
+</div></div>
+<div class="paragraph"><p>Restart Carambola, so that new name is taken into account.</p></div>
+<div class="paragraph"><p>You should now be able to login to your router using ssh -l root WEIO.local.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_dropbear_ssh_authorized_key_setup">Dropbear SSH Authorized Key Setup</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Reference : <a href="http://wiki.openwrt.org/oldwiki/DropbearPublicKeyAuthenticationHowto">http://wiki.openwrt.org/oldwiki/DropbearPublicKeyAuthenticationHowto</a>.</p></div>
+<div class="paragraph"><p>The command to make your ssh key authorized to login as root on the router is:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# echo 'PUBLICKEY'  &gt; /etc/dropbear/authorized_keys</tt></pre>
+</div></div>
+<div class="paragraph"><p>Replace PUBLICKEY with the content of the <tt>~/.ssh/id*.pub</tt> file on your own machine or the output from <tt>ssh-add -L</tt> if you use the SSH agent.</p></div>
+<div class="paragraph"><p>Disable password based login using:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# sed -i -e "s/'on'/'off'/"  /etc/config/dropbear</tt></pre>
+</div></div>
+<div class="paragraph"><p>Alternatively, edit <tt>/etc/config/dropbear</tt> to look like:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>config dropbear
+        option PasswordAuth 'off'
+        option Port         '22'</tt></pre>
+</div></div>
+<div class="paragraph"><p>To print the ssh host key fingerprint using:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:~# dropbearkey -y -f /etc/dropbear/dropbear_rsa_host_key
+Public key portion is:
+ssh-rsa AAAA... root@OpenWrt
+Fingerprint: md5 ...</tt></pre>
+</div></div>
+<div class="paragraph"><p>To use the web interface, you may want to set a root password.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:/# passwd
+Changing password for root
+New password:
+Retype password:
+Password for root changed by root
+root@OpenWrt:/#</tt></pre>
+</div></div>
+<div class="paragraph"><p>If you do not set a root password, you will need to manually disable the telnet server as follows.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root@OpenWrt:~# /etc/init.d/telnet disable</tt></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2013-02-17 21:39:15 CET
+</div>
+</div>
+</body>
+</html>

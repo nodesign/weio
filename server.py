@@ -34,7 +34,7 @@
 #
 ###
 
-import os, sys
+import os, sys, platform
 
 from tornado import web, ioloop, iostream, options, httpserver, autoreload, websocket
 from sockjs.tornado import SockJSRouter, SockJSConnection
@@ -51,6 +51,11 @@ from weioLib import WeioAPIbridge
 # IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
 from weioLib import weio_config
 
+# Wifi detection and configuration module
+from weioWifi import weioWifi
+
+# Global weioWifi object
+wifi = weioWifi.WeioWifi("wlan0")
 
 # This is user project index.html
 class WeioIndexHandler(web.RequestHandler):
@@ -61,14 +66,15 @@ class WeioIndexHandler(web.RequestHandler):
         #self.redirect(path)
         
         
-# This is editor web app      
+# Editor web app route handler      
 class WeioEditorWebHandler(web.RequestHandler):
     def get(self):
         global confFile
         path = confFile['editor_html_path']
         self.render(path, error="")
         
-# This is preview web app      
+
+# Preview web app route handler     
 class WeioPreviewWebHandler(web.RequestHandler):
     def get(self):
         global confFile
@@ -77,8 +83,7 @@ class WeioPreviewWebHandler(web.RequestHandler):
 
 
 # pure websocket implementation
-#class CloseConnection(websocket.WebSocketHandler):
-class CloseConnection(SockJSConnection):
+class WeioCloseConnection(SockJSConnection):
     def on_open(self, info):
         self.close()
 
@@ -86,6 +91,48 @@ class CloseConnection(SockJSConnection):
         pass
         
 
+# Wifi detection route handler  
+class WeioWifiHandler(SockJSConnection):
+    def on_open(self, info) :
+        msg['mode'] = wifi.mode
+        self.send(json.dumps(msg))
+
+    def on_message(self, msg):
+        global wifi
+
+        # We do WiFi setup __ONLY__ for WEIO machine. PC host should use it's OS tools.
+        if (platform.machine() is 'mips') :
+            """We have obtained essid, psswd and encryption
+            so we can try to connect"""
+            request = json.loads(msg)
+
+            # parsing strings from browser
+            rq = ast.literal_eval(request)
+
+            if 'scan' in rq['request'] :
+                data = wifi.scan()
+            else :
+                if 'goAp' in rq['request'] :
+                    wifi.setConnection("ap")
+                elif 'goSta' in rq['request'] : 
+                    wifi.essid = rq['data']['essid']
+                    wifi.passwd = rq['data']['passwd']
+                    wifi.encryption = rq['data']['encryption']
+                    wifi.setConnection("sta")
+                else :
+                    print "WeioConnection() handler : UNKNOWN REQ"
+
+                # Check if everything went well, or go to AP mode in case of error
+                wifi.checkConnection()
+                data['mode'] = wifi.mode
+
+        # Send response to the browser
+        rsp={}
+        rsp['requested'] = rq['request']
+        rsp['data'] = data
+
+        # Send connection information to the client
+        self.send(json.dumps(rsp))
 
 if __name__ == '__main__':
     import logging
@@ -99,6 +146,9 @@ if __name__ == '__main__':
   
     # HEADER WEB SOCKET
     WeioHeaderRouter = SockJSRouter(Header.WeioHeaderHandler, '/header')
+
+    # WIFI DETECTION ROUTES
+    WeioWifiRouter = SockJSRouter(WeioWifiHandler, '/wifi')
     
     
     #CONFIGURATOR ROUTES
@@ -111,7 +161,7 @@ if __name__ == '__main__':
     
     
     #GENERAL ROUTES
-    CloseRouter = SockJSRouter(CloseConnection, '/close')
+    CloseRouter = SockJSRouter(WeioCloseConnection, '/close')
 
     
     # Take configuration from conf file and use it to define parameters
@@ -131,7 +181,7 @@ if __name__ == '__main__':
                           
                             # pure websocket implementation
                             #[(r"/editor/baseFiles", Editor.WeioEditorHandler)] +
-                            #[(r"/close", CloseConnection)] +
+                            #[(r"/close", WeioCloseConnection)] +
                             [(r"/preview",WeioPreviewWebHandler)] +
                             [(r"/editor",WeioEditorWebHandler)] +
                             [(r"/", WeioIndexHandler),
@@ -142,6 +192,10 @@ if __name__ == '__main__':
                           # DEBUG WILL DECREASE SPEED!!! HOW TO AVOID THIS??? see Watchers section down here
     
     options.define("port", default=confFile['port'], type=int)
+
+    # If we are on the WEIO machine, we have to assure connection before doing anything
+    if (platform.machine() is 'mips') :
+        wifi.checkConnection()
     
     http_server = httpserver.HTTPServer(app)
     http_server.listen(options.options.port, address=confFile['ip'])

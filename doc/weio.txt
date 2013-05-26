@@ -1,0 +1,1208 @@
+WEIO SW User Guide
+==================
+:Author: Drasko DRASKOVIC
+:Email: drasko.draskovic@gmail.com
+
+Installation
+------------
+
+OpenWRT Linux distribution can be git-cloned from 8devices site :
+
+-----------------------------------------------------------
+> git clone https://github.com/8devices/carambola carambola
+> cd carambola
+-----------------------------------------------------------
+
+
+Adding more packages
+--------------------
+
+Edit file feeds.conf.default :
+
+---------------------
+src-git packages git://github.com/8devices/packages.git
+#src-git luci https://github.com/8devices/luci.git
+src-git luci src-git git://nbd.name/luci.git
+#src-svn packages svn://svn.openwrt.org/openwrt/packages
+src-svn xwrt http://x-wrt.googlecode.com/svn/trunk/package
+#src-svn luci http://svn.luci.subsignal.org/luci/trunk/contrib/package
+#src-svn phone svn://svn.openwrt.org/openwrt/feeds/phone
+#src-svn efl svn://svn.openwrt.org/openwrt/feeds/efl
+#src-svn xorg svn://svn.openwrt.org/openwrt/feeds/xorg
+#src-svn desktop svn://svn.openwrt.org/openwrt/feeds/desktop
+#src-svn xfce svn://svn.openwrt.org/openwrt/feeds/xfce
+#src-svn lxde svn://svn.openwrt.org/openwrt/feeds/lxde
+#src-link custom /usr/src/openwrt/custom-feed
+--------------------
+
+Update and install packages using feeds :
+----------------------------
+> ./scripts/feeds update -a
+> ./scripts/feeds install -a
+----------------------------
+
+
+Build image
+-----------
+
+To configure only kernel image :
+------------------------
+> make kernel_menuconfig
+------------------------
+
+To configure OpenWRT image :
+-----------------
+> make menuconfig
+-----------------
+
+To build the image :
+-----------
+> make -j 4
+-----------
+
+Set up TFTP server
+
+----------------------------------------
+sudo apt-get install xinetd tftpd tftp
+sudo touch /etc/xinetd.d/tftp
+sudo nano /etc/xinetd.d/tftp
+----------------------------------------
+
+Paste this code:
+
+----------------------------------------
+service tftp
+{
+ protocol = udp
+ port = 69
+ socket_type = dgram
+ wait = yes
+ user = nobody
+ server = /usr/sbin/in.tftpd
+ server_args = /home/tftpboot
+ disable = no
+}
+----------------------------------------
+
+----------------------------------------
+sudo mkdir /home/tftpboot
+sudo chmod -R 777 /home/tftpboot
+sudo chown -R nobody /home/tftpboot
+sudo service xinetd restart
+----------------------------------------
+
+
+Test TFTP connection
+--------------------
+
+---------------------------------------------------------------------------------------------------------------------------------------
+drasko@Marx:~/carambola/carambola$ cp bin/ramips/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin /home/tftpboot/carambola.bin
+---------------------------------------------------------------------------------------------------------------------------------------
+
+- Connect to either ETH RJ45 jacks
+
+- Enter U-Boot by pressing 4 when this menu appears after reset :
+
+[listing]
+...............................................................................
+U-Boot 1.1.3 (Feb 20 2012 - 16:20:22)
+
+Board: Ralink APSoC DRAM:  32 MB
+relocate_code Pointer at: 81fb0000
+config usb..
+flash_protect ON: from 0xBF000000 to 0xBF01E757
+flash_protect ON: from 0xBF030000 to 0xBF030FFF
+*** Warning - bad CRC, using default environment
+
+============================================ 
+Ralink UBoot Version: 3.5.0.0
+-------------------------------------------- 
+ASIC 3052_MP2 (Port5<->None)
+DRAM component: 256 Mbits SDR
+DRAM bus: 16 bit
+Total memory: 32 MBytes
+Flash component: NOR Flash
+Date:Feb 20 2012  Time:16:20:22
+============================================ 
+icache: sets:256, ways:4, linesz:32 ,total:32768
+dcache: sets:128, ways:4, linesz:32 ,total:16384 
+
+ ##### The CPU freq = 320 MHZ #### 
+ estimate memory size =32 Mbytes
+
+Please choose the operation: 
+   1: Load system code to SDRAM via TFTP. 
+   2: Load system code then write to Flash via TFTP. 
+   3: Boot system code via Flash (default).
+   4: Entr boot command line interface.
+   7: Load Boot Loader code then write to Flash via Serial. 
+   9: Load Boot Loader code then write to Flash via TFTP. 
+ 4 
+...............................................................................
+
+- Check ipaddr and tftpaddr in U-Boot using `printenv`
+Usually they are like this :
+
+-------------------
+ipaddr=10.10.10.123
+serverip=10.10.10.3
+-------------------
+
+- On the PC host, set up local eth0 interface's ip address to match address of TFTP server set
+up in u-boot :
+
+-----------------------------------------------------
+Marx:/home/drasko/carambola# ifconfig eth0 10.10.10.3
+-----------------------------------------------------
+
+
+- Test the TFTP transfer in U-Boot :
+
+---------------------------------------------------------------------------
+RT3052 # tftp 0x100 carambola.bin
+
+ netboot_common, argc= 3 
+
+ KSEG1ADDR(NetTxPacket) = 0xA1FE6A00 
+
+ NetLoop,call eth_halt ! 
+
+ NetLoop,call eth_init ! 
+Trying Eth0 (10/100-M)
+
+ ETH_STATE_ACTIVE!! 
+Using Eth0 (10/100-M) device
+TFTP from server 10.10.10.3; our IP address is 10.10.10.123
+Filename 'carambola.bin'.
+
+ TIMEOUT_COUNT=10,Load address: 0x100
+Loading: checksum bad
+checksum bad
+Got ARP REPLY, set server/gtwy eth addr (00:1d:09:61:6c:23)
+Got it
+#################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         ####
+done
+Bytes transferred = 3014660 (2e0004 hex)
+NetBootFileXferSize= 002e0004
+RT3052 #
+--------------------------------------------------------------------------
+
+*******************************************************************
+N.B.
+Do not try just :
+
+RT3052 # tftp                  <- no dst address nor filename given
+
+or
+
+RT3052 # tftp carambola.bin    <- filename given, but no dst address given
+
+because U-Boot's TFTP client inthat case always falls for the test.bin, which
+is probably not present in your /home/tftpboot and is not what you want
+*******************************************************************
+
+
+Hitting <ENTER> on after the reset skips waiting time of 5 secs and boots
+normal Linux.
+
+
+Update Linux image via U-Boot
+-----------------------------
+
+---------------------------------------------------------------------------------------------------------------------------------------
+drasko@Marx:~/carambola/carambola$ cp bin/ramips/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin /home/tftpboot/carambola.bin
+---------------------------------------------------------------------------------------------------------------------------------------
+
+[listing]
+...............................................................................
+Board: Ralink APSoC DRAM:  32 MB
+relocate_code Pointer at: 81fb0000
+config usb..
+flash_protect ON: from 0xBF000000 to 0xBF01E757
+flash_protect ON: from 0xBF030000 to 0xBF030FFF
+============================================ 
+Ralink UBoot Version: 3.5.0.0
+-------------------------------------------- 
+ASIC 3052_MP2 (Port5<->None)
+DRAM component: 256 Mbits SDR
+DRAM bus: 16 bit
+Total memory: 32 MBytes
+Flash component: NOR Flash
+Date:Feb 20 2012  Time:16:20:22
+============================================ 
+icache: sets:256, ways:4, linesz:32 ,total:32768
+dcache: sets:128, ways:4, linesz:32 ,total:16384 
+
+ ##### The CPU freq = 320 MHZ #### 
+ estimate memory size =32 Mbytes
+
+Please choose the operation: 
+   1: Load system code to SDRAM via TFTP. 
+   2: Load system code then write to Flash via TFTP. 
+   3: Boot system code via Flash (default).
+   4: Entr boot command line interface.
+   7: Load Boot Loader code then write to Flash via Serial. 
+   9: Load Boot Loader code then write to Flash via TFTP.                                                                                                                                                       2 
+You choosed 2
+                                                                                                                                                                                                                0 
+
+   
+2: System Load Linux Kernel then write to Flash via TFTP. 
+ Warning!! Erase Linux in Flash then burn new one. Are you sure?(Y/N)
+ Please Input new ones /or Ctrl-C to discard
+        Input device IP (10.10.10.123) ==:10.10.10.123
+        Input server IP (10.10.10.3) ==:10.10.10.3
+        Input Linux Kernel filename (carambola.bin) ==:carambola.bin
+
+ netboot_common, argc= 3 
+
+ NetTxPacket = 0x81FE6A00 
+
+ KSEG1ADDR(NetTxPacket) = 0xA1FE6A00 
+
+ NetLoop,call eth_halt ! 
+
+ NetLoop,call eth_init ! 
+Trying Eth0 (10/100-M)
+
+ Waitting for RX_DMA_BUSY status Start... done
+
+
+ Header Payload scatter function is Disable !! 
+
+ ETH_STATE_ACTIVE!! 
+Using Eth0 (10/100-M) device
+TFTP from server 10.10.10.3; our IP address is 10.10.10.123
+Filename 'carambola.bin'.
+
+ TIMEOUT_COUNT=10,Load address: 0x80100000
+Loading: *
+ArpTimeoutCheck 
+checksum bad
+T T T checksum bad
+T Got ARP REPLY, set server/gtwy eth addr (00:1d:09:61:6c:23)
+Got it
+#################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+         #################################################################
+done
+Bytes transferred = 4325380 (420004 hex)
+NetBootFileXferSize= 00420004
+Erase linux kernel block !!
+From 0xBF050000 To 0xBF47FFFF
+
+ b_end =BF7FFFFF
+Erase Flash from 0xbf050000 to 0xb
+...............................................................................
+
+
+Serial cable transfer with GNU Screen
+-------------------------------------
+
+Add package in Carambola :
+
+------------------------------------------------------------------------------
+<*> lrzsz.......................................... X,Y and Z-modem protocols
+------------------------------------------------------------------------------
+
+1. Set-up Gnu Screen's zmodem in "catch" mode (not pass, because we are not having 2 GNU Screens on distant hosts)
++
+----------------------------------------------------------------------
+root@OpenWrt:/# 
+:zmodem catch                   <---  Set up this in Screen with ^A:
+----------------------------------------------------------------------
++
+2. When `rz` command is issued, GNU Screen detects Z-Modem transfer and asks for filename on PC host to be transfered to remote host wich expcts it (because it issued `rz` command)
++
+-----------------------------------------------------------------------
+root@OpenWrt:/# rz                                                                                                                                                                                                
+rz waiting to receive
+:!!! sz -vv -b           <--- Screen "catches" the Z-Modem transfer and expects filename
+-----------------------------------------------------------------------
++
+3. Upong giving a filename, trasaction is done
++
+-----------------------------------------------------------------------
+root@OpenWrt:/# rz                                                                                                                                                                                                
+rz waiting to receive
+Sending: wireless                                                                                                                                                                                                 
+Bytes Sent:    640   BPS:295                             
+Sending: 
+Ymodem sectors/kbytes sent:   0/ 0k
+Transfer complete
+root@OpenWrt:/# ls
+bin       etc       mnt       proc      root      sys       usr       wireless
+dev       lib       overlay   rom       sbin      tmp       var       www
+-----------------------------------------------------------------------
+
+
+Network Configuration
+---------------------
+
+Change two files :
+
+1. `/etc/config/wireless` from :
++
+-------------------------------------------------
+config wifi-device  radio0
+        option type     mac80211
+        option channel  11
+        option macaddr  c4:93:00:00:03:55
+        option hwmode   11ng
+        option txpower  10
+        option htmode   HT20
+        list ht_capab   GF
+        list ht_capab   SHORT-GI-20
+        list ht_capab   SHORT-GI-40
+        list ht_capab   RX-STBC1
+        # REMOVE THIS LINE TO ENABLE WIFI:
+        option disabled 1
+
+config wifi-iface
+        option device   radio0
+        option network  lan
+        option mode     ap
+        option ssid     OpenWrt
+        option encryption none
+
+-------------------------------------------------
++
+to :
++
+-------------------------------------------------
+config wifi-device  radio0
+        option type     mac80211
+        option channel  11
+        option macaddr  c4:93:00:00:03:55
+        option hwmode   11ng
+        option txpower  10
+        option htmode   HT20
+        list ht_capab   GF
+        list ht_capab   SHORT-GI-20
+        list ht_capab   SHORT-GI-40
+        list ht_capab   RX-STBC1
+        # REMOVE THIS LINE TO ENABLE WIFI:
+
+        #####################################
+        # N.B.
+        #   LINE BELOW __MUST__ BE COMMENTED
+        #####################################
+        #option disabled 1
+
+config wifi-iface
+        option device   'radio0'
+        option network  'wwan'
+        option mode     'sta'
+        option ssid     'ddwifi'
+        option encryption 'psk'
+        option key      'YOURPASSHERE'
+-------------------------------------------------
++ 
+2. `/etc/config/network` from :
++
+-------------------------------------------------
+config interface 'loopback'
+        option ifname 'lo'
+        option proto 'static'
+        option ipaddr '127.0.0.1'
+        option netmask '255.0.0.0'
+
+config interface 'lan'
+        option ifname 'eth0.1'       
+        option type 'bridge'
+        option proto 'static'
+        option ipaddr '192.168.1.1'
+        option netmask '255.255.255.0'
+        option macaddr 'c4:93:00:00:03:53'
+                             
+config interface 'wan'
+        option ifname 'eth0.2'
+        option proto 'dhcp'   
+                           
+config switch
+        option name 'rt305x'
+        option reset '1'    
+        option enable_vlan '1'
+                              
+config switch_vlan
+        option device 'rt305x'
+        option vlan '1'       
+        option ports '1 2 3 4  6t'
+                                  
+config switch_vlan
+        option device 'rt305x'
+        option vlan '2'       
+        option ports '0  6t'
+-------------------------------------------------
++
+to :
++
+-------------------------------------------------
+config interface 'loopback'
+        option ifname 'lo'
+        option proto 'static'
+        option ipaddr '127.0.0.1'
+        option netmask '255.0.0.0'
+
+config interface 'lan'
+        option ifname 'eth0.1'       
+        option type 'bridge'
+        option proto 'static'
+        option ipaddr '192.168.1.1'
+        option netmask '255.255.255.0'
+        option macaddr 'c4:93:00:00:03:53'
+                             
+config interface 'wan'
+        option ifname 'eth0.2'
+        option proto 'dhcp'   
+
+# Added for WiFi
+config interface 'wwan'
+			option proto 'dhcp'
+                           
+config switch
+        option name 'rt305x'
+        option reset '1'    
+        option enable_vlan '1'
+                              
+config switch_vlan
+        option device 'rt305x'
+        option vlan '1'       
+        option ports '1 2 3 4  6t'
+                                  
+config switch_vlan
+        option device 'rt305x'
+        option vlan '2'       
+        option ports '0  6t'
+-------------------------------------------------
+
+Now restart the network system to take up new configuration :
+
+------------------------------------------------------------------------------------------------------------------------------
+root@OpenWrt:/# /etc/init.d/network restart
+[  868.670000] br-lan: port 1(eth0.1) entered disabled state
+[  868.690000] device eth0.1 left promiscuous mode
+[  868.690000] device eth0 left promiscuous mode
+[  868.700000] br-lan: port 1(eth0.1) entered disabled state
+[  870.340000] device eth0.1 entered promiscuous mode
+[  870.350000] device eth0 entered promiscuous mode
+[  870.360000] br-lan: port 1(eth0.1) entered forwarding state
+[  870.360000] br-lan: port 1(eth0.1) entered forwarding state
+[  872.360000] br-lan: port 1(eth0.1) entered forwarding state
+command failed: Device or resource busy (-16)
+[  872.870000] phy0 -> rt2x00mac_conf_tx: Info - Configured TX queue 0 - CWmin: 5, CWmax: 10, Aifs: 2, TXop: 0.
+[  872.880000] phy0 -> rt2x00mac_conf_tx: Info - Configured TX queue 1 - CWmin: 5, CWmax: 10, Aifs: 2, TXop: 0.
+[  872.890000] phy0 -> rt2x00mac_conf_tx: Info - Configured TX queue 2 - CWmin: 5, CWmax: 10, Aifs: 2, TXop: 0.
+[  872.900000] phy0 -> rt2x00mac_conf_tx: Info - Configured TX queue 3 - CWmin: 5, CWmax: 10, Aifs: 2, TXop: 0.
+Successfully initialized wpa_supplicant
+root@OpenWrt:/# [  877.640000] wlan0: authenticate with 6e:e9:d4:81:2d:e4
+[  877.760000] wlan0: direct probe to 6e:e9:d4:81:2d:e4 (try 1/3)
+[  877.970000] wlan0: send auth to 6e:e9:d4:81:2d:e4 (try 2/3)
+[  877.970000] wlan0: authenticated
+[  877.980000] rt2800_wmac rt2800_wmac.0: wlan0: disabling HT as WMM/QoS is not supported by the AP
+[  877.990000] rt2800_wmac rt2800_wmac.0: wlan0: disabling VHT as WMM/QoS is not supported by the AP
+[  878.010000] wlan0: associate with 6e:e9:d4:81:2d:e4 (try 1/3)
+[  878.010000] wlan0: RX AssocResp from 6e:e9:d4:81:2d:e4 (capab=0x411 status=0 aid=2)
+[  878.020000] phy0 -> rt2x00mac_conf_tx: Info - Configured TX queue 0 - CWmin: 4, CWmax: 10, Aifs: 2, TXop: 0.
+[  878.030000] phy0 -> rt2x00mac_conf_tx: Info - Configured TX queue 1 - CWmin: 4, CWmax: 10, Aifs: 2, TXop: 0.
+[  878.040000] phy0 -> rt2x00mac_conf_tx: Info - Configured TX queue 2 - CWmin: 4, CWmax: 10, Aifs: 2, TXop: 0.
+[  878.050000] phy0 -> rt2x00mac_conf_tx: Info - Configured TX queue 3 - CWmin: 4, CWmax: 10, Aifs: 2, TXop: 0.
+[  878.060000] wlan0: associated
+
+root@OpenWrt:/# ifconfig
+br-lan    Link encap:Ethernet  HWaddr C4:93:00:00:03:53  
+          inet addr:192.168.1.1  Bcast:192.168.1.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+eth0      Link encap:Ethernet  HWaddr C4:93:00:00:03:53  
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:289 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:0 (0.0 B)  TX bytes:117334 (114.5 KiB)
+          Interrupt:5 
+
+eth0.1    Link encap:Ethernet  HWaddr C4:93:00:00:03:53  
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+eth0.2    Link encap:Ethernet  HWaddr C4:93:00:00:03:53  
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:4 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:0 (0.0 B)  TX bytes:1608 (1.5 KiB)
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+wlan0     Link encap:Ethernet  HWaddr C4:93:00:00:03:55  
+          inet addr:192.168.0.12  Bcast:192.168.0.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:6 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:5 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:32 
+          RX bytes:1647 (1.6 KiB)  TX bytes:1269 (1.2 KiB)
+
+root@OpenWrt:/# ping google.com
+PING google.com (173.194.34.0): 56 data bytes
+64 bytes from 173.194.34.0: seq=0 ttl=53 time=31.494 ms
+64 bytes from 173.194.34.0: seq=1 ttl=53 time=27.503 ms
+64 bytes from 173.194.34.0: seq=2 ttl=53 time=27.412 ms
+^C
+--- google.com ping statistics ---
+3 packets transmitted, 3 packets received, 0% packet loss
+round-trip min/avg/max = 27.412/28.803/31.494 ms
+root@OpenWrt:/# 
+------------------------------------------------------------------------------------------------------------------------------
+
+
+SSH Connection
+--------------
+
+To use SSH connection, first set the root's password on Carmabola :
+-------------------------------------
+root@OpenWrt:/# passwd
+Changing password for root
+New password: 
+Bad password: too short
+Retype password: 
+Password for root changed by root
+root@OpenWrt:/#
+-------------------------------------
+
+
+Then connect from the PC host terminal
+
+----------------------------------------------------------------------------
+drasko@Marx:~/carambola$ ssh root@192.168.0.12
+root@192.168.0.12's password: 
+
+
+BusyBox v1.19.4 (2013-01-12 19:01:31 CET) built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+
+  _______                     ________        __
+ |       |.-----.-----.-----.|  |  |  |.----.|  |_
+ |   -   ||  _  |  -__|     ||  |  |  ||   _||   _|
+ |_______||   __|_____|__|__||________||__|  |____|
+          |__| W I R E L E S S   F R E E D O M
+ -----------------------------------------------------
+ BARRIER BREAKER (Bleeding Edge, r33735)
+ -----------------------------------------------------
+  * 1/2 oz Galliano         Pour all ingredients into
+  * 4 oz cold Coffee        an irish coffee mug filled
+  * 1 1/2 oz Dark Rum       with crushed ice. Stir.
+  * 2 tsp. Creme de Cacao
+ -----------------------------------------------------
+root@OpenWrt:~# 
+----------------------------------------------------------------------------
+
+
+Banner
+------
+
+Place ascii banner to a file called :
+
+-----------------------------------
+package/base-files/files/etc/banner
+-----------------------------------
+
+[listing]
+...............................................................................
+drasko@Marx:~/carambola/carambola$ cat package/base-files/files/etc/banner
+      ___           ___                       ___     
+     /\  \         /\__\                     /\  \    
+    _\:\  \       /:/ _/_       ___         /::\  \   
+   /\ \:\  \     /:/ /\__\     /\__\       /:/\:\  \  
+  _\:\ \:\  \   /:/ /:/ _/_   /:/__/      /:/  \:\  \ 
+ /\ \:\ \:\__\ /:/_/:/ /\__\ /::\  \     /:/__/ \:\__\
+ \:\ \:\/:/  / \:\/:/ /:/  / \/\:\  \__  \:\  \ /:/  /
+  \:\ \::/  /   \::/_/:/  /   ~~\:\/\__\  \:\  /:/  / 
+   \:\/:/  /     \:\/:/  /       \::/  /   \:\/:/  /  
+    \::/  /       \::/  /        /:/  /     \::/  /   
+     \/__/         \/__/         \/__/       \/__/    
+------------------------------------------------------
+  NoDesign.net | WEIO - Internet of things platform
+------------------------------------------------------
+  Uros Petrevski | Drasko Draskovic | 2012
+------------------------------------------------------
+
+drasko@Marx:~/carambola/carambola$ 
+...............................................................................
+
+
+Sysupgrade
+----------
+
+Copy upgrade image to Carmabola's RAM (not FLASH - because there is not enough space in flash)
+
+-------------------------------------------------------------------------------------------------------------------------------------
+drasko@Marx:~/carambola/carambola/bin/ramips$ scp openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin root@192.168.0.12:/tmp
+root@192.168.0.12's password: 
+openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin                                         100% 3968KB 793.6KB/s   00:05    
+-------------------------------------------------------------------------------------------------------------------------------------
+
+N.B.
+Putting just :
+
+-------------------------------------------------------------------------------------------------------------------------------------
+rasko@Marx:~/carambola/carambola/bin/ramips$ scp openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin root@192.168.0.12:/
+root@192.168.0.12's password: 
+openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin                                        100% 3968KB  58.4KB/s   01:08 
+-------------------------------------------------------------------------------------------------------------------------------------
+
+would try to copy image to FLASH, which can be seen by observing the time needed for write and throughput used
+
+
+Destructive sysupgrade :
+
+-------------------------------------------------------------------------------------------------
+root@OpenWrt:/# sysupgrade -v -n /tmp/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin 
+Sending TERM to remaining processes ... dnsmasq syslogd klogd hotplug2 ubusd netifd 
+Sending KILL to remaining processes ... 
+Switching to ramdisk...
+Performing system upgrade...
+Unlocking firmware ...
+
+Writing from <stdin> to firmware ...     
+Upgrade completed
+Rebooting system...
+[  476.200000] Restarting system.
+-------------------------------------------------------------------------------------------------
+
+For non-destructive use options "-c -v".
+
+
+Telnet
+------
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Plug into ETH1, not into ETH0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It is because by default eth0 iface does not have ipaddr, and eth1 iface is
+configured as a bridge with ipaddr 192.168.1.1.
+
+That's why before telnet we must configue host eth0 to 192.168.1.2 :
+
+[listing]
+...............................................................................
+Marx:/home/drasko# ifconfig eth0 192.168.1.2
+Marx:/home/drasko# ping 192.168.1.1
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_req=1 ttl=64 time=2.27 ms
+64 bytes from 192.168.1.1: icmp_req=2 ttl=64 time=0.566 ms
+^C
+--- 192.168.1.1 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 0.566/1.418/2.270/0.852 ms
+Marx:/home/drasko# telnet 192.168.1.1
+Trying 192.168.1.1...
+Connected to 192.168.1.1.
+Escape character is '^]'.
+ === IMPORTANT ============================
+  Use 'passwd' to set your login password
+  this will disable telnet and enable SSH
+ ------------------------------------------
+
+
+BusyBox v1.19.4 (2013-01-12 19:01:31 CET) built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+
+      ___           ___                       ___     
+     /\  \         /\__\                     /\  \    
+    _\:\  \       /:/ _/_       ___         /::\  \   
+   /\ \:\  \     /:/ /\__\     /\__\       /:/\:\  \  
+  _\:\ \:\  \   /:/ /:/ _/_   /:/__/      /:/  \:\  \ 
+ /\ \:\ \:\__\ /:/_/:/ /\__\ /::\  \     /:/__/ \:\__\
+ \:\ \:\/:/  / \:\/:/ /:/  / \/\:\  \__  \:\  \ /:/  /
+  \:\ \::/  /   \::/_/:/  /   ~~\:\/\__\  \:\  /:/  / 
+   \:\/:/  /     \:\/:/  /       \::/  /   \:\/:/  /  
+    \::/  /       \::/  /        /:/  /     \::/  /   
+     \/__/         \/__/         \/__/       \/__/    
+------------------------------------------------------
+  NoDesign.net | WEIO - Internet of things platform
+------------------------------------------------------
+  Uros Petrevski | Drasko Draskovic | 2012
+------------------------------------------------------
+
+root@OpenWrt:/# 
+...............................................................................
+
+
+Automatic mount of Python USB
+-----------------------------
+
+1. Add /etc/init.d/python_usb file
++
+-------------------------------------------------------
+root@OpenWrt:/# cat /etc/init.d/python_usb 
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2013 WEIO 
+
+START=70
+start() {
+        [ -d /mnt/usb ] && {
+                /bin/mount -t ext2 /dev/sda1 /mnt/usb
+        }
+}
+root@OpenWrt:/# 
+-------------------------------------------------------
++
+2. Change file to executable :
++
+---------------------------------------------
+root@WEIO:/# chmod +x /etc/init.d/python_usb
+---------------------------------------------
++
+3. Add softlink by calling thist script with argument `enable` :
++
+----------------------------------------------------
+root@OpenWRT:/# /etc/init.d/python_usb enable
+----------------------------------------------------
++
+and this produces :
++
+------------------------------------------------------------------------------------------------------
+root@OpenWrt:/# ls -la /etc/rc.d/S61python_usb
+lrwxrwxrwx    1 root     root            20 Jan 27 15:31 /etc/rc.d/S61python_usb -> ../init.d/python_usb
+root@OpenWrt:/# 
+------------------------------------------------------------------------------------------------------
++
+This is explained in the documentation:
++
+***********************************************************************************
+1.3.2 Init scripts
+
+Enabling and disabling init scripts is done by running /etc/init.d/name en-
+able or /etc/init.d/name disable. This creates or removes symbolic links
+to the init script in /etc/rc.d, which is processed by /etc/init.d/rcS at boot
+time.
+***********************************************************************************
+
+Automatic set-up of PATH environment variable
+---------------------------------------------
+
+According to this exmplanation : http://www.cesareriva.com/archives/977
+edit `/etc/profile` and change PATH exporting to :
+------------------------------------------------------------
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/mnt/usb/usr/bin
+------------------------------------------------------------
+
+Set-up of opkg installation destination
+---------------------------------------
+As there are almost no place left on flash we have to say to `opkg` to install python on the usb flash.
+New destination must be specified in `/etc/opkg.conf` file like this :
+
+-------------------
+dest root /
+/dest ram /tmp
+dest usb /mnt/usb
+-------------------
+
+We added usb destination here
+
+
+Setting up timezone
+-------------------
+According to : http://wiki.openwrt.org/doc/uci/system, section Time Zones,
+change `/etc/config/system` :
+
+--------------------------------------------------------
+root@OpenWrt:/# cat /etc/config/system 
+config system
+        option hostname OpenWrt
+#       option timezone UTC
+        option timezone CET-1CEST,M3.5.0,M10.5.0/3
+--------------------------------------------------------
+
+
+Uninstalling Python files
+-------------------------
+
+Refering to the
+http://kmandla.wordpress.com/2009/01/08/there-is-no-setuppy-uninstall/ :
+
+-----------------------------------------------
+> python setup.py install --record files.txt
+> cat files.txt | xargs rm -rf
+-----------------------------------------------
+
+Making OpenWRT documentation
+----------------------------
+
+OpenWRT documentation is located in the folder `docs` :
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+drasko@Marx:~/carambola/carambola$ ls docs/
+adding.tex  build.tex   debugging.tex     Makefile             network.tex  openwrt.html  openwrt.sty  submitting-patches.tex  working.tex
+bugs.tex    config.tex  init-scripts.tex  network-scripts.tex  openwrt.css  openwrt.pdf   openwrt.tex  wireless.tex
+drasko@Marx:~/carambola/carambola$ 
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+and this documentation ahould be build from Latex sources.
+
+This is done by issuing command :
+-------------------------------------------------
+drasko@Marx:~/carambola/carambola$ make docs
+ make[1] -C docs compile
+drasko@Marx:~/carambola/carambola$ 
+-------------------------------------------------
+
+After that a docbook in pdf format is produced (and many other pdf files) :
+
+----------------------------------------------------------------
+drasko@Marx:~/carambola/carambola$ acroread ./docs/openwrt.pdf
+----------------------------------------------------------------
+
+
+N.B. A problem might arise if some .sty files for Latex is missing on the system.
+One example is :
+
+--------------------------------------------
+! LaTeX Error: File `aeguill.sty' not found.
+--------------------------------------------
+
+which can be solved by installing missing Latex packages into the system :
+
+----------------------------------------------------------------------------
+drasko@Marx:~/carambola/carambola$ apt-cache search aeguill
+texlive-lang-french - TeX Live: French
+Marx:/home/drasko/carambola/carambola# apt-get install texlive-lang-french
+----------------------------------------------------------------------------
+
+Installing easy_install Python tool
+-----------------------------------
+One of the most important tools for python is packet manager easy_install. It
+is part of the Python package called setuptools (http://pypi.python.org/pypi/setuptool)
+
+
+But in order to correctly install and use easy_install you have to update date and clock on your weio board.
+WeIO board don’t have RTC module that keeps time using battery. That means that at every launch weio will connect time server and get the fresh date.
+In order to use this feature it’s necessary to have ntpdclient. Hopefully this package is aleready embedded in weioBase system and it works.
+Check tour time by typping :
+
+------------------------------
+root@OpenWrt:/# date
+Sun Jan 27 21:25:02 CET 2013
+root@OpenWrt:/#
+------------------------------
+
+However you can check and correct your timezone in file /etc/config/system. Find timezone strings at this link http://wiki.openwrt.org/doc/uci/system
+
+
+To get a correct link for wget-ing Python setuptools EGG, go to the page :
+http://pypi.python.org/pypi/setuptools, scroll down to correct Python version
+and copy link.
+Then setuptools can be wget-ed :
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+root@OpenWrt:/# wget http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11-py2.7.egg#md5=fe1f997bc722265116870bc7919059ea
+--2013-01-27 21:26:04--  http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11-py2.7.egg
+Resolving pypi.python.org... 140.211.10.73
+Connecting to pypi.python.org|140.211.10.73|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 332005 (324K) [application/octet-stream]
+Saving to: 'setuptools-0.6c11-py2.7.egg'
+
+100%[======================================>] 332,005     41.8KB/s   in 7.5s   
+
+2013-01-27 21:26:12 (43.2 KB/s) - 'setuptools-0.6c11-py2.7.egg' saved [332005/332005]
+
+root@OpenWrt:/# 
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+Finally, install the Python EGG :
+
+-----------------------------------------------
+root@OpenWrt:/# sh setuptools-0.6c11-py2.7.egg
+-----------------------------------------------
+
+Installing Python PIP
+---------------------
+
+`pip` is a modern replacement for easy_install. It has many advantages ove
+easy_install (descripbed here:
+		http://www.pip-installer.org/en/latest/other-tools.html), one of which is
+a package uinstallation, for example.
+
+A procedure of installing `pip` on Posix machines can be found on this site (http://www.pip-installer.org/en/latest/installing.html, at the end of page) :
+
+---------------------------------------------------
+root@Weio:/mnt/usb/temp# opkg install curl -d root
+---------------------------------------------------
+
+There are two methods of installing pip, by automatic script get-pip.py or
+manually downloading sources and running setup.py.
+
+----------------------------------------------------------------------------------------------
+root@Weio:/mnt/usb/temp# curl -O -k https://raw.github.com/pypa/pip/master/contrib/get-pip.py
+----------------------------------------------------------------------------------------------
+
+Curl needs -k parameter to turn off curl's verification of the certificate because he will not be able to verify it.
+
+------------------------------------------
+root@Weio:/mnt/usb/temp# python get-pip.py
+------------------------------------------
+
+Installing Tornado WebSocket Server
+-----------------------------------
+
+Tornado WebSocket server can be installed via easy_install which will select
+the most appropriate Python EGG version, download it and install it :
+
+------------------------------------
+root@OpenWrt:/# easy_install tornado
+------------------------------------
+
+Installation can be tested dyrectly in Python :
+
+-------------------------------------------------------------------------
+root@OpenWrt:/# python
+Python 2.7.3 (default, Oct 13 2012, 05:56:22) 
+[GCC 4.7.1 20120402 (prerelease)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import tornado
+>>> 
+-------------------------------------------------------------------------
+
+N.B. There can be problems with easy_install, when it tries to get the sources
+from the https links (GitHub uses them, for example):
+
+-----------------------------------------------------------------------------------------------------------------------
+root@OpenWrt:/# easy_install tornado
+Searching for tornado
+Reading http://pypi.python.org/simple/tornado/
+Reading http://www.tornadoweb.org/
+Best match: tornado 2.4.1
+Downloading http://github.com/downloads/facebook/tornado/tornado-2.4.1.tar.gz
+error: Download error for http://github.com/downloads/facebook/tornado/tornado-2.4.1.tar.gz: unknown url type: https
+------------------------------------------------------------------------------------------------------------------------
+
+This is an indication that `python-openssl` package is missing on WeIO system
+and that it must be installed :
+
+------------------------------------------------------------------------------------------------
+root@OpenWrt:/# opkg install python-openssl -d usb
+Installing python-openssl (2.7.3-1) to usb...
+Downloading http://pkg.8devices.com/v2.3/carambola/packages/python-openssl_2.7.3-1_ramips.ipk.
+Configuring python-openssl.
+root@OpenWrt:/#
+------------------------------------------------------------------------------------------------
+
+N.B. Do not forget to put the Python packages to correct destination on USB
+stick with `-d usb` option given to `opkg`. Otherwise packages will be
+installed on the WeIO flash and will not work correctly (Python paths are wrong).
+
+If you installed a package without `-d usb` switch you should remove it and
+re-install correctly :
+
+----------------------------------------------
+root@OpenWrt:/# opkg remove python-openssl
+Removing package python-openssl from root...
+root@OpenWrt:/#
+----------------------------------------------
+
+
+Installing SockJS
+-----------------
+Git clone sockjs-tornado sources from GitHub and copy them to WeIO system, onto
+the USB key :
+
+---------------------------------------------------------------------------------
+drasko@Marx:~/carambola$ git clone git://github.com/mrjoes/sockjs-tornado.git
+Cloning into sockjs-tornado...
+remote: Counting objects: 878, done.
+remote: Compressing objects: 100% (439/439), done.
+remote: Total 878 (delta 542), reused 748 (delta 412)
+Receiving objects: 100% (878/878), 137.77 KiB, done.
+Resolving deltas: 100% (542/542), done.
+drasko@Marx:~/carambola$ scp -r sockjs-tornado root@192.168.0.12:/mnt/usb
+---------------------------------------------------------------------------------
+
+Now, in the WeIO system in the directory `/mnt/usb/sockjs-tornado` run the `setup.py` script with
+`install` argument (this argument does both `build` and `install`):
+
+--------------------------------------------------------------
+root@OpenWrt:/mnt/usb/sockjs-tornado# python setup.py install
+--------------------------------------------------------------
+
+To test the installation, go to the `/mnt/usb/sockjs-tornado/examples/chat` and
+run :
+-------------------------------------------------------------------
+root@OpenWrt:/mnt/usb/sockjs-tornado/examples/chat# python chat.py
+-------------------------------------------------------------------
+
+Go to the browser on the PC host and poit it to http://192.168.0.12:8080.
+
+
+Avahi Zeroconf
+--------------
+
+From make menuconf : `PACKAGE_avahi-daemon`, located in Network -> IP Addresses and Names and recompile image.
+
+Or cahnge install package via opkg. As avahi is not present in 8devices repository, we can switch to official OpenWRT barrier-braker (OpenWRT blleding edge repo, equivalent to Debian sid) package repo by chaning `/etc/opkg.conf`
+
+--------------------------------------------------------------------------------------
+root@OpenWrt:/# cat /etc/opkg.conf 
+#src/gz snapshots http://pkg.8devices.com/v2.3/carambola/packages
+src/gz barrier_breaker http://downloads.openwrt.org/snapshots/trunk/ramips/packages
+dest root /
+dest ram /tmp
+dest usb /mnt/usb
+lists_dir ext /var/opkg-lists
+option overlay_root /overlay
+root@OpenWrt:/#
+--------------------------------------------------------------------------------------
+
+Update `opkg` :
+--------------------------------------------------------------------------------------
+root@OpenWrt:/# opkg update
+Downloading http://downloads.openwrt.org/snapshots/trunk/ramips/packages/Packages.gz.
+Inflating http://downloads.openwrt.org/snapshots/trunk/ramips/packages/Packages.gz.
+Updated list of available packages in /var/opkg-lists/barrier_breaker.
+root@OpenWrt:/# 
+--------------------------------------------------------------------------------------
+
+And then install `avahi-daemon` :
+
+-----------------------------------------------------------------------------------------------------------
+root@OpenWrt:/# opkg install avahi-daemon
+Installing avahi-daemon (0.6.31-5) to root...
+Downloading http://downloads.openwrt.org/snapshots/trunk/ramips/packages/avahi-daemon_0.6.31-5_ramips.ipk.
+Installing libavahi (0.6.31-5) to root...
+Downloading http://downloads.openwrt.org/snapshots/trunk/ramips/packages/libavahi_0.6.31-5_ramips.ipk.
+Installing libdaemon (0.14-2) to root...
+Downloading http://downloads.openwrt.org/snapshots/trunk/ramips/packages/libdaemon_0.14-2_ramips.ipk.
+Installing libgdbm (1.9.1-2) to root...
+Downloading http://downloads.openwrt.org/snapshots/trunk/ramips/packages/libgdbm_1.9.1-2_ramips.ipk.
+Installing libexpat (2.0.1-1) to root...
+Downloading http://downloads.openwrt.org/snapshots/trunk/ramips/packages/libexpat_2.0.1-1_ramips.ipk.
+Installing libdbus (1.4.14-2) to root...
+Downloading http://downloads.openwrt.org/snapshots/trunk/ramips/packages/libdbus_1.4.14-2_ramips.ipk.
+Configuring libdbus.
+Configuring libdaemon.
+Configuring libgdbm.
+Configuring libavahi.
+Configuring libexpat.
+Configuring avahi-daemon.
+root@OpenWrt:/#
+------------------------------------------------------------------------------------------------------------
+
+Enable and start avahi-daemon :
+------------------------------------------------
+root@OpenWrt:/# /etc/init.d/avahi-daemon enable
+root@OpenWrt:/# /etc/init.d/avahi-daemon start
+root@OpenWrt:/# 
+------------------------------------------------
+
+
+
+Edit `hostname` in `/etc/config/system`  to WEIO:
+
+-------------------------------------------------------
+root@OpenWrt:/# cat /etc/config/system
+config system
+        option hostname WEIO
+#       option timezone UTC
+        option timezone CET-1CEST,M3.5.0,M10.5.0/3
+
+config timeserver ntp
+        list server     0.openwrt.pool.ntp.org
+        list server     1.openwrt.pool.ntp.org
+        list server     2.openwrt.pool.ntp.org
+        list server     3.openwrt.pool.ntp.org
+        option enable_server 0
+root@OpenWrt:/# 
+-------------------------------------------------------
+
+Restart Carambola, so that new name is taken into account.
+
+You should now be able to login to your router using ssh -l root WEIO.local.
+
+
+Dropbear SSH Authorized Key Setup
+---------------------------------
+
+Reference : http://wiki.openwrt.org/oldwiki/DropbearPublicKeyAuthenticationHowto.
+
+The command to make your ssh key authorized to login as root on the router is:
+
+-----------------------------------------------------------------
+root@OpenWrt:/# echo 'PUBLICKEY'  > /etc/dropbear/authorized_keys
+-----------------------------------------------------------------
+Replace PUBLICKEY with the content of the `~/.ssh/id*.pub` file on your own machine or the output from `ssh-add -L` if you use the SSH agent.
+
+Disable password based login using:
+
+---------------------------------------------------------------
+root@OpenWrt:/# sed -i -e "s/'on'/'off'/"  /etc/config/dropbear
+---------------------------------------------------------------
+Alternatively, edit `/etc/config/dropbear` to look like:
+
+---------------------------------
+config dropbear
+        option PasswordAuth 'off'
+        option Port         '22'
+---------------------------------
+
+To print the ssh host key fingerprint using:
+
+---------------------------------------------------------------------
+root@OpenWrt:~# dropbearkey -y -f /etc/dropbear/dropbear_rsa_host_key
+Public key portion is:
+ssh-rsa AAAA... root@OpenWrt
+Fingerprint: md5 ...
+---------------------------------------------------------------------
+
+To use the web interface, you may want to set a root password.
+
+---------------------------------
+root@OpenWrt:/# passwd
+Changing password for root
+New password:
+Retype password:
+Password for root changed by root
+root@OpenWrt:/#
+---------------------------------
+
+If you do not set a root password, you will need to manually disable the telnet server as follows.
+
+------------------------------------------
+root@OpenWrt:~# /etc/init.d/telnet disable
+------------------------------------------
+
+
+
