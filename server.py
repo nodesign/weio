@@ -42,10 +42,10 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 import json, functools
 
 # IMPORT EDITOR CLASSES, this connects editor webapp with tornado server
-from editor import editor #, WeioEditorStopHandler, WeioEditorPlayHandler 
+from editor import editorHandler #, WeioEditorStopHandler, WeioEditorPlayHandler 
 
 # IMPORT WEIOAPI BRIDGE CLASS, this connects user webapp with tornado server
-from weioLib import weioAPIbridge
+from weioLib import weioAPIbridgeHandler
 
 # IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
 from weioLib import weio_config
@@ -91,10 +91,10 @@ if __name__ == '__main__':
     logging.getLogger().setLevel(logging.DEBUG)
 
     # WEIO API BRIDGE
-    WeioAPIBridgeRouter = SockJSRouter(weioAPIbridge.WeioAPIBridgeHandler, '/api')
+    WeioAPIBridgeRouter = SockJSRouter(weioAPIbridgeHandler.WeioAPIBridgeHandler, '/api')
 
     # EDITOR ROUTES
-    WeioEditorRouter = SockJSRouter(editor.WeioEditorHandler, '/editor/baseFiles')    
+    WeioEditorRouter = SockJSRouter(editorHandler.WeioEditorHandler, '/editor/baseFiles')    
   
     # HEADER WEB SOCKET
     #WeioHeaderRouter = SockJSRouter(Header.WeioHeaderHandler, '/header')
