@@ -97,7 +97,7 @@ var MAX_LINES_IN_CONSOLE = 1000;
 
 /**
  * Wifi Json structure. Interesting keys are : 
- * ssid (string), 
+ * essid (string), 
  * quality (0-70 integer),
  * opened (true - for networks without security)
  * connected (true if Weio is connected to that network)
@@ -106,9 +106,9 @@ var MAX_LINES_IN_CONSOLE = 1000;
 
 var wifi = {
     "cells":[
-    {"ssid" : "domus master", "quality" : 60, "opened" : "true", "id" : "8768768", "connected" : "false", "password" : ""},
-    {"ssid" : "NoDesignNet", "quality" : 30, "opened" : "false", "id" : "7628392", "connected" : "true", "password" : ""},
-    {"ssid" : "ddwifi", "quality" : 10, "opened" : "false", "id" : "5537920", "connected" : "false", "password" : ""}  
+    {"essid" : "domus master", "quality" : 60, "opened" : "true", "id" : "8768768", "connected" : "false", "password" : ""},
+    {"essid" : "NoDesignNet", "quality" : 30, "opened" : "false", "id" : "7628392", "connected" : "true", "password" : ""},
+    {"essid" : "ddwifi", "quality" : 10, "opened" : "false", "id" : "5537920", "connected" : "false", "password" : ""}  
     ]
 };
 
@@ -119,7 +119,7 @@ var wifiCurrentMode = "STA"; // "STA" or "AP"
 
 /**
  * Wifi network identifier that Weio is currently connected to.
- * We can't distinguish wifis only by their ssid because there can be
+ * We can't distinguish wifis only by their essid because there can be
  * two networks that have same name
  */
 var connectedToWifiId = "";
@@ -163,7 +163,7 @@ function injectWifiNetworksInDropMenu() {
         // transform wifiQuality object into html
         wifiQuality = '<img src="img/wifi' + wifiQuality + '.png" id="wifiIcons"></img>';
 
-        $("#wifiNetworks").append('<li><a tabindex="-1" onclick="prepareToChangeWifi('+ wifi.cells[i].id + ')" role="button" data-toggle="modal">' + currentConnection + wifi.cells[i].ssid + wifiQuality + secureWifi + '</a></li>');
+        $("#wifiNetworks").append('<li><a tabindex="-1" onclick="prepareToChangeWifi('+ wifi.cells[i].id + ')" role="button" data-toggle="modal">' + currentConnection + wifi.cells[i].essid + wifiQuality + secureWifi + '</a></li>');
     }
     $("#wifiNetworks").append('<li class="divider"></li>');
     $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Connect to another network</a></li>');
@@ -200,7 +200,7 @@ function prepareToChangeWifi(id) {
             }
         }
 
-        $("#myModalChangeWifiLabel").html("Join " + cell.ssid + " wireless network?");
+        $("#myModalChangeWifiLabel").html("Join " + cell.essid + " wireless network?");
        
         // if password is required add password field 
         if (cell.opened=="false") {
