@@ -38,7 +38,7 @@
 
 
 # clean old file
-rm weioStripped.tar.bz2
+#rm weioStripped.tar.bz2
 
 # after all process to decompress type : tar -zxvf weioStripped.tar.gz
 # make new dir for stripped version at level -1
@@ -48,7 +48,7 @@ mkdir weioStripped
 rsync -av --exclude=".*" ../ weioStripped
 
 # strip uds_main
-rm weioStripped/uds*
+#rm weioStripped/uds*
 
 # delete production scripts
 rm -r weioStripped/productionScripts
@@ -143,7 +143,7 @@ rm weioStripped/clientDependencies/ace/theme-solarized_dark.js
 rm weioStripped/clientDependencies/ace/theme-solarized_light.js
 rm weioStripped/clientDependencies/ace/theme-tomorrow_night_blue.js
 rm weioStripped/clientDependencies/ace/theme-tomorrow_night_bright.js
-rm weioStripped/clientDependencies/ace/theme-tomorrow_night_eighties.js
+#rm weioStripped/clientDependencies/ace/theme-tomorrow_night_eighties.js
 rm weioStripped/clientDependencies/ace/theme-tomorrow_night.js
 rm weioStripped/clientDependencies/ace/theme-tomorrow.js
 rm weioStripped/clientDependencies/ace/theme-twilight.js
@@ -154,17 +154,23 @@ rm weioStripped/clientDependencies/ace/worker-json.js
 rm weioStripped/clientDependencies/ace/worker-xquery.js
 
 # change web socket address from localhost to weio.local
-sed 's/localhost:8081/weio.local:8081/' weioStripped/clientDependencies/weio/weioApi.js > out
-mv out weioStripped/clientDependencies/js/weioApi.js
+#sed 's/localhost:8081/weio.local:8081/' weioStripped/clientDependencies/weio/weioApi.js > out
+#mv out weioStripped/clientDependencies/js/weioApi.js
 
-sed 's/localhost:8081/weio.local:8081/' weioStripped/editor/editor.html > out
-mv out weioStripped/editor/editor.html
+#sed 's/localhost:8081/weio.local:8081/' weioStripped/editor/editor.html > out
+#mv out weioStripped/editor/editor.html
+
+#exclude DOC and openWrt
+rm -r weioStripped/doc
+rm -r weioStripped/openWrt
 
 # rename to weio
-mv weioStripped/ weio
+#mv weioStripped/ ../openWrt/files/weio
+
+
 
 # make tar archive 
-tar -zcvf weioStripped.tar.gz weioStripped/
+#tar -zcvf weioStripped.tar.gz weioStripped/
 
 # MAXIMUM COMPRESSION
 #tar cf - weio/ | bzip2 -9 - > weioStripped.tar.bz2 

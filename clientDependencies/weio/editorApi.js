@@ -104,14 +104,8 @@ var MAX_LINES_IN_CONSOLE = 1000;
  * password (always empty, to be filled by user)
  */
 
-var wifi = {
-    "cells":[
-    {"essid" : "domus master", "quality" : 60, "opened" : true, "id" : "8768768", "connected" : false, "password" : ""},
-    {"essid" : "NoDesignNet", "quality" : 30, "opened" : false, "id" : "7628392", "connected" : true, "password" : ""},
-    {"essid" : "ddwifi", "quality" : 10, "opened" : false, "id" : "5537920", "connected" : false, "password" : ""}  
-    ]
-};
-
+var wifi = 0;
+ 
 /**
  * Weio can be in two modes Acess Point AP and STA mode (client of one wifi network)
  */
@@ -142,28 +136,26 @@ var selectedCell = -1;
 
 
 function injectWifiNetworksInDropMenu() {
-
+//{"mac": "7656757", "essid": "ddwifi", "quality" : "50/70", "encryption" : "WPA2 PSK (CCMP)", "opened" : True, "connected": False}
     $("#wifiNetworks").empty();
 
     $("#wifiNetworks").append('<li class="disabled"><a tabindex="-1" href="#">Scanning networks <i class="icon-spinner icon-spin" id="wifiIcons"></i></a></li>');
     $("#wifiNetworks").append('<li class="divider"></li>');
 
-    for (var i=0; i<wifi.cells.length; i++) {
+    for (var cell in wifi) {
 
         // update current connected object
-        if (wifi.cells[i].connected == true) connectedToWifiId = wifi.cells[i].id;
+        if (wifi[cell].connected == true) connectedToWifiId = wifi[cell].mac;
 
-        var secureWifi = (wifi.cells[i].opened==false) ? '<i class="icon-lock" id="wifiIcons"></i>' : '';
+        var secureWifi = (wifi[cell].opened==false) ? '<i class="icon-lock" id="wifiIcons"></i>' : '';
 
         // detect where is my current network
-        var currentConnection = (wifi.cells[i].id==connectedToWifiId) ? '<i class="icon-check" id="wifiPrefixIcons"></i>' : '';
+        var currentConnection = (wifi[cell].mac==connectedToWifiId) ? '<i class="icon-check" id="wifiPrefixIcons"></i>' : '';
 
-        // wifi quality signals are from 0-70, we have icons for total of 4 levels (icons from 0-3). 3/70 = 0.042857142857143
-        var wifiQuality = Math.round(wifi.cells[i].quality * 0.042857142857143);
         // transform wifiQuality object into html
-        wifiQuality = '<img src="img/wifi' + wifiQuality + '.png" id="wifiIcons"></img>';
-
-        $("#wifiNetworks").append('<li><a tabindex="-1" onclick="prepareToChangeWifi('+ wifi.cells[i].id + ')" role="button" data-toggle="modal">' + currentConnection + wifi.cells[i].essid + wifiQuality + secureWifi + '</a></li>');
+        var wifiQuality = '<img src="img/wifi' + getCellQuality(wifi[cell]) + '.png" id="wifiIcons"></img>';
+        
+        $("#wifiNetworks").append('<li><a tabindex="-1" onclick="prepareToChangeWifi('+ wifi[cell].mac + ')" role="button" data-toggle="modal">' + currentConnection + wifi[cell].essid  + wifiQuality + secureWifi + '</a></li>');
     }
     $("#wifiNetworks").append('<li class="divider"></li>');
     $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Connect to another network</a></li>');
@@ -173,9 +165,29 @@ function injectWifiNetworksInDropMenu() {
     scanWifiNetworks();
 };
 
+
+/*
+ * Parsing cell quality, returning integer 0-3
+ */
+function getCellQuality(cell) {
+    // parse quality signal, original examples : 4/70, 50/70
+    var rawStringQuality = cell.quality;
+    var n = rawStringQuality.split("/70");
+    var wifiQuality = n[0];
+   
+    // wifi quality signals are from 0-70, we have icons for total of 4 levels (icons from 0-3). 3/70 = 0.042857142857143
+    wifiQuality = Math.round(parseInt(wifiQuality) * 0.042857142857143);
+    
+    return wifiQuality;
+}
+
+
+/*
+ * Ask server to scan wifi networks
+ */
 function scanWifiNetworks() {
-    var scanWifi = { "request": "scanWifi"};
-    baseFiles.send(JSON.stringify(scanWifi));
+    var scanWifi = { "request": "scan"};
+    wifiSocket.send(JSON.stringify(scanWifi));
 }
 
 /**
@@ -191,11 +203,11 @@ function prepareToChangeWifi(id) {
 
     // verify if you are already connected to this network
     if (id!=connectedToWifiId) { 
-        for (var i=0; i<wifi.cells.length; i++) {
+        for (var cell in wifi) {
 
-            if (wifi.cells[i].id == id) {
+            if (wifi[cell].mac == id) {
                 // gotcha selected cell
-                cell = wifi.cells[i];
+                cell = wifi[cell];
                 break;
             }
         }
@@ -924,8 +936,7 @@ baseFiles.onclose = function() {
  */
 wifiSocket.onopen = function() {
     console.log('Wifi Web socket is opened');
-    var askScan = { "request": "scan" };
-    wifiSocket.send(JSON.stringify(askScan));
+    scanWifiNetworks();
 };
 
 /*
@@ -941,6 +952,23 @@ wifiSocket.onmessage = function(e) {
     // switch
 
     if ("requested" in data) {
+        // this is instruction that was echoed from server + data as response
+        instruction = data.requested;
+        if (instruction == "scan") {
+            //console.log("gotchaaaa");
+            var cellList = data.data;
+            
+            for (var cell in cellList) {
+                if (cellList[cell].connected) {
+                    $("#connectedWifiName").html('<img src="img/wifi' + getCellQuality(cellList[cell]) + '.png" id="wifiIcons"></img>' + cellList[cell].essid);
+                }
+                
+            }
+            
+            wifi = cellList;
+            injectWifiNetworksInDropMenu();
+        }
+        
     }
     
 };

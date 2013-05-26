@@ -184,6 +184,10 @@ a {
   margin-top: 5px;
   font-size: 90%;
 }
+#wifiNetworks {
+  overflow: auto;
+  min-height: 400px;
+}
 /* IFRAME */
 .iframeContainer {
   width: 100%;
