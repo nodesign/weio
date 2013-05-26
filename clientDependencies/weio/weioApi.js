@@ -38,7 +38,7 @@
 //var baseFiles = new SockJS(document.URL + '/baseFiles');
 //var baseFiles = new WebSocket('ws://192.168.10.183:8081/' + 'editor/baseFiles');
 
-  var weio = new SockJS('http://localhost:8081/' + 'api');
+  var weio = new SockJS(document.URL + 'api');
 
 
   var HIGH = "1";

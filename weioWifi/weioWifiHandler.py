@@ -79,6 +79,8 @@ def weioWifiParseScan() :
         # Check if we are connected to this ESSID
         if (scaninfo[cell]['ESSID'] == wifi.essid) :
             s['connected'] = True
+        else :
+            s['connected'] = False
         
         # Placeholeder for client to fill
         s['passwd'] = None
