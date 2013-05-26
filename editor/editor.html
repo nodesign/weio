@@ -189,6 +189,12 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
         </ol>
     </li>
 </ol>
+
+<!-- 'a@onclick' : function getter(arg) {return 'addNewStrip("' + arg.item.name + '")';},
+'a' : 'file.name',
+'#deleteFileButton@onclick' : function getter(arg) {return 'prepareToDelete("' + arg.item.name + '")';} -->
+
+
 <!-- FILE TREE TEMPLATE ENDS HERE -->
 
 <div class="bottom_buttons">
@@ -226,8 +232,13 @@ Drasko DRASKOVIC <drasko.draskovic@gmail.com>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h3 id="myModalChangeWifiLabel"></h3>
     </div>
-    <div class="modal-body">
-        <p>You are up to change wifi network. If you continue connection with Weio will be lost. Remember that you have to switch to the same network with your computer to gain again access to Weio.</p>
+    <div class="modal-body" id="wifiParameters">
+
+        <input type="text" class="input-small" placeholder="SSID" id="wifiSSID">
+        <input type="password" class="input-small" placeholder="Password" id="wifiPassword">
+      
+        <p>You are up to change wifi network. If you continue, connection with Weio will be lost. Remember that you have to switch to the same network with your computer to gain again access to Weio.</p>
+        
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>

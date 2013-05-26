@@ -49,6 +49,8 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 from weioLib import weioFiles
 from weioLib import weio_config
 
+import functools
+
 import json
 
 # pure websocket implementation    
@@ -221,7 +223,7 @@ class WeioEditorHandler(SockJSConnection):
             weioFiles.removeFile(pathCurrentProject+pathname)
             
             data['status'] = fileInfo['name'] + " has been removed"
-
+            self.send(json.dumps(data))
 
     def weio_main_handler(self, data, fd, events):
         line = self.pipe.stdout.readline()

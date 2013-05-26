@@ -38,6 +38,11 @@ function main_container_width() {
  */
 var baseFiles = new SockJS('http://localhost:8081/editor/baseFiles');
 
+/*
+ * First time initialisation of editors
+ */
+var firstTime = true;
+
 /**
  * ace code editors are stored in this array
  */
@@ -90,13 +95,14 @@ var MAX_LINES_IN_CONSOLE = 1000;
  * quality (0-70 integer),
  * opened (true - for networks without security)
  * connected (true if Weio is connected to that network)
+ * password (always empty, to be filled by user)
  */
 
 var wifi = {
     "cells":[
-    {"ssid" : "domus master", "quality" : 60, "opened" : "true", "id" : "8768768", "connected" : "false"},
-    {"ssid" : "NoDesignNet", "quality" : 30, "opened" : "false", "id" : "7628392", "connected" : "true"},
-    {"ssid" : "ddwifi", "quality" : 10, "opened" : "true", "id" : "5537920", "connected" : "false"}  
+    {"ssid" : "domus master", "quality" : 60, "opened" : "true", "id" : "8768768", "connected" : "false", "password" : ""},
+    {"ssid" : "NoDesignNet", "quality" : 30, "opened" : "false", "id" : "7628392", "connected" : "true", "password" : ""},
+    {"ssid" : "ddwifi", "quality" : 10, "opened" : "false", "id" : "5537920", "connected" : "false", "password" : ""}  
     ]
 };
 
@@ -141,13 +147,13 @@ function injectWifiNetworksInDropMenu() {
         // update current connected object
         if (wifi.cells[i].connected == "true") connectedToWifiId = wifi.cells[i].id;
 
-        var secureWifi = (wifi.cells[i].opened=="true") ? '<i class="icon-lock" id="wifiIcons"></i>' : '';
+        var secureWifi = (wifi.cells[i].opened=="false") ? '<i class="icon-lock" id="wifiIcons"></i>' : '';
 
         // detect where is my current network
         var currentConnection = (wifi.cells[i].id==connectedToWifiId) ? '<i class="icon-check" id="wifiPrefixIcons"></i>' : '';
 
         // wifi quality signals are from 0-70, we have icons for total of 4 levels (icons from 0-3). 3/70 = 0.042857142857143
-        var wifiQuality = Math.round(wifi.cells[i].quality  * 0.042857142857143);
+        var wifiQuality = Math.round(wifi.cells[i].quality * 0.042857142857143);
         // transform wifiQuality object into html
         wifiQuality = '<img src="img/wifi' + wifiQuality + '.png" id="wifiIcons"></img>';
 
@@ -189,6 +195,14 @@ function prepareToChangeWifi(id) {
         }
 
         $("#myModalChangeWifiLabel").html("Join " + cell.ssid + " wireless network?");
+       
+        // if password is required add password field 
+        if (cell.opened=="false") {
+             $("#wifiPassword").css("display", "block");
+        }else {
+            $("#wifiPassword").css("display", "none");
+        }
+        
         // put selected cell into object that will be used
         // in changeWifiNetwork()
         // in the case that modal is confirmed
@@ -204,9 +218,28 @@ function prepareToChangeWifi(id) {
  */
 
 function changeWifiNetwork() {
-    var changeWifi = { "request": "changeWifi", "data" : selectedCell};
-    baseFiles.send(JSON.stringify(changeWifi));
-
+    
+    var changeWifi = 0;
+    if (selectedCell.opened=="false") {
+        var password = $("#wifiPassword").val();
+    
+        // Checks for strings that are either empty or filled with whitespace
+        if((/^\s*$/).test(password)) { 
+            alert("Password field can't be empty!");
+        } else {
+            selectedCell.password = password;
+            changeWifi = { "request": "changeWifi", "data" : selectedCell};
+            console.log(changeWifi);
+            baseFiles.send(JSON.stringify(changeWifi));
+        }
+    
+    } else {
+        
+        changeWifi = { "request": "changeWifi", "data" : selectedCell};
+        console.log(changeWifi);
+        baseFiles.send(JSON.stringify(changeWifi));
+    }
+    
     selectedCell = -1; // reset selection
 }
 
@@ -385,7 +418,7 @@ function refreshEditors() {
         //console.log(editorData.editors[editor].name);
 
         var e = ace.edit(editorData.editors[editor].name); // attach to specific #id
-        e.setTheme("ace/theme/xcode"); // design theme
+        e.setTheme("ace/theme/tomorrow_night_eighties"); // design theme
         e.getSession().setMode("ace/mode/" + editorData.editors[editor].type); // editor language (html, python, css,...)
         e.setValue(editorData.editors[editor].data); // code to be insered in editor
         e.setFontSize("11px");
@@ -536,6 +569,21 @@ function prepareToDelete(name) {
 function deleteFile() {
     console.log("file to delete " + selectedName);
     
+    var data = getFileDataByNameFromJson(selectedName);
+    
+    
+    // kill element in editor
+    editors.splice(data.index, 1);
+
+    // kill element in JSON
+    editorData.editors.splice(data.index, 1);
+
+    // render changes to HTML
+    update_height();
+    renderEditors();
+    collapseAllExceptFocusedOne();
+    refreshEditors();
+    
     var data = {
         "name" : selectedName
     };
@@ -570,18 +618,12 @@ function getFileDataByNameFromJson(name) {
 function insertNewEditor(fileInfo) {
 
     saveToJSON();
-    //console.log(fileInfo.name + " " + fileInfo.data);
-    //console.log(editorData.editors[editor].name);
+    
     var e = ace.edit(fileInfo.name); // attach to specific #id
-    e.setTheme("ace/theme/textmate"); // design theme
     e.getSession().setMode("ace/mode/" + fileInfo.type); // editor language (html, python, css,...)
     e.setValue(fileInfo.data); // code to be insered in editor
-
-    e.getSession().setTabSize(4);
-    e.getSession().setUseSoftTabs(true);
-    e.getSession().setUseWrapMode(true);
-    e.setShowPrintMargin(false);
-
+    
+    
     e.gotoLine(0);
     editors.push(e); // add editor to array of editors
 
@@ -739,10 +781,16 @@ function clearConsole(){
 
 
                     editorData.tree = fileList.allFiles; 
-                    initEditor();
                     
-                    // install first index.html
-                    addNewStrip("index.html");
+                    // init editors only once
+                    if (firstTime==true) {
+                        initEditor();
+                        // install first index.html
+                        addNewStrip("index.html");
+                        firstTime = false;
+                    }
+                    
+                    renderFileTree();
 
                 } else if (instruction == "getFile") {
 
@@ -771,8 +819,12 @@ function clearConsole(){
                     // nothing
 
                 } else if (instruction == "addNewFile") {
-                    // We crated a new file, OK now refresh file tree
-                    $(".tree").empty();
+                    // We created a new file, OK now refresh file tree
+                    var askForFileListRequest = { "request": "getFileList" };
+                    baseFiles.send(JSON.stringify(askForFileListRequest));
+                    
+                } else if (instruction == "deleteFile") {
+                    // We deleted one file, OK now refresh file tree
                     var askForFileListRequest = { "request": "getFileList" };
                     baseFiles.send(JSON.stringify(askForFileListRequest));
                 }
