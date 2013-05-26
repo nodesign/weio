@@ -137,4 +137,4 @@ class WeioWifi() :
 
     def scan() :
         iwl = IWInfo.IWInfo(self.interface)
-        return iwl.data
+        return iwl.getData()

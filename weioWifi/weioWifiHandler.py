@@ -64,21 +64,25 @@ def weioWifiParseScan() :
 
     data = {}
 
-    for cell in  scaninfo.keys :
-        data[cell]['mac'] = scaninfo[cell]['MAC']
-        data[cell]['essid'] = scaninfo[cell]['ESSID']
-        data[cell]['quality'] = scaninfo[cell]['Quality']
-        data[cell]['encryption'] = scaninfo[cell]['Encryption']
-
-        if (data[cell]['encryption'] is 'none') :
-            data[cell]['opened'] = True
+    for cell in  scaninfo.keys() :
+        s = {}
+        s['mac'] = scaninfo[cell]['MAC']
+        s['essid'] = scaninfo[cell]['ESSID']
+        s['quality'] = scaninfo[cell]['Quality']
+        s['encryption'] = scaninfo[cell]['Encryption']
+        if (s['encryption'] is 'none') :
+            s['opened'] = True
 
         # Check if we are connected to this ESSID
         if (scaninfo[cell]['ESSID'] == wifi.essid) :
-            data[cell]['connected'] = True
+            s['connected'] = True
         
         # Placeholeder for client to fill
-        data[cell]['passwd'] = None
+        s['passwd'] = None
+
+        data[cell] = s
+
+    return data
 
 
 # Wifi detection route handler  
