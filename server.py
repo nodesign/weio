@@ -50,6 +50,7 @@ from weioLib import weioAPIbridgeHandler
 # IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
 from weioLib import weio_config
 
+# IMPORT WIFI DETECTION AND CONFIGURATION
 from weioWifi import weioWifiHandler
 
 # This is user project index.html
