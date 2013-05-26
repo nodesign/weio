@@ -141,7 +141,11 @@ function injectWifiNetworksInDropMenu() {
 
     $("#wifiNetworks").append('<li class="disabled"><a tabindex="-1" href="#">Scanning networks <i class="icon-spinner icon-spin" id="wifiIcons"></i></a></li>');
     $("#wifiNetworks").append('<li class="divider"></li>');
-
+    
+    $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Connect to another network</a></li>');
+    $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Create network</a></li>');
+    $("#wifiNetworks").append('<li class="divider"></li>');
+    
     for (var cell in wifi) {
 
         // update current connected object
@@ -157,9 +161,7 @@ function injectWifiNetworksInDropMenu() {
         
         $("#wifiNetworks").append('<li><a tabindex="-1" onclick="prepareToChangeWifi('+ wifi[cell].mac + ')" role="button" data-toggle="modal">' + currentConnection + wifi[cell].essid  + wifiQuality + secureWifi + '</a></li>');
     }
-    $("#wifiNetworks").append('<li class="divider"></li>');
-    $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Connect to another network</a></li>');
-    $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Create network</a></li>');
+   
 
     // scan wifi networks 
     scanWifiNetworks();
