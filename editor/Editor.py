@@ -35,28 +35,21 @@
 ###
 
 import subprocess
+
 import os, signal, sys
-import functools
-import errno
-import os
+
 from tornado import web, ioloop, iostream
 sys.path.append(r'./');
 
 # pure websocket implementation
 #from tornado import websocket
 
-import tornado_subprocess
-
 from sockjs.tornado import SockJSRouter, SockJSConnection
+
 from weioLib import WeioFiles
 from weioLib import weio_config
 
-
 import json
-import ast
-
-
-
 
 # pure websocket implementation    
 #class WeioEditorHandler(websocket.WebSocketHandler):
@@ -71,17 +64,17 @@ class WeioEditorHandler(SockJSConnection):
         pass
         
     def on_message(self, data):
-        self.serve(data)
+        """Parsing JSON data that is comming from browser into python object"""
+        req = json.loads(data)
+        self.serve(req)
 
 # pure websocket implementation         
 #    def send(self, message):
 #        self.write_message(message)
         
-    def serve(self, request) :
+    def serve(self, rq) :
         global weio_main
         
-        # parsing strings from browser
-        rq = ast.literal_eval(request)
         
         # answer dictionary object
         data = {}          
