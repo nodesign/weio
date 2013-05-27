@@ -165,9 +165,7 @@ rm -r weioStripped/doc
 rm -r weioStripped/openWrt
 
 # rename to weio
-#mv weioStripped/ ../openWrt/files/weio
-
-
+mv weioStripped/ ../openWrt/files/weio
 
 # make tar archive 
 #tar -zcvf weioStripped.tar.gz weioStripped/
