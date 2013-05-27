@@ -36,14 +36,14 @@ function main_container_width() {
 /*
  * SockJS object, Web socket
  */
-var baseFiles = new SockJS('http://weio.local/editor/baseFiles');
-//var baseFiles = new SockJS(document.URL + '/editor/baseFiles');
+//var baseFiles = new SockJS('http://weio.local:8081/editor/baseFiles');
+var baseFiles = new SockJS(document.URL + '/editor/baseFiles');
 
 /**
  * Wifi SockJS object, Web socket for scaning and changing wifi parameters
  */
-var wifiSocket = new SockJS('http://weio.local/wifi');
-//var wifiSocket = new SockJS(document.URL + '/wifi');
+//var wifiSocket = new SockJS('http://weio.local:8081/wifi');
+var wifiSocket = new SockJS(document.URL + '/wifi');
 
 
 /*
