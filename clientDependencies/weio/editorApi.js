@@ -286,6 +286,7 @@ $(document).ready(function () {
         update_height();
         main_container_width();
     });
+    
 });
 
 function initEditor() {
@@ -804,7 +805,7 @@ baseFiles.onmessage = function(e) {
             fileList = data.data; 
             console.log(fileList.allFiles);
 
-
+            
             editorData.tree = fileList.allFiles; 
             
             // init editors only once
@@ -816,6 +817,7 @@ baseFiles.onmessage = function(e) {
             }
             
             renderFileTree();
+            
 
         } else if (instruction == "getFile") {
 
@@ -943,7 +945,7 @@ baseFiles.onclose = function() {
  */
 wifiSocket.onopen = function() {
     console.log('Wifi Web socket is opened');
-    scanWifiNetworks();
+    setTimeout(function(){scanWifiNetworks()},3000);
 };
 
 /*
