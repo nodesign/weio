@@ -1,4 +1,41 @@
 /**
+*
+* WEIO Web Of Things Platform
+* Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
+* All rights reserved
+*
+*               ##      ## ######## ####  #######  
+*               ##  ##  ## ##        ##  ##     ## 
+*               ##  ##  ## ##        ##  ##     ## 
+*               ##  ##  ## ######    ##  ##     ## 
+*               ##  ##  ## ##        ##  ##     ## 
+*               ##  ##  ## ##        ##  ##     ## 
+*                ###  ###  ######## ####  #######
+*
+*                    Web Of Things Platform
+*
+* WEIO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* WEIO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+* 
+* This file is part of WEIO.
+*
+* Authors : 
+* Uros PETREVSKI <uros@nodesign.net>
+* Drasko DRASKOVIC <drasko.draskovic@gmail.com>
+*
+**/
+
+/**
  * Can be recalled when adding a new stripe to recalculate max height value
  */
 function update_height() {
@@ -36,14 +73,12 @@ function main_container_width() {
 /*
  * SockJS object, Web socket
  */
-var baseFiles = new SockJS('http://weio.local/editor/baseFiles');
-//var baseFiles = new SockJS(document.URL + '/editor/baseFiles');
+var baseFiles = new SockJS('http://' + location.host + '/editor/baseFiles');
 
 /**
  * Wifi SockJS object, Web socket for scaning and changing wifi parameters
  */
-var wifiSocket = new SockJS('http://weio.local/wifi');
-//var wifiSocket = new SockJS(document.URL + '/wifi');
+var wifiSocket = new SockJS('http://' + location.host + '/wifi');
 
 
 /*
