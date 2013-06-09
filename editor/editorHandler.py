@@ -38,7 +38,7 @@ import subprocess
 
 import os, signal, sys
 
-from tornado import web, ioloop, iostream
+from tornado import web, gen, ioloop, iostream
 sys.path.append(r'./');
 
 # pure websocket implementation
@@ -73,7 +73,7 @@ class WeioEditorHandler(SockJSConnection):
 # pure websocket implementation         
 #    def send(self, message):
 #        self.write_message(message)
-        
+    @gen.engine
     def serve(self, rq) :
         global weio_main
         

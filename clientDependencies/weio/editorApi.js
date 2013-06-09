@@ -480,6 +480,7 @@ function refreshEditors() {
 
         var e = ace.edit(editorData.editors[editor].name); // attach to specific #id
         e.setTheme("ace/theme/tomorrow_night_eighties"); // design theme
+        //e.setTheme("ace/theme/xcode"); // design theme
         e.getSession().setMode("ace/mode/" + editorData.editors[editor].type); // editor language (html, python, css,...)
         e.setValue(editorData.editors[editor].data); // code to be insered in editor
         e.setFontSize("11px");

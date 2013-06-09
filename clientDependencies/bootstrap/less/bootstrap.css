@@ -5307,14 +5307,14 @@ a {
 .accordion-group {
   background: white;
   margin-bottom: 5px;
-  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
   border-color: #dadada;
   border-radius: 2px;
 }
 .accordion-heading {
   display: block;
   position: relative;
-  background: #aaa99c;
+  background: #ffffff;
 }
 .accordion-heading a {
   font-weight: bold;
@@ -5334,7 +5334,7 @@ a {
 /* MAIN HEADER NAV BAR */
 .navbar-inner {
   min-height: 50px;
-  background: white;
+  background: rgba(255, 255, 255, 0.6);
   box-shadow: none;
 }
 .navbar-inner .container {
@@ -5400,8 +5400,10 @@ a {
   position: fixed;
   top: 5px;
   left: 49%;
-  background-color: #d6d8d1;
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.38) inset, 0px 1px 0px #ffffff;
+  background-color: transparent;
+  /* background: url(../../img/textures/green-fibers/green-fibers.png) 0 0 repeat;*/
+
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.38) inset, 0px 1px 0px #ffffff;
   text-shadow: 0px 1px 0px #ffffff;
   border-radius: 2px;
 }
@@ -5461,10 +5463,17 @@ a {
 #sidebar {
   width: 200px;
   height: 100%;
+  top: 50px;
   position: fixed;
   left: 0;
-  background: #000000;
+  /* background: url(../../img/textures/subtle_stripes/subtle_stripes.png) 0 0 repeat;*/
+
+  background: white;
   z-index: 1000;
+  /*.file {
+                    color:black;
+                }*/
+
   /*
         #play {
          display: block;
@@ -5489,15 +5498,17 @@ a {
 #sidebar .bottom_buttons {
   width: 100%;
   height: 32px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: white;
+  /*rgba(0,0,0, 0.2);*/
+
   position: absolute;
-  bottom: 0px;
+  bottom: 50px;
   z-index: 1000;
 }
 #sidebar .bottom_buttons button {
   display: block;
   float: left;
-  color: white;
+  color: #333;
   padding: 6px;
   background: transparent;
   border: 0;
@@ -5508,7 +5519,7 @@ a {
   opacity: 1;
 }
 #sidebar #hideLeftSidebar {
-  color: white;
+  color: #777;
   display: block;
   width: 23px;
   height: 25px;
@@ -5567,17 +5578,20 @@ a {
   position: fixed;
   padding: 58px 0px;
   padding-left: 200px;
+  background: url(../../img/textures/lghtmesh/lghtmesh.png) 0 0 repeat;
 }
 #main_container #sidebarConsole {
-  color: #ececec;
+  color: #333;
   font-size: 0.9em;
   width: 40%;
   height: 100%;
   float: right;
   position: relative;
-  top: -15px;
+  top: -8px;
   right: 0;
-  background: #525252;
+  /*background: rgb(82, 82, 82);*/
+
+  background: white;
   z-index: 999;
   padding: 0;
   box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.3) inset, -1px 0px 0px #ffffff;
@@ -5585,13 +5599,13 @@ a {
 #main_container #sidebarConsole #consoleTitle {
   position: relative;
   top: 0px;
-  color: #333333;
+  color: #777;
   padding-left: 12px;
   font-size: 20px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 #main_container #sidebarConsole #hideRightSidebar {
-  color: white;
+  color: #777;
   display: block;
   width: 23px;
   height: 25px;
@@ -5609,7 +5623,7 @@ a {
   padding: 15px;
 }
 #main_container #sidebarConsole #trashConsole {
-  color: white;
+  color: #222;
   background: transparent;
   border: 0;
   position: relative;
@@ -5723,7 +5737,7 @@ ol.tree {
   padding: 0;
   width: 200px;
   margin-left: 0px;
-  margin-top: 34px;
+  margin-top: 0px;
   font-size: 12px;
 }
 li {
@@ -5736,7 +5750,7 @@ li.file {
 }
 li.file a {
   background: url(../../img/document.png) 0 0 no-repeat;
-  color: #c8c8c8;
+  color: #333;
   padding-left: 21px;
   text-decoration: none;
   display: block;
@@ -5744,7 +5758,7 @@ li.file a {
 }
 li.file a:hover {
   cursor: pointer;
-  color: white;
+  color: red;
   text-decoration: none;
 }
 li.file i {
@@ -5804,7 +5818,7 @@ li label {
   display: block;
   padding: 1px;
   padding-left: 28px;
-  color: white;
+  color: black;
   font-weight: bold;
   font-size: 10px;
   text-transform: uppercase;

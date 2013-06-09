@@ -36,7 +36,7 @@
 
 import os, signal, sys, platform
 
-from tornado import web, ioloop, iostream
+from tornado import web, ioloop, iostream, gen
 sys.path.append(r'./');
 
 # pure websocket implementation
@@ -102,7 +102,7 @@ class WeioWifiHandler(SockJSConnection):
         
         req = json.loads(data)
         self.serve(req)
-    
+        
     def serve(self, rq):
         """Parsed input from browser ready to be served"""
         global wifi

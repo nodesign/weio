@@ -8,7 +8,7 @@
         "weio_main.py"
     ], 
     "last_opened_project": "myFirstProject/", 
-    "port": 80, 
+    "port": 8081, 
     "preview_html_path": "preview/preview.html", 
     "user_projects_path": "userProjects/", 
     "weio_lib_path": "weioLib"
