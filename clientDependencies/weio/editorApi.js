@@ -45,7 +45,7 @@ function update_height() {
 
     var numRows = $('.codebox').length;
     //console.log("rows : " + numRows + " array elements " + editors.length);
-    var finalheight = viewportHeight - (numRows  * 40) - 95;
+    var finalheight = viewportHeight - (numRows  * 40) - 108;
     var widgetheight = viewportHeight - 140;
     $('.code_wrap').css('min-height', finalheight);
     $('.fullheight').css('height', widgetheight);
@@ -479,7 +479,7 @@ function refreshEditors() {
         //console.log(editorData.editors[editor].name);
 
         var e = ace.edit(editorData.editors[editor].name); // attach to specific #id
-        e.setTheme("ace/theme/tomorrow_night_eighties"); // design theme
+        e.setTheme("ace/theme/dawn"); // design theme
         //e.setTheme("ace/theme/xcode"); // design theme
         e.getSession().setMode("ace/mode/" + editorData.editors[editor].type); // editor language (html, python, css,...)
         e.setValue(editorData.editors[editor].data); // code to be insered in editor

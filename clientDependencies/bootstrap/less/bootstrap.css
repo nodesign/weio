@@ -5294,7 +5294,7 @@ a.badge:focus {
   src: url('../../customFonts/OpenSans-Light.ttf');
 }
 body {
-  background: #e6e6e6;
+  background: #d8d8d8;
   height: 100%;
 }
 a {
@@ -5319,6 +5319,7 @@ a {
 .accordion-heading a {
   font-weight: bold;
   color: #585858;
+  min-height: 20px;
 }
 .accordion-body.in.collapse {
   min-height: 85%;
@@ -5333,9 +5334,11 @@ a {
 }
 /* MAIN HEADER NAV BAR */
 .navbar-inner {
-  min-height: 50px;
-  background: rgba(255, 255, 255, 0.6);
+  min-height: 60px;
+  background: #242424;
   box-shadow: none;
+  border: 0px;
+  color: #d9d9d9;
 }
 .navbar-inner .container {
   min-height: 50px;
@@ -5343,6 +5346,38 @@ a {
 .navbar .brand {
   margin-left: -8px;
   margin-top: 4px;
+  height: 60px;
+  padding: 0px;
+  margin: 0px;
+  width: 199px;
+  border-right: 1px solid #494949;
+}
+.navbar .brand h1 {
+  width: 100px;
+  height: 40px;
+  text-indent: -10000em;
+  background: url("../../img/weiologo.svg") 14px center no-repeat;
+}
+.navbar .brand #status.connected {
+  width: 0;
+  height: 0;
+  border: 7px solid transparent;
+  border-bottom-color: #84c657;
+  position: relative;
+  float: right;
+  top: -44px;
+  right: 15px;
+  text-indent: -10000em;
+}
+.navbar .brand #status.connected:after {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 7px;
+  width: 0;
+  height: 0;
+  border: 7px solid transparent;
+  border-top-color: #84c657;
 }
 .navbar-static-top .container,
 .navbar-fixed-top .container,
@@ -5352,14 +5387,25 @@ a {
 .navbar .nav {
   width: 50%;
   position: fixed;
-  left: 185px;
+  left: 200px;
   display: inline-block;
   float: left;
+}
+.navbar .nav li a {
+  color: #eeeeee;
+  text-shadow: none;
+  line-height: 60px;
+  padding: 0 20px;
 }
 .navbar .nav li.dropdown {
   font-size: 20px;
   line-height: 28px;
-  text-shadow: 0px 1px 0px #ffffff;
+  height: 60px;
+  border-right: 1px solid #494949;
+}
+.navbar .nav li.dropdown a:hover {
+  background: #2c2c2c;
+  color: white;
 }
 .navbar .nav li.dropdown .dropdown-menu {
   font-size: 13px;
@@ -5369,49 +5415,88 @@ a {
   top: 5px;
   position: relative;
 }
+.dropdown-menu .divider {
+  display: none;
+}
 .navbar .btn,
 .navbar .btn-group {
   display: inline-block;
-  margin-top: 10px;
-  margin-left: 2.5px;
-  margin-right: 4px;
-  background: white;
+  margin: 0;
+  height: 60px;
+  background: none;
   border: 0;
+  box-shadow: none;
+}
+.navbar .btn a,
+.navbar .btn-group a {
+  height: 60px;
+  padding: 0 20px;
+  line-height: 60px;
+  color: #eeeeee;
+  text-shadow: none;
+}
+.navbar .btn a:hover,
+.navbar .btn-group a:hover {
+  color: white;
+  background: #2c2c2c;
+}
+.navbar .btn li a,
+.navbar .btn-group li a {
+  color: #3c3c3c;
+  height: 40px;
+  line-height: 40px;
+}
+.navbar .btn li a:hover,
+.navbar .btn-group li a:hover {
+  background: #999;
+}
+.btn-group.open .btn.dropdown-toggle {
+  color: #2c2c2c;
+  background: white;
+  border-radius: 0px;
 }
 .navbar-search {
   margin-top: 5px;
   margin-left: 2.5px;
   margin-right: 2.5px;
 }
+.top_tab {
+  opacity: 0.2;
+}
+.top_tab.active {
+  opacity: 1 !important;
+}
+.top_tab.active a {
+  background: #383838 !important;
+  color: white !important;
+}
 #editorButton {
   position: relative;
-  top: 0px;
+  top: 2px;
 }
 #previewButton {
   position: relative;
-  top: 2px;
+  top: 5px;
   left: 2px;
 }
 #statusBar {
-  color: #666;
+  color: #cccccc;
   width: 18%;
-  height: 36px;
+  height: 30px;
   text-align: center;
   position: fixed;
-  top: 5px;
+  top: 12px;
   left: 49%;
-  background-color: transparent;
+  border-radius: 2px;
+  background-color: #383838;
   /* background: url(../../img/textures/green-fibers/green-fibers.png) 0 0 repeat;*/
 
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.38) inset, 0px 1px 0px #ffffff;
-  text-shadow: 0px 1px 0px #ffffff;
-  border-radius: 2px;
 }
 #statusIcon {
   margin-right: 8px;
 }
 #statusBarText {
-  margin-top: 14px;
+  margin-top: 7px;
 }
 .dropdown-menu {
   width: 300px;
@@ -5468,7 +5553,7 @@ a {
   left: 0;
   /* background: url(../../img/textures/subtle_stripes/subtle_stripes.png) 0 0 repeat;*/
 
-  background: white;
+  background: #383838;
   z-index: 1000;
   /*.file {
                     color:black;
@@ -5498,9 +5583,7 @@ a {
 #sidebar .bottom_buttons {
   width: 100%;
   height: 32px;
-  background-color: white;
-  /*rgba(0,0,0, 0.2);*/
-
+  background-color: rgba(0, 0, 0, 0.2);
   position: absolute;
   bottom: 50px;
   z-index: 1000;
@@ -5508,12 +5591,12 @@ a {
 #sidebar .bottom_buttons button {
   display: block;
   float: left;
-  color: #333;
+  color: white;
   padding: 6px;
   background: transparent;
   border: 0;
   font-size: 80%;
-  opacity: 0.5;
+  opacity: 0.2;
 }
 #sidebar .bottom_buttons button:hover {
   opacity: 1;
@@ -5576,9 +5659,8 @@ a {
 #main_container {
   height: 100%;
   position: fixed;
-  padding: 58px 0px;
+  padding: 65px 0px;
   padding-left: 200px;
-  background: url(../../img/textures/lghtmesh/lghtmesh.png) 0 0 repeat;
 }
 #main_container #sidebarConsole {
   color: #333;
@@ -5594,7 +5676,7 @@ a {
   background: white;
   z-index: 999;
   padding: 0;
-  box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.3) inset, -1px 0px 0px #ffffff;
+  box-shadow: 1px 0px 10px rgba(0, 0, 0, 0.3) inset;
 }
 #main_container #sidebarConsole #consoleTitle {
   position: relative;
@@ -5736,7 +5818,7 @@ a {
 ol.tree {
   padding: 0;
   width: 200px;
-  margin-left: 0px;
+  margin-left: 4px;
   margin-top: 0px;
   font-size: 12px;
 }
@@ -5750,7 +5832,7 @@ li.file {
 }
 li.file a {
   background: url(../../img/document.png) 0 0 no-repeat;
-  color: #333;
+  color: #c4c4c4;
   padding-left: 21px;
   text-decoration: none;
   display: block;
@@ -5758,7 +5840,7 @@ li.file a {
 }
 li.file a:hover {
   cursor: pointer;
-  color: red;
+  color: white;
   text-decoration: none;
 }
 li.file i {
@@ -5818,7 +5900,7 @@ li label {
   display: block;
   padding: 1px;
   padding-left: 28px;
-  color: black;
+  color: white;
   font-weight: bold;
   font-size: 10px;
   text-transform: uppercase;
