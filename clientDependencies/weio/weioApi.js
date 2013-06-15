@@ -36,9 +36,7 @@
 **/
 
 
-  //var weio = new SockJS('http://' + location.host + '/api');
-  var weio = new SockJS('http://localhost:8082/api');
-
+  var weio = new SockJS('http://' + location.host + ':8082/api');
 
   var HIGH = "1";
   var LOW = "0";
