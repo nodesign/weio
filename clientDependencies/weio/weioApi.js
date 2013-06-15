@@ -26,58 +26,59 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-* 
+*
 * This file is part of WEIO.
 *
-* Authors : 
+* Authors :
 * Uros PETREVSKI <uros@nodesign.net>
 * Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 *
 **/
-  
 
-  var weio = new SockJS('http://' + location.host + '/api');
+
+  //var weio = new SockJS('http://' + location.host + '/api');
+  var weio = new SockJS('http://localhost:8082/api');
 
 
   var HIGH = "1";
   var LOW = "0";
   var OUTPUT = "out";
   var INPUT = "in";
-  
+
   weio.onopen = function() {
       console.log('socket opened for weio API');
-      
+
   };
-  
+
   weio.onmessage = function(e) {
       data = JSON.parse(e.data);
-      
+
   };
-  
+
   weio.onclose = function() {
       console.log('socket is closed for editor');
-      
+
   };
-  
-  
+
+
   function digitalWrite(pin, value) {
       genericMessage("digitalWrite", [pin,value]);
-            // 
+            //
             // var askWeio = { "request": "digitalWrite", "data" : [pin,value] };
             // //   console.log(askWeio);
             // weio.send(JSON.stringify(askWeio));
   };
-  
+
   function pinMode(pin, mode) {
-      
+
       genericMessage("pinMode", [pin,mode]);
-      
+
       // var askWeio = { "request": "pinMode", "data" : [pin,mode] };
       //       weio.send(JSON.stringify(askWeio));
   };
-  
+
   function genericMessage(instruction, data) {
     var askWeio = { "request": instruction, "data" : data };
     weio.send(JSON.stringify(askWeio));
   }
-  
+

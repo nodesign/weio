@@ -46,37 +46,31 @@ import json
 
 from weioLib import weio_gpio
 from weioLib import weio_globals
-from devices import waelice
 
 
 class WeioAPIBridgeHandler(SockJSConnection):
-    
+
     """Opens editor route."""
     def on_open(self, data):
         """On open asks weio for last saved project. List of files are scaned and sent to editor.
         Only contents of weio_main.py is sent at first time"""
         print "Opened WEIO API socket"
-        
-        
-        
+
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
         req = json.loads(data)
         self.serve(req)
-        
+
     def serve(self, rq) :
-        
-        
+
+
         if 'digitalWrite' in rq['request'] :
-            
+
             ins = rq['data']
             weio_gpio.digitalWrite(str(ins[0]), str(ins[1]))
             #print ins
-            
+
         elif 'pinMode' in rq['request'] :
             ins = rq['data']
             weio_gpio.digitalWrite(ins[0], ins[1])
-            
-        elif 'setColor' in rq['request'] :
-            ins = rq['data']
-            waelice.setColor(ins[0], ins[1], ins[2])
+

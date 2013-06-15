@@ -140,7 +140,8 @@ class WeioEditorHandler(SockJSConnection):
                 to the client via WebSockets. """
                     
             
-            processName = './userProjects/myFirstProject/weio_main.py'
+            #processName = './userProjects/myFirstProject/weio_main.py'
+            processName = './userProjects/myFirstProject/weioUserServer.py'
 
             #launch process
             
