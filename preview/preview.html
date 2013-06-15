@@ -91,12 +91,12 @@
     <div class="navbar-inner">
         <div class="container">
 
-            <a class="brand" href="#"><img src="./img/weioLogo.png"></img> <span class="label">Alpha</span> </a>
-            <div class="nav-collapse collapse">
+            <a class="brand" href="#"><h1>Weio</h1><div id="status" class="connected">Active</div> </a>
+            <div class="nav-collapse collapse"> 
                 <ul class="nav">
 
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" id="projectTitle" data-toggle="dropdown">MyFirstProject</a>
+                        <a href="#" class="dropdown-toggle" id="projectTitle" data-toggle="dropdown" onclick="alert('Sorry, not yet implemented!')">MyFirstProject</a>
                         <ul class="dropdown-menu">
                             <li><a tabindex="-1" href="#">Create new project</a></li>
                             <li class="divider"></li>
@@ -115,15 +115,15 @@
                         </ul>
                     </li>
 
-                    <li class="active"><a href="javascript:runPreview();"><i class="icon-eye-open icon-2x" id="editorButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Preview" ></i></a></li>
-                    <li><a href="/editor"><i class="icon-edit icon-2x" id="previewButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Edit" ></i></a></li>
+                    <li class="top_tab active"><a href="javascript:runPreview();" ><img src="img/weio-preview.png" id="editorButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Preview"></a></li>
+                    <li class="top_tab "><a href="/editor"><img src="img/weio-edit.png" id="previewButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Edit" ></a></li>
 
                 </ul>
 
-<!--                 <span class="label" id="statusBar">
+                <span class="label" id="statusBar">
                     <i id="statusIcon" ></i>
                 </span>
- -->
+
 
                 <div class="user pull-right">
                     <!-- <a class="btn" id="statusBar" onclick="play()"> -->
@@ -136,20 +136,19 @@
                                 <i class="icon-user"></i> root	
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="#"><i class="icon-wrench"></i> Settings</a></li>
+                                <li><a href="#"onclick="alert('Sorry, not yet implemented!')"><i class="icon-wrench"></i> Settings</a></li>
                                 <li class="divider"></li>
-                                <li><a href="#"><i class="icon-share"></i> Logout</a></li>
+                                <li><a href="#"onclick="alert('Sorry, not yet implemented!')"><i class="icon-share"></i> Logout</a></li>
                             </ul>
                         </div>
 
 
                         <div class="btn-group pull-right">
-                            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                                <i class="icon-signal"></i>
-                                AP WEIO
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" onclick="injectWifiNetworksInDropMenu()" id="connectedWifiName">
+                                Scanning wifi...
                             </a>
-                            <ul class="dropdown-menu">
-                                <li><a tabindex="-1" href="#">Refresh wireless</a></li>    
+                            <ul class="dropdown-menu" id="wifiNetworks">
+                                  
                             </ul>
                         </div>
                         <!--   <form class="navbar-search pull-right">

@@ -200,18 +200,17 @@ function injectWifiNetworksInDropMenu() {
     $("#wifiNetworks").append('<li class="divider"></li>');
     
     for (var cell in wifi) {
-
         // update current connected object
         if (wifi[cell].connected == true) connectedToWifiId = wifi[cell].mac;
-
+        
         var secureWifi = (wifi[cell].opened==false) ? '<i class="icon-lock" id="wifiIcons"></i>' : '';
 
         // detect where is my current network
-        var currentConnection = (wifi[cell].mac==connectedToWifiId) ? '<i class="icon-check" id="wifiPrefixIcons"></i>' : '';
-
+        var currentConnection = (wifi[cell].mac==connectedToWifiId) ? '<i class="icon-caret-right" id="wifiPrefixIcons"></i>' : '';
+        
         // transform wifiQuality object into html
         var wifiQuality = '<img src="img/wifi' + getCellQuality(wifi[cell]) + '.png" id="wifiIcons"></img>';
-        
+                
         $("#wifiNetworks").append('<li><a tabindex="-1" onclick="prepareToChangeWifi('+ wifi[cell].mac + ')" role="button" data-toggle="modal">' + currentConnection + wifi[cell].essid  + wifiQuality + secureWifi + '</a></li>');
     }
    
@@ -1024,7 +1023,7 @@ wifiSocket.onmessage = function(e) {
             
             for (var cell in cellList) {
                 if (cellList[cell].connected) {
-                    $("#connectedWifiName").html('<img src="img/wifi' + getCellQuality(cellList[cell]) + '.png" id="wifiIcons"></img>' + cellList[cell].essid);
+                    $("#connectedWifiName").html('<img src="img/wifi' + getCellQuality(cellList[cell]) + 'b.png" id="wifiIcons"></img>' + cellList[cell].essid);
                 }
                 
             }

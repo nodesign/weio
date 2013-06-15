@@ -111,7 +111,7 @@ a {
         width: 100px;
         height: 40px;
         text-indent: -10000em;
-        background: url("../../img/weiologo.svg") 14px center no-repeat;
+        background: url("../../img/weiologo.png") 14px center no-repeat;
     }
 
     #status.connected {
@@ -200,8 +200,6 @@ a {
         .dropdown-menu {
             font-size: 13px;
             line-height: 18px;
-
-
         }
         .caret {
             top: 5px;
@@ -249,8 +247,7 @@ a {
 
 }
 .btn-group.open .btn.dropdown-toggle {
-    color: #2c2c2c;
-    background: white;
+    background-color: rgba(255, 255, 255, 0.3);
     border-radius: 0px;
 }
 
@@ -324,6 +321,9 @@ a {
 
 .dropdown-menu {
     width:300px;
+      margin-top:0 !important;
+        padding: 0 !important;
+        border-radius: 0px;
 }
 
 /* small modals size */
@@ -346,18 +346,27 @@ a {
     float:right;
     margin-left:3px;
     margin-right:3px;
+    position: relative;
+    top: 33%;
+}
+#connectedWifiName #wifiIcons {
+top: 40%;
+margin-left: 5px;
 }
 #wifiPrefixIcons {
     float:left;
     margin-left:-16px;
-    margin-top:5px;
     font-size: 90%;
+    position: relative;
+    top: 35%;
 }
 
 #wifiNetworks{
     overflow:auto;
     max-height:400px;
 }
+
+
 
 /* IFRAME */
 .iframeContainer {
@@ -698,6 +707,8 @@ opacity: 1;
     overflow-x: hidden;
     overflow-y: auto; 
 }
+
+
 
 /* CSS Tree menu styles */
 ol.tree

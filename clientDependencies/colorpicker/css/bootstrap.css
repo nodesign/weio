@@ -5356,7 +5356,7 @@ a {
   width: 100px;
   height: 40px;
   text-indent: -10000em;
-  background: url("../../img/weiologo.png") 14px center no-repeat;
+  background: url("../../img/weiologo.svg") 14px center no-repeat;
 }
 .navbar .brand #status.connected {
   width: 0;
@@ -5378,27 +5378,6 @@ a {
   height: 0;
   border: 7px solid transparent;
   border-top-color: #84c657;
-}
-.navbar .brand #status.disconnected {
-  width: 0;
-  height: 0;
-  border: 7px solid transparent;
-  border-bottom-color: red;
-  position: relative;
-  float: right;
-  top: -44px;
-  right: 15px;
-  text-indent: -10000em;
-}
-.navbar .brand #status.disconnected:after {
-  content: '';
-  position: absolute;
-  left: -7px;
-  top: 7px;
-  width: 0;
-  height: 0;
-  border: 7px solid transparent;
-  border-top-color: red;
 }
 .navbar-static-top .container,
 .navbar-fixed-top .container,
@@ -5472,7 +5451,8 @@ a {
   background: #999;
 }
 .btn-group.open .btn.dropdown-toggle {
-  background-color: rgba(255, 255, 255, 0.3);
+  color: #2c2c2c;
+  background: white;
   border-radius: 0px;
 }
 .navbar-search {
@@ -5481,7 +5461,7 @@ a {
   margin-right: 2.5px;
 }
 .top_tab {
-  opacity: 1;
+  opacity: 0.2;
 }
 .top_tab.active {
   opacity: 1 !important;
@@ -5492,22 +5472,12 @@ a {
 }
 #editorButton {
   position: relative;
-  width: 35px;
-  top: -3px;
-  opacity: 0.5;
-}
-#editorButton:hover {
-  opacity: 1;
+  top: 2px;
 }
 #previewButton {
   position: relative;
-  width: 35px;
-  top: -3px;
-  opacity: 0.5;
+  top: 5px;
   left: 2px;
-}
-#previewButton:hover {
-  opacity: 1;
 }
 #statusBar {
   color: #cccccc;
@@ -5530,9 +5500,6 @@ a {
 }
 .dropdown-menu {
   width: 300px;
-  margin-top: 0 !important;
-  padding: 0 !important;
-  border-radius: 0px;
 }
 /* small modals size */
 .modal-body {
@@ -5552,19 +5519,12 @@ a {
   float: right;
   margin-left: 3px;
   margin-right: 3px;
-  position: relative;
-  top: 33%;
-}
-#connectedWifiName #wifiIcons {
-  top: 40%;
-  margin-left: 5px;
 }
 #wifiPrefixIcons {
   float: left;
   margin-left: -16px;
+  margin-top: 5px;
   font-size: 90%;
-  position: relative;
-  top: 35%;
 }
 #wifiNetworks {
   overflow: auto;
@@ -5596,27 +5556,27 @@ a {
   background: #383838;
   z-index: 1000;
   /*.file {
-    color:black;
-    }*/
+                    color:black;
+                }*/
 
   /*
-#play {
-display: block;
-position: absolute;
-left: 168px;
-top: 12px;
-width: 20px;
-height: 22px;
-text-decoration : none;
-color : white;
-margin: 0;
-opacity: 0.7;
-cursor: pointer;
-&:hover {
-opacity: 1; 
-};
-
-}
+        #play {
+         display: block;
+         position: absolute;
+         left: 168px;
+         top: 12px;
+         width: 20px;
+         height: 22px;
+         text-decoration : none;
+         color : white;
+         margin: 0;
+         opacity: 0.7;
+         cursor: pointer;
+         &:hover {
+           opacity: 1; 
+         };
+        
+         }
 */
 
 }
@@ -5686,7 +5646,7 @@ opacity: 1;
   width: 20px;
   height: 22px;
   /*background: url(../img/bt_parametres.png) no-repeat 2px 0px;
-        text-indent: -1000em;*/
+            text-indent: -1000em;*/
 
   opacity: 0.3;
   text-decoration: none;
