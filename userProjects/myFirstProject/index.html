@@ -11,45 +11,45 @@
     <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
     <meta http-equiv="pragma" content="no-cache" />
     
-    <!-- /container -->
-
-       <!-- Le javascript
-       ================================================== -->
-       <!-- Placed at the end of the document so the pages load faster -->
-    <link href="../../bootstrap/less/bootstrap.css" rel="stylesheet" type="text/css">
-       <script src="../../js/jquery.js"></script>
-    <script src="../../bootstrap/js/bootstrap.min.js"></script>
-       <script src="../../bootstrap/js/bootstrap.js"></script>
-   	<script src="../../bootstrap/js/bootstrap-dropdown.js"></script>
-   	<script src="../../bootstrap/js/bootstrap-collapse.js"></script>
+    <link href="../bootstrap/less/bootstrap.css" rel="stylesheet">
+    <link href="../colorpicker/css/colorpicker.css" rel="stylesheet">
     
-    <!-- SockJS websocket library -->
-	<script src="../../sockJS/sockjs-0.3.min.js"></script>
-	<script src="../../weio/weioApi.js"></script>
-    <script src="../../jquery/jquery.js"></script>
-
+    <script src="../jquery/jquery.js"></script>
+    <script src="../colorpicker/js/bootstrap-colorpicker.js"></script>
+    
+    <script src="../sockJS/sockjs-0.3.min.js"></script>
+    <script src="../weio/weioApi.js"></script>
     
     <style>
-    body {
-      background:black;
-    }
-    
-    font {
-       font-family:Helvetica; 
-       font-size:200px; 
-       font-weight:bold; 
-       text-transform:uppercase;
-    }
-    
-    p {
-       cursor:pointer;
-       margin:0.2em;
-       line-height:1em;
-    }
-    
+        body {
+          background:black;
+        }
+        
+        font {
+           font-family:Helvetica; 
+           font-size:200px; 
+           font-weight:bold; 
+           text-transform:uppercase;
+        }
+        
+        p {
+           cursor:pointer;
+           margin:0.2em;
+           line-height:1em;
+        }
+        
+        .well {
+            border:0px;
+            background:none;
+        }
+        
+        .dropdown-menu {
+            width: 119px;
+        }
+        
     </style>
-
-<script>
+    
+    <script>
     var light = false;
     
     $(document).ready(function () {
@@ -59,27 +59,45 @@
     function lights() {
         
         if (light) {
+            $(".well").css("visibility", "visible");
             $(phrase).html("Turn OFF the light!");
             $("#background").css("background","white");
             $("#phrase").css("color","black");
-            digitalWrite(20,HIGH);
+            genericMessage("setColor", [255,255,255]);
             light = !light;
         } else {
+            $(".well").css("visibility", "hidden");
             $(phrase).html("Turn ON the light!");
             $("#background").css("background","black");
             $("#phrase").css("color","white");
-            digitalWrite(20,LOW);
+            genericMessage("setColor", [0,0,0]);
             light = !light;
         }
     }
     
     
-</script>
+    </script>
   </head>
 
-  <body id="background"> 
+  <body id="background">
+   <div class="well">
+          <a href="#" class="btn small" id="cp4" data-color-format="hex" data-color="rgb(255, 255, 255)">Color</a>
+   </div>
+        
   <font>
   <p id="phrase" onclick="lights()"></p>
   </font>
+
+      <script>
+            var bodyStyle = $('body')[0].style;
+              $('#cp4').colorpicker({
+				format: 'rgb'
+			}).on('changeColor', function(ev){
+				bodyStyle.backgroundColor = ev.color.toHex();
+				console.log(ev.color.toRGB().r + " " + ev.color.toRGB().g + " " + ev.color.toRGB().b);
+                genericMessage("setColor", [ev.color.toRGB().r, ev.color.toRGB().g, ev.color.toRGB().b]);
+			});
+  	</script>
+  	
   </body>
 </html>

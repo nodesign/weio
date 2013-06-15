@@ -61,12 +61,23 @@
   
   
   function digitalWrite(pin, value) {
-      var askWeio = { "request": "digitalWrite", "data" : [pin,value] };
-      //	console.log(askWeio);
-      weio.send(JSON.stringify(askWeio));
+      genericMessage("digitalWrite", [pin,value]);
+            // 
+            // var askWeio = { "request": "digitalWrite", "data" : [pin,value] };
+            // //   console.log(askWeio);
+            // weio.send(JSON.stringify(askWeio));
   };
   
   function pinMode(pin, mode) {
-      var askWeio = { "request": "pinMode", "data" : [pin,mode] };
-      weio.send(JSON.stringify(askWeio));
+      
+      genericMessage("pinMode", [pin,mode]);
+      
+      // var askWeio = { "request": "pinMode", "data" : [pin,mode] };
+      //       weio.send(JSON.stringify(askWeio));
   };
+  
+  function genericMessage(instruction, data) {
+    var askWeio = { "request": instruction, "data" : data };
+    weio.send(JSON.stringify(askWeio));
+  }
+  

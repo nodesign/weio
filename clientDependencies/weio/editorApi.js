@@ -87,6 +87,21 @@ var wifiSocket = new SockJS('http://' + location.host + '/wifi');
 var firstTime = true;
 
 /**
+ * Shortcut for saving all files
+ */
+ Mousetrap.bind('ctrl+s', function(e) {
+     backupOpenedFiles();
+     console.log("saving");
+ });
+ 
+ 
+/**
+* preview mode activated
+*/
+var previewMode = false;
+
+
+/**
  * ace code editors are stored in this array
  */
 var editors = [];
@@ -314,7 +329,8 @@ function changeWifiNetwork() {
 $(document).ready(function () {
 
     main_container_width();
-
+    // hide right sidebar
+    $("#hideRightSidebar").click();
     //console.log(wifi.cells.length);
 
     $(window).resize(function() {
@@ -776,7 +792,7 @@ function stop() {
 function runPreview() {
 
     backupOpenedFiles();
-
+    previewMode = true;
     //console.log(nameList);
 
     //console.log(storeProject);
@@ -874,9 +890,11 @@ baseFiles.onmessage = function(e) {
             //$('#console').append(dssds);
 
         } else if (instruction == "storeProjectPreferences") {
-
-            window.location.href = "/preview";
-
+            
+            if (previewMode==true) {
+              window.location.href = "/preview";
+              previewMode=false;
+            } 
 
         } else if (instruction == "saveFile") {
             // nothing
@@ -970,7 +988,8 @@ baseFiles.onmessage = function(e) {
 
 baseFiles.onclose = function() {
     console.log('socket is closed for editor');
-    setStatus("icon-ban-circle", "Connection closed")
+    setStatus("icon-ban-circle", "Connection closed");
+    $("#status").attr("class", "disconnected");
 
 };
     

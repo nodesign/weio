@@ -46,6 +46,7 @@ import json
 
 from weioLib import weio_gpio
 from weioLib import weio_globals
+from devices import waelice
 
 
 class WeioAPIBridgeHandler(SockJSConnection):
@@ -75,3 +76,7 @@ class WeioAPIBridgeHandler(SockJSConnection):
         elif 'pinMode' in rq['request'] :
             ins = rq['data']
             weio_gpio.digitalWrite(ins[0], ins[1])
+            
+        elif 'setColor' in rq['request'] :
+            ins = rq['data']
+            waelice.setColor(ins[0], ins[1], ins[2])
