@@ -5289,10 +5289,6 @@ a.badge:focus {
 * Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 *
 **/
-@font-face {
-  font-family: "open_sans";
-  src: url('../../customFonts/OpenSans-Light.ttf');
-}
 body {
   background: #d8d8d8;
   height: 100%;
@@ -5352,11 +5348,16 @@ a {
   width: 199px;
   border-right: 1px solid #494949;
 }
+.navbar .brand #logo {
+  margin-left: 12px;
+  margin-top: 20px;
+}
 .navbar .brand h1 {
   width: 100px;
   height: 40px;
   text-indent: -10000em;
-  background: url("../../img/weiologo.png") 14px center no-repeat;
+  /* background: url(../../img/weioLogo.png) 14px center no-repeat;*/
+
 }
 .navbar .brand #status.connected {
   width: 0;
@@ -5365,7 +5366,7 @@ a {
   border-bottom-color: #84c657;
   position: relative;
   float: right;
-  top: -44px;
+  top: -84px;
   right: 15px;
   text-indent: -10000em;
 }

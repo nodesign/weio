@@ -999,7 +999,7 @@ baseFiles.onclose = function() {
  */
 wifiSocket.onopen = function() {
     console.log('Wifi Web socket is opened');
-    setTimeout(function(){scanWifiNetworks()},3000);
+    setTimeout(function(){scanWifiNetworks()},5000);
 };
 
 /*

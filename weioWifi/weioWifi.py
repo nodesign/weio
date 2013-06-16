@@ -87,7 +87,7 @@ class WeioWifi() :
         elif "Mode:Master" in status :
             print "AP Mode"
             self.mode = "ap"
-            self.essid = status.strip().startswith("ESSID:").split(':')[1]
+            #self.essid = status.strip().startswith("ESSID:").split(':')[1]
         elif "Mode:Managed" in status :
             if "Access Point: Not-Associated" in status :
                 self.mode = None

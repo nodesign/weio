@@ -35,10 +35,6 @@
 *
 **/
 
-@font-face {
-    font-family: "open_sans";
-    src: url('../../customFonts/OpenSans-Light.ttf');
-}
 
 body {
     background: rgb(216, 216, 216);
@@ -106,12 +102,17 @@ a {
     margin: 0px;
     width: 199px;
     border-right: 1px solid #494949;
-
+    
+    #logo {
+     margin-left:12px;
+     margin-top:20px;   
+    }
+    
     h1 {
         width: 100px;
         height: 40px;
         text-indent: -10000em;
-        background: url("../../img/weiologo.png") 14px center no-repeat;
+       /* background: url(../../img/weioLogo.png) 14px center no-repeat;*/
     }
 
     #status.connected {
@@ -121,7 +122,7 @@ a {
         border-bottom-color: #84c657;
         position: relative;
         float: right;
-        top: -44px;
+        top: -84px;
         right: 15px;
         text-indent: -10000em;
     }

@@ -1,7 +1,7 @@
 config wifi-device  radio0
         option type     mac80211
         option channel  11
-        option macaddr  11:22:33:44:55:66
+        option macaddr C4:93:00:00:03:55
         option hwmode   11ng
         option txpower  10
         option htmode   HT20
@@ -16,7 +16,7 @@ config wifi-iface
         option device   radio0
         option network  wifi
         option mode     sta
-        option ssid     ddwifi
         option encryption psk
-        option key XXXXXX
+        option ssid ddwifi
+        option key Beograd011
 
