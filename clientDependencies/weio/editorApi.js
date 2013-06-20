@@ -128,11 +128,11 @@ var compiledEditor;
 /**
  * Stores currentely focused strip index in editorData.editors array
  */
-var focusedOne = "weio_main.py";
+var focusedOne = "weioMain.py";
 
 
 /**
- * Informs if weio_main.py is running on Weio board
+ * Informs if weioMain.py is running on Weio board
  */
 var isPlaying = false;
 
@@ -361,7 +361,7 @@ var editorData = {editors:[], tree:[]};
 /* EXAMPLE
 var editorData = {
 editors:[
-{name:"weio_main.py", id:"0", type : "python", data : "a = 10"}
+{name:"weioMain.py", id:"0", type : "python", data : "a = 10"}
 ]
 };
 */
@@ -369,7 +369,7 @@ editors:[
 /* EXAMPLE
 var fileTreeData = {
 tree:[
-{name:"weio_main.py", id:"0", type : "python"},
+{name:"weioMain.py", id:"0", type : "python"},
 {name:"index.html", id:"1", type : "html"},
 {name:"test.py", id:"2", type : "python"},
 {name:"new.py", id:"3", type : "python"}
@@ -392,7 +392,7 @@ var directiveEditors = {
             //'i.icon-download-alt@onclick' : function getter(arg) {return "save('" + arg.item.name + "')"},
 
             //playStopButton
-            '#playStopButton@style' : function getter(arg) {return (arg.item.name == "weio_main.py") ? "display:true;" : "display:none;"},
+            '#playStopButton@style' : function getter(arg) {return (arg.item.name == "weioMain.py") ? "display:true;" : "display:none;"},
             // close button
             'i.icon-remove@onclick' : function getter(arg) {return "saveAndClose('" + arg.item.name + "')"},
 
@@ -755,7 +755,7 @@ function addNewStrip(filename) {
 }
 
 /**
- * Play weio_main.py standalone application
+ * Play weioMain.py standalone application
  */
 function play() {
     // don't work, don't know why
@@ -776,7 +776,7 @@ function play() {
 }
 
 /**
- * Stop weio_main.py standalone application
+ * Stop weioMain.py standalone application
  */
 function stop() {
     var askForFileListRequest = { "request": "stop"};
@@ -803,7 +803,7 @@ function runPreview() {
  * Icon is string format defined in font awesome library, message is string format
  * If icon is not desired you can pass null as argument : setStatus(null, "hello world");
  *
- * Icons are only used when synchronization is active or weio_main is running
+ * Icons are only used when synchronization is active or weioMain is running
  * Set status is always activated from server push messages, never from client,
  * except when closed socket is detected!
  */
@@ -967,7 +967,7 @@ baseFiles.onmessage = function(e) {
             //errInLine = data.errInLine;
             
         } else if (demand == "stopped") {
-            console.log("execution of weio_main.py stopped");
+            console.log("execution of weioMain.py stopped");
             isPlaying = false;
             
         }

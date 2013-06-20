@@ -12,13 +12,13 @@ from user import *
 sys.path.append(r'./')
 from weioLib.weioUserApi import *
 
-from weio_main import *
+from weioMain import *
 
 class WeioHandler(SockJSConnection):
     """Opens editor route."""
     def on_open(self, data):
         """On open asks weio for last saved project. List of files are scaned and sent to editor.
-        Only contents of weio_main.py is sent at first time"""
+        Only contents of weioMain.py is sent at first time"""
         print "Opened WEIO API socket"
 
     def on_message(self, data):

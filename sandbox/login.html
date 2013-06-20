@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+
+<head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+</head>
+
+<body>
+    <p> Login test </p>
+<form action="/login" method="post" id="login_form">
+    <fieldset>
+        <label for="username">Username</label>
+        <input class="text-input" id="username" name="username" type="text" value="">
+    </fieldset>
+
+    <fieldset>
+        <label for="password">Password</label>
+        <input class="text-input" id="password" name="password" type="password" value="">
+    </fieldset>
+
+    <fieldset>
+        <span class="errormessage"></span>
+    </fieldset>
+
+    <div id="form_btn">
+        <input id="signin-btn" class="btn" type="submit" value="Sign In" tabindex="3">
+    </div>
+</form>
+
+</body>
+</html>

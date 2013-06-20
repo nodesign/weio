@@ -65,12 +65,12 @@ weioPipe = None
 # pure websocket implementation
 #class WeioEditorHandler(websocket.WebSocketHandler):
 class WeioEditorHandler(SockJSConnection):
-    global weio_main
+    global weioMain
 
     """Opens editor route."""
     def on_open(self, data):
         """On open asks weio for last saved project. List of files are scaned and sent to editor.
-        Only contents of weio_main.py is sent at first time"""
+        Only contents of weioMain.py is sent at first time"""
         print "WebSocket opened!"
 
         global CONSOLE
@@ -89,7 +89,7 @@ class WeioEditorHandler(SockJSConnection):
 #        self.write_message(message)
     @gen.engine
     def serve(self, rq) :
-        global weio_main
+        global weioMain
 
         # answer dictionary object
         data = {}
@@ -153,16 +153,16 @@ class WeioEditorHandler(SockJSConnection):
                 to the client via WebSockets. """
 
 
-            #processName = './userProjects/myFirstProject/weio_main.py'
+            #processName = './userProjects/myFirstProject/weioMain.py'
             processName = './userProjects/myFirstProject/weioUserServer.py'
 
             #launch process
 
-            #weio_main = tornado_subprocess.Subprocess(self.on_subprocess_result, args=['python', processName])
-            #weio_main.start()
+            #weioMain = tornado_subprocess.Subprocess(self.on_subprocess_result, args=['python', processName])
+            #weioMain.start()
 
 
-            print("weio_main indipendent process launching...")
+            print("weioMain indipendent process launching...")
             #subprocess.call("python " + processName, shell=True)
             global weioPipe
             weioPipe = p = subprocess.Popen(['python', '-u', processName], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
@@ -170,22 +170,22 @@ class WeioEditorHandler(SockJSConnection):
             ioloopObj = ioloop.IOLoop.instance()
 
             #callback = functools.partial(self.socket_connection_ready, sock)
-            callback = functools.partial(self.weio_main_handler, data)
+            callback = functools.partial(self.weioMainHandler, data)
             #ioloopObj.add_handler(sock.fileno(), callback, ioloopObj.READ)
             ioloopObj.add_handler(p.stdout.fileno(), callback, ioloopObj.READ)
 
 
             # Inform client the we run subprocess
             data['requestedData'] = rq['request']
-            data['status'] = "weio_main.py is running!"
+            data['status'] = "weioMain.py is running!"
             self.send(json.dumps(data))
 
         elif ('stop'== rq['request']):
             # not yet implemented
-            ##weio_main.cancel()
+            ##weioMain.cancel()
             data = {}
             data['serverPush'] = 'stopped'
-            data['status'] = "weio_main.py stopped!"
+            data['status'] = "weioMain.py stopped!"
             self.send(json.dumps(data))
 
         elif ('storeProjectPreferences'== rq['request']):
@@ -242,7 +242,7 @@ class WeioEditorHandler(SockJSConnection):
 
 
 
-    def weio_main_handler(self, data, fd, events):
+    def weioMainHandler(self, data, fd, events):
         global weioPipe
         line = weioPipe.stdout.readline()
         if line :

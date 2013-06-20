@@ -1,6 +1,3 @@
-weio_main
-=========
-
 WEIO Web Of Things Platform
 Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
 All rights reserved

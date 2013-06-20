@@ -1,8 +1,5 @@
-import time, os, sys
-# only during devel time, in production weioLib will be in path
-sys.path.append(r'./');
-from weioLib import weioGpio 
-from weioLib import weioGlobals
+import time
+import sys
 
 sys.path.append(r'./')
 from weioLib.weioUserApi import *
