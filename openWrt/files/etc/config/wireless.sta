@@ -17,6 +17,6 @@ config wifi-iface
         option network  wifi
         option mode     sta
         option encryption psk
-        option ssid ddwifi
-        option key Beograd011
+        option ssid XXXXX
+        option key XXXXX
 
