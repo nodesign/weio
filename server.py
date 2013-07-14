@@ -36,7 +36,10 @@
 
 import os, sys, platform
 
-from tornado import web, ioloop, iostream, options, httpserver, autoreload, websocket
+import tornado
+import tornado.options
+import tornado.httpserver
+
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
 import json, functools
@@ -53,8 +56,11 @@ from weioLib import weio_config
 # IMPORT WIFI DETECTION AND CONFIGURATION
 from weioWifi import weioWifiHandler
 
+#IMPORT LOGIN HANDLER
+from login import loginHandlers
+
 # This is user project index.html
-class WeioIndexHandler(web.RequestHandler):
+class WeioIndexHandler(tornado.web.RequestHandler):
     def get(self):
         global confFile
         path = confFile['user_projects_path'] + confFile['last_opened_project'] + "index.html"
@@ -63,7 +69,8 @@ class WeioIndexHandler(web.RequestHandler):
         
         
 # Editor web app route handler      
-class WeioEditorWebHandler(web.RequestHandler):
+class WeioEditorWebHandler(loginHandlers.BaseHandler):
+    @tornado.web.authenticated
     def get(self):
         global confFile
         path = confFile['editor_html_path']
@@ -71,7 +78,7 @@ class WeioEditorWebHandler(web.RequestHandler):
         
 
 # Preview web app route handler     
-class WeioPreviewWebHandler(web.RequestHandler):
+class WeioPreviewWebHandler(tornado.web.RequestHandler):
     def get(self):
         global confFile
         path = confFile['preview_html_path']
@@ -124,9 +131,16 @@ if __name__ == '__main__':
     # put absolut path in conf, needed for local testing on PC
     confFile['absolut_root_path'] = os.path.abspath(".")
     weio_config.saveConfiguration(confFile)
+
+    secret = loginHandlers.generateCookieSecret()
+    print secret
+    settings = {
+        "cookie_secret": secret,
+        "login_url": "/login",
+    }
  
     
-    app = web.Application(list(WeioEditorRouter.urls) +
+    app = tornado.web.Application(list(WeioEditorRouter.urls) +
                             list(CloseRouter.urls) +
                             list(WeioAPIBridgeRouter.urls) +
                             list(WeioWifiRouter.urls) +
@@ -136,23 +150,24 @@ if __name__ == '__main__':
                             # pure websocket implementation
                             #[(r"/editor/baseFiles", Editor.WeioEditorHandler)] +
                             #[(r"/close", WeioCloseConnection)] +
-                            [(r"/preview",WeioPreviewWebHandler)] +
-                            [(r"/editor",WeioEditorWebHandler)] +
+                            [(r"/preview", WeioPreviewWebHandler)] +
+                            [(r"/editor", WeioEditorWebHandler)] +
+                            [(r"/login", loginHandlers.WeioLoginHandler)] +
                             [(r"/", WeioIndexHandler),
-                                (r"/(.*)", web.StaticFileHandler,
+                                (r"/(.*)", tornado.web.StaticFileHandler,
                                 {"path": confFile["dependencies_path"]})], 
-                            debug=True
+                            debug=True, **settings
                           )
                           # DEBUG WILL DECREASE SPEED!!! HOW TO AVOID THIS??? see Watchers section down here
     
-    options.define("port", default=confFile['port'], type=int)
+    tornado.options.define("port", default=confFile['port'], type=int)
 
     # If we are on the WEIO machine, we have to assure connection before doing anything
     if (platform.machine() == 'mips') :
         weioWifiHandler.wifi.checkConnection()
     
-    http_server = httpserver.HTTPServer(app)
-    http_server.listen(options.options.port, address=confFile['ip'])
+    http_server = tornado.httpserver.HTTPServer(app)
+    http_server.listen(tornado.options.options.port, address=confFile['ip'])
     
 
     logging.info(" [*] Listening on " + confFile['ip'] + ":" + str(confFile['port']))
@@ -162,11 +177,11 @@ if __name__ == '__main__':
     # Other solution is to use autoreload, will be used later for production MAYBE
     # when some of these files change, tornado will reboot to serve all modifications,
     # other files than python modules need to be specified manually
-    #autoreload.watch('./editor/index.html')
-    #autoreload.watch('./static/user_weio/index.html')
+    #tornado.autoreload.watch('./editor/index.html')
+    #tornado.autoreload.watch('./static/user_weio/index.html')
     
     # this will start wathcing process, note that all python modules that has been modified will be reloaded directly
-    #autoreload.start(ioloop.IOLoop.instance())
+    #tornado.autoreload.start(tornado.ioloop.IOLoop.instance())
     
     # STARTING SERVER
-    ioloop.IOLoop.instance().start()
+    tornado.ioloop.IOLoop.instance().start()

@@ -44,8 +44,8 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 import json
 
 
-from weioLib import weio_gpio
-from weioLib import weio_globals
+from weioLib import weioGpio
+from weioLib import weioGlobals
 
 
 class WeioAPIBridgeHandler(SockJSConnection):
