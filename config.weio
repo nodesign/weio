@@ -11,5 +11,7 @@
     "port": 8081, 
     "preview_html_path": "preview/preview.html", 
     "user_projects_path": "userProjects/", 
-    "weio_lib_path": "weioLib"
+    "weio_lib_path": "weioLib", 
+    "weio_version": "0.11",
+    "kill_flag": "NO"
 }
