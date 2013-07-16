@@ -165,14 +165,19 @@ class WeioEditorHandler(SockJSConnection):
             print("weioMain indipendent process launching...")
             #subprocess.call("python " + processName, shell=True)
             global weioPipe
-            weioPipe = p = subprocess.Popen(['python', '-u', processName], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+            weioPipe = p = subprocess.Popen(['python', '-u', processName], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
             ioloopObj = ioloop.IOLoop.instance()
-
+            
+            # Callback for STDOUT
             #callback = functools.partial(self.socket_connection_ready, sock)
             callback = functools.partial(self.weioMainHandler, data)
             #ioloopObj.add_handler(sock.fileno(), callback, ioloopObj.READ)
             ioloopObj.add_handler(p.stdout.fileno(), callback, ioloopObj.READ)
+            
+            # Callback for STDERR
+            callbackErr = functools.partial(self.weioMainHandlerErr, data)
+            ioloopObj.add_handler(p.stderr.fileno(), callbackErr, ioloopObj.READ)
 
 
             # Inform client the we run subprocess
@@ -263,13 +268,39 @@ class WeioEditorHandler(SockJSConnection):
             # this is raw output, some basic parsing is needed in javascript \n etc...
             CONSOLE.send(json.dumps(data))
 
-
         if weioPipe.poll() is not None :
             """ Child is terminated """
             print "Child has terminated - removing handler"
             ioloop.IOLoop.instance().remove_handler(weioPipe.stdout.fileno())
             return
+            
+            
+    def weioMainHandlerErr(self, data, fd, events):
+        global weioPipe
+        line = weioPipe.stderr.readline()
+        if line :
+            # parse incoming data
+            #stdout = line.rstrip()
+            stderr = line
+            print(stderr)
 
+            #pack and go
+            data = {}
+
+            data['serverPush'] = 'stderr'
+            data['data'] = stderr
+
+            # TODO, send this only once, at the beginning
+            data['status'] = "Check output console for errors!"
+
+            # this is raw output, some basic parsing is needed in javascript \n etc...
+            CONSOLE.send(json.dumps(data))
+
+        if weioPipe.poll() is not None :
+            """ Child is terminated """
+            print "Child has terminated - removing handler"
+            ioloop.IOLoop.instance().remove_handler(weioPipe.stderr.fileno())
+            return
 
 ###########################
 
