@@ -60,6 +60,13 @@ To build the image :
 > make -j 4
 -----------
 
+To build the kernel only :
+---------------------
+> make target/compile
+---------------------
+
+
+
 Set up TFTP server
 
 ----------------------------------------
