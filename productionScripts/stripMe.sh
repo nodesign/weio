@@ -45,13 +45,10 @@
 mkdir weioStripped 
 
 # copy all visible files, ignore unvisible git files
-rsync -av --exclude=".*" ../ weioStripped
+rsync -av --exclude=".*" --exclude="productionScripts" ../ weioStripped
 
 # strip uds_main
 #rm weioStripped/uds*
-
-# delete production scripts
-rm -r weioStripped/productionScripts
 
 # strip boostrap
 rm -r weioStripped/clientDependencies/bootstrap/docs
@@ -59,7 +56,7 @@ rm -r weioStripped/clientDependencies/bootstrap/js/tests
 rm -r weioStripped/clientDependencies/bootstrap/node_modules
 rm -r weioStripped/clientDependencies/bootstrap/less/tests
 rm weioStripped/clientDependencies/bootstrap/less/*.less
-rm weioStripped/clientDependencies/bootstrap/*
+#rm -rf weioStripped/clientDependencies/bootstrap/*
 
 # font awesome
 rm -r weioStripped/clientDependencies/Font-Awesome/docs
@@ -165,15 +162,23 @@ rm -r weioStripped/doc
 rm -r weioStripped/openWrt
 
 # rename to weio
-mv weioStripped/ ../openWrt/files/weio
+#mv weioStripped/ ../openWrt/files/weio
 
 # make tar archive 
-#tar -zcvf weioStripped.tar.gz weioStripped/
+tar -zcvf weioStripped.tar.gz weioStripped/
 
 # MAXIMUM COMPRESSION
-#tar cf - weio/ | bzip2 -9 - > weioStripped.tar.bz2 
+#tar cf - weioStripped | bzip2 -9 - > weioStripped.tar.bz2 
 
 # delete stripped folder
-#rm -r weio/
+rm -r weioStripped
 
 # to decompress type : tar -zxvf weioStripped.tar.gz
+
+echo ""
+echo "Created archive weioStripped.tar.bz2"
+echo ""
+echo "Now do:"
+echo "$ scp -r weioStripped.tar.bz2 root@weio.local:/tmp"
+echo "and then in WeIO:"
+echo "tar -xzvf /tmp/weioStripped.tar.gz"
