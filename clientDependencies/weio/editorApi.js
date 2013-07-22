@@ -169,6 +169,7 @@ var wifiCurrentMode = "STA"; // "STA" or "AP"
  * two networks that have same name
  */
 var connectedToWifiId = "";
+var wifiMode = "";
 
 /* * 
  * Wifi cell object that has been selected to be joined
@@ -195,13 +196,17 @@ function injectWifiNetworksInDropMenu() {
    // $("#wifiNetworks").append('<li class="divider"></li>');
     
     $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Connect to another network</a></li>');
-    $("#wifiNetworks").append('<li><a tabindex="-1" href="#">Create network</a></li>');
+    $("#wifiNetworks").append('<li><a tabindex="-1" href="#" onclick="goAp()">Create network</a></li>');
     $("#wifiNetworks").append('<li><a tabindex="-1" href="#" onclick="scanWifiNetworks()">Rescan wifi networks</a></li>');
     $("#wifiNetworks").append('<li class="divider"></li>');
     
     for (var cell in wifi) {
         // update current connected object
-        if (wifi[cell].connected == true) connectedToWifiId = wifi[cell].mac;
+        if (wifi[cell].connected == true) {
+            connectedToWifiId = wifi[cell].mac;
+        }
+
+        wifiMode =  wifi[cell].mode;
         
         var secureWifi = (wifi[cell].opened==false) ? '<i class="icon-lock" id="wifiIcons"></i>' : '';
 
@@ -258,7 +263,7 @@ function prepareToChangeWifi(id) {
     var cell = -1;
 
     // verify if you are already connected to this network
-    if (id!=connectedToWifiId) { 
+    if (id != connectedToWifiId) { 
         for (var cell in wifi) {
 
             if (wifi[cell].mac == id) {
@@ -273,7 +278,7 @@ function prepareToChangeWifi(id) {
         // if password is required add password field 
         if (cell.opened==false) {
              $("#wifiPassword").css("display", "block");
-        }else {
+        } else {
             $("#wifiPassword").css("display", "none");
         }
         
@@ -282,37 +287,43 @@ function prepareToChangeWifi(id) {
         // in the case that modal is confirmed
         selectedCell = cell;
 
+        goSta();
+
         $("#changeWifi").modal("show");
     }
 }
+
+/**
+ * Go to AP mode 
+ */
+
+function goAp() {
+    changeWifi = { "request": "goAp", "data": {"essid": "WEIOAP"}};
+    console.log(changeWifi);
+    wifiSocket.send(JSON.stringify(changeWifi));
+}
+
 
 /**
  * Send back chosen wifi network. Network has been previously chosed
  * by prepareToChange(id) function and stored in selectedCell object
  */
 
-function changeWifiNetwork() {
-    
+function goSta() {
     var changeWifi = 0;
-    if (selectedCell.opened==false) {
+
+    if (selectedCell.opened == false) {
         var password = $("#wifiPassword").val();
     
         // Checks for strings that are either empty or filled with whitespace
         if((/^\s*$/).test(password)) { 
             alert("Password field can't be empty!");
-        } else {
-            selectedCell.password = password;
-            changeWifi = { "request": "changeWifi", "data" : selectedCell};
-            console.log(changeWifi);
-            wifiSocket.send(JSON.stringify(changeWifi));
         }
-    
-    } else {
-        
-        changeWifi = { "request": "changeWifi", "data" : selectedCell};
-        console.log(changeWifi);
-        wifiSocket.send(JSON.stringify(changeWifi));
     }
+
+    changeWifi = { "request": "goSta", "data" : selectedCell};
+    console.log(changeWifi);
+    wifiSocket.send(JSON.stringify(changeWifi));
     
     selectedCell = -1; // reset selection
 }
@@ -1032,6 +1043,10 @@ wifiSocket.onmessage = function(e) {
             injectWifiNetworksInDropMenu();
         }
         
+    }
+    else if ("mode" in data) {
+        wifiMode =  data.mode;
+        console.log(wifiMode);
     }
     
 };

@@ -74,13 +74,16 @@ def weioWifiParseScan() :
             s['opened'] = True
         else :
             s['opened'] = False
+
+        s['mode'] = scaninfo[cell]['Mode']
           
 
-        # Check if we are connected to this ESSID
-        if (scaninfo[cell]['ESSID'] == wifi.essid) :
-            s['connected'] = True
-        else :
-            s['connected'] = False
+        if (wifi.mode != 'Master'):
+            # Check if we are connected to this ESSID
+            if (scaninfo[cell]['ESSID'] == wifi.essid) :
+                s['connected'] = True
+            else :
+                s['connected'] = False
         
         # Placeholeder for client to fill
         s['passwd'] = None
@@ -117,14 +120,36 @@ class WeioWifiHandler(SockJSConnection):
             if (rq['request'] == 'scan') :
                 data = weioWifiParseScan()
             else :
-                if 'goAp' in rq['request'] :
+                print "HHHHHHHH"
+                print rq['request']
+                if ('goAp' == rq['request']):
+                    wifi.essid =  rq['data']['essid']
+                    print wifi.essid
                     wifi.setConnection("ap")
-                elif 'goSta' in rq['request'] : 
+                elif ('goSta' == rq['request']): 
                     wifi.essid = rq['data']['essid']
                     wifi.passwd = rq['data']['passwd']
-                    wifi.encryption = rq['data']['encryption']
+                    wifi.rawEncryption = rq['data']['encryption']
+
+                    # Parse rawEncryption (iwinfo format) to OpenWRT format
+                    if ('WPA2' in wifi.rawEncryption):
+                        if ('mixed' in wifi.rawEncryption):
+                            wifi.encryption = 'mixed-psk'
+                        else:
+                            wifi.encryption = 'psk2'
+                    elif ('WPA' in wifi.rawEncryption):
+                        wifi.encryption = 'psk'
+
+                    if ('TKIP' in wifi.rawEncryption):
+                        wifi.encryption = wifi.encryption + "+tkip"
+                        if ('CCMP' in wifi.rawEncryption):
+                            wifi.encryption = wifi.encryption + "+ccmp"
+                    elif ('CCMP' in wifi.rawEncryption):
+                        wifi.encryption = wifi.encryption + "+ccmp"
+
+
                     wifi.setConnection("sta")
-                else :
+                else:
                     print "WeioConnection() handler : UNKNOWN REQ"
 
                 # Check if everything went well, or go to AP mode in case of error

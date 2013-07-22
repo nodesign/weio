@@ -117,7 +117,11 @@ class WeioWifi() :
         if (mode is 'ap') :
             fname = "/etc/config/wireless.ap"
             shutil.copy(fname, "/etc/config/wireless")
-            self.essid = 'WEIO'
+
+            if (self.essid != ""):
+                cmd = "sed 's/option ssid.*$/option ssid " + self.essid + "/' -i /etc/config/wireless"
+                weioCommand(cmd)
+
             weioCommand("/weio/wifi_set_mode.sh ap")
         elif (mode is 'sta') :
             """ Change the /etc/config/wireless.sta : replace the params """
