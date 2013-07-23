@@ -76,9 +76,8 @@ def weioWifiParseScan() :
             s['opened'] = False
 
         s['mode'] = scaninfo[cell]['Mode']
-          
 
-        if (wifi.mode != 'Master'):
+        if (wifi.mode != 'ap'):
             # Check if we are connected to this ESSID
             if (scaninfo[cell]['ESSID'] == wifi.essid) :
                 s['connected'] = True
@@ -120,11 +119,8 @@ class WeioWifiHandler(SockJSConnection):
             if (rq['request'] == 'scan') :
                 data = weioWifiParseScan()
             else :
-                print "HHHHHHHH"
-                print rq['request']
                 if ('goAp' == rq['request']):
                     wifi.essid =  rq['data']['essid']
-                    print wifi.essid
                     wifi.setConnection("ap")
                 elif ('goSta' == rq['request']): 
                     wifi.essid = rq['data']['essid']

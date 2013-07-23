@@ -43,6 +43,9 @@ import sys, os, logging
 
 import iwInfo
 
+# IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
+from weioLib import weio_config
+
 logging.basicConfig()
 log = logging.getLogger("WeioWifi")
 log.setLevel(logging.DEBUG)
@@ -69,6 +72,9 @@ class WeioWifi() :
         self.mode = None
 
         self.reconfTime = 10
+
+        confFile = weio_config.getConfiguration()
+        self.root = confFile['absolut_root_path']
 
     def checkConnection(self) :
         command = "iwconfig " + self.interface
@@ -122,7 +128,9 @@ class WeioWifi() :
                 cmd = "sed 's/option ssid.*$/option ssid " + self.essid + "/' -i /etc/config/wireless"
                 weioCommand(cmd)
 
-            weioCommand("/weio/wifi_set_mode.sh ap")
+            cmd = self.root + "/scripts/wifi_set_mode.sh ap"
+            weioCommand(cmd)
+
         elif (mode is 'sta') :
             """ Change the /etc/config/wireless.sta : replace the params """
             fname = "/etc/config/wireless.sta"
@@ -139,7 +147,8 @@ class WeioWifi() :
                 os.rename(out_fname, fname)
                 shutil.copy(fname, "/etc/config/wireless")
 
-            weioCommand("/weio/wifi_set_mode.sh sta")
+            cmd = self.root + "/scripts/wifi_set_mode.sh sta"
+            weioCommand(cmd)
 
     def scan(self) :
         iwi = iwInfo.IWInfo(self.interface)
