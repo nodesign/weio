@@ -40,9 +40,9 @@ if __name__ == '__main__':
     WeioRouter = SockJSRouter(WeioHandler, '/api')
 
     app = web.Application(WeioRouter.urls)
-    app.listen(8082)
+    app.listen(8087)
 
-    logging.info(" [*] Listening on 0.0.0.0:8082/api")
+    logging.info(" [*] Listening on 0.0.0.0:8087/api")
 
     WeioUserSetup()
 

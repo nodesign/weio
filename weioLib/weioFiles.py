@@ -38,85 +38,114 @@ import os
 import weio_config
 from collections import namedtuple
 
+from os import listdir, sep
+from os.path import abspath, basename, isdir
+from sys import argv
+
+
 _ntuple_diskusage = namedtuple('usage', 'total used free')
 
-def scanFolders() :
-    """Scans user folder and all folders inside that folder in search for files.
-    Recognized file formats are html, py, js, css, txt all other file formats will be called other
-    
-    scanFolders() returns dictionary. 
-    
-    Dictionary words are : allFiles
-    Behind words there are arrays of filenames (strings)
-    """
-    #Dictionary words are : html, py, js, css, txt, other, allFiles, allFilesExceptOther, allFolders
-    
-    html = []
-    py = []
-    js = []
-    css = []
-    txt = []
-    other = []
 
-    allFiles = []
-    allFolders = []
+global htmlTree
     
-    confFile = weio_config.getConfiguration()
-    
-    pathToCurrentProject = confFile["user_projects_path"] + confFile['last_opened_project'] 
-    
-    for dirname, dirnames, filenames in os.walk(pathToCurrentProject):
-        # print path to all subdirectories first.
-        for subdirname in dirnames:
-            #print os.path.join(dirname, subdirname)
-            allFolders.append(os.path.join(dirname, subdirname))
-    
-        # print path to all filenames.
-        index = 0
-        for filename in filenames:
-            #ignore this mac shit, TODO delete this condition when porting to electronics
-            if (".DS_Store" == filename) :
-                continue
+# Tree function was originaly written by Doug Dahms
+# Code was modified by Uros Petrevski
+
+
+def tree(dir, padding, print_files=True):
+    global htmlTree
+    #print padding[:-1] + '<label for="folder">' + basename(abspath(dir)) + '/' + "</label><input type='checkbox' id='folder1' />" 
+    htmlTree+=padding[:-1] + '<label for="folder">' + basename(abspath(dir)) + "</label><input type='checkbox' id='folder1' checked/>"
+    htmlTree+="\n"
+    #print "<ol>"
+    htmlTree+="<ol>"
+    htmlTree+="\n"
+    padding = padding + ' '
+    files = []
+    if print_files:
+        files = listdir(dir)
+    else:
+        files = [x for x in listdir(dir) if isdir(dir + sep + x)]
+    count = 0
+    for file in files:
+        count += 1
+        #print padding
+        htmlTree+=padding
+        htmlTree+="\n"
+        path = dir + sep + file 
+        if isdir(path):
+            if count == len(files):
+                #print "<li>"
+                htmlTree+="<li>"
+                htmlTree+="\n"
+                tree(path, padding + '  ', print_files)
+                #print "</li>"
+                htmlTree+="</li>"
+                htmlTree+="\n"
+            else:
+                #print "<li>"
+                htmlTree+="<li>"
+                htmlTree+="\n"
+                tree(path, padding + ' ', print_files)
+                #print "</li>"
+                htmlTree+="</li>"
+                htmlTree+="\n"
+        else:
+            #print padding + '<li class="file"><a href="">' + file + '</a></li>'
+            # filer all osx crap DS_Store and all binary Python files
+            if ((file != ".DS_Store") and (".pyc" not in file)) :
+                fullpath =  "'" + dir + file + "'"
+                htmlTree+=padding + '<li class="file"><a href="javascript:addNewEditorStrip('+fullpath+');">' + file + '</a>'
+                htmlTree+='<a href="javascript:prepareToDeleteFile('+ fullpath +');">'
+                htmlTree+='<i class="icon-remove" id="deleteFileButton" role="button" data-toggle="modal" href="javascript:prepareToDeleteFile('+ fullpath +');"></i>'
+                htmlTree+='</a>'
+                htmlTree+='</li>'
+                htmlTree+="\n"
+
+    #print "</ol>"
+    htmlTree+="</ol>"
+    htmlTree+="\n"
+
+def getHtmlTree(path) :
+    """Scans user folder and all folders inside that folder in search for files.
+    Exports HTML string that can be directly used inside editor
+    """
+    global htmlTree
+    htmlTree = "<li>"
+    tree(path, " ")
+    htmlTree+="</li>"
+    print htmlTree
+    return htmlTree
+
+def listOnlyFolders(path):
+    """Scan only folders. This is useful to retreive all project from user projects"""
+    return os.walk(path).next()[1]
             
-            #allFiles.append(os.path.join(dirname, filename))
-            if ".html" in filename :
-                allFiles.append({'name': filename, 'id' : index, 'type' : "html", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
-            elif ".py" in filename : # NASTY BUG CORRECTED, pyc is also identified here because "py" is in "pyc", solution is provided
-                if ".pyc" in filename : # ignore this one
-                    pass
-                else :
-                    allFiles.append({'name': filename, 'id' : index, 'type' : "python", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
-            elif ".js" in filename :
-                allFiles.append({'name': filename, 'id' : index, 'type' : "javascript", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
-            elif ".css" in filename :
-                allFiles.append({'name': filename, 'id' : index, 'type' : "css", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0}) 
-            elif ".txt" in filename :
-                allFiles.append({'name': filename, 'id' : index, 'type' : "text", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
-            else :
-                allFiles.append({'name': filename, 'id' : index, 'type' : "other", 'path' : os.path.join(dirname, filename), 'lastLinePosition' : 0})
-            
-            index = index+1
-              
-            # parse filenames and sort them into arrays
-            # if ".html" in filename :
-            #                 html.append({'name': os.path.join(dirname, filename), 'id' : os.path.join(dirname, filename), 'type' : "html"})
-            #             elif ".py" in filename :
-            #                 py.append({'name': os.path.join(dirname, filename), 'id' : os.path.join(dirname, filename), 'type' : "python"})
-            #             elif ".js" in filename :
-            #                 js.append({'name': os.path.join(dirname, filename), 'id' : os.path.join(dirname, filename), 'type' : "javascript"})
-            #             elif ".css" in filename :
-            #                 css.append({'name': os.path.join(dirname, filename), 'id' : os.path.join(dirname, filename), 'type' : "css"}) 
-            #             elif ".txt" in filename :
-            #                 txt.append({'name': os.path.join(dirname, filename), 'id' : os.path.join(dirname, filename), 'type' : "text"})
-            #             else :
-            #                 other.append({'name': os.path.join(dirname, filename), 'id' : os.path.join(dirname, filename), 'type' : "other"})
-            #             
-    #return {'html' : html, 'py' : py, 'js' : js, 'css' : css, 'txt' : txt,
-    #        'other' : other, 'allFiles' : allFiles, 'allFilesExceptOther' : html+py+js+css+txt, 'allFolders' : allFolders}
+def getFileType(path):
+    """Extracts file extension and matches with proper name"""
+    extension = os.path.splitext(path)[1]
+        
+    types = {
+    ".css" : "css",
+    ".py": "python",
+    ".js": "javascript",
+    ".html":"html",
+    ".txt" : "text",
+    ".json": "json"
+    }
+     
+    if (extension in types) :
+        return types[extension]
+    else :
+        return "other"
+         
+def getFilenameFromPath(path):
+    """Extracts filename from path"""
+    return os.path.basename(path)
     
-    # to accelerate communication other words are excluded
-    
-    return {'allFiles' : allFiles}
+def getStinoFromFile(path):
+    """Returns st_ino of file. This is used for unique file id number"""
+    return os.stat(path).st_ino
     
 def getRawContentFromFile(path):
     

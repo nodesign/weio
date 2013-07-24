@@ -45,7 +45,7 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 import json, functools
 
 # IMPORT EDITOR CLASSES, this connects editor webapp with tornado server
-from editor import editorHandler #, WeioEditorStopHandler, WeioEditorPlayHandler 
+from handlers import editorHandler #, WeioEditorStopHandler, WeioEditorPlayHandler 
 
 # IMPORT WEIOAPI BRIDGE CLASS, this connects user webapp with tornado server
 from weioLib import weioAPIbridgeHandler
@@ -53,11 +53,16 @@ from weioLib import weioAPIbridgeHandler
 # IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
 from weioLib import weio_config
 
-# IMPORT WIFI DETECTION AND CONFIGURATION
-from weioWifi import weioWifiHandler
+#IMPORT DASHBOARD HANDLER
+from handlers import dashboardHandler
 
 #IMPORT LOGIN HANDLER
-from login import loginHandlers
+from handlers import loginHandlers
+
+
+# IMPORT WIFI DETECTION AND CONFIGURATION
+from handlers import wifiHandler
+
 
 # This is user project index.html
 class WeioIndexHandler(tornado.web.RequestHandler):
@@ -70,20 +75,12 @@ class WeioIndexHandler(tornado.web.RequestHandler):
         
 # Editor web app route handler      
 class WeioEditorWebHandler(loginHandlers.BaseHandler):
-    @tornado.web.authenticated
+   # @tornado.web.authenticated
     def get(self):
         global confFile
         path = confFile['editor_html_path']
         self.render(path, error="")
         
-
-# Preview web app route handler     
-class WeioPreviewWebHandler(tornado.web.RequestHandler):
-    def get(self):
-        global confFile
-        path = confFile['preview_html_path']
-        self.render(path, error="")
-
 
 # pure websocket implementation
 class WeioCloseConnection(SockJSConnection):
@@ -92,6 +89,7 @@ class WeioCloseConnection(SockJSConnection):
 
     def on_message(self, msg):
         pass
+        
         
 
 if __name__ == '__main__':
@@ -104,21 +102,12 @@ if __name__ == '__main__':
     # EDITOR ROUTES
     WeioEditorRouter = SockJSRouter(editorHandler.WeioEditorHandler, '/editor/baseFiles')    
   
-    # HEADER WEB SOCKET
-    #WeioHeaderRouter = SockJSRouter(Header.WeioHeaderHandler, '/header')
+    # DASHBOARD ROUTE websocket
+    WeioDashboardRouter = SockJSRouter(dashboardHandler.WeioDashBoardHandler, '/dashboard')
+        
+    # WIFI DETECTION ROUTE
+    WeioWifiRouter = SockJSRouter(wifiHandler.WeioWifiHandler, '/wifi')
 
-    # WIFI DETECTION ROUTES
-    WeioWifiRouter = SockJSRouter(weioWifiHandler.WeioWifiHandler, '/wifi')
-    
-    
-    #CONFIGURATOR ROUTES
-
-
-    #SETTINGS ROUTES
-    
-    
-    #HELP ROUTE
-    
     
     #GENERAL ROUTES
     CloseRouter = SockJSRouter(WeioCloseConnection, '/close')
@@ -143,6 +132,7 @@ if __name__ == '__main__':
     app = tornado.web.Application(list(WeioEditorRouter.urls) +
                             list(CloseRouter.urls) +
                             list(WeioAPIBridgeRouter.urls) +
+                            list(WeioDashboardRouter.urls) +
                             list(WeioWifiRouter.urls) +
                             #list(WeioHeaderRouter.urls) +
                             #list(WeioAPIBridgeRouter.urls) +
@@ -150,7 +140,6 @@ if __name__ == '__main__':
                             # pure websocket implementation
                             #[(r"/editor/baseFiles", Editor.WeioEditorHandler)] +
                             #[(r"/close", WeioCloseConnection)] +
-                            [(r"/preview", WeioPreviewWebHandler)] +
                             [(r"/editor", WeioEditorWebHandler)] +
                             [(r"/login", loginHandlers.WeioLoginHandler)] +
                             [(r"/", WeioIndexHandler),

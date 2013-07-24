@@ -55,7 +55,8 @@ I2C_SLAVE = 0x0703
 # file descriptor
 global f
 
-def init():
+def __init__():
+   
     if (platform.machine() == 'mips') :
         global f    
         # open file

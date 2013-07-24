@@ -1,0 +1,226 @@
+@import "../bootstrap/css/bootstrap.css";
+/* Import Twitter bootstrap
+ */
+/* 
+ * Header global parameters
+ */
+/* 
+ * Header CSS 
+ */
+body {
+  width: 100%;
+  overflow: hidden;
+}
+.navbar-inner {
+  position: absolute;
+  height: 60px;
+  width: 100%;
+  min-height: 60px;
+  background: #242424;
+  box-shadow: none;
+  border: 0px;
+  /* end container */
+
+}
+.navbar-inner .container {
+  width: 100%;
+  /* end brand */
+
+  /* project name definition */
+
+  /* end project name definition */
+
+  /* main preview & editor navigation */
+
+  /* status bar monitor */
+
+}
+.navbar-inner .container .brand {
+  margin-left: -8px;
+  margin-top: 4px;
+  height: 60px;
+  padding: 0px;
+  margin: 0px;
+  width: 199px;
+  border-right: 1px solid #494949;
+}
+.navbar-inner .container .brand #logo {
+  float: left;
+  margin-left: 12px;
+  margin-top: 20px;
+}
+.navbar-inner .container .brand h1 {
+  width: 100px;
+  height: 40px;
+  text-indent: -10000em;
+}
+.navbar-inner .container .brand #status.connected {
+  width: 0;
+  height: 0;
+  border: 7px solid transparent;
+  border-bottom-color: #84c657;
+  position: relative;
+  float: right;
+  top: -43px;
+  right: 15px;
+  text-indent: -10000em;
+}
+.navbar-inner .container .brand #status.connected:after {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 7px;
+  width: 0;
+  height: 0;
+  border: 7px solid transparent;
+  border-top-color: #84c657;
+}
+.navbar-inner .container .brand #status.disconnected {
+  width: 0;
+  height: 0;
+  border: 7px solid transparent;
+  border-bottom-color: red;
+  position: relative;
+  float: right;
+  top: -43px;
+  right: 15px;
+  text-indent: -10000em;
+}
+.navbar-inner .container .brand #status.disconnected:after {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 7px;
+  width: 0;
+  height: 0;
+  border: 7px solid transparent;
+  border-top-color: red;
+}
+.navbar-inner .container li a {
+  color: #eeeeee;
+  text-shadow: none;
+  line-height: 60px;
+  padding: 0 20px;
+}
+.navbar-inner .container li.dropdown {
+  font-size: 20px;
+  line-height: 28px;
+  height: 60px;
+  border-right: 1px solid #494949;
+}
+.navbar-inner .container li.dropdown a:hover {
+  background: #2c2c2c;
+  color: white;
+}
+.navbar-inner .container li.dropdown .dropdown-menu {
+  font-size: 13px;
+  line-height: 18px;
+}
+.navbar-inner .container li.dropdown .caret {
+  top: 5px;
+  position: relative;
+}
+.navbar-inner .container #editorButton {
+  position: relative;
+  width: 35px;
+  top: -3px;
+  opacity: 0.5;
+}
+.navbar-inner .container #editorButton:hover {
+  opacity: 1;
+}
+.navbar-inner .container #previewButton {
+  position: relative;
+  width: 35px;
+  top: -3px;
+  opacity: 0.5;
+  left: 2px;
+}
+.navbar-inner .container #previewButton:hover {
+  opacity: 1;
+}
+.navbar-inner .container .top_tab.active a {
+  background: #383838 !important;
+  color: white !important;
+}
+.navbar-inner .container #controlCenter {
+  color: #cccccc;
+  width: 300px;
+  height: 30px;
+  text-align: center;
+  position: fixed;
+  top: 12px;
+  left: 49%;
+}
+.navbar-inner .container #controlCenter #statusBar {
+  color: #cccccc;
+  float: left;
+  width: 200px;
+  height: 30px;
+  text-align: center;
+  top: 12px;
+  border-radius: 2px;
+  background-color: #383838;
+}
+.navbar-inner .container #controlCenter .serverBT {
+  background-color: #383838;
+  padding: 0 5px;
+  float: left;
+  height: 34px;
+  margin-left: 10px;
+  border-radius: 2px;
+}
+.navbar-inner .container #controlCenter .serverBT a {
+  padding: 0 5px;
+  line-height: 32px;
+  opacity: 0.5;
+}
+.navbar-inner .container #controlCenter .serverBT a:hover {
+  opacity: 1;
+}
+.navbar-inner .container #statusIcon {
+  margin-right: 8px;
+}
+.navbar-inner .container #statusBarText {
+  margin-top: 7px;
+}
+/* Definitions of buttons settings and wifi*/
+.navbar .btn,
+.navbar .btn-group {
+  display: inline-block;
+  margin: 0;
+  height: 60px;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.navbar .btn a,
+.navbar .btn-group a {
+  height: 60px;
+  padding: 0 20px;
+  line-height: 60px;
+  color: #eeeeee;
+  text-shadow: none;
+}
+.navbar .btn a:hover,
+.navbar .btn-group a:hover {
+  color: white;
+  background: #2c2c2c;
+}
+.navbar .btn li a,
+.navbar .btn-group li a {
+  color: #3c3c3c;
+  height: 40px;
+  line-height: 40px;
+}
+.navbar .btn li a:hover,
+.navbar .btn-group li a:hover {
+  background: #999;
+}
+/* IFRAME */
+.iframeContainer {
+  position: relative;
+  width: 100%;
+  border: 0px;
+  margin-top: 60px;
+}

@@ -14,7 +14,7 @@ from sys import argv
 def tree(dir, padding, print_files=True):
     print "<ol>"
     
-    print padding[:-1] + '<label for="folder">' + basename(abspath(dir)) + '/' + "</label><input type='checkbox' id='folder1' />" 
+    print padding[:-1] + '<label for="folder">' + basename(abspath(dir)) + "</label><input type='checkbox' id='folder1' checked/>" 
     padding = padding + ' '
     files = []
     if print_files:

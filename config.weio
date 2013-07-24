@@ -1,17 +1,19 @@
 {
-    "absolut_root_path": "/home/drasko/nodesign/weio", 
-    "dependencies_path": "clientDependencies/", 
-    "editor_html_path": "editor/editor.html", 
+    "absolut_root_path": "/Users/uros/workNow/nodesign/weIO/weio/weio", 
+    "dependencies_path": "www/", 
+    "dns_name": "weio.local", 
+    "editor_html_path": "www/dashboard.html", 
     "ip": "0.0.0.0", 
+    "kill_flag": "NO", 
     "last_opened_files": [
         "index.html", 
         "weioMain.py"
     ], 
     "last_opened_project": "myFirstProject/", 
     "port": 8081, 
-    "preview_html_path": "preview/preview.html", 
+    "shared_libraries": "sharedLibs", 
+    "user": "Uros Petrevski", 
     "user_projects_path": "userProjects/", 
     "weio_lib_path": "weioLib", 
-    "weio_version": "0.11",
-    "kill_flag": "NO"
+    "weio_version": "0.11"
 }

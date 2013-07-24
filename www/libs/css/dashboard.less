@@ -1,0 +1,272 @@
+/* Import Twitter bootstrap
+ */
+@import "../bootstrap/css/bootstrap.css";
+
+/* 
+ * Header global parameters
+ */
+@headerSize: 60px;
+@headerBackgroundColor: #242424;
+@leftSideBarWidth: 199px; 
+/* 
+ * Header CSS 
+ */
+
+body {
+    width:100%;
+    overflow:hidden;
+}
+ 
+.navbar-inner {
+    position:absolute;
+    height:60px;
+    width:100%;
+    min-height: @headerSize;
+    background: @headerBackgroundColor;
+    box-shadow: none;
+    border: 0px;
+    
+    .container {
+        width:100%;
+
+    
+        .brand {
+             margin-left: -8px;
+             margin-top: 4px;
+             height: @headerSize;
+             padding: 0px;
+             margin: 0px;
+             width: @leftSideBarWidth;
+             border-right: 1px solid #494949;
+
+             #logo {
+              float:left;
+              margin-left:12px;
+              margin-top:20px;   
+             }
+
+             h1 {
+                 width: 100px;
+                 height: 40px;
+                 text-indent: -10000em;
+             }
+             
+             @statusIconY: -43px;
+             #status.connected {
+                 width: 0;
+                 height: 0;
+                 border: 7px solid transparent;
+                 border-bottom-color: #84c657;
+                 position: relative;
+                 float: right;
+                 top: @statusIconY;
+                 right: 15px;
+                 text-indent: -10000em;
+             }
+             #status.connected:after {
+                 content: '';
+                 position: absolute;
+                 left: -7px;
+                 top: 7px;
+                 width: 0;
+                 height: 0;
+                 border: 7px solid transparent;
+                 border-top-color: #84c657;
+             }
+
+             #status.disconnected {
+                 width: 0;
+                 height: 0;
+                 border: 7px solid transparent;
+                 border-bottom-color: red;
+                 position: relative;
+                 float: right;
+                 top: @statusIconY;
+                 right: 15px;
+                 text-indent: -10000em;
+             }
+             #status.disconnected:after {
+                 content: '';
+                 position: absolute;
+                 left: -7px;
+                 top: 7px;
+                 width: 0;
+                 height: 0;
+                 border: 7px solid transparent;
+                 border-top-color: red;
+             }
+
+        } /* end brand */
+        
+        
+        /* project name definition */
+        
+        li a {
+            color: #eeeeee;
+            text-shadow: none;
+            line-height: 60px;
+            padding: 0 20px;
+
+        }
+
+        li.dropdown {
+            font-size: 20px;
+            line-height: 28px;
+            height: 60px;
+            border-right: 1px solid #494949;
+
+            a:hover {
+                background: #2c2c2c;
+                color: white;
+            }
+
+            .dropdown-menu {
+                font-size: 13px;
+                line-height: 18px;
+            }
+            .caret {
+                top: 5px;
+                position: relative;
+
+            }
+        } /* end project name definition */
+        
+        /* main preview & editor navigation */
+        #editorButton {
+            position:relative;
+            width:35px;
+            top:-3px;
+            opacity: 0.5;
+
+            &:hover {
+                opacity: 1;
+            };
+
+        }
+
+        #previewButton {
+            position:relative;
+            width:35px;
+            top:-3px;
+            opacity: 0.5;
+            left:2px;
+
+            &:hover {
+                opacity: 1;
+            };
+        }
+        
+        .top_tab.active  {
+
+             a {
+                 background: #383838 !important;
+                 color: white !important;
+             }
+         }
+             
+        
+        /* status bar monitor */
+
+        #controlCenter {
+            color: rgb(204, 204, 204);
+            width:300px;
+            height:30px;
+            text-align:center;
+            position: fixed;
+            top: 12px;
+            left: 49%;
+
+
+            #statusBar {
+                color: rgb(204, 204, 204);
+                float: left;
+                width:200px;
+                height:30px;
+                text-align:center;
+                top: 12px;
+                border-radius: 2px;
+                background-color: #383838;
+            }
+            .serverBT {
+                background-color: #383838;
+                padding: 0 5px;
+                float: left;
+                height: 34px;
+                margin-left:10px;
+                border-radius: 2px;
+                a {
+                    padding: 0 5px;
+                    line-height: 32px;
+                    opacity: 0.5;
+                    &:hover {
+                        opacity: 1;
+                    }
+                }
+            }
+
+
+
+        }
+
+
+         #statusIcon {
+             margin-right:8px;
+         }
+
+         #statusBarText {
+             margin-top:7px;
+         }
+         
+         
+        
+
+    } /* end container */
+}
+
+
+
+/* Definitions of buttons settings and wifi*/
+
+.navbar .btn, .navbar .btn-group {
+     display: inline-block;
+     margin: 0;
+     height: 60px;
+     background: none; 
+     border:0;
+     box-shadow: none;
+     a { 
+         height: 60px;
+         padding: 0 20px;
+         line-height: 60px;
+         color: #eeeeee;
+         text-shadow: none;
+
+         &:hover {
+             color: white;
+             background: #2c2c2c;
+         };
+
+     }
+     li a {
+         color: rgb(60, 60, 60);
+         height: 40px;
+         line-height: 40px;
+
+         &:hover {
+             background: #999; 
+         }
+     }
+
+
+ }
+
+
+ /* IFRAME */
+ .iframeContainer {
+     position:relative;
+     width:100%;
+     border:0px;
+     margin-top:60px;
+ }
+ 
+ 
