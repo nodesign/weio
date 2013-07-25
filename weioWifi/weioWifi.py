@@ -104,7 +104,7 @@ class WeioWifi() :
         while (self.mode == None) :
             # Move to Master mode
             print "Trying to move to AP mode..."
-            weioCommand("/weio/wifi_set_mode.sh ap")
+            weioCommand(self.root + "/scripts/wifi_set_mode.sh ap")
             # Wait for network to reconfigure
             time.sleep(self.reconfTime)
             # Check what happened
