@@ -106,17 +106,26 @@ body {
   font-size: 20px;
   line-height: 28px;
   height: 60px;
-  border-right: 1px solid #494949;
 }
 .navbar-inner .container li.dropdown a:hover {
   background: #2c2c2c;
   color: white;
 }
-.navbar-inner .container li.dropdown .dropdown-menu {
+.navbar-inner .container .dropdown-menu {
   font-size: 13px;
   line-height: 18px;
 }
-.navbar-inner .container li.dropdown .caret {
+.navbar-inner .container .dropdown-menu a {
+  color: #333333;
+  text-shadow: none;
+  line-height: 40px;
+  padding: 0 18px;
+}
+.navbar-inner .container .dropdown-menu a:hover {
+  background: #2c2c2c;
+  color: white;
+}
+.navbar-inner .container .dropdown-menu .caret {
   top: 5px;
   position: relative;
 }

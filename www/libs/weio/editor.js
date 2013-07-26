@@ -90,6 +90,7 @@ $(document).ready(function () {
                 
    initEditor();
    updateConsoleHeight();
+ 
    
    //console.log(window.innerHeight); 
    //console.log(editorData.editors.length);

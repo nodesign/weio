@@ -196,7 +196,7 @@ div {
 }
 /* CSS Tree menu styles */
 ol.tree {
-  padding: 0;
+  padding: 10px 0;
   width: 200px;
   margin-left: 4px;
   margin-top: 0px;
