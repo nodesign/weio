@@ -52,7 +52,7 @@ rm -r weio/doc
 rm -r weio/graphicsSource
 rm -r weio/openWrt
 rm -r weio/sandbox
-rm -r updateMaker/README.md
+rm -r weio/updateMaker
 rm weio/README.md
 
 # kill all .pyc files to leave native arch to build them
