@@ -52,10 +52,15 @@ rm -r weio/doc
 rm -r weio/graphicsSource
 rm -r weio/openWrt
 rm -r weio/sandbox
-rm -r weio/README.md
+rm -r updateMaker/README.md
+rm weio/README.md
 
 # kill all .pyc files to leave native arch to build them
-find . -name '*.pyc' -delete
+find weio -name '*.pyc' -delete
+# kill all .less files because they are compiled to .css
+find weio -name '*.less' -delete
+# kill all OS X crap
+find weio -name '.DS_Store' -delete
 
 # make tar archive 
 tar -zcvf weio.tar.gz weio/
