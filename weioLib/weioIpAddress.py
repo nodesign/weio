@@ -6,9 +6,8 @@ import subprocess
 
 def getLocalIpAddress() :
     """Gets local ip address"""
-    cmd = "ifconfig wlan0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'"
+    cmd = "ifconfig wlan0 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}'"
     return subprocess.check_output(cmd, shell=True)
-
     
 def getPublicIpAddress() :
     """Gets world ip address. TODO test if internet is reachable"""
