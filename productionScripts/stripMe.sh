@@ -38,37 +38,37 @@
 
 
 # clean old file
-#rm weioStripped.tar.bz2
+#rm weio.tar.bz2
 
-# after all process to decompress type : tar -zxvf weioStripped.tar.gz
+# after all process to decompress type : tar -zxvf weio.tar.gz
 # make new dir for stripped version at level -1
-mkdir weioStripped 
+mkdir weio 
 
 # copy all visible files, ignore unvisible git files
-rsync -av --exclude=".*" --exclude="productionScripts" ../ weioStripped
+rsync -av --exclude=".*" --exclude="productionScripts" ../ weio
 
 # exclude production folders
-rm -r weioStripped/doc
-rm -r weioStripped/graphicsSource
-rm -r weioStripped/openWrt
-rm -r weioStripped/sandbox
-rm -r weioStripped/README.md
+rm -r weio/doc
+rm -r weio/graphicsSource
+rm -r weio/openWrt
+rm -r weio/sandbox
+rm -r weio/README.md
 
 # kill all .pyc files to leave native arch to build them
 find . -name '*.pyc' -delete
 
 # make tar archive 
-tar -zcvf weioStripped.tar.gz weioStripped/
+tar -zcvf weio.tar.gz weio/
 
-# kill weioStripped folder
-rm -r weioStripped
+# kill weio folder
+rm -r weio
 
-# To decompress type : tar -zxvf weioStripped.tar.gz
+# To decompress type : tar -zxvf weio.tar.gz
 
 echo ""
-echo "Created archive weioStripped.tar.bz2"
+echo "Created archive weio.tar.bz2"
 echo ""
 echo "Now do:"
-echo "$ scp -r weioStripped.tar.bz2 root@weio.local:/tmp"
+echo "$ scp -r weio.tar.gz root@weio.local:/tmp"
 echo "and then in WeIO:"
-echo "tar -xzvf /tmp/weioStripped.tar.gz"
+echo "tar -xzvf /tmp/weio.tar.gz"
