@@ -111,6 +111,17 @@ class WeioWifiHandler(SockJSConnection):
 
             # Send connection information to the client
             self.send(json.dumps(rsp))
+        else :
+            # send test file
+            testString = {'02': {'opened': False, 'passwd': None, 'encryption': 'mixed WPA/WPA2 PSK (TKIP, CCMP)', 'mac': '00:05:59:1F:D2:F0', 'connected': False, 'mode': 'Master', 'quality': '28/70', 'essid': 'jetSpeed IAD 2 (PSTN)'}, '03': {'opened': False, 'passwd': None, 'encryption': 'mixed WPA/WPA2 PSK (TKIP, CCMP)', 'mac': 'F8:D1:11:A0:03:88', 'connected': False, 'mode': 'Master', 'quality': '24/70', 'essid': 'DeepNetPocket'}, '01': {'opened': False, 'passwd': None, 'encryption': 'WPA PSK (TKIP, CCMP)', 'mac': '94:0C:6D:FA:1B:EA', 'connected': True, 'mode': 'Master', 'quality': '70/70', 'essid': 'BECA'}, '06': {'opened': False, 'passwd': None, 'encryption': 'mixed WPA/WPA2 PSK (CCMP)', 'mac': '90:F6:52:24:CF:26', 'connected': False, 'mode': 'Master', 'quality': '19/70', 'essid': 'Pavlovici'}, '04': {'opened': False, 'passwd': None, 'encryption': 'mixed WPA/WPA2 PSK (TKIP)', 'mac': 'E8:39:DF:7B:BB:1C', 'connected': False, 'mode': 'Master', 'quality': '19/70', 'essid': 'KAPIS'}, '05': {'opened': False, 'passwd': None, 'encryption': 'mixed WPA/WPA2 PSK (TKIP, CCMP)', 'mac': '70:54:D2:46:98:53', 'connected': False, 'mode': 'Master', 'quality': '21/70', 'essid': 'petra'}}
+            
+            # Send response to the browser
+            rsp={}
+            rsp['requested'] = rq['request']
+            rsp['data'] = testString
+
+            # Send connection information to the client
+            self.send(json.dumps(rsp))
     
     def goToApMode(self,rq):
         if (platform.machine() == 'mips') :
