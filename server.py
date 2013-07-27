@@ -153,7 +153,7 @@ if __name__ == '__main__':
 
     # If we are on the WEIO machine, we have to assure connection before doing anything
     if (platform.machine() == 'mips') :
-        weioWifiHandler.wifi.checkConnection()
+        wifiHandler.wifi.checkConnection()
     
     http_server = tornado.httpserver.HTTPServer(app)
     http_server.listen(tornado.options.options.port, address=confFile['ip'])
