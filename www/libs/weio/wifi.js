@@ -57,7 +57,7 @@ var wifi = 0;
 /**
  * Weio can be in two modes Acess Point AP and STA mode (client of one wifi network)
  */
-var wifiCurrentMode = "STA"; // "STA" or "AP"
+var wifiCurrentMode = "sta"; // "sta" or "ap"
 
 /**
  * Wifi network identifier that Weio is currently connected to.
@@ -286,6 +286,7 @@ wifiSocket.onmessage = function(e) {
     if ("requested" in data) {
           // this is instruction that was echoed from server + data as response
           instruction = data.requested;  
+            
           if (instruction in callbacks) 
               callbacks[instruction](data);
       } else if ("serverPush" in data) {

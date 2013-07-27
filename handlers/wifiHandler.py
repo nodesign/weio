@@ -95,6 +95,7 @@ def weioWifiParseScan() :
 # Wifi detection route handler  
 class WeioWifiHandler(SockJSConnection):
     global wifi
+    global callbacks
     
     def scanCells(self, rq):
         if (platform.machine() == 'mips') :
@@ -154,34 +155,34 @@ class WeioWifiHandler(SockJSConnection):
             self.send(json.dumps(rsp))
         
 
-    ##############################################################################################################################
-        # DEFINE CALLBACKS IN DICTIONARY
-        # Second, associate key with right function to be called
-        # key is comming from socket and call associated function
-        callbacks = {
-            'scan' : scanCells,
-            'goAp' : goToApMode,
-            'goSta' : goToStaMode,
-        }   
+    #########################################################################
+    # DEFINE CALLBACKS IN DICTIONARY
+    # Second, associate key with right function to be called
+    # key is comming from socket and call associated function
+    callbacks = {
+        'scan' : scanCells,
+        'goAp' : goToApMode,
+        'goSta' : goToStaMode,
+    }   
 
-        def on_open(self, info) :
-            msg = {}
-            msg['mode'] = wifi.mode
-            self.send(json.dumps(msg))
-            
+    def on_open(self, info) :
+        msg = {}
+        msg['mode'] = wifi.mode
+        self.send(json.dumps(msg))
+        
 
-        def on_message(self, data):
-            """Parsing JSON data that is comming from browser into python object"""
-            req = json.loads(data)
-            self.serve(req)
-            
-        def serve(self, rq):
-            """Parsed input from browser ready to be served"""
-            # Call callback by key directly from socket
-            global callbacks
-            request = rq['request']
+    def on_message(self, data):
+        """Parsing JSON data that is comming from browser into python object"""
+        req = json.loads(data)
+        self.serve(req)
+        
+    def serve(self, rq):
+        """Parsed input from browser ready to be served"""
+        # Call callback by key directly from socket
+        global callbacks
+        request = rq['request']
 
-            if request in callbacks :
-                callbacks[request](self, rq)
-            else :
-                print "unrecognised request"
+        if request in callbacks :
+            callbacks[request](self, rq)
+        else :
+            print "unrecognised request"
