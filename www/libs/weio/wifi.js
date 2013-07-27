@@ -238,7 +238,7 @@ function goSta() {
  * Define callbacks here and request keys
  * Each key is binded to coresponding function
  */
-var callbacks = {
+var callbacksWifi = {
     "scan": updateWifiCells,
     "mode": updateWifiMode,
     
@@ -287,14 +287,14 @@ wifiSocket.onmessage = function(e) {
           // this is instruction that was echoed from server + data as response
           instruction = data.requested;  
             
-          if (instruction in callbacks) 
-              callbacks[instruction](data);
+          if (instruction in callbacksWifi) 
+              callbacksWifi[instruction](data);
       } else if ("serverPush" in data) {
              // this is instruction that was echoed from server + data as response
              
              instruction = data.serverPush;  
-             if (instruction in callbacks) 
-                 callbacks[instruction](data);
+             if (instruction in callbacksWifi) 
+                 callbacksWifi[instruction](data);
       }
 };
 
