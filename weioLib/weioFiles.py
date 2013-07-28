@@ -114,7 +114,7 @@ def getHtmlTree(path) :
     htmlTree = "<li>"
     tree(path, " ")
     htmlTree+="</li>"
-    print htmlTree
+    #print htmlTree
     return htmlTree
 
 def listOnlyFolders(path):

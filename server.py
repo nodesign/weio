@@ -59,10 +59,11 @@ from handlers import dashboardHandler
 #IMPORT LOGIN HANDLER
 from handlers import loginHandlers
 
-
 # IMPORT WIFI DETECTION AND CONFIGURATION
 from handlers import wifiHandler
 
+# IMPORT UPDATER
+from handlers import updaterHandler
 
 # This is user project index.html
 class WeioIndexHandler(tornado.web.RequestHandler):
@@ -93,6 +94,14 @@ class WeioCloseConnection(SockJSConnection):
         
 
 if __name__ == '__main__':
+    # Take configuration from conf file and use it to define parameters
+    global confFile
+    confFile = weio_config.getConfiguration()
+
+    # put absolut path in conf, needed for local testing on PC
+    confFile['absolut_root_path'] = os.path.abspath(".")
+    weio_config.saveConfiguration(confFile)
+    
     import logging
     logging.getLogger().setLevel(logging.DEBUG)
 
@@ -107,19 +116,13 @@ if __name__ == '__main__':
         
     # WIFI DETECTION ROUTE
     WeioWifiRouter = SockJSRouter(wifiHandler.WeioWifiHandler, '/wifi')
-
+    
+    # UPDATER ROUTE
+    WeioUpdaterRouter = SockJSRouter(updaterHandler.WeioUpdaterHandler, '/updater')
     
     #GENERAL ROUTES
     CloseRouter = SockJSRouter(WeioCloseConnection, '/close')
 
-    
-    # Take configuration from conf file and use it to define parameters
-    global confFile
-    confFile = weio_config.getConfiguration()
-
-    # put absolut path in conf, needed for local testing on PC
-    confFile['absolut_root_path'] = os.path.abspath(".")
-    weio_config.saveConfiguration(confFile)
 
     secret = loginHandlers.generateCookieSecret()
     print secret
@@ -134,6 +137,7 @@ if __name__ == '__main__':
                             list(WeioAPIBridgeRouter.urls) +
                             list(WeioDashboardRouter.urls) +
                             list(WeioWifiRouter.urls) +
+                            list(WeioUpdaterRouter.urls) +
                             #list(WeioHeaderRouter.urls) +
                             #list(WeioAPIBridgeRouter.urls) +
                           

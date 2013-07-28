@@ -40,6 +40,8 @@ import json
 import hashlib
 import sys
 import tarfile
+from subprocess import Popen
+from subprocess import PIPE
 
 global fileToStoreUpdate
 global pathToDecompressUpdate
@@ -48,7 +50,7 @@ global currentWeioConfigurator
 # Do settings here for right paths
 fileToStoreUpdate = "./weioUpdate.tar.gz"
 pathToDecompressUpdate = "./"
-currentWeioConfigPath = '../../config.weio'
+currentWeioConfigPath = '/weio/weio/config.weio'
 
 global distantJsonUpdater
 
@@ -77,6 +79,7 @@ def checkVersion(response):
     
     if (distantVersion > localVersion) :
         print "There is a newer version of WeIO"
+        print "Downloading..."
         download(distantJsonUpdater["url"])
     else :
         if (distantVersion < localVersion) :
@@ -106,6 +109,24 @@ def doUpdate(data):
         global currentWeioConfigurator
         print "Setting kill flag to YES in current config.weio"
         currentWeioConfigurator["kill_flag"] = "YES"
+        
+        p = Popen(["rm", "weioUpdate.tar.gz"], stdout=PIPE)
+        p.wait()
+        
+        p = Popen(["rm", "-r", "/weio/weio"], stdout=PIPE)
+        p.wait()
+        
+        p = Popen(["mv", "weio", "/weio/weio"], stdout=PIPE)
+        p.wait()   
+
+      
+                
+                
+
+        
+
+        
+        
         print "Ready for reset. Old WeIO will be deleted and new activated"
         # TODO make system reboot here
         sys.exit()

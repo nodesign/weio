@@ -1,10 +1,10 @@
 {
-    "absolut_root_path": "/Users/arebook/Documents/weio_main", 
+    "absolut_root_path": "/Users/uros/workNow/nodesign/weIO/weio/weio", 
     "dependencies_path": "www/", 
     "dns_name": "weio.local", 
     "editor_html_path": "www/dashboard.html", 
     "ip": "0.0.0.0", 
-    "kill_flag": "NO", 
+    "kill_flag": "YES", 
     "last_opened_files": [
         "index.html", 
         "weioMain.py"
@@ -15,5 +15,5 @@
     "user": "Uros Petrevski", 
     "user_projects_path": "userProjects/", 
     "weio_lib_path": "weioLib", 
-    "weio_version": "0.11"
+    "weio_version": "0.123"
 }
