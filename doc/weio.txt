@@ -1211,5 +1211,67 @@ If you do not set a root password, you will need to manually disable the telnet 
 root@OpenWrt:~# /etc/init.d/telnet disable
 ------------------------------------------
 
+Making WeIO Bundles
+-------------------
+Making WeIO Bundles is automatized process that : strips WeIO program to prepare release, attribute new version of software to WeIO, connects to ftp server and uploads bundle.
+
+----------------------------------------------
+uros:weio uros$ cd updateMaker/
+uros:updateMaker uros$ ./updateMaker.py 
+
+WeIO update maker : [version] [description]
+Store release information in releases.txt file
+example : ./updateMaker 0.12 'some bug fixes'
+
+Actual version on the server is :  0.123
+
+uros:updateMaker uros$
+----------------------------------------------
+Update maker gives you actual version on the ftp server and short description how to use. Make new bundle like this :
+
+--------------------------------------------------------------------------
+uros:updateMaker uros$ ./updateMaker.py 0.124 "Front end small bugs fixed"
+--------------------------------------------------------------------------
+If you want to edit release notes and explain all new features edit releases.weio file.
+
+*********************************************************************************************************
+Remember: Update maker edits config.weio file where he puts new version that was invoked in command line.
+*********************************************************************************************************
+
+First time manual WeIO install from ftp server
+----------------------------------------------
+There is automated script that will download and install last WeIO version from ftp server. Copy file manualInstallWeio.py to weio root directory :
+
+---------------------------------------------------------------------------------------------------------------------
+uros:weio uros$ scp openWrt/files/manualInstallWeio.py root@weio.local:/
+root@weio.local's password: 
+manualInstallWeio.py                                                                    100% 4376     4.3KB/s   00:00    
+uros:weio uros$ 
+---------------------------------------------------------------------------------------------------------------------
+
+Manual install WeIO imitates what will actually happen during the real update from web interface. It's output looks like this :
+
+--------------------------------------------
+root@WEIO:/# ./manualInstallWeio.py 
+Update downloaded
+MD5 checksum OK
+Archive decompressed
+Now you can go to / and launch ./run_weio.sh
+root@WEIO:/# 
+--------------------------------------------
+Tar archive is first downloaded to RAM in /tmp then decompressed in RAM and finally copied to /weio. If you look carefully one new file is created in the root folder :
+-------------------------------------------------------------------------------------------
+root@WEIO:/# ls
+bin                   lm75.pyc              rom                   tmp                   www
+dev                   manualInstallWeio.py  root                  updater
+etc                   mnt                   run_weio.sh           usr
+lib                   overlay               sbin                  var
+lm75.py               proc                  sys                   weio
+root@WEIO:/#
+-------------------------------------------------------------------------------------------
+Run_weio.sh is main script for running WeIO. Run WeIO program like this :
+--------------------------
+root@WEIO:/# ./run_weio.sh 
+--------------------------
 
 
