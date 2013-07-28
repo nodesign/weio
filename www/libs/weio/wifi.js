@@ -111,8 +111,9 @@ function injectWifiNetworksInDropMenu() {
         
         // transform wifiQuality object into html
         var wifiQuality = '<img src="img/wifi' + getCellQuality(wifi[cell]) + '.png" id="wifiIcons"></img>';
-                
-        $("#wifiNetworks").append('<li><a tabindex="-1" onclick="prepareToChangeWifi('+ wifi[cell].mac + ')" role="button" data-toggle="modal">' + currentConnection + wifi[cell].essid  + wifiQuality + secureWifi + '</a></li>');
+        
+        var formatedWifi = "'" + wifi[cell].mac + "'";
+        $("#wifiNetworks").append('<li><a tabindex="-1" onclick="prepareToChangeWifi('+ formatedWifi + ')" role="button" data-toggle="modal">' + currentConnection + wifi[cell].essid  + wifiQuality + secureWifi + '</a></li>');
     }
    
     // don't do it here avoid infinite loop
@@ -157,7 +158,7 @@ function scanWifiNetworks() {
 
 function prepareToChangeWifi(id) {
     var cell = -1;
-
+    
     // verify if you are already connected to this network
     if (id != connectedToWifiId) { 
         for (var cell in wifi) {
@@ -167,23 +168,25 @@ function prepareToChangeWifi(id) {
                 break;
             }
         }
-        $("#myModalChangeWifiLabel").html("Join " + cell.essid + " wireless network?");
-
-        // if password is required add password field 
-        if (cell.opened==false) {
-             $("#wifiPassword").css("display", "block");
-        } else {
-            $("#wifiPassword").css("display", "none");
-        }
+        
+        
         
         // put selected cell into object that will be used
         // in changeWifiNetwork()
         // in the case that modal is confirmed
         selectedCell = cell;
-
-        goSta();
-
-        $("#changeWifi").modal("show");
+        
+        // if password is required add password field 
+        if (cell.opened==false) {
+            // $("#wifiPassword").css("display", "block");
+            $("#myModalSimpleChangeWifiLabel").html(cell.essid + " needs password");
+             $("#wifiPasswordPrompt").modal("show");
+        } else {
+            //$("#wifiPassword").css("display", "none");
+            goSta();
+        }
+        
+       
     }
 };
 
@@ -217,19 +220,25 @@ function goSta() {
     var changeWifi = 0;
 
     if (selectedCell.opened == false) {
-        var password = $("#wifiPassword").val();
-    
+        var password = $("#wifiPasswordSimple").val();
+        
         // Checks for strings that are either empty or filled with whitespace
         if((/^\s*$/).test(password)) { 
             alert("Password field can't be empty!");
+        } else {
+            selectedCell.passwd = password;
+            $("#wifiPasswordPrompt").modal("hide");
+            
+            changeWifi = { "request": "goSta", "data" : selectedCell};
+            console.log("GoTo STA ", changeWifi);
+            wifiSocket.send(JSON.stringify(changeWifi));
+
+            selectedCell = -1; // reset selection
+            
         }
     }
-
-    changeWifi = { "request": "goSta", "data" : selectedCell};
-    console.log(changeWifi);
-    wifiSocket.send(JSON.stringify(changeWifi));
     
-    selectedCell = -1; // reset selection
+    
 };
 
 
