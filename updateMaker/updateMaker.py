@@ -46,6 +46,7 @@ from subprocess import Popen
 from subprocess import PIPE
 import urllib
 
+
 # store ftp username from keyboard input
 global usr
 # store ftp password from keyboard input
@@ -115,7 +116,17 @@ if (len(sys.argv)==3) :
     
     usr = raw_input("Username :")
     pswd = getpass.getpass(prompt="Password :")
-
+    
+    inputFile = open("../config.weio", 'r')
+    rawData = inputFile.read()
+    inputFile.close()
+    config = json.loads(rawData)
+    config["weio_version"] = sys.argv[1]
+    
+    inputFile = open("../config.weio", 'w')
+    ret = inputFile.write(json.dumps(config, indent=4, sort_keys=True))
+    inputFile.close()
+    
     # Run strip script
     p = Popen(["sh", "../productionScripts/stripMe.sh"], stdout=PIPE)
     # wait... I have to finish this process before sending
