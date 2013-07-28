@@ -226,6 +226,15 @@ body {
 .navbar .btn-group li a:hover {
   background: #999;
 }
+.btn-group.open .btn.dropdown-toggle {
+  border-radius: 0px;
+  color: #555;
+}
+#wifiIcons {
+  margin-top: -7px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
 /* IFRAME */
 .iframeContainer {
   position: relative;
