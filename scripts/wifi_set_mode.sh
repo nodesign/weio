@@ -16,6 +16,17 @@ if [ $1 == "ap" ]; then
     cp /etc/config/dhcp.ap /etc/config/dhcp
     cp /etc/config/firewall.ap /etc/config/firewall
 
+elif [ $1 == "rescue" ]; then
+    # Down the WiFi before reconfiguration
+    wifi down
+
+    # Copy AP files
+    cp /etc/config/network.ap /etc/config/network
+    cp /etc/config/wireless.ap.rescue /etc/config/wireless
+
+    cp /etc/config/dhcp.ap /etc/config/dhcp
+    cp /etc/config/firewall.ap /etc/config/firewall
+
 elif [ $1 == "sta" ]; then
     # Down the WiFi before reconfiguration
     wifi down

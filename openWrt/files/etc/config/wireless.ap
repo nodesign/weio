@@ -17,6 +17,7 @@ config wifi-iface
         option network  wifi
         option mode     ap
         option ssid     WEIO
-        option encryption none
+        option key      weiowebofthings
+        option encryption psk2+tkip+ccmp
 
 

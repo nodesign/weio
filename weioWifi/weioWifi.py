@@ -70,6 +70,7 @@ class WeioWifi() :
         self.data = None
         self.interface = interface
         self.mode = None
+        self.passwd = ""
 
         self.reconfTime = 10
 
@@ -103,8 +104,8 @@ class WeioWifi() :
         # We can not serve anything if we are not in sta or ap mode
         while (self.mode == None) :
             # Move to Master mode
-            print "Trying to move to AP mode..."
-            weioCommand(self.root + "/scripts/wifi_set_mode.sh ap")
+            print "Trying to move to AP RESCUE mode..."
+            weioCommand(self.root + "/scripts/wifi_set_mode.sh rescue")
             # Wait for network to reconfigure
             time.sleep(self.reconfTime)
             # Check what happened
@@ -122,11 +123,20 @@ class WeioWifi() :
 
         if (mode is 'ap') :
             fname = "/etc/config/wireless.ap"
-            shutil.copy(fname, "/etc/config/wireless")
 
-            if (self.essid != ""):
-                cmd = "sed 's/option ssid.*$/option ssid " + self.essid + "/' -i /etc/config/wireless"
-                weioCommand(cmd)
+             with open(fname) as f:
+                out_fname = fname + ".tmp"
+                out = open(out_fname, "w")
+                for line in f:
+                    line = re.sub(r'option\s+ssid\s.*$', r'option ssid ' + self.essid, line)
+                    if (self.passwd != ""):
+                        line = re.sub(r'option\s+key\s.*$', r'option key ' + self.passwd, line)
+                    #if (self.encryption != "")
+                    #    line = re.sub(r'option\s+encryption\s.*$', r'option encryption ' + self.encryption, line)
+                    out.write(line)
+                out.close()
+                os.rename(out_fname, fname)
+                shutil.copy(fname, "/etc/config/wireless")
 
             cmd = self.root + "/scripts/wifi_set_mode.sh ap"
             weioCommand(cmd)

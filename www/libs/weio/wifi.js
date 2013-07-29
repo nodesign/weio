@@ -169,8 +169,6 @@ function prepareToChangeWifi(id) {
             }
         }
         
-        
-        
         // put selected cell into object that will be used
         // in changeWifiNetwork()
         // in the case that modal is confirmed
@@ -202,7 +200,7 @@ function goAp() {
     if((/^\s*$/).test(essidAPuser)) {
         alert("I can't accept empty essid name!");
     } else {
-        changeWifi = { "request": "goAp", "data": {"essid": essidAPuser, "password": pass}};
+        changeWifi = { "request": "goAp", "data": {"essid": essidAPuser, "passwd": pass}};
 //        console.log(changeWifi);
         wifiSocket.send(JSON.stringify(changeWifi));
         $('#createWifi').modal('hide');
@@ -223,7 +221,7 @@ function goSta() {
         var password = $("#wifiPasswordSimple").val();
         
         // Checks for strings that are either empty or filled with whitespace
-        if((/^\s*$/).test(password)) { 
+        if ((/^\s*$/).test(password)) { 
             alert("Password field can't be empty!");
         } else {
             selectedCell.passwd = password;
