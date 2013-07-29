@@ -124,7 +124,7 @@ class WeioWifi() :
         if (mode is 'ap') :
             fname = "/etc/config/wireless.ap"
 
-             with open(fname) as f:
+            with open(fname) as f:
                 out_fname = fname + ".tmp"
                 out = open(out_fname, "w")
                 for line in f:
