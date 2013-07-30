@@ -325,7 +325,7 @@ function refreshEditors() {
  * Stores file type from modal view before creation
  * Default type is html
  */
-var newfileType = ".html"; // default value if nothing selected
+var newfileType = "html"; // default value if nothing selected
 
 /**
  * Selecting file type from modal view before creation
