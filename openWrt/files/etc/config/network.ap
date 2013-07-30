@@ -1,10 +1,11 @@
-config interface loopback
-        option ifname   lo
-        option proto    static
-        option ipaddr   127.0.0.1
-        option netmask  255.0.0.0
+config interface 'loopback'
+	option ifname 'lo'
+	option proto 'static'
+	option ipaddr '127.0.0.1'
+	option netmask '255.0.0.0'
 
-config interface wifi
-        option 'proto'      'static'
-        option 'ipaddr'     '10.0.0.1'
-        option 'netmask'    '255.255.255.0'
+config interface 'wifi'
+	option auto '1'
+	option proto 'static'
+	option ipaddr '192.168.1.1'
+	option netmask '255.255.255.0'

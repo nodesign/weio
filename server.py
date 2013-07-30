@@ -109,7 +109,7 @@ if __name__ == '__main__':
     WeioAPIBridgeRouter = SockJSRouter(weioAPIbridgeHandler.WeioAPIBridgeHandler, '/api')
 
     # EDITOR ROUTES
-    WeioEditorRouter = SockJSRouter(editorHandler.WeioEditorHandler, '/editor/baseFiles')    
+    WeioEditorRouter = SockJSRouter(dashboardHandler.WeioDashBoardHandler, '/editor/editorSocket')    
   
     # DASHBOARD ROUTE websocket
     WeioDashboardRouter = SockJSRouter(dashboardHandler.WeioDashBoardHandler, '/dashboard')
