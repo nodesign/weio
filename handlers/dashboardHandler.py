@@ -350,8 +350,6 @@ class WeioDashBoardHandler(SockJSConnection):
 
         # don't echo given data to spare unnecessary communication, just return name
         fileInfo = rq['data']
-        data['requested'] = fileInfo['name']
-
         pathname = fileInfo['name']
 
         confFile = weio_config.getConfiguration()
@@ -360,7 +358,6 @@ class WeioDashBoardHandler(SockJSConnection):
         #print (pathCurrentProject+pathname)
         # in new file there are no data, it will be an empty string
         rawData = ""
-
         weioFiles.saveRawContentToFile(pathCurrentProject+pathname, rawData)
 
         data['status'] = fileInfo['name'] + " has been created"

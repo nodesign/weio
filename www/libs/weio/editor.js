@@ -223,7 +223,7 @@ function addNewEditorStrip(filename) {
         // send request to server to get raw file content
         // jump to section onmessage to see what happens
         var rq = { "request": "getFile", "data":filename};
-        dashboard.send(JSON.stringify(rq));
+        editorSocket.send(JSON.stringify(rq));
     } 
 
     // in every case, put focus on that file
@@ -270,7 +270,7 @@ function saveAndClose(id) {
     }
     console.log(file);
     var rq = { "request": "saveFile", "data":file};
-    dashboard.send(JSON.stringify(rq));
+    editorSocket.send(JSON.stringify(rq));
     
     refreshEditors();
 }
@@ -291,7 +291,7 @@ function saveAll() {
         file.path = obj.path;
         
         var rq = { "request": "saveFile", "data":file};
-        dashboard.send(JSON.stringify(rq));
+        editorSocket.send(JSON.stringify(rq));
     }
 }
 
@@ -334,7 +334,6 @@ var newfileType = ".html"; // default value if nothing selected
 function setFileType(type) {
     newfileType = type;
     //console.log("file " + type);
-    newfileType = ".html";
 }
 
 /**
@@ -355,7 +354,7 @@ function createNewFile() {
             };
     
         var rq = { "request": "createNewFile", "data" : data};
-        dashboard.send(JSON.stringify(rq));
+        editorSocket.send(JSON.stringify(rq));
     }
     
 }
@@ -370,7 +369,7 @@ function prepareToDeleteFile(filename) {
 
 function deleteFile() {
     var rq = { "request": "deleteFile", "path":toBeDeleted};
-    dashboard.send(JSON.stringify(rq));
+    editorSocket.send(JSON.stringify(rq));
     toBeDeleted = "";
 }
 
@@ -379,7 +378,7 @@ function deleteFile() {
  * Define callbacks here and request keys
  * Each key is binded to coresponding function
  */
-var callbacks = {
+var callbacksEditor = {
     "getFileTreeHtml" : updateFileTree,
     "status" : updateStatus,
     "stdout" : updateConsoleOutput,
@@ -439,14 +438,14 @@ function refreshFiles(data) {
     updateStatus(data);
     // refresh html filetree 
     var rq = { "request": "getFileTreeHtml"};
-    dashboard.send(JSON.stringify(rq));
+    editorSocket.send(JSON.stringify(rq));
 }
 
 function fileRemoved(data) {
     updateStatus(data);
     // refresh html filetree 
     var rq = { "request": "getFileTreeHtml"};
-    dashboard.send(JSON.stringify(rq));
+    editorSocket.send(JSON.stringify(rq));
 }
 
 
@@ -455,24 +454,24 @@ function fileRemoved(data) {
 /*
  * SockJS object, Web socket
  */
-var dashboard = new SockJS('http://' + location.host + '/dashboard');
+var editorSocket = new SockJS('http://' + location.host + '/editor/editorSocket');
 /*
  * On opening of wifi web socket ask server to scan wifi networks
  */
-dashboard.onopen = function() {
+editorSocket.onopen = function() {
     console.log('editor Web socket is opened');
     // get files
     var rq = { "request": "getFileTreeHtml"};
-    dashboard.send(JSON.stringify(rq));
+    editorSocket.send(JSON.stringify(rq));
     
     var rq = { "request": "getPlatform"};
-    dashboard.send(JSON.stringify(rq));
+    editorSocket.send(JSON.stringify(rq));
 };
 
 /*
  * Dashboard parser, what we got from server
  */
-dashboard.onmessage = function(e) {
+editorSocket.onmessage = function(e) {
     //console.log('Received: ' + e.data);
 
     // JSON data is parsed into object
@@ -483,13 +482,13 @@ dashboard.onmessage = function(e) {
    if ("requested" in data) {
        // this is instruction that was echoed from server + data as response
        instruction = data.requested;  
-       if (instruction in callbacks) 
-           callbacks[instruction](data);
+       if (instruction in callbacksEditor) 
+           callbacksEditor[instruction](data);
    } else if ("serverPush" in data) {
           // this is instruction that was echoed from server + data as response
           instruction = data.serverPush;  
-          if (instruction in callbacks) 
-              callbacks[instruction](data);
+          if (instruction in callbacksEditor) 
+              callbacksEditor[instruction](data);
           
    }
                  
@@ -498,7 +497,7 @@ dashboard.onmessage = function(e) {
 
 
 
-dashboard.onclose = function() {
+editorSocket.onclose = function() {
     // turn on red light if disconnected
     console.log('Dashboard Web socket is closed');
     
