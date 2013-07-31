@@ -52,6 +52,9 @@ import json
 import hashlib
 import tarfile
 
+# Wifi detection and configuration module
+from weioWifi import weioWifi
+
 # Wifi detection route handler  
 class WeioUpdaterHandler(SockJSConnection):
     global callbacks
@@ -71,29 +74,43 @@ class WeioUpdaterHandler(SockJSConnection):
 
     # checking version
     def checkVersion(self, response):
-        global distantJsonUpdater
-        global currentWeioConfigurator
-
-        distantJsonUpdater = json.loads(str(response.body))
-        currentWeioConfigurator = weio_config.getConfiguration()
-
-        print "My software version " + currentWeioConfigurator["weio_version"] + " Version on WeIO server " + distantJsonUpdater["version"]
-        
-        
-        # Send response to the browser
-        rsp={}
-        rsp['requested'] = "checkVersion"
-        rsp['localVersion'] = currentWeioConfigurator["weio_version"]
-        rsp['distantVersion'] = distantJsonUpdater["version"]
-        
-        distantVersion = float(distantJsonUpdater["version"])
-        localVersion = float(currentWeioConfigurator["weio_version"])
-        if (distantVersion > localVersion) :
-            rsp['needsUpdate'] = "YES"
-            rsp['description'] = distantJsonUpdater['description']
-            rsp['whatsnew'] = distantJsonUpdater['whatsnew']
-           
+        wifi = weioWifi.WeioWifi("wlan0")
+        if (platform.machine() == 'mips') :
+            wifi.checkConnection()
         else :
+            wifi.mode = "sta"
+        
+        rsp={}
+        
+        if (wifi.mode=="sta") : # check Internet
+        
+            global distantJsonUpdater
+            global currentWeioConfigurator
+
+            distantJsonUpdater = json.loads(str(response.body))
+            currentWeioConfigurator = weio_config.getConfiguration()
+
+            print "My software version " + currentWeioConfigurator["weio_version"] + " Version on WeIO server " + distantJsonUpdater["version"]
+        
+        
+            # Send response to the browser
+            
+            rsp['requested'] = "checkVersion"
+            rsp['localVersion'] = currentWeioConfigurator["weio_version"]
+            rsp['distantVersion'] = distantJsonUpdater["version"]
+        
+            distantVersion = float(distantJsonUpdater["version"])
+            localVersion = float(currentWeioConfigurator["weio_version"])
+            if (distantVersion > localVersion) :
+                rsp['needsUpdate'] = "YES"
+                rsp['description'] = distantJsonUpdater['description']
+                rsp['whatsnew'] = distantJsonUpdater['whatsnew']
+           
+            else :
+                rsp['needsUpdate'] = "NO"
+        
+            
+        elif (wifi.mode=="ap") :
             rsp['needsUpdate'] = "NO"
         
         # Send connection information to the client
