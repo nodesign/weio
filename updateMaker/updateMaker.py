@@ -139,7 +139,8 @@ if (len(sys.argv)==3) :
         weio_update['url'] = 'http://www.we-io.net/downloads/' + packetFile
         weio_update['md5'] = md5sum(packetFile)
         weio_update['whatsnew'] = open('releases.weio', 'r').read()
-
+        weio_update['kill_flag'] = "NO"
+        
         saveConfiguration(weio_update)
         try :
             
