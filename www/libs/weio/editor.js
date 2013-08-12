@@ -91,7 +91,8 @@ $(document).ready(function () {
    initEditor();
    updateConsoleHeight();
     
-
+   window.setInterval("autoSave()",autoSaveInterval); 
+    
    //console.log(window.innerHeight); 
    //console.log(editorData.editors.length);
   //window.top.setStatus(null, "Gimme some good code!");
@@ -140,6 +141,16 @@ function renderEditors() {
 
 //EDITOR////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+/**
+ * Milliseconds interval for autosave
+ */
+var autoSaveInterval = 4000;
+
+/**
+ * Do I have to autosave project? This is evaluated by on change event from Ace editor
+ */
+var codeHasChanged = false;
 
 /**
  * Stores compiled template that can be rendered with JSON file
@@ -300,6 +311,15 @@ function saveAll() {
     }
 }
 
+
+/**
+ * Auto save if there were changes
+ */
+function autoSave() {
+    if (codeHasChanged) saveAll();
+    codeHasChanged = false;
+}
+
 function refreshEditors() {
    
     for (var i=0; i<editorData.editors.length;i++) {
@@ -321,12 +341,17 @@ function refreshEditors() {
         //editor.renderer.onResize(true);
         //editor.resize();
         //$(editor).resize();
-        $('#' + editorData.editors[i].name).resize();
+        //$('#' + editorData.editors[i].name).resize();
+        
+        editor.getSession().on('change', function() {
+            codeHasChanged = true;
+        });
         
         editorData.editors[i]["editorJs"] = editor;
     }
     
 }
+
 
 /*
  * MODAL CREATE NEW FILE
