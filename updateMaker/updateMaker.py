@@ -121,7 +121,10 @@ if (len(sys.argv)==3) :
     rawData = inputFile.read()
     inputFile.close()
     config = json.loads(rawData)
+    
+    # Overwrite local configuration file
     config["weio_version"] = sys.argv[1]
+    config["port"] = 80
     
     inputFile = open("../config.weio", 'w')
     ret = inputFile.write(json.dumps(config, indent=4, sort_keys=True))
@@ -132,6 +135,13 @@ if (len(sys.argv)==3) :
     # wait... I have to finish this process before sending
     p.wait()
     
+    
+    # Revert port in local conf file
+    config["port"] = 80
+    inputFile = open("../config.weio", 'w')
+    ret = inputFile.write(json.dumps(config, indent=4, sort_keys=True))
+    inputFile.close()
+    
     if (os.path.exists(packetFile)) :
         
         weio_update['version'] = sys.argv[1]
@@ -140,6 +150,7 @@ if (len(sys.argv)==3) :
         weio_update['md5'] = md5sum(packetFile)
         weio_update['whatsnew'] = open('releases.weio', 'r').read()
         weio_update['kill_flag'] = "NO"
+        
         
         saveConfiguration(weio_update)
         try :
