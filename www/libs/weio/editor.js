@@ -90,13 +90,14 @@ $(document).ready(function () {
                 
    initEditor();
    updateConsoleHeight();
- 
-   
+    
+
    //console.log(window.innerHeight); 
    //console.log(editorData.editors.length);
   //window.top.setStatus(null, "Gimme some good code!");
    
 }); /* end of document on ready event */
+
 
 $(window).resize(function() {
    updateEditorHeight();
@@ -115,7 +116,7 @@ function updateEditorHeight() {
     var numRows = $('.codebox').length;
     var finalheight = viewportHeight - (numRows  * 40) - (numRows * 15) - 15;
     $('.code_wrap').css('min-height', finalheight);
-    console.log("rows : " + numRows + " array elements " + viewportHeight + " viewport height " + finalheight + " calculated height");
+   // console.log("rows : " + numRows + " array elements " + viewportHeight + " viewport height " + finalheight + " calculated height");
     // $('.fullheight').css('height', widgetheight);
     // $('#consoleAccordion').css('max-height', viewportHeight - (2  * 40) - 75);
 }
@@ -225,6 +226,8 @@ function addNewEditorStrip(filename) {
         var rq = { "request": "getFile", "data":filename};
         editorSocket.send(JSON.stringify(rq));
     } 
+  
+    
 
     // in every case, put focus on that file
     //    focusedOne = newData.name;
@@ -272,7 +275,9 @@ function saveAndClose(id) {
     var rq = { "request": "saveFile", "data":file};
     editorSocket.send(JSON.stringify(rq));
     
+    renderEditors();
     refreshEditors();
+    updateEditorHeight();
 }
 
 /**
@@ -295,25 +300,31 @@ function saveAll() {
     }
 }
 
-
-
 function refreshEditors() {
-    renderEditors();
+   
     for (var i=0; i<editorData.editors.length;i++) {
-
+        
+        
         var editor = ace.edit(editorData.editors[i].name);
         editor.setTheme("ace/theme/dawn");
         editor.getSession().setMode("ace/mode/" + editorData.editors[i].type);
         editor.setValue(editorData.editors[i].data, 0);
-
+        editor.setFontSize("11px");
+        
         editor.getSession().setTabSize(4);
         editor.getSession().setUseSoftTabs(true);
         editor.getSession().setUseWrapMode(true);
         editor.setShowPrintMargin(false);
         
+        editor.gotoLine(0);
+        
+        //editor.renderer.onResize(true);
+        //editor.resize();
+        //$(editor).resize();
+        $('#' + editorData.editors[i].name).resize();
+        
         editorData.editors[i]["editorJs"] = editor;
     }
-    updateEditorHeight();
     
 }
 
@@ -417,6 +428,7 @@ function updateConsoleSys(data) {
     $('#consoleOutput').append("<a id='sys'>" + sys + "<br></a>");
 }
 
+
 function insertNewStrip(data) {
 
     // it has been already checked if this file already exists
@@ -425,13 +437,16 @@ function insertNewStrip(data) {
     fileInfo = data.data;
     editorData.editors.push(fileInfo);
     
+    renderEditors();
     refreshEditors();
+    updateEditorHeight();
     
     //console.log = (editorData);
     
     $('#' + fileInfo.id).collapse("show");
     $('#' + fileInfo.id).css("height", "100%");
-
+    
+ 
 }
 
 function refreshFiles(data) {
