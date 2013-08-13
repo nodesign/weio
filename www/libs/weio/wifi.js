@@ -277,7 +277,7 @@ function updateWifiMode(data) {
 */
 wifiSocket.onopen = function() {
     console.log('Wifi Web socket is opened');
-    scanWifiNetworks();
+    setTimeout(function(){scanWifiNetworks()},3000);
 };
 
 /*

@@ -182,16 +182,19 @@ class WeioDashBoardHandler(SockJSConnection):
         global weioPipe
         
         if weioPipe != None :
-            ioloopObj.remove_handler(weioPipe.stdout.fileno())
-            ioloopObj.remove_handler(weioPipe.stderr.fileno())
-            weioPipe.kill()
-            weioPipe = None
-            
-            data = {}
-            data['requested'] = rq['request']
-            data['status'] = "User program stopped!"
-            self.send(json.dumps(data))
-            
+            print "STOP ", weioPipe.returncode
+            if weioPipe.returncode == None : # None means not yet finished
+                ioloopObj.remove_handler(weioPipe.stdout.fileno())
+                ioloopObj.remove_handler(weioPipe.stderr.fileno())
+                weioPipe.kill()
+                weioPipe = None
+                
+            if rq != 0 :
+                data = {}
+                data['requested'] = rq['request']
+                data['status'] = "User program stopped!"
+                self.send(json.dumps(data))
+                
             if lastLaunched is not None :
                 consoleWelcome = {}
                 consoleWelcome['serverPush'] = "sysConsole"
@@ -224,40 +227,41 @@ class WeioDashBoardHandler(SockJSConnection):
            
         if weioPipe.poll() is not None :
            """ Child is terminated """
-           print "Child has terminated - removing handler"
+           print "Child has terminated - removing handler MAINHANDLER"
            ioloop.IOLoop.instance().remove_handler(weioPipe.stdout.fileno())
-          
+           weioPipe = None
            return
 
 
     def weioMainHandlerErr(self, data, fd, events):
         """Stream stderr to browser"""
         global weioPipe
-        line = weioPipe.stderr.readline()
-        if line :
-           # parse incoming data
-           #stdout = line.rstrip()
-           stderr = line
-           print(stderr)
+        if weioPipe != None :
+            line = weioPipe.stderr.readline()
+            if line :
+               # parse incoming data
+               #stdout = line.rstrip()
+               stderr = line
+               print(stderr)
 
-           #pack and go
-           data = {}
+               #pack and go
+               data = {}
 
-           data['serverPush'] = 'stderr'
-           data['data'] = stderr
+               data['serverPush'] = 'stderr'
+               data['data'] = stderr
 
-           # TODO, send this only once, at the beginning
-           data['status'] = "Check output console for errors!"
+               # TODO, send this only once, at the beginning
+               data['status'] = "Check output console for errors!"
 
-           # this is raw output, some basic parsing is needed in javascript \n etc...
-           CONSOLE.send(json.dumps(data))
+               # this is raw output, some basic parsing is needed in javascript \n etc...
+               CONSOLE.send(json.dumps(data))
 
-        if weioPipe.poll() is not None :
-           """ Child is terminated """
-           print "Child has terminated - removing handler"
-           ioloop.IOLoop.instance().remove_handler(weioPipe.stderr.fileno())
-           
-           return
+            if weioPipe.poll() is not None :
+               """ Child is terminated """
+               print "Child has terminated - removing handler STDERR"
+               ioloop.IOLoop.instance().remove_handler(weioPipe.stderr.fileno())
+               weioPipe = None
+               return
            
            
     def sendPlatformDetails(self, rq):
@@ -366,6 +370,7 @@ class WeioDashBoardHandler(SockJSConnection):
     def deleteFile(self,rq):
         data = {}
         data['requested'] = rq['request']
+        data['path'] = rq['path']
 
         path = rq['path']
        

@@ -76,13 +76,16 @@ def md5sum(filename):
 # upload file to server
 def uploadToServer(filename):    
     session = ftplib.FTP('ftp.we-io.net',usr,pswd)
-    
+    print "Connected to ftp"
     file = open(filename,'rb')                  # file to send
     session.cwd('www/downloads')
+    
     # TODO basename filename
     session.storbinary('STOR ' + filename, file, callback = progressBar, blocksize = 1024)     # send the file
+    #session.storbinary("STOR " + packetFile, file)
     file.close()                                    # close file and FTP
     session.quit()
+
 # percent of uploaded data, callback
 def progressBar(block):
     global prgs
@@ -116,7 +119,7 @@ if (len(sys.argv)==3) :
     
     usr = raw_input("Username :")
     pswd = getpass.getpass(prompt="Password :")
-    
+    print "Open config.weio"
     inputFile = open("../config.weio", 'r')
     rawData = inputFile.read()
     inputFile.close()
@@ -129,15 +132,17 @@ if (len(sys.argv)==3) :
     inputFile = open("../config.weio", 'w')
     ret = inputFile.write(json.dumps(config, indent=4, sort_keys=True))
     inputFile.close()
-    
+    print "Apply modifications and close config.weio"
+    print "Run script"
     # Run strip script
-    p = Popen(["sh", "../productionScripts/stripMe.sh"], stdout=PIPE)
+    p = Popen(["sh", "../productionScripts/stripMe.sh"], stdout=PIPE, close_fds=True)
     # wait... I have to finish this process before sending
-    p.wait()
+    p.communicate()
+    print "Finished process"
     
     
     # Revert port in local conf file
-    config["port"] = 80
+    config["port"] = 8081
     inputFile = open("../config.weio", 'w')
     ret = inputFile.write(json.dumps(config, indent=4, sort_keys=True))
     inputFile.close()
@@ -150,7 +155,7 @@ if (len(sys.argv)==3) :
         weio_update['md5'] = md5sum(packetFile)
         weio_update['whatsnew'] = open('releases.weio', 'r').read()
         weio_update['kill_flag'] = "NO"
-        
+        weio_update['install_duration'] = 35
         
         saveConfiguration(weio_update)
         try :

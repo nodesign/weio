@@ -31,6 +31,9 @@ $(document).ready(function () {
      */
     var closedSideBarWidth = "15px";
 
+    
+    initEditor();
+    updateConsoleHeight();
 
     $("#leftSideBarButton").click(function(){
 
@@ -44,7 +47,7 @@ $(document).ready(function () {
             $("#leftSideBarButton i").attr("class", "icon-chevron-right");
             $(".tree").hide();
             $(".bottomButtons").hide();
-
+            
         } else {
 
             $(".editorContainer").animate( { left: leftSideBarWidth }, { queue: false, duration: 100 });
@@ -55,9 +58,10 @@ $(document).ready(function () {
             $("#leftSideBarButton i").attr("class", "icon-chevron-left");
             $(".tree").show();
             $(".bottomButtons").show();
-
+           
         }
-
+        
+        
     });
 
     $("#rightSideBarButton").click(function(){
@@ -71,7 +75,7 @@ $(document).ready(function () {
             $("#rightSideBarButton").attr("class", "closed");
             $("#rightSideBarButton i").attr("class", "icon-chevron-left");
             $("#trashConsole").hide();
-
+            
 
         } else {
 
@@ -82,14 +86,14 @@ $(document).ready(function () {
             $("#rightSideBarButton").attr("class", "opened");
             $("#rightSideBarButton i").attr("class", "icon-chevron-right");
             $("#trashConsole").show();
-
+            
         }
-
+        
+            
 
     });
                 
-   initEditor();
-   updateConsoleHeight();
+   
     
    window.setInterval("autoSave()",autoSaveInterval); 
     
@@ -127,6 +131,10 @@ function updateConsoleHeight() {
     $("#consoleOutput").css("height", viewportHeight-60);
 }
 
+function play() {
+    var rq = { "request": "play"};
+    editorSocket.send(JSON.stringify(rq));
+}
 
 
 /**
@@ -486,6 +494,41 @@ function fileRemoved(data) {
     // refresh html filetree 
     var rq = { "request": "getFileTreeHtml"};
     editorSocket.send(JSON.stringify(rq));
+    
+    // delete strip if opened
+    filename = data.path;
+    fileId = 0;
+    // check if file is already opened
+    var exists = false;
+    for (var editor in editorData.editors) {
+        if (filename==editorData.editors[editor].path) {
+            exists = true;
+            fileId = editorData.editors[editor].id;
+            break;
+        } else {
+            exists = false;
+        }
+    }
+    
+    if (exists==true) {
+        
+        for (var editor in editorData.editors) {
+            if (editorData.editors[editor].id==fileId) {
+                // kill element in JSON
+                editorData.editors.splice(editor, 1);
+                break;
+            }
+        }
+        
+        renderEditors();
+        refreshEditors();
+        updateEditorHeight();
+    } 
+    
+    
+
+    
+    
 }
 
 

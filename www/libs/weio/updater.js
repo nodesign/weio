@@ -43,8 +43,21 @@ var updaterSocket = new SockJS('http://' + location.host + '/updater');
 
 var weioNeedsUpdate = false;
 
-var weioUpdaterTimeTillReload = 81; // counter till 100%
+var weioUpdaterTimeTillReload = 0; // counter till 100%
 var updaterTimerInterval;
+
+var estimatedInstallTime = 0;
+
+/**
+ * Update check. Asks server to compare it's own version with distant one
+ */
+
+function updateCheck() {
+    $("#needsUpdateStatus").html("<i class='icon-spinner'></i> Checking updates...");
+    var rq = { "request": "checkVersion"};
+    updaterSocket.send(JSON.stringify(rq));
+}
+
 
 function runUpdateProcedure() {
     var rq = { "request": "checkVersion"};
@@ -59,19 +72,25 @@ function runUpdateProcedure() {
 }
 
 function updateProgressBar(data) {
-    $("#progressStatus").html(data.info + " " + data.progress);
-    $("#updateProgressBar").css("width", data.progress);
+    //$("#progressStatus").html(data.info + " " + data.progress);
+    //$("#updateProgressBar").css("width", data.progress);
+    estimatedInstallTime = data.estimatedInstallTime;
     
-    if (data.progress=="81%") {
-        updaterTimerInterval = setInterval(function(){countTimeTillReload()},2000);
-    }
+    setInterval(function(){countTimeTillReload()},1000);
+//    
+//    if (data.progress=="81%") {
+//        updaterTimerInterval = setInterval(function(){countTimeTillReload()},2000);
+//    }
     
 }
 
-function countTimeTillReload() {
-    weioUpdaterTimeTillReload++;
-    if (weioUpdaterTimeTillReload<=100) {
-        $("#progressStatus").html("Installing WeIO " + String(weioUpdaterTimeTillReload) + "%");
+function countTimeTillReload(data) {
+    // normal update needs 35 secs to be done
+    
+    delayTime = 100.0/estimatedInstallTime;
+    weioUpdaterTimeTillReload+=delayTime;
+    if (Math.round(weioUpdaterTimeTillReload)<100) {
+        $("#progressStatus").html("Installing WeIO " + String(Math.round(weioUpdaterTimeTillReload)) + "%");
     } else {
         clearInterval(updaterTimerInterval);
         location.reload();
@@ -97,6 +116,8 @@ function checkVersion(data) {
     console.log("WeIO needs un update : " + data.needsUpdate);
     
     if (data.needsUpdate=="YES") {
+        $("#needsUpdateStatus").html("Install new update");
+        
         $("#updateButton").html("Update WeIO");
         
         txt = "";
@@ -112,6 +133,8 @@ function checkVersion(data) {
         weioNeedsUpdate = true;
         
     } else {
+        
+        $("#needsUpdateStatus").html("WeIO version is up to date");
         $("#updateButton").html("OK");
         $("#updateWeioData").html("Your current version " + data.localVersion + " is up to date!");
         weioNeedsUpdate = false;
@@ -127,9 +150,7 @@ function checkVersion(data) {
 */
 updaterSocket.onopen = function() {
     console.log('Updater Web socket is opened');
-    var rq = { "request": "checkVersion"};
-    updaterSocket.send(JSON.stringify(rq));
-    
+    //updateCheck();
 };
 
 /*

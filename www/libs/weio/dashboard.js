@@ -108,8 +108,10 @@ function setStatus(icon, message) {
 
 function play(){
     document.getElementById("weioIframe").contentWindow.saveAll();
-    var rq = { "request": "play"};
-    dashboard.send(JSON.stringify(rq));
+    document.getElementById("weioIframe").contentWindow.play();
+    
+    //var rq = { "request": "play"};
+    //dashboard.send(JSON.stringify(rq));
 }
 
 function stop(){
@@ -120,6 +122,10 @@ function stop(){
 function changeProject(path) {
     var rq = { "request": "changeProject", "data": path};
     dashboard.send(JSON.stringify(rq));
+}
+
+function updateConsoleSys(data) {
+    document.getElementById("weioIframe").contentWindow.updateConsoleSys(data);
 }
 
 
@@ -137,6 +143,7 @@ var callbacks = {
     "getUserProjetsFolderList" : updateProjects,
     "changeProject":reloadIFrame,
     "getUser": updateUserData,
+    "sysConsole" : updateConsoleSys,
     
 }
 

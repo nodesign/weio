@@ -82,12 +82,13 @@
                     <div class="user pull-right">
                         
                             <div class="btn-group pull-right">
-                                <a class="btn dropdown-toggle" data-toggle="dropdown" id="user" href="#"></a>
+                                <a class="btn dropdown-toggle" data-toggle="dropdown" id="user" onclick="updateCheck()"></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#updateWeio" data-toggle="modal" ><i class="icon-wrench"></i> WeIO update</a></li>
-                                    <li><a href="#"onclick="alert('Sorry, not yet implemented!')"><i class="icon-wrench"></i> Settings</a></li>
+                                    <li><a href="#updateWeio" data-toggle="modal" id="needsUpdateStatus"><i class="icon-spinner"></i> Checking updates...</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="#"onclick="alert('Sorry, not yet implemented!')"><i class="icon-share"></i> Logout</a></li>
+                                    <li><a href="#"><i class="icon-wrench"></i> Settings</a></li>
+                                    
+                                    <li><a href="#"><i class="icon-share"></i> Logout</a></li>
                                 </ul>
                             </div>
 
@@ -214,7 +215,7 @@
                   <div class="progress progress-striped active">
                     <div class="progress-bar progress-bar-success" style="width: 40%" id="updateProgressBar"></div>
                   </div>
-                  <p>WeIO is updating now. Please don't touch anything. If program stucks after few minutes try to reload this page or to reset hardware</p>
+                  <p>WeIO is updating now. Please don't touch anything. If program stucks after progress bar is done try to reload this page or to reset hardware</p>
                   
               </div>
               <div class="modal-footer">

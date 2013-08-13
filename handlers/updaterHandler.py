@@ -60,8 +60,10 @@ class WeioUpdaterHandler(SockJSConnection):
     global callbacks
     global distantJsonUpdater
     global downloadTries
+    global estimatedInstallTime
     
     donwloadTries = 0
+    estimatedInstallTime = 35
     
     # checkForUpdates is entering point for updater
     # First it will download only update.weio to check if there is need for an update
@@ -86,7 +88,7 @@ class WeioUpdaterHandler(SockJSConnection):
         
             global distantJsonUpdater
             global currentWeioConfigurator
-
+            
             distantJsonUpdater = json.loads(str(response.body))
             currentWeioConfigurator = weio_config.getConfiguration()
 
@@ -102,10 +104,11 @@ class WeioUpdaterHandler(SockJSConnection):
             distantVersion = float(distantJsonUpdater["version"])
             localVersion = float(currentWeioConfigurator["weio_version"])
             if (distantVersion > localVersion) :
+                global estimatedInstallTime
                 rsp['needsUpdate'] = "YES"
                 rsp['description'] = distantJsonUpdater['description']
                 rsp['whatsnew'] = distantJsonUpdater['whatsnew']
-           
+                estimatedInstallTime = distantJsonUpdater['install_duration']
             else :
                 rsp['needsUpdate'] = "NO"
         
@@ -119,7 +122,7 @@ class WeioUpdaterHandler(SockJSConnection):
     def downloadUpdate(self, rq):
         global distantJsonUpdater
       
-        self.progressInfo("5%", "Downloading WeIO Bundle " + distantJsonUpdater["version"])
+        #self.progressInfo("5%", "Downloading WeIO Bundle " + distantJsonUpdater["version"])
       
         http_client = httpclient.AsyncHTTPClient()
         http_client.fetch(distantJsonUpdater["url"], callback=self.downloadComplete)
@@ -143,12 +146,12 @@ class WeioUpdaterHandler(SockJSConnection):
             print "MD5 checksum OK"
             self.progressInfo("50%", "MD5 checksum OK")
             print "Bundle decompressing"
-            self.progressInfo("52%", "WeIO Bundle decompressing")
+            #self.progressInfo("52%", "WeIO Bundle decompressing")
             tar = tarfile.open(fileToStoreUpdate)
             tar.extractall(pathToDecompressUpdate)
             tar.close()
             print "Bundle decompressed"
-            self.progressInfo("80%", "WeIO Bundle decompressed")
+            #self.progressInfo("80%", "WeIO Bundle decompressed")
             
             # kill arhive that we don't need anymore to free RAM
             os.remove(fileToStoreUpdate)
@@ -157,11 +160,14 @@ class WeioUpdaterHandler(SockJSConnection):
             print "Now I'm ready to exit Tornado and install new version"
             currentWeioConfigurator["kill_flag"] = "YES"
             weio_config.saveConfiguration(currentWeioConfigurator)
-            self.progressInfo("81%", "WeIO installing")
+            #self.progressInfo("81%", "WeIO installing")
             # Now quit Tornado and leave script to do his job
             exit()
             
         else :
+            
+            global donwloadTries
+            
             print "MD5 checksum is not OK, retrying..."
             if (donwloadTries<2):
                 self.progressInfo("5%", "Downloading Bundle again, MD5 checkum was not correct")
@@ -174,10 +180,12 @@ class WeioUpdaterHandler(SockJSConnection):
     
     # Automatic status sender
     def progressInfo(self, progress, info):
+        global estimatedInstallTime
         data = {}
         data['serverPush'] = "updateProgress"
         data['progress'] = progress # 5%, 10%,... in string format "10%"
         data['info'] = info
+        data['estimatedInstallTime'] = estimatedInstallTime
         self.send(json.dumps(data))
         
     # Get MD5 checksum from file    
