@@ -8,6 +8,9 @@ fi
 if [ $1 == "ap" ]; then
     # Down the WiFi before reconfiguration
     wifi down
+    
+    # Down Avahi deamon
+    avahi-daemon -k
 
     # Copy AP files
     cp /etc/config/network.ap /etc/config/network
@@ -52,5 +55,6 @@ fi
 /etc/init.d/network restart
 #/etc/init.d/firewall restart
 /etc/init.d/dnsmasq restart
+# run avahi
 avahi-daemon -D
 

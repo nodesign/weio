@@ -43,8 +43,6 @@ import sys, os, logging
 
 import iwInfo
 
-# IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
-from weioLib import weio_config
 
 logging.basicConfig()
 log = logging.getLogger("WeioWifi")
@@ -58,7 +56,7 @@ def weioCommand(command) :
     try :
         output = subprocess.check_output(command, shell=True)
     except :
-        print("Comand ERROR : " + str(output))
+        print("Comand ERROR : " + str(output) + " " + command)
         output = "ERR_CMD"
 	
     print output
@@ -73,9 +71,6 @@ class WeioWifi() :
         self.passwd = ""
 
         self.reconfTime = 10
-
-        confFile = weio_config.getConfiguration()
-        self.root = confFile['absolut_root_path']
 
     def checkConnection(self) :
         command = "iwconfig " + self.interface
@@ -105,7 +100,7 @@ class WeioWifi() :
         while (self.mode == None) :
             # Move to Master mode
             print "Trying to move to AP RESCUE mode..."
-            weioCommand(self.root + "/scripts/wifi_set_mode.sh rescue")
+            weioCommand("scripts/wifi_set_mode.sh rescue")
             # Wait for network to reconfigure
             time.sleep(self.reconfTime)
             # Check what happened
@@ -138,7 +133,7 @@ class WeioWifi() :
                 os.rename(out_fname, fname)
                 shutil.copy(fname, "/etc/config/wireless")
 
-            cmd = self.root + "/scripts/wifi_set_mode.sh ap"
+            cmd = "scripts/wifi_set_mode.sh ap"
             weioCommand(cmd)
 
         elif (mode is 'sta') :
@@ -157,7 +152,7 @@ class WeioWifi() :
                 os.rename(out_fname, fname)
                 shutil.copy(fname, "/etc/config/wireless")
 
-            cmd = self.root + "/scripts/wifi_set_mode.sh sta"
+            cmd = "scripts/wifi_set_mode.sh sta"
             weioCommand(cmd)
 
     def scan(self) :
