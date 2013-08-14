@@ -1,7 +1,9 @@
 {
-    "description": "updater", 
-    "md5": "38dd8245252650432cabc6feffc46dd1", 
+    "description": "Deleting files and strips repaired", 
+    "install_duration": 35, 
+    "kill_flag": "NO", 
+    "md5": "7ae9c7dd9bc9a4255414144d36be9395", 
     "url": "http://www.we-io.net/downloads/weio.tar.gz", 
-    "version": "0.123", 
+    "version": "0.145", 
     "whatsnew": "WeIO Releases :\n\n0.12 Bug fixes in architecture and design\nBla bla bla bla bla bla Bla bla bla bla bla bla\nBla bla bla bla bla bla Bla bla bla bla bla bla\n\n0.11 Bug fixes in architecture and design\nBla bla bla bla bla bla Bla bla bla bla bla bla\nBla bla bla bla bla bla Bla bla bla bla bla bla"
 }
