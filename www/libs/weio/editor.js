@@ -12,6 +12,12 @@ var editor;
  */
 var currentlyOpened = [];
 
+/*
+ * Current focused file
+ * String variable that contains file path
+ */
+var focusedFile = "";
+
 
 /*
  * When all DOM elements are fully loaded
@@ -99,7 +105,8 @@ $(document).ready(function () {
    
                   
   $('.accordion').click(function(e){
-                        
+        
+        // Remove strip                
         if ($(e.target).hasClass('icon-remove')){
             
             // Get Id from file
@@ -108,9 +115,8 @@ $(document).ready(function () {
             var killIndex = $.inArray(currentStrip, currentlyOpened);
                         
             currentlyOpened.splice(currentlyOpened.indexOf(currentStrip),1);
-
             
-                        
+            saveFile(currentStrip);
                         
             // save editor in safe house before
             $('#codeEditorAce').hide();
@@ -157,7 +163,7 @@ function scaleIt(){
     
     var f = bigH - 60 - (38 * $('.accordion-group').length);
     
-    // Stavljamo visinu editora
+    // Put editor height
     $('.accordion-inner').height(f-19);
     
     // Resize
@@ -204,54 +210,17 @@ function clearConsole() {
 
 
 /**
- * Save file on the server and close strip. 
- * Strip is destroyed after and new render is applied
+ * Save file on the server 
  */
-function saveAndClose(id) {
+function saveFile(path) {
     
     var file = {};
     
-    for (var editor in editorData.editors) {
-        if (editorData.editors[editor].id==id) {
-            var obj = editorData.editors[editor];
-            file.data = obj.editorJs.getValue();
-            file.name = obj.name;
-            file.path = obj.path;
-            
-            // kill element in JSON
-            editorData.editors.splice(editor, 1);
-            break;
-        }
-    }
-    console.log(file);
+    file.data = editor.getValue();
+    file.path = path;
     var rq = { "request": "saveFile", "data":file};
     editorSocket.send(JSON.stringify(rq));
-    
-    renderEditors();
-    refreshEditors();
-    updateEditorHeight();
 }
-
-/**
- * Save all opened files on the server. This is used 
- * when launching play or passing to preview mode
- */
-function saveAll() {
-    
-    var file = {};
-    
-    for (var editor in editorData.editors) {
-        
-        var obj = editorData.editors[editor];
-        file.data = obj.editorJs.getValue();
-        file.name = obj.name;
-        file.path = obj.path;
-        
-        var rq = { "request": "saveFile", "data":file};
-        editorSocket.send(JSON.stringify(rq));
-    }
-}
-
 
 /**
  * Auto save if there were changes
@@ -365,25 +334,6 @@ function updateFileTree(data) {
     
 }
 
-function updateStatus(data) {
-    window.top.setStatus(null, data.status);
-}
-
-function updateConsoleOutput(data) {
-    var stdout = data.data;
-    $('#consoleOutput').append(stdout + "<br>");
-}
-
-function updateConsoleError(data) {
-    var stderr = data.data;
-    $('#consoleOutput').append("<a id='stderr'>" + stderr + "<br></a>");
-}
-
-function updateConsoleSys(data) {
-    var sys = data.data;
-    $('#consoleOutput').append("<a id='sys'>" + sys + "<br></a>");
-}
-
 
 function fixedCollapsing(showMe, data) {
     // Open new element and hide others
@@ -457,6 +407,29 @@ function insertNewStrip(data) {
      
 }
 
+
+function updateStatus(data) {
+    console.log(data);
+    window.top.setStatus(null, data.status);
+}
+
+function updateConsoleOutput(data) {
+    var stdout = data.data;
+    $('#consoleOutput').append(stdout + "<br>");
+}
+
+function updateConsoleError(data) {
+    var stderr = data.data;
+    $('#consoleOutput').append("<a id='stderr'>" + stderr + "<br></a>");
+}
+
+function updateConsoleSys(data) {
+    var sys = data.data;
+    $('#consoleOutput').append("<a id='sys'>" + sys + "<br></a>");
+}
+
+
+
 function refreshFiles(data) {
     updateStatus(data);
     // refresh html filetree 
@@ -471,39 +444,34 @@ function fileRemoved(data) {
     editorSocket.send(JSON.stringify(rq));
     
     // delete strip if opened
-    filename = data.path;
-    fileId = 0;
-    // check if file is already opened
-    var exists = false;
-    for (var editor in editorData.editors) {
-        if (filename==editorData.editors[editor].path) {
-            exists = true;
-            fileId = editorData.editors[editor].id;
-            break;
-        } else {
-            exists = false;
-        }
-    }
-    
-    if (exists==true) {
-        
-        for (var editor in editorData.editors) {
-            if (editorData.editors[editor].id==fileId) {
-                // kill element in JSON
-                editorData.editors.splice(editor, 1);
-                break;
-            }
-        }
-        
-        renderEditors();
-        refreshEditors();
-        updateEditorHeight();
-    } 
-    
-    
-
-    
-    
+//    filename = data.path;
+//    fileId = 0;
+//    // check if file is already opened
+//    var exists = false;
+//    for (var editor in editorData.editors) {
+//        if (filename==editorData.editors[editor].path) {
+//            exists = true;
+//            fileId = editorData.editors[editor].id;
+//            break;
+//        } else {
+//            exists = false;
+//        }
+//    }
+//    
+//    if (exists==true) {
+//        
+//        for (var editor in editorData.editors) {
+//            if (editorData.editors[editor].id==fileId) {
+//                // kill element in JSON
+//                editorData.editors.splice(editor, 1);
+//                break;
+//            }
+//        }
+//        
+//        renderEditors();
+//        refreshEditors();
+//        updateEditorHeight();
+//    } 
 }
 
 
