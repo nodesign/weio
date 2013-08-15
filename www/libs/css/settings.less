@@ -1,0 +1,41 @@
+/* Import Twitter bootstrap
+ */
+@import "../bootstrap/css/bootstrap.css";
+
+@settingsZoneColor: #D8D8D8;
+@leftSideBarWidth: 200px;
+
+body {
+    background-color:@settingsZoneColor;
+    height:100%;
+    
+    .columns {
+        position:relative;
+        width:100%;
+        height:100%;
+        
+        
+        .leftSideBar {
+            width:@leftSideBarWidth;
+            position:fixed;
+            height:100%;
+            left:0;
+            top:0;
+            .well {
+                border-radius:0px;
+                height:100%;
+            }
+
+        }
+        
+        .settingsContainer {
+            position:fixed;
+            left:@leftSideBarWidth;
+            right:0;
+            height:100%;
+            margin-left:15px;
+        }
+    }
+    
+}
+
