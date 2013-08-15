@@ -140,6 +140,7 @@ body, div {
                   opacity: 0.7;
                   cursor: pointer;
                   text-decoration: none;
+                  z-index:1000;
                   &:hover {
                      opacity: 1; 
                   }   
@@ -244,6 +245,20 @@ body, div {
     }
     
 }
+/*////////////////////////////*/
+#codeEditorAce {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display:none;
+}
+.accordion-inner {
+    min-height:400px;
+    box-sizing:border-box;
+}
+
 
 /* CSS Tree menu styles */
 ol.tree

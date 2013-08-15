@@ -1,15 +1,17 @@
-/**
- * JSON file, entering point for editors and tree - list of files
+/*
+ * ACE Editor, there is only one editor that travels thru DOM space
+ * It appears at good strip at good time
+ * Only thing that is change is Ace Session inside editor
  */
-var editorData = {editors:[]};
+var editor;
 
-/* EXAMPLE
-var editorData = {
-editors:[
-{name:"weioMain.py", id:"0", type : "python", data : "a = 10"}
-]
-};
-*/
+
+/*
+ * Array of opened file names
+ * String array of absolut paths
+ */
+var currentlyOpened = [];
+
 
 /*
  * When all DOM elements are fully loaded
@@ -31,8 +33,6 @@ $(document).ready(function () {
      */
     var closedSideBarWidth = "15px";
 
-    
-    initEditor();
     updateConsoleHeight();
 
     $("#leftSideBarButton").click(function(){
@@ -95,7 +95,39 @@ $(document).ready(function () {
                 
    
     
-   window.setInterval("autoSave()",autoSaveInterval); 
+   //window.setInterval("autoSave()",autoSaveInterval); 
+   
+                  
+  $('.accordion').click(function(e){
+                        
+        if ($(e.target).hasClass('icon-remove')){
+            
+            // Get Id from file
+            var currentStrip = $($(e.target).parents('.accordion-group')).attr('id');
+                        
+            var killIndex = $.inArray(currentStrip, currentlyOpened);
+                        
+            currentlyOpened.splice(currentlyOpened.indexOf(currentStrip),1);
+
+            
+                        
+                        
+            // save editor in safe house before
+            $('#codeEditorAce').hide();
+            $(".safeHome").html('').append($('#codeEditorAce'));
+            
+            
+            //console.log($(e.target).parents('.accordion-group'), $(e.target).parent('.accordion-group'));
+            
+            $(e.target).parents('.accordion-group').remove();
+        
+        }
+    });
+                  
+
+  // Ace editor creation
+  createEditor();
+  
     
    //console.log(window.innerHeight); 
    //console.log(editorData.editors.length);
@@ -104,27 +136,41 @@ $(document).ready(function () {
 }); /* end of document on ready event */
 
 
+function createEditor(){
+    editor = ace.edit("codeEditorAce");
+    editor.setTheme("ace/theme/dawn");
+    editor.getSession().setMode("ace/mode/javascript");
+    editor.setValue("", 0);
+    editor.setFontSize("11px");
+    
+    editor.getSession().setTabSize(4);
+    editor.getSession().setUseSoftTabs(true);
+    editor.getSession().setUseWrapMode(true);
+    editor.setShowPrintMargin(false);
+    
+    editor.gotoLine(0);
+}
+
+function scaleIt(){
+    var bigH = $(document).height();
+    var hOthers = 0;
+    
+    var f = bigH - 60 - (38 * $('.accordion-group').length);
+    
+    // Stavljamo visinu editora
+    $('.accordion-inner').height(f-19);
+    
+    // Resize
+    $(editor).resize();
+}
+
+
+
 $(window).resize(function() {
-   updateEditorHeight();
+   
    updateConsoleHeight();
 });
 
-
-/**
- * Can be recalled when adding a new stripe to recalculate max height value
- */
-function updateEditorHeight() {
-
-    // Get windows size, get number of collapse elements and calculate maximum height to fill the column
-    var viewportHeight = $(window).height();
-
-    var numRows = $('.codebox').length;
-    var finalheight = viewportHeight - (numRows  * 40) - (numRows * 15) - 15;
-    $('.code_wrap').css('min-height', finalheight);
-   // console.log("rows : " + numRows + " array elements " + viewportHeight + " viewport height " + finalheight + " calculated height");
-    // $('.fullheight').css('height', widgetheight);
-    // $('#consoleAccordion').css('max-height', viewportHeight - (2  * 40) - 75);
-}
 
 function updateConsoleHeight() {
     var viewportHeight = $(window).height();
@@ -134,15 +180,6 @@ function updateConsoleHeight() {
 function play() {
     var rq = { "request": "play"};
     editorSocket.send(JSON.stringify(rq));
-}
-
-
-/**
- * Renderer Editors
- * Call this function each time when change occurs in editors that has to be rendered
- */
-function renderEditors() {
-    $('div.accordion').render(editorData, compiledEditor);
 }
 
 
@@ -160,115 +197,11 @@ var autoSaveInterval = 4000;
  */
 var codeHasChanged = false;
 
-/**
- * Stores compiled template that can be rendered with JSON file
- * to re-render just call renderEditor(), compilation occurs only one inside
- * ready function
- */
-var compiledEditor;
-
-/**
- * Directive for templating editors with Pure JS
- */
-var directiveEditors = {
-    'div.accordion-group' :{
-        'editor<-editors' : {
-            'a.accordion-toggle' : 'editor.name',
-            'a.accordion-toggle@href' : function getter(arg) {return '#'+ arg.item.id;},
-            'div.accordion-body@id' : 'editor.id',
-            'div.editor@id' : 'editor.name',
-
-            // save button
-            //'i.icon-download-alt@onclick' : function getter(arg) {return "save('" + arg.item.name + "')"},
-
-            //playStopButton
-            // '#playStopButton@style' : function getter(arg) {return (arg.item.name == "weioMain.py") ? "display:true;" : "display:none;"},
-            // close button
-            'i.icon-remove@onclick' : function getter(arg) {return "saveAndClose('" + arg.item.id + "')"},
-
-            /*
-            'i.icon-remove@onclick' : function getter(arg) {return "prepareToClose('" + arg.item.name + "')"},
-
-// modals
-'h3.removeModalPhrase' : function getter(arg) {return 'Close file ?';},
-'p.removeModalPhrase' : function getter(arg) {return 'Do you want to save the changes you made in the current document ?';},
-'button.btn-primary@onclick' : function getter(arg) {return "saveAndClose(true)"},
-'#dontSave@onclick' : function getter(arg) {return "saveAndClose(false)";}
- */
-}
-
-}
-};
-
 
 function clearConsole() {
     $('#consoleOutput').empty();
 }
 
-function initEditor() {
-    // EDITOR ZONE
-    updateEditorHeight();
-    compiledEditor = $('div.accordion').compile(directiveEditors);
-    renderEditors();
-    //insertEditors();
-
-    // collapseAllExceptFocusedOne();
-
-    // FILE TREE SIDEBAR ZONE
-    // compiledTree = $('ol.tree').compile(directiveFileTree);
-    // renderFileTree();    
-}
-
-/**
- * Inserts existing editor in new strip if file is on the server
- * It asks server to send file. As server response insertNewEditor 
- * is called
- */ 
-
-function addNewEditorStrip(filename) {
-
-    // check if file is already opened
-    var exists = false;
-    for (var editor in editorData.editors) {
-        if (filename==editorData.editors[editor].path) {
-            exists = true;
-            break;
-        } else {
-            exists = false;
-        }
-    }
-    
-    // if file don't exists in the list than add it
-    if (exists==false) {
-        // send request to server to get raw file content
-        // jump to section onmessage to see what happens
-        var rq = { "request": "getFile", "data":filename};
-        editorSocket.send(JSON.stringify(rq));
-    } 
-  
-    
-
-    // in every case, put focus on that file
-    //    focusedOne = newData.name;
-    //    collapseAllExceptFocusedOne();
-}
-
-
-/**
- * Collapse all strips except one, that is focused. focusedOne is variable that stores
- * focused strip index in editorData.editors array
- */
-
-function collapseAllExceptFocusedOne(id) {
-
-    for (var editor in editorData.editors) {
-        if (editorData.editors[editor].name!=id) {
-            var name = editorData.editors[editor].name;
-            $('#' + name).collapse("hide");
-        } 
-    }
-
-}
 
 /**
  * Save file on the server and close strip. 
@@ -327,39 +260,6 @@ function autoSave() {
     if (codeHasChanged) saveAll();
     codeHasChanged = false;
 }
-
-function refreshEditors() {
-   
-    for (var i=0; i<editorData.editors.length;i++) {
-        
-        
-        var editor = ace.edit(editorData.editors[i].name);
-        editor.setTheme("ace/theme/dawn");
-        editor.getSession().setMode("ace/mode/" + editorData.editors[i].type);
-        editor.setValue(editorData.editors[i].data, 0);
-        editor.setFontSize("11px");
-        
-        editor.getSession().setTabSize(4);
-        editor.getSession().setUseSoftTabs(true);
-        editor.getSession().setUseWrapMode(true);
-        editor.setShowPrintMargin(false);
-        
-        editor.gotoLine(0);
-        
-        //editor.renderer.onResize(true);
-        //editor.resize();
-        //$(editor).resize();
-        //$('#' + editorData.editors[i].name).resize();
-        
-        editor.getSession().on('change', function() {
-            codeHasChanged = true;
-        });
-        
-        editorData.editors[i]["editorJs"] = editor;
-    }
-    
-}
-
 
 /*
  * MODAL CREATE NEW FILE
@@ -437,9 +337,32 @@ var callbacksEditor = {
 
 /*
  * Insterts HTML code for file tree into sidebar
+ * Attaches tree event listener
  */
 function updateFileTree(data) {
     $("#tree").html(data.data);
+    
+    // Events for tree
+    $('.tree li.file a').click(function(){
+       
+       // Where we clicked?                       
+       var idEl = $('.tree a.fileTitle').toArray().indexOf(this);
+       
+       // Path extraction                        
+       var path = $(this).attr('id');
+                               
+       // Adding strip if don't exists already
+       if ($.inArray(path, currentlyOpened)<0){
+                               
+           // asks server to retreive file that we are intested in
+           var rq = { "request": "getFile", "data":path};
+           editorSocket.send(JSON.stringify(rq));
+                               
+           // It's more sure to add to currentlyOpened array from
+           // websocket callback than here in case that server don't answer
+       }
+   });
+    
 }
 
 function updateStatus(data) {
@@ -462,24 +385,76 @@ function updateConsoleSys(data) {
 }
 
 
+function fixedCollapsing(showMe, data) {
+    // Open new element and hide others
+    
+    // Collapse all
+    $('.accordion-group').each(function(index, element) {
+                               if ($(element).find('.collapse').hasClass('in')){
+                               $(element).find('.collapse').collapse('hide');
+                               }
+                               });
+    
+    // Hidding inner div
+    $(showMe).find('.collapse').on('show', function () {
+                               $(showMe).find('.accordion-inner').animate({opacity:0},300,'linear',function(){
+                                                                      editor.setValue(data.data.data);
+                                                                      editor.getSession().setMode("ace/mode/"+ data.data.type);
+                                                                      
+                                                                      editor.gotoLine(0);
+                                                                      
+                                                                      });
+                               })
+    
+    // Showing inner div and inserting editor
+    $(showMe).find('.collapse').on('shown', function () {
+                               $('#codeEditorAce').appendTo($(showMe).find('.accordion-inner'));
+                               scaleIt();
+                               $(showMe).find('.accordion-inner').animate({opacity:1},300,'linear');
+                               })
+    
+    // Showing accordion
+    $(showMe).find('.collapse').collapse('show');
+}
+
+/**
+ * Inserts existing editor in new strip if file is on the server
+ */ 
+
 function insertNewStrip(data) {
 
     // it has been already checked if this file already exists
     // so just insert it straight
+    
+    var title = data.data.name;
+    idEl = data.data.id;
 
-    fileInfo = data.data;
-    editorData.editors.push(fileInfo);
     
-    renderEditors();
-    refreshEditors();
-    updateEditorHeight();
+    // Element
+    var el = $('<div />').html('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a role="button" id="closeButton"><i class="icon-remove"></i></a></div></div><div id="'+'acc_'+idEl+'" class="accordion-body collapse"><div class="accordion-inner"></div></div>').addClass('accordion-group').attr("id", data.data.path);
     
-    //console.log = (editorData);
+    // Add new strip here
+    $('#accordion2').append(el);
     
-    $('#' + fileInfo.id).collapse("show");
-    $('#' + fileInfo.id).css("height", "100%");
+   
+    fixedCollapsing(el,data);
     
+    
+    $('.accordion-toggle').click(function(){
+                                 fixedCollapsing(this, data);
+                                 });    
  
+    // add to array of current opened files
+    currentlyOpened.push(data.data.path);
+    
+    if (currentlyOpened.length == 1){
+        $(el).find('.accordion-inner').html('').append($('#codeEditorAce'));
+        $('#codeEditorAce').css({'display':'block'});
+    }
+    
+    // Update height
+    scaleIt();
+     
 }
 
 function refreshFiles(data) {
