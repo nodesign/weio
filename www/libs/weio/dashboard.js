@@ -87,7 +87,15 @@ function runPreview() {
      $("#previewButtonHeader").attr("class", "top_tab active");
 }
 
+/*
+ * Run settings mode
+ */
 
+function runSettings() {
+    $(".iframeContainer").attr("src", "settings.html");
+    $("#editorButtonHeader").attr("class", "top_tab");
+    $("#previewButtonHeader").attr("class", "top_tab");
+}
 
 /**
  * Sets coresponding icon and message inside statusBar in the middle of header. 
