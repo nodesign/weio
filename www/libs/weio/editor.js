@@ -5,12 +5,11 @@
  */
 var editor;
 
-
 /*
- * Array of opened file names
- * String array of absolut paths
+ * Data related to files that are opened
+ * name, type, data, id, path
  */
-var currentlyOpened = [];
+var editorsInStack = [];
 
 /*
  * Current focused file
@@ -101,7 +100,7 @@ $(document).ready(function () {
                 
    
     
-   //window.setInterval("autoSave()",autoSaveInterval); 
+   window.setInterval("autoSave()",autoSaveInterval); 
    
                   
   $('.accordion').click(function(e){
@@ -112,16 +111,27 @@ $(document).ready(function () {
             // Get Id from file
             var currentStrip = $($(e.target).parents('.accordion-group')).attr('id');
                         
-            var killIndex = $.inArray(currentStrip, currentlyOpened);
+            //var killIndex = $.inArray(currentStrip, currentlyOpened);
                         
-            currentlyOpened.splice(currentlyOpened.indexOf(currentStrip),1);
+            //currentlyOpened.splice(currentlyOpened.indexOf(currentStrip),1);
+                        
+
+            for (var i in editorsInStack) {
+                        
+                        if (editorsInStack[i].path == currentStrip) {
+                            editorsInStack[i].data = editor.getValue();
+                            saveFile(currentStrip);
+                            editorsInStack.splice(i,1);
+                            if (editorsInStack.length == 0) focusedFile = null;
+                            //console.log(editorsInStack[i].name);
+                            break;
+                        }
+            }
             
-            saveFile(currentStrip);
-                        
             // save editor in safe house before
-            $('#codeEditorAce').hide();
-            $(".safeHome").html('').append($('#codeEditorAce'));
             
+            $(".safeHome").html('').append($('#codeEditorAce'));
+            $(".safeHome").hide();
             
             //console.log($(e.target).parents('.accordion-group'), $(e.target).parent('.accordion-group'));
             
@@ -153,6 +163,18 @@ function createEditor(){
     editor.getSession().setUseSoftTabs(true);
     editor.getSession().setUseWrapMode(true);
     editor.setShowPrintMargin(false);
+    
+    editor.getSession().on('change', function() {
+                           codeHasChanged = true;
+                           var currentName = $("a.accordion-toggle").html();
+                           var o = getEditorObjectFromPath(focusedFile);
+                           if (o != null) {
+                            if (o.name == currentName) {
+                               // $("a.accordion-toggle").html(o.name+ "*");
+                            }
+                           }
+                  
+                        });
     
     editor.gotoLine(0);
 }
@@ -209,24 +231,60 @@ function clearConsole() {
 }
 
 
+function getEditorObjectFromPath(path) {
+    for (var i in editorsInStack) {
+        
+        if (editorsInStack[i].path == path) {
+            return editorsInStack[i];
+        }
+    }
+    return null;
+}
+
+function getEditorObjectFromAccId(accId) {
+    var id = accId.split("acc_");
+    
+    
+    for (var i in editorsInStack) {
+        
+        if (editorsInStack[i].id == parseInt(id[1])) {
+            return editorsInStack[i];
+        }
+    }
+    return null;
+     
+}
+
+
+
+function setEditorObjectToPath(path, obj) {
+    for (var i in editorsInStack) {
+        
+        if (editorsInStack[i].path == path) {
+            editorsInStack[i] = obj;
+            break;
+        }
+    }
+}
+
+
+
 /**
  * Save file on the server 
  */
 function saveFile(path) {
-    
-    var file = {};
-    
-    file.data = editor.getValue();
-    file.path = path;
-    var rq = { "request": "saveFile", "data":file};
+    var obj = getEditorObjectFromPath(path);
+    //console.log("SAVE " + obj.name);
+    var rq = { "request": "saveFile", "data":obj};
     editorSocket.send(JSON.stringify(rq));
+    
 }
 
 /**
  * Auto save if there were changes
  */
 function autoSave() {
-    if (codeHasChanged) saveAll();
+    if (codeHasChanged) saveFile(focusedFile);
     codeHasChanged = false;
 }
 
@@ -298,10 +356,20 @@ var callbacksEditor = {
     "stderr" : updateConsoleError,
     "sysConsole" : updateConsoleSys,
     "getFile": insertNewStrip,
-    "saveFile": updateStatus,
+    "saveFile": fileSaved,
     "createNewFile": refreshFiles,
     "deleteFile": fileRemoved,
    
+}
+
+function fileSaved(data) {
+    var o = getEditorObjectFromPath(focusedFile);
+    var currentName = $("a.accordion-toggle").html();
+    if (currentName.indexOf(o.name)!=-1) {
+      //  $("a.accordion-toggle").html(o.name);
+    }
+ 
+    updateStatus(data);
 }
 
 /*
@@ -319,9 +387,19 @@ function updateFileTree(data) {
        
        // Path extraction                        
        var path = $(this).attr('id');
+        
+       
+       var doesExist = false;
                                
        // Adding strip if don't exists already
-       if ($.inArray(path, currentlyOpened)<0){
+       for (var i in editorsInStack) {
+       
+       if (editorsInStack[i].path == path) {
+                   doesExist = true;
+            }
+       }
+
+       if (!doesExist){
                                
            // asks server to retreive file that we are intested in
            var rq = { "request": "getFile", "data":path};
@@ -335,7 +413,7 @@ function updateFileTree(data) {
 }
 
 
-function fixedCollapsing(showMe, data) {
+function fixedCollapsing(showMe) {
     // Open new element and hide others
     
     // Collapse all
@@ -348,10 +426,20 @@ function fixedCollapsing(showMe, data) {
     // Hidding inner div
     $(showMe).find('.collapse').on('show', function () {
                                $(showMe).find('.accordion-inner').animate({opacity:0},300,'linear',function(){
-                                                                      editor.setValue(data.data.data);
-                                                                      editor.getSession().setMode("ace/mode/"+ data.data.type);
-                                                                      
-                                                                      editor.gotoLine(0);
+                                                                      //Get coresponding data and put to editor
+                                                                      var acc_id = $($(this).parents('.accordion-body')).attr('id');
+                                                                      var o = getEditorObjectFromAccId(acc_id);
+                                                                          //console.log("MMM ", $($(this).parents('.accordion-body')));
+                                                                      //   console.log("DATA " , o);
+                                                                      if (o!=null) {
+                                                                          editor.setValue(o.data);
+                                                                          editor.getSession().setMode("ace/mode/"+ o.type);
+                                                                          
+                                                                          editor.gotoLine(0);
+                                                                          focusedFile = o.path;
+                                                                      }
+                                                                           
+                                                                          //console.log("SHOW");
                                                                       
                                                                       });
                                })
@@ -361,7 +449,29 @@ function fixedCollapsing(showMe, data) {
                                $('#codeEditorAce').appendTo($(showMe).find('.accordion-inner'));
                                scaleIt();
                                $(showMe).find('.accordion-inner').animate({opacity:1},300,'linear');
+                                  // console.log("SHOWN");
                                })
+    
+    // Showing inner div and inserting editor
+    $(showMe).find('.collapse').on('hide', function () {
+                                   // Get contents and put to array
+                                   var path = $(this).parent().attr('id');
+                                   
+                                   //console.log("GGGGGGGG ", $(this).parent().attr('id'));
+                                   var o = getEditorObjectFromPath(path);
+
+                                   if (o != null) {
+                                    o.data = editor.getValue();
+                                    setEditorObjectToPath(path, o);
+                                    saveFile(path);
+                                   }
+                                   $('#codeEditorAce').appendTo($(showMe).find('.accordion-inner'));
+                                   scaleIt();
+                                   $(showMe).find('.accordion-inner').animate({opacity:1},300,'linear');
+                                  
+                                   //console.log("HIDE");
+                                    })
+
     
     // Showing accordion
     $(showMe).find('.collapse').collapse('show');
@@ -373,6 +483,17 @@ function fixedCollapsing(showMe, data) {
 
 function insertNewStrip(data) {
 
+    var e = {};
+    e.data = data.data.data;
+    e.name = data.data.name;
+    e.path = data.data.path;
+    e.type = data.data.type;
+    e.id = data.data.id;
+    
+    // add to array of current opened files
+    
+    editorsInStack.push(e);
+
     // it has been already checked if this file already exists
     // so just insert it straight
     
@@ -381,23 +502,23 @@ function insertNewStrip(data) {
 
     
     // Element
-    var el = $('<div />').html('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a role="button" id="closeButton"><i class="icon-remove"></i></a></div></div><div id="'+'acc_'+idEl+'" class="accordion-body collapse"><div class="accordion-inner"></div></div>').addClass('accordion-group').attr("id", data.data.path);
+    var el = $('<div />').html('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a role="button" id="closeButton"><i class="icon-remove"></i></a></div></div><div id="acc_'+idEl+'" class="accordion-body collapse"><div class="accordion-inner"></div></div>').addClass('accordion-group').attr("id", data.data.path);
     
     // Add new strip here
     $('#accordion2').append(el);
     
    
-    fixedCollapsing(el,data);
+    fixedCollapsing(el);
     
     
     $('.accordion-toggle').click(function(){
-                                 fixedCollapsing(this, data);
+                                 fixedCollapsing(this);
                                  });    
  
-    // add to array of current opened files
-    currentlyOpened.push(data.data.path);
+    //currentlyOpened.push(data.data.path);
     
-    if (currentlyOpened.length == 1){
+        
+    if (editorsInStack.length == 1){
         $(el).find('.accordion-inner').html('').append($('#codeEditorAce'));
         $('#codeEditorAce').css({'display':'block'});
     }
@@ -409,7 +530,7 @@ function insertNewStrip(data) {
 
 
 function updateStatus(data) {
-    console.log(data);
+//    console.log(data);
     window.top.setStatus(null, data.status);
 }
 

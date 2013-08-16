@@ -361,7 +361,7 @@ class WeioDashBoardHandler(SockJSConnection):
         f = rq['data']
         weioFiles.saveRawContentToFile(f['path'], f['data']);
         
-        data['status'] = "Saved!"
+        data['status'] = rq['data']['name'] + " saved!"
         self.send(json.dumps(data))
         
     def createNewFile(self, rq): 
