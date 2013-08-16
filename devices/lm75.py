@@ -41,44 +41,46 @@ from fcntl import ioctl
 import struct
 import platform
 
-# i2c device address
-deviceAddress = 0x4f
-# set instruction to get temperature - 0x0 to get temperature
-inst = struct.pack('B', 0x0)
+class lm75:
 
-# file path
-filePath = "/dev/i2c-0"
+    # i2c device address
+    deviceAddress = 0x4f
+    # set instruction to get temperature - 0x0 to get temperature
+    inst = struct.pack('B', 0x0)
 
-# from i2c-dev.h
-I2C_SLAVE = 0x0703
+    # file path
+    filePath = "/dev/i2c-0"
 
-# file descriptor
-global f
+    # from i2c-dev.h
+    I2C_SLAVE = 0x0703
 
-def __init__():
-   
-    if (platform.machine() == 'mips') :
-        global f    
-        # open file
-        f = open(filePath, "r+")
+    # file descriptor
+    global f
 
-        # set device address
-        ioctl(f, I2C_SLAVE, 0x4f)
-    
-def getTemperature():
-    if (platform.machine() == 'mips') :
-        # ask for a temperature
-        f.write(inst)
+    def __init__(self):
+       
+        if (platform.machine() == 'mips') :
+            global f    
+            # open file
+            f = open(filePath, "r+")
 
-        # get two bytes as result
-        rcv = f.read(2)
-    
-        # do data conversion see LM75B datasheet
-        temp  = struct.unpack('B', rcv[0])[0] << 8
-        temp |= struct.unpack('B', rcv[1])[0]
+            # set device address
+            ioctl(f, I2C_SLAVE, 0x4f)
+        
+    def getTemperature(self):
+        if (platform.machine() == 'mips') :
+            # ask for a temperature
+            f.write(inst)
 
-        temp >>= 5
-        return float(temp)*0.125
-    else :
-        print "This is fake temperature 25.123, only for testing purposes on this architecture"
-        return 25.123
+            # get two bytes as result
+            rcv = f.read(2)
+        
+            # do data conversion see LM75B datasheet
+            temp  = struct.unpack('B', rcv[0])[0] << 8
+            temp |= struct.unpack('B', rcv[1])[0]
+
+            temp >>= 5
+            return float(temp)*0.125
+        else :
+            print "This is fake temperature 25.123, only for testing purposes on this architecture"
+            return 25.123
