@@ -15,7 +15,7 @@ var editorsInStack = [];
  * Current focused file
  * String variable that contains file path
  */
-var focusedFile = "";
+var focusedFile = null;
 
 
 /*
@@ -279,6 +279,19 @@ function saveFile(path) {
     editorSocket.send(JSON.stringify(rq));
     
 }
+
+/**
+ * Save focused file on the server 
+ */
+function saveFocusedFile() {
+    if (focusedFile!=null) {
+        var obj = getEditorObjectFromPath(focusedFile);
+        //console.log("SAVE " + obj.name);
+        var rq = { "request": "saveFile", "data":obj};
+        editorSocket.send(JSON.stringify(rq));
+    }
+}
+
 
 /**
  * Auto save if there were changes

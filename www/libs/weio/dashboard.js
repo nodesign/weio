@@ -115,7 +115,7 @@ function setStatus(icon, message) {
 }
 
 function play(){
-    document.getElementById("weioIframe").contentWindow.saveAll();
+    document.getElementById("weioIframe").contentWindow.saveFocusedFile();
     document.getElementById("weioIframe").contentWindow.play();
     
     //var rq = { "request": "play"};
