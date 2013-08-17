@@ -3,7 +3,6 @@ import sys
 
 sys.path.append(r'./')
 from weioLib.weioUserApi import *
-from devices import waelice
 
 # Simple standalone application, no web interface
 # Reads digital potentiometer from A0 pin to blink LED slower or

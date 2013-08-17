@@ -91,7 +91,7 @@
       <script>
             var bodyStyle = $('body')[0].style;
               $('#cp4').colorpicker({
-    			format: 'rgb'
+				format: 'rgb'
 			}).on('changeColor', function(ev){
 				bodyStyle.backgroundColor = ev.color.toHex();
 				console.log(ev.color.toRGB().r + " " + ev.color.toRGB().g + " " + ev.color.toRGB().b);

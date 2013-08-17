@@ -63,9 +63,9 @@ $(document).ready(function () {
             $("#leftSideBarButton i").attr("class", "icon-chevron-left");
             $(".tree").show();
             $(".bottomButtons").show();
-           
         }
-        
+      scaleIt();
+                                  
         
     });
 
@@ -94,14 +94,14 @@ $(document).ready(function () {
             
         }
         
-            
+       scaleIt();
+                                   
 
     });
                 
-   
-    
-   window.setInterval("autoSave()",autoSaveInterval); 
-   
+      
+   //window.setInterval("autoSave()",autoSaveInterval); 
+                   
                   
   $('.accordion').click(function(e){
         
@@ -136,6 +136,7 @@ $(document).ready(function () {
             //console.log($(e.target).parents('.accordion-group'), $(e.target).parent('.accordion-group'));
             
             $(e.target).parents('.accordion-group').remove();
+            focusedFile==null;
         
         }
     });
@@ -150,6 +151,7 @@ $(document).ready(function () {
   //window.top.setStatus(null, "Gimme some good code!");
    
 }); /* end of document on ready event */
+
 
 
 function createEditor(){
@@ -195,7 +197,7 @@ function scaleIt(){
 
 
 $(window).resize(function() {
-   
+                 scaleIt();
    updateConsoleHeight();
 });
 
@@ -376,11 +378,11 @@ var callbacksEditor = {
 }
 
 function fileSaved(data) {
-    var o = getEditorObjectFromPath(focusedFile);
-    var currentName = $("a.accordion-toggle").html();
-    if (currentName.indexOf(o.name)!=-1) {
+//    var o = getEditorObjectFromPath(focusedFile);
+//    var currentName = $("a.accordion-toggle").html();
+//    if (currentName.indexOf(o.name)!=-1) {
       //  $("a.accordion-toggle").html(o.name);
-    }
+//    }
  
     updateStatus(data);
 }
@@ -393,36 +395,82 @@ function updateFileTree(data) {
     $("#tree").html(data.data);
     
     // Events for tree
-    $('.tree li.file a').click(function(){
-       
-       // Where we clicked?                       
-       var idEl = $('.tree a.fileTitle').toArray().indexOf(this);
-       
-       // Path extraction                        
-       var path = $(this).attr('id');
-        
-       
-       var doesExist = false;
-                               
-       // Adding strip if don't exists already
-       for (var i in editorsInStack) {
-       
-       if (editorsInStack[i].path == path) {
-                   doesExist = true;
-            }
-       }
-
-       if (!doesExist){
-                               
-           // asks server to retreive file that we are intested in
-           var rq = { "request": "getFile", "data":path};
-           editorSocket.send(JSON.stringify(rq));
-                               
-           // It's more sure to add to currentlyOpened array from
-           // websocket callback than here in case that server don't answer
-       }
-   });
     
+    $('.tree').click(function(e){
+                              //     console.log($(this).parents());                      
+                                   // prepareToDeleteFile  
+                     
+         if ($(e.target).hasClass('icon-remove')){
+                     // kill existing file
+                     
+                     
+                     console.log("GORCHAAA");
+         } else if ($(e.target).hasClass('fileTitle')) {
+                            
+               // Path extraction                        
+               var path = $(e.target).attr('id');
+               //console.log(path);
+                
+               var doesExist = false;
+                                       
+               // Adding strip if don't exists already
+               for (var i in editorsInStack) {
+               
+               if (editorsInStack[i].path == path) {
+                           doesExist = true;
+                    }
+               }
+
+               if (!doesExist){
+                                       
+                   // asks server to retreive file that we are intested in
+                   var rq = { "request": "getFile", "data":path};
+                   editorSocket.send(JSON.stringify(rq));
+                                       
+                   // It's more sure to add to currentlyOpened array from
+                   // websocket callback than here in case that server don't answer
+               }
+      
+        }
+                                   
+    });
+//    
+//
+//    
+//    
+//    $('.tree li.file a.fileTitle').click(function(){
+//       
+//       // Where we clicked?                       
+//       var idEl = $('.tree a.fileTitle').toArray().indexOf(this);
+//       
+//       // Path extraction                        
+//       var path = $(this).attr('id');
+//        
+//       
+//       var doesExist = false;
+//                               
+//       // Adding strip if don't exists already
+//       for (var i in editorsInStack) {
+//       
+//       if (editorsInStack[i].path == path) {
+//                   doesExist = true;
+//            }
+//       }
+//
+//       if (!doesExist){
+//                               
+//           // asks server to retreive file that we are intested in
+//           var rq = { "request": "getFile", "data":path};
+//           editorSocket.send(JSON.stringify(rq));
+//                               
+//           // It's more sure to add to currentlyOpened array from
+//           // websocket callback than here in case that server don't answer
+//       }
+//   });
+//    
+    
+    
+       
 }
 
 
