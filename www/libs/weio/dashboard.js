@@ -49,6 +49,13 @@ $(document).ready(function () {
     
 }); /* end of document on ready event */
 
+/*
+ * isEditorActive
+ */
+var isEditorActive = null;
+
+
+
 $(window).resize(function() {
    updateIframeHeight();
    $('#weioIframe').find('#tree').empty();
@@ -73,7 +80,7 @@ function runEditor() {
  * Run preview mode
  */
 function runPreview() {
-    document.getElementById("weioIframe").contentWindow.saveAll();
+    document.getElementById("weioIframe").contentWindow.saveFocusedFile();
     var confFile = "";
     
        $.getJSON('config.json', function(data) {
@@ -115,11 +122,8 @@ function setStatus(icon, message) {
 }
 
 function play(){
-    document.getElementById("weioIframe").contentWindow.saveFocusedFile();
-    document.getElementById("weioIframe").contentWindow.play();
-    
-    //var rq = { "request": "play"};
-    //dashboard.send(JSON.stringify(rq));
+    var rq = { "request": "play"};
+    dashboard.send(JSON.stringify(rq));
 }
 
 function stop(){
@@ -133,11 +137,22 @@ function changeProject(path) {
 }
 
 function updateConsoleSys(data) {
-    document.getElementById("weioIframe").contentWindow.updateConsoleSys(data);
+    if (isEditorActive) 
+        document.getElementById("weioIframe").contentWindow.updateConsoleSys(data);
+}
+
+function updateConsoleOutput(data) {
+    if (isEditorActive)
+        document.getElementById("weioIframe").contentWindow.updateConsoleOutput(data);
+}
+
+function updateConsoleError(data) {
+    if (isEditorActive)
+        document.getElementById("weioIframe").contentWindow.updateConsoleError(data);
 }
 
 
-//CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////
+//CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////x  
 /**
  * Define callbacks here and request keys
  * Each key is binded to coresponding function
@@ -152,6 +167,8 @@ var callbacks = {
     "changeProject":reloadIFrame,
     "getUser": updateUserData,
     "sysConsole" : updateConsoleSys,
+    "stdout" : updateConsoleOutput,
+    "stderr" : updateConsoleError,
     
 }
 
@@ -233,7 +250,7 @@ dashboard.onopen = function() {
     console.log('Dashboard Web socket is opened');
     // turn on green light if connected
     // get ip address
-    
+    isEditorActive = true;
     var rq = { "request": "getIp"};
     dashboard.send(JSON.stringify(rq));
     
@@ -244,6 +261,9 @@ dashboard.onopen = function() {
     dashboard.send(JSON.stringify(rq));
     
     var rq = { "request": "getUser"};
+    dashboard.send(JSON.stringify(rq));
+    
+    var rq = { "request": "getPlatform"};
     dashboard.send(JSON.stringify(rq));
     
 };
@@ -279,5 +299,6 @@ dashboard.onmessage = function(e) {
 dashboard.onclose = function() {
     // turn on red light if disconnected
     console.log('Dashboard Web socket is closed');
+    isEditorActive = false;
     $("#status").attr("class", "disconnected");
 };

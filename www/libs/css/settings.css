@@ -2,7 +2,7 @@
 /* Import Twitter bootstrap
  */
 body {
-  background-color: #d8d8d8;
+  background-color: #ffffff;
   height: 100%;
 }
 body .columns {
@@ -22,8 +22,10 @@ body .columns .leftSideBar .well {
   height: 100%;
 }
 body .columns .settingsContainer {
+  overflow-y: scroll;
   position: fixed;
   left: 200px;
+  background-color: #FFF;
   right: 0;
   height: 100%;
   margin-left: 15px;

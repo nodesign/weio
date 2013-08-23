@@ -17,6 +17,17 @@ var editorsInStack = [];
  */
 var focusedFile = null;
 
+/*
+ * Tree interaction lock, avoid massive click and bugs
+ */
+var treeLock = false;
+
+/*
+ * Strip destroyer lock, avoid destruction before server finished 
+ * saving files, avoid file corruption
+ */
+var stripDestroyLock = false;
+
 
 /*
  * When all DOM elements are fully loaded
@@ -100,17 +111,19 @@ $(document).ready(function () {
     });
                 
       
-   //window.setInterval("autoSave()",autoSaveInterval); 
+  // window.setInterval("autoSave()",autoSaveInterval); 
                    
                   
   $('.accordion').click(function(e){
         
+    if (!stripDestroyLock) {
         // Remove strip                
         if ($(e.target).hasClass('icon-remove')){
-            
+            //console.log("fjdhsgjhfgsjkhfdgsjk");
             // Get Id from file
-            var currentStrip = $($(e.target).parents('.accordion-group')).attr('id');
-                        
+            var currentStrip = getEditorObjectFromParsedId("file_", $($(e.target).parents('.accordion-group')).attr('id'));
+            currentStrip = currentStrip.path;
+            //console.log("JHGJKHGJKKJGHKJHJGGHJK ", currentStrip);                        
             //var killIndex = $.inArray(currentStrip, currentlyOpened);
                         
             //currentlyOpened.splice(currentlyOpened.indexOf(currentStrip),1);
@@ -121,9 +134,12 @@ $(document).ready(function () {
                         if (editorsInStack[i].path == currentStrip) {
                             editorsInStack[i].data = editor.getValue();
                             saveFile(currentStrip);
+                            
                             editorsInStack.splice(i,1);
                             if (editorsInStack.length == 0) focusedFile = null;
                             //console.log(editorsInStack[i].name);
+                        
+                            
                             break;
                         }
             }
@@ -135,11 +151,69 @@ $(document).ready(function () {
             
             //console.log($(e.target).parents('.accordion-group'), $(e.target).parent('.accordion-group'));
             
+            //$(this).on("click",function(){return false;}); //KILL EVENTS.
             $(e.target).parents('.accordion-group').remove();
-            focusedFile==null;
+             
+            //focusedFile==null;
         
-        }
+        }   
+    }
+                        
     });
+                  
+                  
+                  
+                  // Events for tree
+                  
+      $('.tree').click(function(e){
+                       
+                       console.log(treeLock);
+            if (!treeLock) {
+                       //     console.log($(this).parents());                      
+                       // prepareToDeleteFile  
+                       
+                   if ($(e.target).hasClass('icon-remove')){
+                        // kill existing file
+                        console.log($(e.target).parents('li.file'));
+                           
+                           var m = $(e.target).parents('li.file');
+                           var path = $(m).children('a.fileTitle').attr('id');
+                           
+                           prepareToDeleteFile(path);
+                       
+                   } else if ($(e.target).hasClass('fileTitle')) {
+                           
+                       // Path extraction                        
+                       var path = $(e.target).attr('id');
+                       //console.log(path);
+                       
+                       var doesExist = false;
+                       
+                       // Adding strip if don't exists already
+                       for (var i in editorsInStack) {
+                       
+                           if (editorsInStack[i].path == path) {
+                               doesExist = true;
+                           }
+                       }
+                       
+                       if (!doesExist){
+                       
+                       // asks server to retreive file that we are intested in
+                       
+                       
+                           var rq = { "request": "getFile", "data":path};
+                           editorSocket.send(JSON.stringify(rq));
+                           treeLock = true; // LOCK TREE INTERACTION HERE
+                       
+                       // It's more sure to add to currentlyOpened array from
+                       // websocket callback than here in case that server don't answer
+                       }
+                       
+                   }
+           }
+                       
+   });
                   
 
   // Ace editor creation
@@ -167,15 +241,15 @@ function createEditor(){
     editor.setShowPrintMargin(false);
     
     editor.getSession().on('change', function() {
-                           codeHasChanged = true;
-                           var currentName = $("a.accordion-toggle").html();
-                           var o = getEditorObjectFromPath(focusedFile);
-                           if (o != null) {
-                            if (o.name == currentName) {
-                               // $("a.accordion-toggle").html(o.name+ "*");
-                            }
-                           }
-                  
+//                           codeHasChanged = true;
+//                           var o = getEditorObjectFromPath(focusedFile);
+//                           if (o != null) {
+//                               
+//                                $("#att_"+o.id).html(o.name+"*");
+//                           
+//                                
+//                           }
+                            
                         });
     
     editor.gotoLine(0);
@@ -207,10 +281,6 @@ function updateConsoleHeight() {
     $("#consoleOutput").css("height", viewportHeight-60);
 }
 
-function play() {
-    var rq = { "request": "play"};
-    editorSocket.send(JSON.stringify(rq));
-}
 
 
 
@@ -243,8 +313,8 @@ function getEditorObjectFromPath(path) {
     return null;
 }
 
-function getEditorObjectFromAccId(accId) {
-    var id = accId.split("acc_");
+function getEditorObjectFromParsedId(prefix, accId) {
+    var id = accId.split(prefix);
     
     
     for (var i in editorsInStack) {
@@ -269,17 +339,28 @@ function setEditorObjectToPath(path, obj) {
     }
 }
 
+function getFileIdFromPath(path) {
+    for (var i in editorsInStack) {
+        
+        if (editorsInStack[i].path == path) {
+            return editorsInStack[i].id;
+        }
+    }
+    return null;
+}
+
 
 
 /**
  * Save file on the server 
  */
 function saveFile(path) {
+    
     var obj = getEditorObjectFromPath(path);
     //console.log("SAVE " + obj.name);
     var rq = { "request": "saveFile", "data":obj};
     editorSocket.send(JSON.stringify(rq));
-    
+    stripDestroyLock = true; // ACTIVATE INTERACTION HALT
 }
 
 /**
@@ -359,6 +440,26 @@ function deleteFile() {
     toBeDeleted = "";
 }
 
+/*
+ * These functions will be called from dashboard
+ */
+function updateConsoleOutput(data) {
+    var stdout = data.data;
+    $('#consoleOutput').append(stdout + "<br>");
+}
+
+function updateConsoleError(data) {
+    var stderr = data.data;
+    $('#consoleOutput').append("<a id='stderr'>" + stderr + "<br></a>");
+}
+
+function updateConsoleSys(data) {
+    var sys = data.data;
+    $('#consoleOutput').append("<a id='sys'>" + sys + "<br></a>");
+}
+
+
+
 //CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * Define callbacks here and request keys
@@ -367,9 +468,9 @@ function deleteFile() {
 var callbacksEditor = {
     "getFileTreeHtml" : updateFileTree,
     "status" : updateStatus,
-    "stdout" : updateConsoleOutput,
-    "stderr" : updateConsoleError,
-    "sysConsole" : updateConsoleSys,
+    //"stdout" : updateConsoleOutput,
+    //"stderr" : updateConsoleError,
+    //"sysConsole" : updateConsoleSys,
     "getFile": insertNewStrip,
     "saveFile": fileSaved,
     "createNewFile": refreshFiles,
@@ -385,6 +486,7 @@ function fileSaved(data) {
 //    }
  
     updateStatus(data);
+    stripDestroyLock = false; // UNLOCK INTERACTION
 }
 
 /*
@@ -392,52 +494,10 @@ function fileSaved(data) {
  * Attaches tree event listener
  */
 function updateFileTree(data) {
+    
+    $("#tree").html();
     $("#tree").html(data.data);
-    
-    // Events for tree
-    
-    $('.tree').click(function(e){
-                              //     console.log($(this).parents());                      
-                                   // prepareToDeleteFile  
-                     
-         if ($(e.target).hasClass('icon-remove')){
-                     // kill existing file
-                     
-                     
-                     console.log("GORCHAAA");
-         } else if ($(e.target).hasClass('fileTitle')) {
-                            
-               // Path extraction                        
-               var path = $(e.target).attr('id');
-               //console.log(path);
-                
-               var doesExist = false;
-                                       
-               // Adding strip if don't exists already
-               for (var i in editorsInStack) {
-               
-               if (editorsInStack[i].path == path) {
-                           doesExist = true;
-                    }
-               }
-
-               if (!doesExist){
-                                       
-                   // asks server to retreive file that we are intested in
-                   var rq = { "request": "getFile", "data":path};
-                   editorSocket.send(JSON.stringify(rq));
-                                       
-                   // It's more sure to add to currentlyOpened array from
-                   // websocket callback than here in case that server don't answer
-               }
-      
-        }
-                                   
-    });
-//    
-//
-//    
-//    
+  
 //    $('.tree li.file a.fileTitle').click(function(){
 //       
 //       // Where we clicked?                       
@@ -489,7 +549,7 @@ function fixedCollapsing(showMe) {
                                $(showMe).find('.accordion-inner').animate({opacity:0},300,'linear',function(){
                                                                       //Get coresponding data and put to editor
                                                                       var acc_id = $($(this).parents('.accordion-body')).attr('id');
-                                                                      var o = getEditorObjectFromAccId(acc_id);
+                                                                      var o = getEditorObjectFromParsedId("acc_",acc_id);
                                                                           //console.log("MMM ", $($(this).parents('.accordion-body')));
                                                                       //   console.log("DATA " , o);
                                                                       if (o!=null) {
@@ -498,9 +558,11 @@ function fixedCollapsing(showMe) {
                                                                           
                                                                           editor.gotoLine(0);
                                                                           focusedFile = o.path;
+                                                                          
                                                                       }
                                                                            
                                                                           //console.log("SHOW");
+                                                                          
                                                                       
                                                                       });
                                })
@@ -511,13 +573,14 @@ function fixedCollapsing(showMe) {
                                scaleIt();
                                $(showMe).find('.accordion-inner').animate({opacity:1},300,'linear');
                                   // console.log("SHOWN");
+                                                                
                                })
     
     // Showing inner div and inserting editor
     $(showMe).find('.collapse').on('hide', function () {
                                    // Get contents and put to array
                                    var path = $(this).parent().attr('id');
-                                   
+                                   console.log("SAVING FROM HIDE");
                                    //console.log("GGGGGGGG ", $(this).parent().attr('id'));
                                    var o = getEditorObjectFromPath(path);
 
@@ -525,11 +588,12 @@ function fixedCollapsing(showMe) {
                                     o.data = editor.getValue();
                                     setEditorObjectToPath(path, o);
                                     saveFile(path);
+                                   
                                    }
                                    $('#codeEditorAce').appendTo($(showMe).find('.accordion-inner'));
                                    scaleIt();
                                    $(showMe).find('.accordion-inner').animate({opacity:1},300,'linear');
-                                  
+                                   //focusedFile = null;
                                    //console.log("HIDE");
                                     })
 
@@ -563,7 +627,7 @@ function insertNewStrip(data) {
 
     
     // Element
-    var el = $('<div />').html('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a role="button" id="closeButton"><i class="icon-remove"></i></a></div></div><div id="acc_'+idEl+'" class="accordion-body collapse"><div class="accordion-inner"></div></div>').addClass('accordion-group').attr("id", data.data.path);
+    var el = $('<div />').html('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" id="att_'+ idEl+'" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a role="button" id="closeButton"><i class="icon-remove"></i></a></div></div><div id="acc_'+idEl+'" class="accordion-body collapse"><div class="accordion-inner"></div></div>').addClass('accordion-group').attr("id", "file_"+data.data.id);
     
     // Add new strip here
     $('#accordion2').append(el);
@@ -586,7 +650,8 @@ function insertNewStrip(data) {
     
     // Update height
     scaleIt();
-     
+    
+    treeLock = false; // UNLOCK TREE INTERACTION
 }
 
 
@@ -594,22 +659,6 @@ function updateStatus(data) {
 //    console.log(data);
     window.top.setStatus(null, data.status);
 }
-
-function updateConsoleOutput(data) {
-    var stdout = data.data;
-    $('#consoleOutput').append(stdout + "<br>");
-}
-
-function updateConsoleError(data) {
-    var stderr = data.data;
-    $('#consoleOutput').append("<a id='stderr'>" + stderr + "<br></a>");
-}
-
-function updateConsoleSys(data) {
-    var sys = data.data;
-    $('#consoleOutput').append("<a id='sys'>" + sys + "<br></a>");
-}
-
 
 
 function refreshFiles(data) {
@@ -626,34 +675,44 @@ function fileRemoved(data) {
     editorSocket.send(JSON.stringify(rq));
     
     // delete strip if opened
-//    filename = data.path;
-//    fileId = 0;
-//    // check if file is already opened
-//    var exists = false;
-//    for (var editor in editorData.editors) {
-//        if (filename==editorData.editors[editor].path) {
-//            exists = true;
-//            fileId = editorData.editors[editor].id;
-//            break;
-//        } else {
-//            exists = false;
-//        }
-//    }
-//    
-//    if (exists==true) {
-//        
-//        for (var editor in editorData.editors) {
-//            if (editorData.editors[editor].id==fileId) {
-//                // kill element in JSON
-//                editorData.editors.splice(editor, 1);
-//                break;
-//            }
-//        }
-//        
-//        renderEditors();
-//        refreshEditors();
-//        updateEditorHeight();
-//    } 
+    var path = data.path;
+    var doesExist = false;
+    
+    // Adding strip if don't exists already
+    for (var i in editorsInStack) {
+        
+        if (editorsInStack[i].path == path) {
+            doesExist = true;
+        }
+    }
+    
+    if (doesExist){ // kill strip
+        
+        var currentStrip = path;
+        var currentId = 0;
+    
+        for (var i in editorsInStack) {
+            
+            if (editorsInStack[i].path == currentStrip) {
+                currentId = editorsInStack[i].id;
+                editorsInStack.splice(i,1);
+                if (editorsInStack.length == 0) focusedFile = null;
+                 
+                break;
+            }
+        }
+        
+        // save editor in safe house before
+        
+        $(".safeHome").html('').append($('#codeEditorAce'));
+        $(".safeHome").hide();
+        
+        //console.log($(e.target).parents('.accordion-group'), $(e.target).parent('.accordion-group'));
+        
+        $("#file_"+currentId).remove();
+            
+        
+    }
 }
 
 
@@ -672,8 +731,7 @@ editorSocket.onopen = function() {
     var rq = { "request": "getFileTreeHtml"};
     editorSocket.send(JSON.stringify(rq));
     
-    var rq = { "request": "getPlatform"};
-    editorSocket.send(JSON.stringify(rq));
+    
 };
 
 /*

@@ -2,7 +2,7 @@
  */
 @import "../bootstrap/css/bootstrap.css";
 
-@settingsZoneColor: #D8D8D8;
+@settingsZoneColor: #FFF;
 @leftSideBarWidth: 200px;
 
 body {
@@ -29,11 +29,16 @@ body {
         }
         
         .settingsContainer {
+            overflow-y: scroll;    
             position:fixed;
             left:@leftSideBarWidth;
+            background-color:#FFF;
             right:0;
             height:100%;
             margin-left:15px;
+            
+            
+            
         }
     }
     
