@@ -106,7 +106,7 @@ class WeioWifi() :
             # Check what happened
             self.checkConnection()
 
-        # Ath this point connection has been maid, and all we have to do is check ESSID
+        # At this point connection has been maid, and all we have to do is check ESSID
         for word in status.split(" ") :
             if word.startswith("ESSID") :
                 self.essid = word.split('\"')[1]
@@ -123,9 +123,9 @@ class WeioWifi() :
                 out_fname = fname + ".tmp"
                 out = open(out_fname, "w")
                 for line in f:
-                    line = re.sub(r'option\s+ssid\s.*$', r'option ssid ' + self.essid, line)
+                    line = re.sub(r"option\s+ssid\s.*$", r"option ssid " + "'" + self.essid + "'", line)
                     if (self.passwd != ""):
-                        line = re.sub(r'option\s+key\s.*$', r'option key ' + self.passwd, line)
+                        line = re.sub(r"option\s+key\s.*$", r"option key " + "'" + self.passwd + "'", line)
                     #if (self.encryption != "")
                     #    line = re.sub(r'option\s+encryption\s.*$', r'option encryption ' + self.encryption, line)
                     out.write(line)
