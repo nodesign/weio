@@ -103,21 +103,6 @@ class WeioDashBoardHandler(SockJSConnection):
         # Send connection information to the client
         self.send(json.dumps(data))
         
-    def getTreeInHTML(self,rq):
-        
-        # get configuration from file
-        config = weio_config.getConfiguration()
-        
-        data = {}
-        data['requested'] = rq['request']
-        up = config["user_projects_path"]
-        lp = config["last_opened_project"]
-        
-        tree = weioFiles.getHtmlTree((up+lp))
-        data['data'] = tree
-        # Send connection information to the client
-        self.send(json.dumps(data))
-        
     def play(self, rq):
         """ This is where all the magic happens.
         
@@ -331,77 +316,7 @@ class WeioDashBoardHandler(SockJSConnection):
             rq['request'] = rqlist[i]
             callbacks[rq['request']](self, rq)
         
-        
-    def sendFileContent(self, rq):
-        data = {}
-        # echo given request
-        data['requested'] = rq['request']
-
-        # echo given data
-        data['data'] = rq['data']
-        
-        path = rq['data']
-        
-        f = {}
-        f['name'] = weioFiles.getFilenameFromPath(path)
-        f['id'] = weioFiles.getStinoFromFile(path)
-        f['type'] = weioFiles.getFileType(path)
-        f['data'] = weioFiles.getRawContentFromFile(path)
-        f['path'] = path
-        
-        data['data'] = f
-        
-        self.send(json.dumps(data))
-        
-    def saveFile(self, rq):
-        data = {}
-        # echo given request
-        data['requested'] = rq['request']
-        
-        f = rq['data']
-        weioFiles.saveRawContentToFile(f['path'], f['data']);
-        
-        data['status'] = rq['data']['name'] + " saved!"
-        self.send(json.dumps(data))
-        
-    def createNewFile(self, rq): 
-        
-        # get configuration from file
-        config = weio_config.getConfiguration()
-        
-        data = {}
-        # this function is similar to saveFile
-
-        # echo given request
-        data['requested'] = rq['request']
-
-        # don't echo given data to spare unnecessary communication, just return name
-        fileInfo = rq['data']
-        pathname = fileInfo['name']
-
-        confFile = weio_config.getConfiguration()
-        pathCurrentProject = confFile["user_projects_path"] + confFile["last_opened_project"]
-
-        #print (pathCurrentProject+pathname)
-        # in new file there are no data, it will be an empty string
-        rawData = ""
-        weioFiles.saveRawContentToFile(pathCurrentProject+pathname, rawData)
-
-        data['status'] = fileInfo['name'] + " has been created"
-        self.send(json.dumps(data))
-        
-    def deleteFile(self,rq):
-        data = {}
-        data['requested'] = rq['request']
-        data['path'] = rq['path']
-
-        path = rq['path']
-       
-        weioFiles.removeFile(path)
-
-        data['status'] = "file has been removed"
-        self.send(json.dumps(data))
-        
+                    
     def sendUserData(self,rq):
         data = {}
         # get configuration from file
@@ -420,16 +335,16 @@ class WeioDashBoardHandler(SockJSConnection):
     callbacks = {
         'getIp' : sendIp,
         'getLastProjectName' : sendLastProjectName,
-        'getFileTreeHtml' : getTreeInHTML,
-        'getFile': sendFileContent,
+        #'getFileTreeHtml' : getTreeInHTML,
+        #'getFile': sendFileContent,
         'play' : play,
         'stop' : stop,
         'getPlatform': sendPlatformDetails,
         'getUserProjetsFolderList': getUserProjectsList,
         'changeProject': changeProject,
-        'saveFile': saveFile,
-        'createNewFile': createNewFile,
-        'deleteFile': deleteFile,
+        #'saveFile': saveFile,
+        #'createNewFile': createNewFile,
+        #'deleteFile': deleteFile,
         'getUser': sendUserData,
         
     }
@@ -457,4 +372,4 @@ class WeioDashBoardHandler(SockJSConnection):
         if request in callbacks :
             callbacks[request](self, rq)
         else :
-            print "unrecognised request"
+            print "unrecognised request ", rq['request']

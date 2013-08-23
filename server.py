@@ -34,7 +34,7 @@
 #
 ###
 
-import os, sys, platform
+import os, sys, platform, subprocess
 
 import tornado
 import tornado.options
@@ -65,21 +65,41 @@ from handlers import wifiHandler
 # IMPORT UPDATER
 from handlers import updaterHandler
 
+# IMPORT FIRST TIME HANDLER
+from handlers import firstTimeHandler
+
+
 # This is user project index.html
 class WeioIndexHandler(tornado.web.RequestHandler):
+    
     def get(self):
-        global confFile
-        path = confFile['user_projects_path'] + confFile['last_opened_project'] + "index.html"
-        self.render(path, error="")
-        #self.redirect(path)
+        global firstTimeSwitch
+        confFile = weio_config.getConfiguration()
+        firstTimeSwitch = confFile['first_time_run']
+        #print firstTimeSwitch
         
+        if (firstTimeSwitch=="YES") :
+            path = "www/firstTime.html"
+        else :
+            path = confFile['user_projects_path'] + confFile['last_opened_project'] + "index.html"
+        
+        self.render(path, error="")
+
         
 # Editor web app route handler      
 class WeioEditorWebHandler(loginHandlers.BaseHandler):
-   # @tornado.web.authenticated
+    #@tornado.web.authenticated
     def get(self):
         global confFile
-        path = confFile['editor_html_path']
+        global firstTimeSwitch
+        confFile = weio_config.getConfiguration()
+        firstTimeSwitch = confFile['first_time_run']
+        
+        if (firstTimeSwitch=="YES") :
+            path = "www/firstTime.html"
+        else :
+            path = confFile['editor_html_path']
+        
         self.render(path, error="")
         
 
@@ -96,20 +116,23 @@ class WeioCloseConnection(SockJSConnection):
 if __name__ == '__main__':
     # Take configuration from conf file and use it to define parameters
     global confFile
+    global firstTimeSwitch
     confFile = weio_config.getConfiguration()
 
     # put absolut path in conf, needed for local testing on PC
     confFile['absolut_root_path'] = os.path.abspath(".")
     weio_config.saveConfiguration(confFile)
+    firstTimeSwitch = confFile['first_time_run']
     
     import logging
     logging.getLogger().setLevel(logging.DEBUG)
 
+    
     # WEIO API BRIDGE
     WeioAPIBridgeRouter = SockJSRouter(weioAPIbridgeHandler.WeioAPIBridgeHandler, '/api')
 
     # EDITOR ROUTES
-    WeioEditorRouter = SockJSRouter(dashboardHandler.WeioDashBoardHandler, '/editor/editorSocket')    
+    WeioEditorRouter = SockJSRouter(editorHandler.WeioEditorHandler, '/editor/editorSocket')    
   
     # DASHBOARD ROUTE websocket
     WeioDashboardRouter = SockJSRouter(dashboardHandler.WeioDashBoardHandler, '/dashboard')
@@ -120,9 +143,14 @@ if __name__ == '__main__':
     # UPDATER ROUTE
     WeioUpdaterRouter = SockJSRouter(updaterHandler.WeioUpdaterHandler, '/updater')
     
+    # FIRST TIME ROUTER
+    WeioFirstTimeRouter = SockJSRouter(firstTimeHandler.WeioFirstTimeHandler, '/firstTime')
+    
     #GENERAL ROUTES
     CloseRouter = SockJSRouter(WeioCloseConnection, '/close')
-
+    
+    
+    
 
     secret = loginHandlers.generateCookieSecret()
     print secret
@@ -132,12 +160,15 @@ if __name__ == '__main__':
     }
  
     
+    
+    
     app = tornado.web.Application(list(WeioEditorRouter.urls) +
                             list(CloseRouter.urls) +
                             list(WeioAPIBridgeRouter.urls) +
                             list(WeioDashboardRouter.urls) +
                             list(WeioWifiRouter.urls) +
                             list(WeioUpdaterRouter.urls) +
+                            list(WeioFirstTimeRouter.urls) +
                             #list(WeioHeaderRouter.urls) +
                             #list(WeioAPIBridgeRouter.urls) +
                           

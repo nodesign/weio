@@ -21,7 +21,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class WeioLoginHandler(BaseHandler):
     def get(self):
-        self.render("login.html", next=self.get_argument("next","/"))
+        self.render("../www/login.html", next=self.get_argument("next","/"))
 
     def post(self):
         username = self.get_argument("username", "")

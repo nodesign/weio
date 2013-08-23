@@ -3,6 +3,7 @@
     "dependencies_path": "www/", 
     "dns_name": "weio.local", 
     "editor_html_path": "www/dashboard.html", 
+    "first_time_run": "NO", 
     "ip": "0.0.0.0", 
     "kill_flag": "YES", 
     "last_opened_files": [
@@ -11,9 +12,8 @@
     ], 
     "last_opened_project": "myFirstProject/", 
     "port": 8081, 
-    "shared_libraries": "sharedLibs", 
-    "user": "Uros Petrevski", 
+    "user": "uros petrevski", 
     "user_projects_path": "userProjects/", 
     "weio_lib_path": "weioLib", 
-    "weio_version": "0.145"
+    "weio_version": "0.150"
 }
