@@ -83,6 +83,11 @@ def weioWifiParseScan() :
                 s['connected'] = True
             else :
                 s['connected'] = False
+        else :
+            # get AP ESSID name
+            essidName = wifi.getCurrentEssidName()
+            scaninfo[cell]['ESSID'] = essidName
+            print "AP NAME ADDED"
         
         # Placeholeder for client to fill
         s['passwd'] = None
