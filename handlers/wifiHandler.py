@@ -83,12 +83,7 @@ def weioWifiParseScan() :
                 s['connected'] = True
             else :
                 s['connected'] = False
-        else :
-            # get AP ESSID name
-            essidName = wifi.getCurrentEssidName()
-            scaninfo[cell]['ESSID'] = essidName
-            print "AP NAME ADDED"
-        
+               
         # Placeholeder for client to fill
         s['passwd'] = None
 
@@ -183,9 +178,17 @@ class WeioWifiHandler(SockJSConnection):
     }   
 
     def on_open(self, info) :
+        wifi.checkConnection() 
+        myMode = wifi.mode
         msg = {}
-        msg['mode'] = wifi.mode
+        msg['serverPush'] = 'mode'
+        msg['mode'] = myMode
+        
+        if (myMode!="sta"):
+            msg['APessid'] = wifi.getCurrentEssidName()
+        
         self.send(json.dumps(msg))
+
         
 
     def on_message(self, data):

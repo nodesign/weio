@@ -155,7 +155,7 @@ class WeioWifi() :
             cmd = "scripts/wifi_set_mode.sh sta"
             weioCommand(cmd)
 
-    def getCurrentEssidName() :                
+    def getCurrentEssidName(self) :                
         """Get current ESSID name from configuration file - wireless"""
         inputFile = open("/etc/config/wireless", 'r')
         rawData = inputFile.read()
@@ -164,9 +164,9 @@ class WeioWifi() :
         lines = rawData.splitlines()
         for l in lines :
             if ("option ssid" in l) :
-                name = l.split("option ssid ")
+                name = l.split("       option ssid ")
                 essid = name[1].split("'")
-                return essid[0]
+                return essid[1]
 
 
     def scan(self) :

@@ -268,7 +268,12 @@ function updateWifiCells(data) {
 };
 
 function updateWifiMode(data) {
-    wifiMode =  data.mode;
+    wifiMode = data.mode;
+    console.log(wifiMode);
+    if (wifiMode=="ap") {
+        console.log("WE ARE IN AP MODE");
+        $("#connectedWifiName").html(data.APessid);
+    }
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////// SOCK JS WIFI        
