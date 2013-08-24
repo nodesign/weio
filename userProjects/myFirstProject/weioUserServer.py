@@ -35,14 +35,14 @@ class WeioHandler(SockJSConnection):
 
 if __name__ == '__main__':
     import logging
-    logging.getLogger().setLevel(logging.DEBUG)
+    #logging.getLogger().setLevel(logging.DEBUG)
 
     WeioRouter = SockJSRouter(WeioHandler, '/api')
 
     app = web.Application(WeioRouter.urls)
     app.listen(8087)
 
-    logging.info(" [*] Listening on 0.0.0.0:8087/api")
+    #logging.info(" [*] Listening on 0.0.0.0:8087/api")
 
     WeioUserSetup()
 

@@ -49,55 +49,15 @@
 
     </style>
 
-    <script>
-    var light = false;
-
-    $(document).ready(function () {
-       lights();
-    });
-
-    function lights() {
-
-        if (light) {
-            $(".well").css("visibility", "visible");
-            $(phrase).html("Turn OFF the light!");
-            $("#background").css("background","white");
-            $("#phrase").css("color","black");
-            genericMessage("setColor", [255,255,255]);
-            light = !light;
-        } else {
-            $(".well").css("visibility", "hidden");
-            $(phrase).html("Turn ON the light!");
-            $("#background").css("background","black");
-            $("#phrase").css("color","white");
-            genericMessage("setColor", [0,0,0]);
-            light = !light;
-        }
-    }
-
-
-    </script>
+  
   </head>
 
-  <body id="background">
-   <div class="well">
-          <a href="#" class="btn small" id="cp4" data-color-format="hex" data-color="rgb(255, 255, 255)">Color</a>
-   </div>
+  <body>
 
   <font>
-  <p id="phrase" onclick="lights()">LOVE LOVE</p>
+  <p id="phrase" style="color:white">Welcome to WeIO</p>
   </font>
 
-      <script>
-            var bodyStyle = $('body')[0].style;
-              $('#cp4').colorpicker({
-				format: 'rgb'
-			}).on('changeColor', function(ev){
-				bodyStyle.backgroundColor = ev.color.toHex();
-				console.log(ev.color.toRGB().r + " " + ev.color.toRGB().g + " " + ev.color.toRGB().b);
-                genericMessage("setColor", [ev.color.toRGB().r, ev.color.toRGB().g, ev.color.toRGB().b]);
-			});
-  	</script>
-
+     
   </body>
 </html>
