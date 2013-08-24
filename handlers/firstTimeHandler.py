@@ -39,6 +39,8 @@ import os, signal, sys, platform
 from tornado import web, ioloop, iostream, gen
 sys.path.append(r'./');
 
+from subprocess import Popen, PIPE
+
 # pure websocket implementation
 #from tornado import websocket
 
@@ -80,10 +82,16 @@ class WeioFirstTimeHandler(SockJSConnection):
             weio_config.saveConfiguration(confFile)
             
             output = "OK PASSWD"
-            command = "echo -e " + passwd+"\n"+passwd + " | " + "passwd"
+            #echo -e "weio\nweio" | passwd
+            command = "sh scripts/change_root_pswd.sh " + passwd
             try :
-                if (platform.machine() == 'mips') :
-                    output = subprocess.check_output(command, shell=True)
+                # ATTENTION, DON'T MESS WITH THIS STUFF ON YOUR LOCAL COMPUTER
+                # First protection is mips detection, second is your own OS
+                # who needs sudo to change passwd
+                if (platform.machine() == 'mips') : 
+                    
+                    print Popen(command, stdout=PIPE, shell=True).stdout.read()
+                    
                     path = confFile['user_projects_path'] + confFile['last_opened_project'] + "index.html"
                     
                     firstTimeSwitch = "NO"

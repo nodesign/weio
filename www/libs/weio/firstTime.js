@@ -80,6 +80,8 @@ function updateInfo(data) {
     $("#ip").html(" on " + data.ip);
     $("#dnsName1").html(data.dnsName);
     
+    $("#dnsName").attr("value", data.dnsName);
+    
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////// SOCK JS WIFI        

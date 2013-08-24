@@ -178,14 +178,16 @@ class WeioWifiHandler(SockJSConnection):
     }   
 
     def on_open(self, info) :
-        wifi.checkConnection() 
+        if (platform=='mips'):
+            wifi.checkConnection() 
         myMode = wifi.mode
         msg = {}
         msg['serverPush'] = 'mode'
         msg['mode'] = myMode
         
         if (myMode!="sta"):
-            msg['APessid'] = wifi.getCurrentEssidName()
+            if (platform=='mips'):
+                msg['APessid'] = wifi.getCurrentEssidName()
         
         self.send(json.dumps(msg))
 

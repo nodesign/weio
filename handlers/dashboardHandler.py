@@ -73,6 +73,13 @@ class WeioDashBoardHandler(SockJSConnection):
     global stdoutHandlerIsLive
     global stderrHandlerIsLive
     
+    global errObject
+    global errLine
+    global errReason
+    
+    errReason = ""
+    errLine = 0
+    errObject = []
     stdoutHandlerIsLive = None
     stderrHandlerIsLive = None
 
@@ -243,6 +250,7 @@ class WeioDashBoardHandler(SockJSConnection):
     def weioMainHandlerErr(self, data, fd, events):
         """Stream stderr to browser"""
         global weioPipe
+        global errLine
         
         line = weioPipe.stderr.readline()
         if line :
@@ -260,6 +268,40 @@ class WeioDashBoardHandler(SockJSConnection):
             # TODO, send this only once, at the beginning
             data['status'] = "Check output console for errors!"
             
+            if 'Traceback (most recent call last):' in stderr :
+                print "traceback info is comming..."
+                errLine = 0
+            
+            print "ERR " +  str(errLine) + " : " + stderr
+            errLine+=1
+            if 'File "' in stderr :
+                global errObject
+                global errCoords
+                
+                errCoords = 1
+                oneError = {}
+                
+                arg = stderr.split(",")
+                errInFile = arg[0].split('"')
+                errInFile = errInFile[1]
+
+                print "error in file : ", errInFile
+                #data['errFile'] = errInFile
+                oneError['file'] = errInFile
+                
+                errInLine = arg[1].split("line")
+                errInLine = errInLine[1]
+                oneError['line'] = errInLine
+                
+                print "error in line : ", errInLine
+                #data['errLine'] = errInLine
+                
+                # add error object to array
+                errObject.append(oneError)
+            
+                
+            errReason = stderr
+            
             # this is raw output, some basic parsing is needed in javascript \n etc...
             CONSOLE.send(json.dumps(data))
         
@@ -267,8 +309,20 @@ class WeioDashBoardHandler(SockJSConnection):
             """ Child is terminated STDERR"""
             print "Child has terminated - removing handler STDERR"
             global stderrHandlerIsLive
+            global errObject
+            global errLine
+            global errReason
+            errLine = 0
+            data = {}
+            data['serverPush'] = 'errorObjects'
+            errObject[len(errObject)-1]['reason'] = errReason
+            
+            data['data'] = errObject
+            errObject = []
+            CONSOLE.send(json.dumps(data))
+            
             ioloop.IOLoop.instance().remove_handler(weioPipe.stderr.fileno())
-            stderrHandlerIsLive = False;
+            stderrHandlerIsLive = False
             
             return
 
