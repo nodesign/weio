@@ -139,7 +139,7 @@ else :
            p.communicate()
         
         print "Stripping WeIO"
-        p = Popen(["sh", "stripWeio.sh", path+"/files"], stdout=PIPE, close_fds=True)
+        p = Popen(["bash", "stripWeio.sh", path+"/files"], stdout=PIPE, close_fds=True)
            # wait... I have to finish this process before sending
         p.communicate()
         
