@@ -104,6 +104,12 @@ function runSettings() {
     $("#previewButtonHeader").attr("class", "top_tab");
 }
 
+function createNewProject() {
+    projectName = $("#newProjectName").val();
+    var rq = { "request": "createNewProject", "path":projectName};
+    dashboard.send(JSON.stringify(rq));
+}
+
 /**
  * Sets coresponding icon and message inside statusBar in the middle of header. 
  * Icon is string format defined in font awesome library, message is string format
@@ -169,6 +175,7 @@ var callbacks = {
     "sysConsole" : updateConsoleSys,
     "stdout" : updateConsoleOutput,
     "stderr" : updateConsoleError,
+    "createNewProject" : newProjectIsCreated,
     
 }
 
@@ -201,7 +208,7 @@ function updateStatus(data){
 function updateProjects(data) {
     
     $("#userProjectsList").empty();
-    $("#userProjectsList").append('<li><a tabindex="-1" href="#">Create new project</a></li>');
+    $("#userProjectsList").append('<li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>');
     $("#userProjectsList").append('<li class="divider"></li>');
     
     for (var folder in data.data) {
@@ -238,6 +245,15 @@ function stopped(data) {
 function updateUserData(data) {
     $("#user").html(data.name);
     
+}
+
+function newProjectIsCreated(data) {
+    
+    updateStatus(data);
+    
+    var rq = { "request": "getUserProjetsFolderList"};
+    dashboard.send(JSON.stringify(rq));
+    // TODO change project in editor
 }
 
 

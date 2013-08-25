@@ -84,6 +84,7 @@ class WeioFirstTimeHandler(SockJSConnection):
             output = "OK PASSWD"
             #echo -e "weio\nweio" | passwd
             command = "sh scripts/change_root_pswd.sh " + passwd
+            print "EXEC : " + command
             try :
                 # ATTENTION, DON'T MESS WITH THIS STUFF ON YOUR LOCAL COMPUTER
                 # First protection is mips detection, second is your own OS

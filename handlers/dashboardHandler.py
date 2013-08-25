@@ -379,7 +379,20 @@ class WeioDashBoardHandler(SockJSConnection):
         
         data['name'] = config["user"]
         self.send(json.dumps(data))
-    
+
+    def newProject(self, rq):
+        
+        config = weio_config.getConfiguration()
+        
+        data = {}
+        data['requested'] = rq['request']
+        path = rq['path']
+
+        weioFiles.createDirectory(config["user_projects_path"] + path)
+        # ADD HERE SOME DEFAULT FILES
+        
+        data['status'] = "New project created"
+        self.send(json.dumps(data))
         
     
 ##############################################################################################################################
@@ -400,6 +413,7 @@ class WeioDashBoardHandler(SockJSConnection):
         #'createNewFile': createNewFile,
         #'deleteFile': deleteFile,
         'getUser': sendUserData,
+        'createNewProject': newProject,
         
     }
     

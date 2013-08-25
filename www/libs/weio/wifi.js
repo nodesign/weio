@@ -92,7 +92,7 @@ function injectWifiNetworksInDropMenu() {
    // $("#wifiNetworks").append('<li class="divider"></li>');
     
     $("#wifiNetworks").append('<li><a tabindex="-1" href="#changeWifi" role="button" data-toggle="modal">Connect to another network</a></li>');
-    $("#wifiNetworks").append('<li><a tabindex="-1" href="#createWifi" onclick="" role="button" data-toggle="modal" >Create network</a></li>');
+    $("#wifiNetworks").append('<li><a tabindex="-1" href="#createWifi" role="button" data-toggle="modal" >Create network</a></li>');
     $("#wifiNetworks").append('<li><a tabindex="-1" href="#" onclick="scanWifiNetworks()">Rescan wifi networks</a></li>');
     $("#wifiNetworks").append('<li class="divider"></li>');
     

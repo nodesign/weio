@@ -1,9 +1,9 @@
 {
-    "description": "login passwd change", 
+    "description": "Wifi bug fixes", 
     "install_duration": 35, 
     "kill_flag": "NO", 
-    "md5": "d45f8fc7c864eddf99b7ff232c96d9a4", 
+    "md5": "f426ecf837f72533a13ff2fc2531ac28", 
     "url": "http://www.we-io.net/downloads/weio.tar.gz", 
-    "version": "0.150", 
-    "whatsnew": "WeIO Releases :\n\n0.12 Bug fixes in architecture and design\nBla bla bla bla bla bla Bla bla bla bla bla bla\nBla bla bla bla bla bla Bla bla bla bla bla bla\n\n0.11 Bug fixes in architecture and design\nBla bla bla bla bla bla Bla bla bla bla bla bla\nBla bla bla bla bla bla Bla bla bla bla bla bla"
+    "version": "0.156", 
+    "whatsnew": "<h3>WeIO Releases :</h3>\n<br>\n0.12 Bug fixes in architecture and design<br>\n<br>\n0.11 Bug fixes in architecture and design<br>\n"
 }

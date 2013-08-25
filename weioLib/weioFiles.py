@@ -198,5 +198,10 @@ def disk_usage(path):
     total = st.f_blocks * st.f_frsize
     used = (st.f_blocks - st.f_bfree) * st.f_frsize
     return _ntuple_diskusage(total/1000000, used/1000000, free/1000000)
+
+def createDirectory(path):
+    """Creates new directory at given path. Creates all subdirectories if needed"""
+    if not os.path.isdir(path):
+        os.makedirs(path)
        
 #print(scanFolders())
