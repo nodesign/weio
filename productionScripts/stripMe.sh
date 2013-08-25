@@ -63,17 +63,25 @@ find weio -name '*.less' -delete
 find weio -name '.DS_Store' -delete
 
 # make tar archive 
-tar -zcvf weio.tar.gz weio/
+if [ "$1" == "no_compression" ]; then
+    echo "WeIO stripped no compression is executed"
+else
+    echo "WeIO stripped and compressed"
+    tar -zcvf weio.tar.gz weio/
+    # kill weio folder
+    rm -r weio
 
-# kill weio folder
-rm -r weio
+    # To decompress type : tar -zxvf weio.tar.gz
 
-# To decompress type : tar -zxvf weio.tar.gz
+    echo ""
+    echo "Created archive weio.tar.gz"
+    echo ""
+    echo "Now do:"
+    echo "$ scp -r weio.tar.gz root@weio.local:/tmp"
+    echo "and then in WeIO:"
+    echo "tar -xzvf /tmp/weio.tar.gz"
+    
+fi
 
-echo ""
-echo "Created archive weio.tar.bz2"
-echo ""
-echo "Now do:"
-echo "$ scp -r weio.tar.gz root@weio.local:/tmp"
-echo "and then in WeIO:"
-echo "tar -xzvf /tmp/weio.tar.gz"
+
+
