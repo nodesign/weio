@@ -163,4 +163,5 @@ else :
         print "Downloading external depencencies"
         print "Getting info file and downloading libs"
         pathToDecompressUpdate = path+"/files"
-        getInfo("http://www.we-io.net/downloads/imageWeio/updateLibs.weio")
+        getInfo("http://www.we-io.net/downloads/weioImage/updateLibs.weio")
+        ioloop.IOLoop.instance().start()
