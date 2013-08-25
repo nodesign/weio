@@ -96,7 +96,24 @@ def decompress(data):
         #         print "Setting kill flag to YES in current config.weio"
         #         currentWeioConfigurator["kill_flag"] = "YES"
         #         
+        
         os.remove(fileToStoreUpdate)
+        print "Open config.weio"
+        inputFile = open(path+"/files/weio/config.weio", 'r')
+        rawData = inputFile.read()
+        inputFile.close()
+        config = json.loads(rawData)
+
+        # Overwrite local configuration file
+        config["first_time_run"] = "YES"
+        config["port"] = 80
+
+        inputFile = open("../config.weio", 'w')
+        ret = inputFile.write(json.dumps(config, indent=4, sort_keys=True))
+        inputFile.close()
+        
+        print "Procedure finished, now you can make carambola2 image"
+        sys.exit()
          
         # TODO make system reboot here
         # sys.exit()
@@ -147,20 +164,3 @@ else :
         print "Getting info file and downloading libs"
         pathToDecompressUpdate = path+"/files"
         getInfo("http://www.we-io.net/downloads/imageWeio/updateLibs.weio")
-
-        print "Open config.weio"
-        inputFile = open(path+"/files/weio/config.weio", 'r')
-        rawData = inputFile.read()
-        inputFile.close()
-        config = json.loads(rawData)
-
-        # Overwrite local configuration file
-        config["first_time_run"] = "YES"
-        config["port"] = 80
-
-        inputFile = open("../config.weio", 'w')
-        ret = inputFile.write(json.dumps(config, indent=4, sort_keys=True))
-        inputFile.close()
-
-        print "Procedure finished, now you can make carambola2 image"
-        sys.exit()
