@@ -2022,11 +2022,37 @@ root@WEIO:/#</tt></pre>
 </div></div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_preparing_weio_for_image_bundle">Preparing WeIO for image bundle</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>There is automatic python script that prepares "files" directory inside openWrt for sysupgrade image production.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>Script will :
+     1 Strip current version of WeIO for production
+     2 Download external libs package from WeIO server (tornado, sockJS, pip, easy_install)
+     3 Set first time boot flag in config.weio
+     4 Make files directrory inside carambola2 tree. (Will overwrite previous version of files)</tt></pre>
+</div></div>
+<div class="paragraph"><p>Inside your weio directory :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>$ cd updateMaker/imageTools/
+$ $ ./prepareWeioFiles.py /Users/uros/carambola2</tt></pre>
+</div></div>
+<div class="paragraph"><p>It is important to give as argument exact place where carambola2 openWrt is situated. Script will do the rest.</p></div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph"><p>Remember: external libs that are downloaded were previously extracted from installed carambola2 image. They are not in Git repository to avoid the mess,
+and codes that we didn&#8217;t write or change</p></div>
+</div></div>
+</div>
+</div>
 </div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-07-28 13:06:45 CEST
+Last updated 2013-08-25 12:13:54 CEST
 </div>
 </div>
 </body>

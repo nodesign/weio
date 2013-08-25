@@ -1274,4 +1274,27 @@ Run_weio.sh is main script for running WeIO. Run WeIO program like this :
 root@WEIO:/# ./run_weio.sh 
 --------------------------
 
+Preparing WeIO for image bundle
+-------------------------------
+There is automatic python script that prepares "files" directory inside openWrt for sysupgrade image production.
+-----------------------------------------------------------------------------------------------
+Script will :
+     1 Strip current version of WeIO for production
+     2 Download external libs package from WeIO server (tornado, sockJS, pip, easy_install)
+     3 Set first time boot flag in config.weio
+     4 Make files directrory inside carambola2 tree. (Will overwrite previous version of files)
+-----------------------------------------------------------------------------------------------
+Inside your weio directory :
+------------------------------------------------
+$ cd updateMaker/imageTools/
+$ $ ./prepareWeioFiles.py /Users/uros/carambola2
+------------------------------------------------
+It is important to give as argument exact place where carambola2 openWrt is situated. Script will do the rest.
+********************************************************************************************************************************************************
+Remember: external libs that are downloaded were previously extracted from installed carambola2 image. They are not in Git repository to avoid the mess,
+and codes that we didn't write or change
+********************************************************************************************************************************************************
+
+
+
 
