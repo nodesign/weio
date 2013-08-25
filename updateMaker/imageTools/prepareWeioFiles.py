@@ -119,7 +119,7 @@ def decompress(data):
         # sys.exit()
     else :
         print "Wrong MD5 checksum. Trying again..."
-        checkForUpdates("http://www.we-io.net/downloads/update.weio")
+        checkForUpdates("http://www.we-io.net/downloads/updateLibs.weio")
 
 def md5sum(filename):
     md5 = hashlib.md5()

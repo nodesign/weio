@@ -39,7 +39,7 @@
 
 # clean old file
 #rm weio.tar.bz2
-
+rm -r weio
 # after all process to decompress type : tar -zxvf weio.tar.gz
 # make new dir for stripped version at level -1
 mkdir weio 
@@ -61,6 +61,9 @@ find weio -name '*.pyc' -delete
 find weio -name '*.less' -delete
 # kill all OS X crap
 find weio -name '.DS_Store' -delete
+
+# compress in every case
+tar -zcvf weio.tar.gz weio/
 
 # make tar archive 
 if [ "$1" == "no_compression" ]; then
