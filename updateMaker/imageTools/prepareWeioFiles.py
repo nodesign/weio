@@ -106,9 +106,10 @@ def decompress(data):
 
         # Overwrite local configuration file
         config["first_time_run"] = "YES"
+        config["kill_flag"] = "NO"
         config["port"] = 80
 
-        inputFile = open("../config.weio", 'w')
+        inputFile = open(path+"/files/weio/config.weio", 'w')
         ret = inputFile.write(json.dumps(config, indent=4, sort_keys=True))
         inputFile.close()
         
