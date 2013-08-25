@@ -1294,7 +1294,26 @@ It is important to give as argument exact place where carambola2 openWrt is situ
 Remember: external libs that are downloaded were previously extracted from installed carambola2 image. They are not in Git repository to avoid the mess,
 and codes that we didn't write or change
 ********************************************************************************************************************************************************
-
+Sysupgrade image
+----------------
+Image file that is made for sysupgarade is called : openwrt-ar71xx-generic-carambola2-squashfs-sysupgrade.bin. Copy this file to Carambola2 :
+------------------------------------------------------------------------------------
+$ scp openwrt-ar71xx-generic-carambola2-squashfs-sysupgrade.bin root@weio.local:/tmp
+------------------------------------------------------------------------------------
+****************************************************************************
+Remember: /tmp is in RAM where there are plenty space for such a large files
+****************************************************************************
+With sysupgrade there are 2 important options, to save configuration files (things from /etc) :
+-------------------------------------------------------------------------------
+$ sysupgrade -v -c /tmp/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin
+-------------------------------------------------------------------------------
+or NOT to save them :
+-----------------------------------------------------------------------------
+sysupgrade -v -n /tmp/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin
+-----------------------------------------------------------------------------
+*********************************************************************
+Remember: When testing WeIO it's good practice NOT to save conf files
+*********************************************************************
 
 
 

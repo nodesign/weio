@@ -2048,11 +2048,39 @@ and codes that we didn&#8217;t write or change</p></div>
 </div></div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_sysupgrade_image">Sysupgrade image</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Image file that is made for sysupgarade is called : openwrt-ar71xx-generic-carambola2-squashfs-sysupgrade.bin. Copy this file to Carambola2 :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>$ scp openwrt-ar71xx-generic-carambola2-squashfs-sysupgrade.bin root@weio.local:/tmp</tt></pre>
+</div></div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph"><p>Remember: /tmp is in RAM where there are plenty space for such a large files</p></div>
+</div></div>
+<div class="paragraph"><p>With sysupgrade there are 2 important options, to save configuration files (things from /etc) :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>$ sysupgrade -v -c /tmp/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin</tt></pre>
+</div></div>
+<div class="paragraph"><p>or NOT to save them :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>sysupgrade -v -n /tmp/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin</tt></pre>
+</div></div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph"><p>Remember: When testing WeIO it&#8217;s good practice NOT to save conf files</p></div>
+</div></div>
+</div>
+</div>
 </div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-08-25 12:13:54 CEST
+Last updated 2013-08-25 12:29:05 CEST
 </div>
 </div>
 </body>
