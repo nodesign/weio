@@ -39,7 +39,11 @@
 
 # clean old file
 #rm weio.tar.bz2
-rm -r weio
+
+if [ -d weio ]; then
+    rm -r weio
+fi
+
 # after all process to decompress type : tar -zxvf weio.tar.gz
 # make new dir for stripped version at level -1
 mkdir weio 
