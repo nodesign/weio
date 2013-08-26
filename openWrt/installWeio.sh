@@ -32,6 +32,11 @@ cd weio/productionScripts/
 cd $BUILD_DIR
 tar -xzvf weio/productionScripts/weio.tar.gz -C files/
 
+# Get installed Python libraries for Carambola and extract them to files (/usr directory)
+wget http://www.we-io.net/downloads/weioImage/weioLibs.tar.gz
+tar -xzvf weioLibs.tar.gz -C files/
+rm weioLibs.tar.gz
+
 # Install needed packages for WeIO
 cp weio/openWrt/pkg_install.sh .
 ./pkg_install.sh
