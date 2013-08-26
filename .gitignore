@@ -2,21 +2,21 @@
 *.py[cod]
 
 # C extensions
-*.so
+#*.so
 
 # Packages
-*.egg
-*.egg-info
-dist
-build
-eggs
-parts
-bin
-var
-sdist
-develop-eggs
-.installed.cfg
-lib
+#*.egg
+#*.egg-info
+#dist
+#build
+#eggs
+#parts
+#bin
+#var
+#sdist
+#develop-eggs
+#.installed.cfg
+#lib
 lib64
 
 # Installer logs
@@ -35,4 +35,4 @@ nosetests.xml
 .project
 .pydevproject
 
-config.weio
+#config.weio
