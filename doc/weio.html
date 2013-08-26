@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.6.6" />
+<meta name="generator" content="AsciiDoc 8.6.7" />
 <title>WEIO SW User Guide</title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
@@ -349,7 +349,7 @@ div.colist td img {
   margin-bottom: 0.1em;
 }
 
-div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
   margin-top: 0;
   margin-bottom: 0;
 }
@@ -407,6 +407,8 @@ span.underline { text-decoration: underline; }
 span.overline { text-decoration: overline; }
 span.line-through { text-decoration: line-through; }
 
+div.unbreakable { page-break-inside: avoid; }
+
 
 /*
  * xhtml11 specific
@@ -414,7 +416,7 @@ span.line-through { text-decoration: line-through; }
  * */
 
 tt {
-  font-family: monospace;
+  font-family: "Courier New", Courier, monospace;
   font-size: inherit;
   color: navy;
 }
@@ -453,7 +455,7 @@ div.tableblock > table[frame="vsides"] {
  * */
 
 .monospaced {
-  font-family: monospace;
+  font-family: "Courier New", Courier, monospace;
   font-size: inherit;
   color: navy;
 }
@@ -581,7 +583,7 @@ toc: function (toclevels) {
 
   function tocEntries(el, toclevels) {
     var result = new Array;
-    var re = new RegExp('[hH]([2-'+(toclevels+1)+'])');
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
     // Function that scans the DOM tree for header elements (the DOM2
     // nodeIterator API would be a better technique but not supported by all
     // browsers).
@@ -610,7 +612,7 @@ toc: function (toclevels) {
   var i;
   for (i = 0; i < toc.childNodes.length; i++) {
     var entry = toc.childNodes[i];
-    if (entry.nodeName == 'div'
+    if (entry.nodeName.toLowerCase() == 'div'
      && entry.getAttribute("class")
      && entry.getAttribute("class").match(/^toclevel/))
       tocEntriesToRemove.push(entry);
@@ -656,7 +658,7 @@ footnotes: function () {
   var entriesToRemove = [];
   for (i = 0; i < noteholder.childNodes.length; i++) {
     var entry = noteholder.childNodes[i];
-    if (entry.nodeName == 'div' && entry.getAttribute("class") == "footnote")
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
       entriesToRemove.push(entry);
   }
   for (i = 0; i < entriesToRemove.length; i++) {
@@ -729,7 +731,7 @@ install: function(toclevels) {
 }
 
 }
-asciidoc.install();
+asciidoc.install(2);
 /*]]>*/
 </script>
 </head>
@@ -738,6 +740,10 @@ asciidoc.install();
 <h1>WEIO SW User Guide</h1>
 <span id="author">Drasko DRASKOVIC</span><br />
 <span id="email"><tt>&lt;<a href="mailto:drasko.draskovic@gmail.com">drasko.draskovic@gmail.com</a>&gt;</tt></span><br />
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
 </div>
 <div id="content">
 <div class="sect1">
@@ -836,6 +842,8 @@ sudo service xinetd restart</tt></pre>
 <div class="sect1">
 <h2 id="_test_tftp_connection">Test TFTP connection</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_carambola_1">Carambola 1</h3>
 <div class="listingblock">
 <div class="content">
 <pre><tt>drasko@Marx:~/carambola/carambola$ cp bin/ramips/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin /home/tftpboot/carambola.bin</tt></pre>
@@ -970,6 +978,7 @@ is probably not present in your /home/tftpboot and is not what you want</p></div
 </div></div>
 <div class="paragraph"><p>Hitting &lt;ENTER&gt; on after the reset skips waiting time of 5 secs and boots
 normal Linux.</p></div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -2060,19 +2069,19 @@ and codes that we didn&#8217;t write or change</p></div>
 <div class="content">
 <div class="paragraph"><p>Remember: /tmp is in RAM where there are plenty space for such a large files</p></div>
 </div></div>
-<div class="paragraph"><p>With sysupgrade there are 2 important options, to save configuration files (things from /etc) :</p></div>
+<div class="paragraph"><p>With sysupgrade there are 2 important options, to keep current configuration files (things from /etc):</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>$ sysupgrade -v -c /tmp/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin</tt></pre>
 </div></div>
-<div class="paragraph"><p>or NOT to save them :</p></div>
+<div class="paragraph"><p>or to replace them with new ones:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>sysupgrade -v -n /tmp/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin</tt></pre>
 </div></div>
 <div class="sidebarblock">
 <div class="content">
-<div class="paragraph"><p>Remember: When testing WeIO it&#8217;s good practice NOT to save conf files</p></div>
+<div class="paragraph"><p>Remember: When testing WeIO it&#8217;s good practice NOT to keep old conf files</p></div>
 </div></div>
 </div>
 </div>
@@ -2080,7 +2089,7 @@ and codes that we didn&#8217;t write or change</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-08-25 12:29:05 CEST
+Last updated 2013-08-26 23:29:06 CEST
 </div>
 </div>
 </body>

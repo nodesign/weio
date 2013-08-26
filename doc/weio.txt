@@ -102,6 +102,7 @@ sudo service xinetd restart
 Test TFTP connection
 --------------------
 
+=== Carambola 1
 ---------------------------------------------------------------------------------------------------------------------------------------
 drasko@Marx:~/carambola/carambola$ cp bin/ramips/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin /home/tftpboot/carambola.bin
 ---------------------------------------------------------------------------------------------------------------------------------------
@@ -1303,17 +1304,18 @@ $ scp openwrt-ar71xx-generic-carambola2-squashfs-sysupgrade.bin root@weio.local:
 ****************************************************************************
 Remember: /tmp is in RAM where there are plenty space for such a large files
 ****************************************************************************
-With sysupgrade there are 2 important options, to save configuration files (things from /etc) :
+
+With sysupgrade there are 2 important options, to keep current configuration files (things from /etc):
 -------------------------------------------------------------------------------
 $ sysupgrade -v -c /tmp/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin
 -------------------------------------------------------------------------------
-or NOT to save them :
+or to replace them with new ones:
 -----------------------------------------------------------------------------
 sysupgrade -v -n /tmp/openwrt-ramips-rt305x-carambola-squashfs-sysupgrade.bin
 -----------------------------------------------------------------------------
-*********************************************************************
-Remember: When testing WeIO it's good practice NOT to save conf files
-*********************************************************************
+*************************************************************************
+Remember: When testing WeIO it's good practice NOT to keep old conf files
+*************************************************************************
 
 
 
