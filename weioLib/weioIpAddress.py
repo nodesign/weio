@@ -2,13 +2,18 @@ import socket
 import urllib
 import re
 import subprocess
-
+import platform
 
 def getLocalIpAddress() :
     """Gets local ip address"""
-    cmd = "ifconfig wlan0 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}'"
-    return subprocess.check_output(cmd, shell=True)
     
+    if (platform.system() == 'Linux') :
+        cmd = "ifconfig wlan0 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1}'"
+        return subprocess.check_output(cmd, shell=True)        
+    else : # Darwin
+        return socket.gethostbyname(socket.gethostname())
+
+
 def getPublicIpAddress() :
     """Gets world ip address. TODO test if internet is reachable"""
     f = urllib.urlopen("http://www.canyouseeme.org/")
