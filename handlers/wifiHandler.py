@@ -185,6 +185,9 @@ class WeioWifiHandler(SockJSConnection):
         msg = {}
         msg['serverPush'] = 'mode'
         msg['mode'] = myMode
+        
+        if (platform!='mips'):
+            myMode = "sta" # simulation
         print "MODE WIFI ", myMode
         if ("ap" in myMode):
             print "gotchaa"
