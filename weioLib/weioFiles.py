@@ -37,10 +37,11 @@
 import os
 import weio_config
 from collections import namedtuple
+import shutil
 
 from os import listdir, sep
 from os.path import abspath, basename, isdir
-from sys import argv
+#from sys import argv
 
 
 _ntuple_diskusage = namedtuple('usage', 'total used free')
@@ -55,7 +56,9 @@ global htmlTree
 def tree(dir, padding, print_files=True):
     global htmlTree
     #print padding[:-1] + '<label for="folder">' + basename(abspath(dir)) + '/' + "</label><input type='checkbox' id='folder1' />" 
-    htmlTree+=padding[:-1] + '<label for="folder">' + basename(abspath(dir)) + "</label><input type='checkbox' id='folder1' checked=''>"
+    htmlTree+=padding[:-1] + '<label for="folder">' + basename(abspath(dir)) + "</label>"
+    htmlTree+="<input type='checkbox' id='folder1' checked=''>"
+    htmlTree+="<i class='icon-remove' id='deleteProjectButton' role='button' data-toggle='modal'></i>"
     htmlTree+="\n"
     #print "<ol>"
     htmlTree+="<ol>"
@@ -186,6 +189,12 @@ def checkIfPathIsInUserFolder(path):
 def removeFile(path):
     """Removes specified file, if folder path is passed exception is rised"""
     os.remove(path)
+
+def removeDirectory(path):
+    """Removes specified userProject directory even if directory is not empty. It will execute
+        only in the case when path contains userProjects in its string"""
+    if "userProjects" in path:
+        shutil.rmtree(path)
     
 def disk_usage(path):
     """Return disk usage statistics about the given path.

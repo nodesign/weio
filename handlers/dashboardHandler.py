@@ -393,6 +393,9 @@ class WeioDashBoardHandler(SockJSConnection):
         
         data['status'] = "New project created"
         self.send(json.dumps(data))
+
+    def deleteCurrentProject(self, rq):
+        pass
         
     
 ##############################################################################################################################
@@ -414,6 +417,7 @@ class WeioDashBoardHandler(SockJSConnection):
         #'deleteFile': deleteFile,
         'getUser': sendUserData,
         'createNewProject': newProject,
+        'deleteProject' : deleteCurrentProject,
         
     }
     

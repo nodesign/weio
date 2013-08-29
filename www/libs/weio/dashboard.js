@@ -157,6 +157,14 @@ function updateConsoleError(data) {
         document.getElementById("weioIframe").contentWindow.updateConsoleError(data);
 }
 
+/**
+ * Deletes current project, this function was called from inside editor iFrame
+ */
+function deleteProject() {
+    var rq = { "request": "deleteProject"};
+    editorSocket.send(JSON.stringify(rq));
+}
+
 
 //CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////x  
 /**
@@ -176,8 +184,13 @@ var callbacks = {
     "stdout" : updateConsoleOutput,
     "stderr" : updateConsoleError,
     "createNewProject" : newProjectIsCreated,
+    "deleteProject" : projectDeleted,
     
 }
+
+/**
+ * After deletation of project reset project list and choose another to open
+ */
 
 /**
  * Shows local ip address on the screen

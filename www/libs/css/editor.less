@@ -268,12 +268,33 @@ ol.tree
     margin-left: 4px;
     margin-top:0px;
     font-size: 12px;
+    
+    
+    
+    
 }
 li 
 { 
     position: relative; 
     margin-left: 0px;
     list-style: none;
+    
+    #deleteProjectButton {
+        position:absolute;
+        margin-top:-18px;
+        right:10px;
+        
+        color:rgb(200, 200, 200);
+        /*display:none;*/
+        &:hover {
+            cursor:pointer;
+            color: white;
+            text-decoration: none;
+        };
+        
+    }
+    
+    
 }
 li.file
 {

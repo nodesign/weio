@@ -221,6 +221,19 @@ li {
   margin-left: 0px;
   list-style: none;
 }
+li #deleteProjectButton {
+  position: absolute;
+  margin-top: -18px;
+  right: 10px;
+  color: #c8c8c8;
+  /*display:none;*/
+
+}
+li #deleteProjectButton:hover {
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+}
 li.file {
   margin-left: -1px !important;
 }

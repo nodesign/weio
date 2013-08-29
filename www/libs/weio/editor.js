@@ -172,16 +172,23 @@ $(document).ready(function () {
                        //     console.log($(this).parents());                      
                        // prepareToDeleteFile  
                        
-                   if ($(e.target).hasClass('icon-remove')){
-                        // kill existing file
-                        console.log($(e.target).parents('li.file'));
+                      // console.log("FILE ", $(e.target).is("#deleteFileButton"));
+                      // console.log("FOLDER ", $(e.target).is("#deleteProjectButton"));
+                   //if ($(e.target).hasClass('icon-remove')){
+                   if ($(e.target).is("#deleteFileButton")) {
+                       // kill existing file
+                         //  console.log($(e.target).parents('li.file'));
                            
                            var m = $(e.target).parents('li.file');
                            var path = $(m).children('a.fileTitle').attr('id');
                            
                            prepareToDeleteFile(path);
                        
-                   } else if ($(e.target).hasClass('fileTitle')) {
+                       } else if ($(e.target).is("#deleteProjectButton")) {
+                       
+                           prepareToDeleteProject();
+                       
+                       } else if ($(e.target).hasClass('fileTitle')) {
                            
                        // Path extraction                        
                        var path = $(e.target).attr('id');
@@ -434,10 +441,18 @@ function prepareToDeleteFile(filename) {
     toBeDeleted = filename;
 }
 
+function prepareToDeleteProject() {
+    $('#windowTitleDialog').modal('show');
+}
+
 function deleteFile() {
     var rq = { "request": "deleteFile", "path":toBeDeleted};
     editorSocket.send(JSON.stringify(rq));
     toBeDeleted = "";
+}
+
+function deleteProject() {
+    window.top.deleteProject();
 }
 
 /*
@@ -656,7 +671,7 @@ function insertNewStrip(data) {
 
 
 function updateStatus(data) {
-//    console.log(data);
+    //console.log(data);
     window.top.setStatus(null, data.status);
 }
 
