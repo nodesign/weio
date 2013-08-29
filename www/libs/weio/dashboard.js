@@ -191,6 +191,9 @@ var callbacks = {
 /**
  * After deletation of project reset project list and choose another to open
  */
+function projectDeleted(data) {
+    console.log("delete project here");
+}
 
 /**
  * Shows local ip address on the screen

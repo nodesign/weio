@@ -98,7 +98,7 @@ def tree(dir, padding, print_files=True):
             # filer all osx crap DS_Store and all binary Python files
             if ((file != ".DS_Store") and (".pyc" not in file)) :
                 fullpath =  "'" + dir + file + "'"
-                htmlTree+=padding + '<li class="file"><a class="fileTitle" id="' + dir + file + '">' + file + '</a>'
+                htmlTree+=padding + '<li class="file"><a class="fileTitle" id="'+ str(getStinoFromFile(dir+file)) +'" href="' + dir + file + '">' + file + '</a>'
                 #htmlTree+='<a href="javascript:prepareToDeleteFile('+ fullpath +');">'
                 #htmlTree+='<i class="icon-remove" id="deleteFileButton" role="button" data-toggle="modal" href="javascript:prepareToDeleteFile('+ fullpath +');"></i>'
                 htmlTree+='<a href="">'
