@@ -18,7 +18,7 @@ def WeioUserSetup() :
     #pinMode(LED_PIN, OUTPUT)
 
     # Attaches interrupt from Web client
-    attacdh.event('setColor', buttonHandler)
+    attach.event('setColor', buttonHandler)
 
     # Attaches sensor function to infinite loop
     attach.process(blinky, ("Test", 10))
