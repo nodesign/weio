@@ -3,7 +3,6 @@ import sys
 
 sys.path.append(r'./')
 from weioLib.weioUserApi import *
-from devices import waelice
 
 # Simple standalone application, no web interface
 # Reads digital potentiometer from A0 pin to blink LED slower or
@@ -34,7 +33,8 @@ def WeioUserSetup() :
 # Event Handlers
 ###
 def buttonHandler(dataIn) :
-    waelice.setColor(dataIn[0], dataIn[1], dataIn[2])
+    #waelice.setColor(dataIn[0], dataIn[1], dataIn[2])
+    pass
 
 
 
