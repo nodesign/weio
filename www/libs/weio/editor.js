@@ -55,7 +55,7 @@ $(document).ready(function () {
 
         if ($(this).is(".opened")) {
 
-            $(".editorContainer").animate( { left: closedSideBarWidth }, { queue: false, duration: 100 });
+            $(".editorContainer").animate( { left: closedSideBarWidth }, { queue: false, duration: 100, step:function(){$('.ace_content').css('width','100%')}  });
 
             $(".leftSideBar").animate( { width: closedSideBarWidth }, { queue: false, duration: 100 });
             $("#leftSideBarButton").animate( { left: "-5px"}, { queue: false, duration: 100 });
@@ -66,7 +66,7 @@ $(document).ready(function () {
             
         } else {
 
-            $(".editorContainer").animate( { left: leftSideBarWidth }, { queue: false, duration: 100 });
+            $(".editorContainer").animate( { left: leftSideBarWidth }, { queue: false, duration: 100, step:function(){$('.ace_content').css('width','100%')}  });
 
             $(".leftSideBar").animate( { width: leftSideBarWidth }, { queue: false, duration: 100 });
             $("#leftSideBarButton").animate( { left: "177px"}, { queue: false, duration: 100 });
@@ -76,6 +76,7 @@ $(document).ready(function () {
             $(".bottomButtons").show();
         }
       scaleIt();
+      
                                   
         
     });
@@ -84,7 +85,7 @@ $(document).ready(function () {
 
         if ($(this).is(".opened")) {
 
-            $(".editorContainer").animate( { right: closedSideBarWidth }, { queue: false, duration: 100 });
+            $(".editorContainer").animate( { right: closedSideBarWidth }, { queue: false, duration: 100, step:function(){$('.ace_content').css('width','100%')}  });
 
             $(".rightSideBar").animate( { width: closedSideBarWidth }, { queue: false, duration: 100 });
             $("#rightSideBarButton").animate( { left: "-5px"}, { queue: false, duration: 100 });
@@ -111,7 +112,7 @@ $(document).ready(function () {
     });
                 
       
-  // window.setInterval("autoSave()",autoSaveInterval); 
+  window.setInterval("autoSave()",autoSaveInterval); 
                    
                   
   $('.accordion').click(function(e){
@@ -123,38 +124,29 @@ $(document).ready(function () {
             // Get Id from file
             var currentStrip = getEditorObjectFromParsedId("file_", $($(e.target).parents('.accordion-group')).attr('id'));
             currentStrip = currentStrip.path;
-            //console.log("JHGJKHGJKKJGHKJHJGGHJK ", currentStrip);                        
+            console.log("JHGJKHGJKKJGHKJHJGGHJK ", currentStrip);                        
             //var killIndex = $.inArray(currentStrip, currentlyOpened);
-                        
-            //currentlyOpened.splice(currentlyOpened.indexOf(currentStrip),1);
-                        
+            
+            if ($(e.target).parents('.accordion-group').find('#codeEditorAce').length > 0) {
+				$(".safeHome").html('').append($('#codeEditorAce'));
+				$(".safeHome").hide();
+			}
+            if($('.accordion-group').length <= 1 && $('#codeEditorAce').parents('.safeHome').length < 1){
+				$(".safeHome").html('').append($('#codeEditorAce'));
+				$(".safeHome").hide();
+				
+			}
 
-            for (var i in editorsInStack) {
-                        
-                        if (editorsInStack[i].path == currentStrip) {
-                            editorsInStack[i].data = editor.getValue();
-                            saveFile(currentStrip);
-                            
-                            editorsInStack.splice(i,1);
-                            if (editorsInStack.length == 0) focusedFile = null;
-                            //console.log(editorsInStack[i].name);
-                        
-                            
-                            break;
-                        }
-            }
-            
-            // save editor in safe house before
-            
-            $(".safeHome").html('').append($('#codeEditorAce'));
-            $(".safeHome").hide();
-            
-            //console.log($(e.target).parents('.accordion-group'), $(e.target).parent('.accordion-group'));
-            
-            //$(this).on("click",function(){return false;}); //KILL EVENTS.
+			var iOBJ = findObjectInArray($(e.target).parents('.accordion-group').attr('id').split("_")[1]);
+			
+			// Save
+			saveFile(editorsInStack[iOBJ]);
+			
+			// Remove from array
+			editorsInStack.splice(iOBJ,1);
+			
+			// Remove DIV
             $(e.target).parents('.accordion-group').remove();
-             
-            //focusedFile==null;
         
         }   
     }
@@ -166,8 +158,8 @@ $(document).ready(function () {
                   // Events for tree
                   
       $('.tree').click(function(e){
-                       
-                       console.log(treeLock);
+            e.preventDefault(); 
+            console.log(treeLock);
             if (!treeLock) {
                        //     console.log($(this).parents());                      
                        // prepareToDeleteFile  
@@ -180,7 +172,7 @@ $(document).ready(function () {
                          //  console.log($(e.target).parents('li.file'));
                            
                            var m = $(e.target).parents('li.file');
-                           var path = $(m).children('a.fileTitle').attr('id');
+                           var path = $(m).children('a.fileTitle').attr('href');
                            
                            prepareToDeleteFile(path);
                        
@@ -191,7 +183,7 @@ $(document).ready(function () {
                        } else if ($(e.target).hasClass('fileTitle')) {
                            
                        // Path extraction                        
-                       var path = $(e.target).attr('id');
+                       var path = $(e.target).attr('href');
                        //console.log(path);
                        
                        var doesExist = false;
@@ -247,19 +239,35 @@ function createEditor(){
     editor.getSession().setUseWrapMode(true);
     editor.setShowPrintMargin(false);
     
-    editor.getSession().on('change', function() {
-//                           codeHasChanged = true;
-//                           var o = getEditorObjectFromPath(focusedFile);
-//                           if (o != null) {
-//                               
-//                                $("#att_"+o.id).html(o.name+"*");
-//                           
-//                                
-//                           }
-                            
-                        });
+    // On chage content
+    $('#codeEditorAce').keyup(function(){
+			// Remove previous change note
+			$('#codeEditorAce').parents('.accordion-group')
+			.find('.accordion-toggle')
+			.find('span.hasChanged').remove();
+							
+			// Add change note				
+			$('#codeEditorAce').parents('.accordion-group')
+			.find('.accordion-toggle')
+			.append($('<span />')
+			.addClass('hasChanged')
+			.text('*'));
+			
+			var iOBJ = findObjectInArray($('#codeEditorAce').parents('.accordion-group').attr('id').split("_")[1]);
+			editorsInStack[iOBJ].data = editor.getValue();
+			
+		});
     
     editor.gotoLine(0);
+}
+
+// Pronalazimo objekat u nizu koji je vezan za file na kojem radimo
+function findObjectInArray(objectID){	
+	for (var i=0; i<editorsInStack.length; i++){
+		if(editorsInStack[i].id == objectID){
+			return i;
+		}
+	}
 }
 
 function scaleIt(){
@@ -273,6 +281,7 @@ function scaleIt(){
     
     // Resize
     $(editor).resize();
+    
 }
 
 
@@ -361,11 +370,11 @@ function getFileIdFromPath(path) {
 /**
  * Save file on the server 
  */
-function saveFile(path) {
+function saveFile(data) {
     
-    var obj = getEditorObjectFromPath(path);
+    //var obj = getEditorObjectFromPath(path);
     //console.log("SAVE " + obj.name);
-    var rq = { "request": "saveFile", "data":obj};
+    var rq = { "request": "saveFile", "data":data};
     editorSocket.send(JSON.stringify(rq));
     stripDestroyLock = true; // ACTIVATE INTERACTION HALT
 }
@@ -374,12 +383,12 @@ function saveFile(path) {
  * Save focused file on the server 
  */
 function saveFocusedFile() {
-    if (focusedFile!=null) {
+   /* if (focusedFile!=null) {
         var obj = getEditorObjectFromPath(focusedFile);
         //console.log("SAVE " + obj.name);
         var rq = { "request": "saveFile", "data":obj};
         editorSocket.send(JSON.stringify(rq));
-    }
+    }*/
 }
 
 
@@ -387,8 +396,20 @@ function saveFocusedFile() {
  * Auto save if there were changes
  */
 function autoSave() {
-    if (codeHasChanged) saveFile(focusedFile);
-    codeHasChanged = false;
+   /* if (codeHasChanged) saveFile(focusedFile);
+    codeHasChanged = false;*/
+    for (var i=0; i<editorsInStack.length; i++){
+		
+		// Save file on server
+		saveFile(editorsInStack[i]);
+		
+		// Remove change indicator
+		$('#file_'+editorsInStack[i].id).find('span.hasChanged').animate({
+			opacity:0
+			},300, function(){
+				$(this).remove();
+				})
+	}
 }
 
 /*
@@ -464,6 +485,7 @@ function updateConsoleOutput(data) {
 }
 
 function updateConsoleError(data) {
+
     var stderr = data.data;
     $('#consoleOutput').append("<a id='stderr'>" + stderr + "<br></a>");
 }
@@ -471,6 +493,42 @@ function updateConsoleError(data) {
 function updateConsoleSys(data) {
     var sys = data.data;
     $('#consoleOutput').append("<a id='sys'>" + sys + "<br></a>");
+}
+
+function updateError(data) {
+	
+	var d = data.data;
+    	
+	// Path extraction
+	var projectName = $('.tree label[for=folder]').text();
+	var splitedFile = d[(d.length-1)].file.split("/");
+	console.log(splitedFile);
+	var path = 'userProjects/' + projectName + '/'+splitedFile[(splitedFile.length -1)];
+	
+	var line = d[(d.length-1)].line
+    var doesExist = false;
+    
+    console.log('file error: ',path);
+    
+    // Adding strip if don't exists already
+    for (var i in editorsInStack) {
+		if (editorsInStack[i].path == path) {
+			doesExist = true;
+        }
+    }
+                       
+    if (!doesExist){
+		var rq = { "request": "getFile", "data":path};
+        editorSocket.send(JSON.stringify(rq));
+        treeLock = true; // LOCK TREE INTERACTION HERE
+    }
+    console.log('linija:',line)
+    editor.focus();
+    setTimeout(function(){
+		editor.gotoLine(line);
+		},1000)
+    
+	
 }
 
 
@@ -489,8 +547,7 @@ var callbacksEditor = {
     "getFile": insertNewStrip,
     "saveFile": fileSaved,
     "createNewFile": refreshFiles,
-    "deleteFile": fileRemoved,
-   
+    "deleteFile": fileRemoved
 }
 
 function fileSaved(data) {
@@ -550,6 +607,10 @@ function updateFileTree(data) {
 
 
 function fixedCollapsing(showMe) {
+	
+	
+	
+	
     // Open new element and hide others
     
     // Collapse all
@@ -565,16 +626,25 @@ function fixedCollapsing(showMe) {
                                                                       //Get coresponding data and put to editor
                                                                       var acc_id = $($(this).parents('.accordion-body')).attr('id');
                                                                       var o = getEditorObjectFromParsedId("acc_",acc_id);
+                                                                      
+                                                                      var iOBJ = findObjectInArray($($(this).parents('.accordion-body')).attr('id').split("_")[1]);
+                                                                      editor.setValue(editorsInStack[iOBJ].data);
+                                                                      console.log(iOBJ);
+                                                                      editor.getSession().setMode("ace/mode/"+editorsInStack[iOBJ].type);
+                                                                      editor.gotoLine(0);
+                                                                      
+                                                                      console.log(editorsInStack[iOBJ].type, editor.getSession().getMode());
+                                                                      
                                                                           //console.log("MMM ", $($(this).parents('.accordion-body')));
                                                                       //   console.log("DATA " , o);
-                                                                      if (o!=null) {
+                                                                      /*if (o!=null) {
                                                                           editor.setValue(o.data);
                                                                           editor.getSession().setMode("ace/mode/"+ o.type);
                                                                           
                                                                           editor.gotoLine(0);
                                                                           focusedFile = o.path;
                                                                           
-                                                                      }
+                                                                      }*/
                                                                            
                                                                           //console.log("SHOW");
                                                                           
@@ -595,22 +665,27 @@ function fixedCollapsing(showMe) {
     $(showMe).find('.collapse').on('hide', function () {
                                    // Get contents and put to array
                                    var path = $(this).parent().attr('id');
-                                   console.log("SAVING FROM HIDE");
-                                   //console.log("GGGGGGGG ", $(this).parent().attr('id'));
+                                  
+                                   // Pronadji objekat koji mu treba
+                                   var iOBJ = findObjectInArray($(this).parent().attr('id').split("_")[1]);
+                                   
+                                   editorsInStack[iOBJ].data = editor.getValue();
+                                   console.log('sacuvan data');
+                                   
                                    var o = getEditorObjectFromPath(path);
 
-                                   if (o != null) {
+                                   /*if (o != null) {
                                     o.data = editor.getValue();
                                     setEditorObjectToPath(path, o);
                                     saveFile(path);
+                                   }*/
                                    
-                                   }
                                    $('#codeEditorAce').appendTo($(showMe).find('.accordion-inner'));
                                    scaleIt();
                                    $(showMe).find('.accordion-inner').animate({opacity:1},300,'linear');
                                    //focusedFile = null;
                                    //console.log("HIDE");
-                                    })
+                    })
 
     
     // Showing accordion
@@ -656,12 +731,19 @@ function insertNewStrip(data) {
                                  });    
  
     //currentlyOpened.push(data.data.path);
-    
         
     if (editorsInStack.length == 1){
         $(el).find('.accordion-inner').html('').append($('#codeEditorAce'));
         $('#codeEditorAce').css({'display':'block'});
     }
+    
+    // Pronadji 
+    /*var iOBJ = findObjectInArray(idEl);
+    editor.setValue(editorsInStack[iOBJ].data);
+    editor.getSession().setMode("ace/mode/"+editorsInStack[iOBJ].type);
+    editor.gotoLine(0);
+    console.log(iOBJ)*/
+    
     
     // Update height
     scaleIt();

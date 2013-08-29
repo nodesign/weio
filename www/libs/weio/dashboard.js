@@ -156,6 +156,11 @@ function updateConsoleError(data) {
     if (isEditorActive)
         document.getElementById("weioIframe").contentWindow.updateConsoleError(data);
 }
+function updateError(data) {
+	console.log(data)
+	if (isEditorActive)
+		document.getElementById("weioIframe").contentWindow.updateError(data);
+}
 
 /**
  * Deletes current project, this function was called from inside editor iFrame
@@ -185,7 +190,7 @@ var callbacks = {
     "stderr" : updateConsoleError,
     "createNewProject" : newProjectIsCreated,
     "deleteProject" : projectDeleted,
-    
+    "errorObjects": updateError
 }
 
 /**
