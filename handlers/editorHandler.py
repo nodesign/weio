@@ -102,7 +102,7 @@ class WeioEditorHandler(SockJSConnection):
         data['requested'] = rq['request']
         
         f = rq['data']
-        weioFiles.saveRawContentToFile(f['path'], f['data']);
+        weioFiles.saveRawContentToFile(f['path'], f['data'])
         
         data['status'] = rq['data']['name'] + " saved!"
         self.send(json.dumps(data))
@@ -144,7 +144,20 @@ class WeioEditorHandler(SockJSConnection):
         
         data['status'] = "file has been removed"
         self.send(json.dumps(data))
-    
+
+    def saveAll(self, rq) :
+        #print "SAVE ALL FILES FROM ARRAY ", rq
+        files = rq['data']
+        
+        if len(files)>0 :
+            for f in files:
+                weioFiles.saveRawContentToFile(f['path'], f['data'])
+        
+            data = {}
+            data['requested'] = rq['request']
+            data['status'] = "Project has been saved"
+            self.send(json.dumps(data))
+        
     
     ##############################################################################################################################
     # DEFINE CALLBACKS IN DICTIONARY
@@ -163,6 +176,7 @@ class WeioEditorHandler(SockJSConnection):
         'saveFile': saveFile,
         'createNewFile': createNewFile,
         'deleteFile': deleteFile,
+        'saveAll' : saveAll
         #'getUser': sendUserData,
     
     }

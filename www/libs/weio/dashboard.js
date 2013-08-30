@@ -127,6 +127,11 @@ function setStatus(icon, message) {
     $( "#statusBar" ).html('<p id="statusBarText">' + message + '</p>');
 }
 
+function prepareToPlay() {
+    if (isEditorActive) 
+        document.getElementById("weioIframe").contentWindow.play();
+}
+
 function play(){
     var rq = { "request": "play"};
     dashboard.send(JSON.stringify(rq));

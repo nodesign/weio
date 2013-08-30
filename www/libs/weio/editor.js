@@ -12,12 +12,6 @@ var editor;
 var editorsInStack = [];
 
 /*
- * Current focused file
- * String variable that contains file path
- */
-var focusedFile = null;
-
-/*
  * Tree interaction lock, avoid massive click and bugs
  */
 var treeLock = false;
@@ -27,6 +21,16 @@ var treeLock = false;
  * saving files, avoid file corruption
  */
 var stripDestroyLock = false;
+
+/**
+ * Milliseconds interval for autosave
+ */
+var autoSaveInterval = 4000;
+
+/**
+ * Play is activated from dashboard, 
+ */
+var playPushed = false;
 
 
 /*
@@ -105,7 +109,6 @@ $(document).ready(function () {
             $("#trashConsole").show();
             
         }
-        
        scaleIt();
                                    
 
@@ -124,7 +127,7 @@ $(document).ready(function () {
             // Get Id from file
             var currentStrip = getEditorObjectFromParsedId("file_", $($(e.target).parents('.accordion-group')).attr('id'));
             currentStrip = currentStrip.path;
-            console.log("JHGJKHGJKKJGHKJHJGGHJK ", currentStrip);                        
+            //console.log("JHGJKHGJKKJGHKJHJGGHJK ", currentStrip);                        
             //var killIndex = $.inArray(currentStrip, currentlyOpened);
             
             if ($(e.target).parents('.accordion-group').find('#codeEditorAce').length > 0) {
@@ -155,8 +158,7 @@ $(document).ready(function () {
                   
                   
                   
-                  // Events for tree
-                  
+    // Events for tree
       $('.tree').click(function(e){
             e.preventDefault(); 
             console.log(treeLock);
@@ -218,10 +220,6 @@ $(document).ready(function () {
   // Ace editor creation
   createEditor();
   
-    
-   //console.log(window.innerHeight); 
-   //console.log(editorData.editors.length);
-  //window.top.setStatus(null, "Gimme some good code!");
    
 }); /* end of document on ready event */
 
@@ -303,17 +301,6 @@ function updateConsoleHeight() {
 //EDITOR////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-/**
- * Milliseconds interval for autosave
- */
-var autoSaveInterval = 4000;
-
-/**
- * Do I have to autosave project? This is evaluated by on change event from Ace editor
- */
-var codeHasChanged = false;
-
-
 function clearConsole() {
     $('#consoleOutput').empty();
 }
@@ -380,28 +367,35 @@ function saveFile(data) {
 }
 
 /**
- * Save focused file on the server 
+ * Save all opened files on the server 
  */
-function saveFocusedFile() {
-   /* if (focusedFile!=null) {
-        var obj = getEditorObjectFromPath(focusedFile);
-        //console.log("SAVE " + obj.name);
-        var rq = { "request": "saveFile", "data":obj};
+function saveAll() {
+    if (editorsInStack.length > 0) {
+        var rq = { "request": "saveAll", "data":editorsInStack};
         editorSocket.send(JSON.stringify(rq));
-    }*/
+    }
+    stripDestroyLock = true; // ACTIVATE INTERACTION HALT
 }
 
+/**
+ * Play mode
+ */
+function play() {
+    playPushed = true;
+    saveAll();
+}
 
 /**
  * Auto save if there were changes
  */
 function autoSave() {
-   /* if (codeHasChanged) saveFile(focusedFile);
-    codeHasChanged = false;*/
+       
+    saveAll();
+    
     for (var i=0; i<editorsInStack.length; i++){
 		
 		// Save file on server
-		saveFile(editorsInStack[i]);
+		//saveFile(editorsInStack[i]);
 		
 		// Remove change indicator
 		$('#file_'+editorsInStack[i].id).find('span.hasChanged').animate({
@@ -412,6 +406,8 @@ function autoSave() {
 	}
     
 }
+
+
 
 /*
  * MODAL CREATE NEW FILE
@@ -509,7 +505,7 @@ function updateError(data) {
 	var line = d[(d.length-1)].line
     var doesExist = false;
     
-    console.log('file error: ',path);
+    console.log('error in file : ',path);
     
     // Adding strip if don't exists already
     for (var i in editorsInStack) {
@@ -523,13 +519,12 @@ function updateError(data) {
         editorSocket.send(JSON.stringify(rq));
         treeLock = true; // LOCK TREE INTERACTION HERE
     }
-    console.log('linija:',line)
+    console.log('error in line :',line)
     editor.focus();
     setTimeout(function(){
 		editor.gotoLine(line);
 		},1000)
     
-	
 }
 
 
@@ -548,16 +543,22 @@ var callbacksEditor = {
     "getFile": insertNewStrip,
     "saveFile": fileSaved,
     "createNewFile": refreshFiles,
-    "deleteFile": fileRemoved
+    "deleteFile": fileRemoved,
+    "saveAll": allFilesSaved
 }
 
-function fileSaved(data) {
-//    var o = getEditorObjectFromPath(focusedFile);
-//    var currentName = $("a.accordion-toggle").html();
-//    if (currentName.indexOf(o.name)!=-1) {
-      //  $("a.accordion-toggle").html(o.name);
-//    }
- 
+function allFilesSaved(data) {
+    
+    if (playPushed==true) {
+        // finally call play in dashboard
+        window.top.play();
+    }
+    
+    playPushed = false;
+    stripDestroyLock = true; // ACTIVATE INTERACTION HALT
+}
+
+function fileSaved(data) { 
     updateStatus(data);
     stripDestroyLock = false; // UNLOCK INTERACTION
 }
@@ -571,39 +572,6 @@ function updateFileTree(data) {
     $("#tree").html();
     $("#tree").html(data.data);
   
-//    $('.tree li.file a.fileTitle').click(function(){
-//       
-//       // Where we clicked?                       
-//       var idEl = $('.tree a.fileTitle').toArray().indexOf(this);
-//       
-//       // Path extraction                        
-//       var path = $(this).attr('id');
-//        
-//       
-//       var doesExist = false;
-//                               
-//       // Adding strip if don't exists already
-//       for (var i in editorsInStack) {
-//       
-//       if (editorsInStack[i].path == path) {
-//                   doesExist = true;
-//            }
-//       }
-//
-//       if (!doesExist){
-//                               
-//           // asks server to retreive file that we are intested in
-//           var rq = { "request": "getFile", "data":path};
-//           editorSocket.send(JSON.stringify(rq));
-//                               
-//           // It's more sure to add to currentlyOpened array from
-//           // websocket callback than here in case that server don't answer
-//       }
-//   });
-//    
-    
-    
-       
 }
 
 
@@ -636,20 +604,7 @@ function fixedCollapsing(showMe) {
                                                                       
                                                                       console.log(editorsInStack[iOBJ].type, editor.getSession().getMode());
                                                                       
-                                                                          //console.log("MMM ", $($(this).parents('.accordion-body')));
-                                                                      //   console.log("DATA " , o);
-                                                                      /*if (o!=null) {
-                                                                          editor.setValue(o.data);
-                                                                          editor.getSession().setMode("ace/mode/"+ o.type);
-                                                                          
-                                                                          editor.gotoLine(0);
-                                                                          focusedFile = o.path;
-                                                                          
-                                                                      }*/
-                                                                           
-                                                                          //console.log("SHOW");
-                                                                          
-                                                                      
+                                                                                                                                            
                                                                       });
                                })
     
@@ -684,8 +639,7 @@ function fixedCollapsing(showMe) {
                                    $('#codeEditorAce').appendTo($(showMe).find('.accordion-inner'));
                                    scaleIt();
                                    $(showMe).find('.accordion-inner').animate({opacity:1},300,'linear');
-                                   //focusedFile = null;
-                                   //console.log("HIDE");
+                                   
                     })
 
     
@@ -794,8 +748,6 @@ function fileRemoved(data) {
             if (editorsInStack[i].path == currentStrip) {
                 currentId = editorsInStack[i].id;
                 editorsInStack.splice(i,1);
-                if (editorsInStack.length == 0) focusedFile = null;
-                 
                 break;
             }
         }
