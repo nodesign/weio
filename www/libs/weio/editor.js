@@ -16,12 +16,6 @@ var editorsInStack = [];
  */
 var treeLock = false;
 
-/*
- * Strip destroyer lock, avoid destruction before server finished 
- * saving files, avoid file corruption
- */
-var stripDestroyLock = false;
-
 /**
  * Milliseconds interval for autosave
  */
@@ -120,7 +114,7 @@ $(document).ready(function () {
                   
   $('.accordion').click(function(e){
         
-    if (!stripDestroyLock) {
+  
         // Remove strip                
         if ($(e.target).hasClass('icon-remove')){
             //console.log("fjdhsgjhfgsjkhfdgsjk");
@@ -152,7 +146,7 @@ $(document).ready(function () {
             $(e.target).parents('.accordion-group').remove();
         
         }   
-    }
+   
                         
     });
                   
@@ -363,7 +357,7 @@ function saveFile(data) {
     //console.log("SAVE " + obj.name);
     var rq = { "request": "saveFile", "data":data};
     editorSocket.send(JSON.stringify(rq));
-    stripDestroyLock = true; // ACTIVATE INTERACTION HALT
+   
 }
 
 /**
@@ -374,7 +368,7 @@ function saveAll() {
         var rq = { "request": "saveAll", "data":editorsInStack};
         editorSocket.send(JSON.stringify(rq));
     }
-    stripDestroyLock = true; // ACTIVATE INTERACTION HALT
+   
 }
 
 /**
@@ -555,12 +549,11 @@ function allFilesSaved(data) {
     }
     
     playPushed = false;
-    stripDestroyLock = true; // ACTIVATE INTERACTION HALT
-}
+  }
 
 function fileSaved(data) { 
     updateStatus(data);
-    stripDestroyLock = false; // UNLOCK INTERACTION
+  
 }
 
 /*
