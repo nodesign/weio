@@ -291,7 +291,7 @@ class WeioDashBoardHandler(SockJSConnection):
                 
                 errInLine = arg[1].split("line")
                 errInLine = errInLine[1]
-                oneError['line'] = errInLine
+                oneError['line'] = errInLine.split()
                 
                 print "error in line : ", errInLine
                 #data['errLine'] = errInLine

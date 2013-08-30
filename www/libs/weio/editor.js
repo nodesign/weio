@@ -502,7 +502,8 @@ function updateError(data) {
 	console.log(splitedFile);
 	var path = 'userProjects/' + projectName + '/'+splitedFile[(splitedFile.length -1)];
 	
-	var line = d[(d.length-1)].line
+	var lastErrorObj = d[(d.length-1)]
+    
     var doesExist = false;
     
     console.log('error in file : ',path);
@@ -519,11 +520,21 @@ function updateError(data) {
         editorSocket.send(JSON.stringify(rq));
         treeLock = true; // LOCK TREE INTERACTION HERE
     }
-    console.log('error in line :',line)
+    console.log('error in line :',lastErrorObj.line)
     editor.focus();
     setTimeout(function(){
-		editor.gotoLine(line);
-		},1000)
+               
+               editor.getSession().setAnnotations([{
+                                                   row: lastErrorObj.line-1,
+                                                   column: 0,
+                                                   text: lastErrorObj.reason,
+                                                   type: "error" // also warning and information
+                                                   }]);
+               
+    
+		editor.gotoLine(lastErrorObj.line);
+               
+    },1000);
     
 }
 
