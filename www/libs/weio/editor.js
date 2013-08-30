@@ -375,8 +375,14 @@ function saveAll() {
  * Play mode
  */
 function play() {
-    playPushed = true;
-    saveAll();
+    
+    if (editorsInStack.length>0) {
+        playPushed = true;
+        saveAll();
+    } else {
+        window.top.play();
+    }
+    
 }
 
 /**
