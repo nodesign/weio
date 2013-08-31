@@ -359,7 +359,11 @@ function hideAlert() {
     scaleIt();
 }
 
-function showAlert() {
+function showAlert(data) {
+    $("#errorAlertContent").empty();
+    $("#errorAlertContent").append("Error in file : "+ data.file + "</br>");
+    $("#errorAlertContent").append(data.reason);
+
     $("#errorAlert").show();
     scaleIt();
 }
@@ -543,12 +547,7 @@ function updateError(data) {
     }
     console.log('error in line :',lastErrorObj.line)
     
-    $("#errorAlertContent").empty();
-    $("#errorAlertContent").append("Error in file : "+ lastErrorObj.file + "</br>");
-    $("#errorAlertContent").append(lastErrorObj.reason);
-    showAlert();
-    
-    
+    showAlert(lastErrorObj);
     editor.focus();
     setTimeout(function(){
                
