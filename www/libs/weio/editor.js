@@ -368,6 +368,10 @@ function showAlert(data) {
     scaleIt();
 }
 
+function clearErrorAnnotations() {
+    editor.getSession().clearAnnotations();
+}
+
 
 /**
  * Save file on the server 

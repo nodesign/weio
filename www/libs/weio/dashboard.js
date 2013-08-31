@@ -128,8 +128,11 @@ function setStatus(icon, message) {
 }
 
 function prepareToPlay() {
-    if (isEditorActive) 
+    if (isEditorActive) {
         document.getElementById("weioIframe").contentWindow.play();
+        document.getElementById("weioIframe").contentWindow.hideAlert();
+        document.getElementById("weioIframe").contentWindow.clearErrorAnnotations();
+    }
 }
 
 function play(){
