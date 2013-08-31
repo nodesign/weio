@@ -35,6 +35,8 @@ activeAutoSave = false;
  * When all DOM elements are fully loaded
  */
 $(document).ready(function () {
+                  
+     hideAlert();
     
     /*
      * left and right sidebar width when opened
@@ -272,7 +274,7 @@ function scaleIt(){
     var bigH = $(document).height();
     var hOthers = 0;
     
-    var f = bigH - 60 - (38 * $('.accordion-group').length);
+    var f = bigH - 30 - (38 * $('.accordion-group').length);
     
     // Put editor height
     $('.accordion-inner').height(f-19);
@@ -352,6 +354,15 @@ function getFileIdFromPath(path) {
     return null;
 }
 
+function hideAlert() {
+    $("#errorAlert").hide();
+    scaleIt();
+}
+
+function showAlert() {
+    $("#errorAlert").show();
+    scaleIt();
+}
 
 
 /**
@@ -531,6 +542,13 @@ function updateError(data) {
         treeLock = true; // LOCK TREE INTERACTION HERE
     }
     console.log('error in line :',lastErrorObj.line)
+    
+    $("#errorAlertContent").empty();
+    $("#errorAlertContent").append("Error in file : "+ lastErrorObj.file + "</br>");
+    $("#errorAlertContent").append(lastErrorObj.reason);
+    showAlert();
+    
+    
     editor.focus();
     setTimeout(function(){
                

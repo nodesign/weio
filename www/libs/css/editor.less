@@ -101,7 +101,31 @@ body, div {
     	right:@closedSideBarWidth;
         height:100%;
     	
-    	
+        #errorAlert {
+            border-radius:0px;
+            position:relative;
+            margin-bottom: 0px;
+            
+            /* strip close button*/
+            #closeButton {
+                position: absolute;
+                top: 10px;
+                right: 23px;
+                opacity: 0.7;
+                cursor: pointer;
+                color:#585858;
+                text-decoration: none;
+                z-index:1000;
+                &:hover {
+                    opacity: 1; 
+                }   
+            }
+
+            
+        }
+        
+        
+        
     	/*
          * ALL ACCORDIONS
          */

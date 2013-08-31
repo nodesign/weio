@@ -81,6 +81,26 @@ div {
          */
 
 }
+.columns .editorContainer #errorAlert {
+  border-radius: 0px;
+  position: relative;
+  margin-bottom: 0px;
+  /* strip close button*/
+
+}
+.columns .editorContainer #errorAlert #closeButton {
+  position: absolute;
+  top: 10px;
+  right: 23px;
+  opacity: 0.7;
+  cursor: pointer;
+  color: #585858;
+  text-decoration: none;
+  z-index: 1000;
+}
+.columns .editorContainer #errorAlert #closeButton:hover {
+  opacity: 1;
+}
 .columns .editorContainer .accordion-group {
   background: white;
   margin-bottom: 5px;
