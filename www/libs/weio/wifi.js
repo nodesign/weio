@@ -90,11 +90,12 @@ function injectWifiNetworksInDropMenu() {
 
    // $("#wifiNetworks").append('<li class="disabled"><a tabindex="-1" href="#">Scanning networks <i class="icon-spinner icon-spin" id="wifiIcons"></i></a></li>');
    // $("#wifiNetworks").append('<li class="divider"></li>');
-    
+//    
     $("#wifiNetworks").append('<li><a tabindex="-1" href="#changeWifi" role="button" data-toggle="modal">Connect to another network</a></li>');
     $("#wifiNetworks").append('<li><a tabindex="-1" href="#createWifi" role="button" data-toggle="modal" >Create network</a></li>');
     $("#wifiNetworks").append('<li><a tabindex="-1" href="#" onclick="scanWifiNetworks()">Rescan wifi networks</a></li>');
     $("#wifiNetworks").append('<li class="divider"></li>');
+
     
     for (var cell in wifi) {
         // update current connected object
@@ -115,6 +116,10 @@ function injectWifiNetworksInDropMenu() {
         var formatedWifi = "'" + wifi[cell].mac + "'";
         $("#wifiNetworks").append('<li><a tabindex="-1" onclick="prepareToChangeWifi('+ formatedWifi + ')" role="button" data-toggle="modal">' + currentConnection + wifi[cell].essid  + wifiQuality + secureWifi + '</a></li>');
     }
+    
+    
+    
+
    
     // don't do it here avoid infinite loop
     // scan wifi networks 
@@ -283,7 +288,8 @@ function updateWifiMode(data) {
 */
 wifiSocket.onopen = function() {
     console.log('Wifi Web socket is opened');
-    setTimeout(function(){scanWifiNetworks()},3000);
+    //setTimeout(function(){scanWifiNetworks()},3000);
+    scanWifiNetworks();
 };
 
 /*

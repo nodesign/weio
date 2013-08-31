@@ -114,6 +114,8 @@ body {
 .navbar-inner .container .dropdown-menu {
   font-size: 13px;
   line-height: 18px;
+  overflow-y: scroll;
+  max-height: 400px;
 }
 .navbar-inner .container .dropdown-menu a {
   color: #333333;
