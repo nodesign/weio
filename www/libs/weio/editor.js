@@ -26,6 +26,10 @@ var autoSaveInterval = 4000;
  */
 var playPushed = false;
 
+/**
+ * Autosave lock, deblock on keyup event in editor
+ */
+activeAutoSave = false;
 
 /*
  * When all DOM elements are fully loaded
@@ -247,6 +251,8 @@ function createEditor(){
 			
 			var iOBJ = findObjectInArray($('#codeEditorAce').parents('.accordion-group').attr('id').split("_")[1]);
 			editorsInStack[iOBJ].data = editor.getValue();
+                              
+            activeAutoSave = true;
 			
 		});
     
@@ -389,21 +395,25 @@ function play() {
  * Auto save if there were changes
  */
 function autoSave() {
-       
-    saveAll();
     
-    for (var i=0; i<editorsInStack.length; i++){
-		
-		// Save file on server
-		//saveFile(editorsInStack[i]);
-		
-		// Remove change indicator
-		$('#file_'+editorsInStack[i].id).find('span.hasChanged').animate({
-			opacity:0
-			},300, function(){
-				$(this).remove();
-				})
-	}
+    if (activeAutoSave) {
+        
+        saveAll();
+        
+        for (var i=0; i<editorsInStack.length; i++){
+            
+            // Save file on server
+            //saveFile(editorsInStack[i]);
+            
+            // Remove change indicator
+            $('#file_'+editorsInStack[i].id).find('span.hasChanged').animate({
+                opacity:0
+                },300, function(){
+                    $(this).remove();
+                    })
+        }
+    }
+    activeAutoSave = false;
     
 }
 
