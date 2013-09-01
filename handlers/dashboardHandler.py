@@ -392,11 +392,30 @@ class WeioDashBoardHandler(SockJSConnection):
         # ADD HERE SOME DEFAULT FILES
         
         data['status'] = "New project created"
+        data['path'] = path
         self.send(json.dumps(data))
 
     def deleteCurrentProject(self, rq):
-        pass
         
+        data = {}
+        data['requested'] = rq['request']
+
+        config = weio_config.getConfiguration()
+        projectToKill = config["last_opened_project"]
+        
+        weioFiles.removeDirectory(config["user_projects_path"]+projectToKill)
+        
+        folders = weioFiles.listOnlyFolders(config["user_projects_path"])
+        
+        if len(folders) > 0 :
+            config["last_opened_project"] = folders[0]
+            weio_config.saveConfiguration(config)
+        
+            data['data'] = "reload page"
+        else :
+            data['data'] = "ask to create new project"
+        
+        self.send(json.dumps(data))
     
 ##############################################################################################################################
     # DEFINE CALLBACKS IN DICTIONARY

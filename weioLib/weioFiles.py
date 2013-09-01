@@ -34,11 +34,12 @@
 #
 ###
 
-import os
+
 import weio_config
 from collections import namedtuple
 import shutil
 
+import os
 from os import listdir, sep
 from os.path import abspath, basename, isdir
 #from sys import argv
@@ -128,40 +129,51 @@ def listOnlyFolders(path):
             
 def getFileType(path):
     """Extracts file extension and matches with proper name"""
-    extension = os.path.splitext(path)[1]
-        
-    types = {
-    ".css" : "css",
-    ".py": "python",
-    ".js": "javascript",
-    ".html":"html",
-    ".txt" : "text",
-    ".json": "json"
-    }
-     
-    if (extension in types) :
-        return types[extension]
-    else :
-        return "other"
+    if (os.path.exists(path)) :
+        extension = os.path.splitext(path)[1]
+            
+        types = {
+        ".css" : "css",
+        ".py": "python",
+        ".js": "javascript",
+        ".html":"html",
+        ".txt" : "text",
+        ".json": "json"
+        }
          
+        if (extension in types) :
+            return types[extension]
+        else :
+            return "other"
+    else:
+        return None
+             
 def getFilenameFromPath(path):
     """Extracts filename from path"""
-    return os.path.basename(path)
+    if (os.path.exists(path)) :
+        return os.path.basename(path)
+    else:
+        return None
     
 def getStinoFromFile(path):
     """Returns st_ino of file. This is used for unique file id number"""
-    return os.stat(path).st_ino
-    
+    if (os.path.exists(path)) :
+        return os.stat(path).st_ino
+    else:
+        return None
+
 def getRawContentFromFile(path):
     
     """Reads contents from given filename and returns it. Be aware that this function
      can explore the whole OS. Use checkIfPathIsInUserFolder(path) function to check if path is in user
      only folder."""
-    
-    inputFile = open(path, 'r')
-    rawData = inputFile.read()
-    inputFile.close()
-    return rawData
+    if (os.path.exists(path)) :
+        inputFile = open(path, 'r')
+        rawData = inputFile.read()
+        inputFile.close()
+        return rawData
+    else:
+        return None
     
 def saveRawContentToFile(path, data):
     
@@ -188,7 +200,10 @@ def checkIfPathIsInUserFolder(path):
         
 def removeFile(path):
     """Removes specified file, if folder path is passed exception is rised"""
-    os.remove(path)
+    if (os.path.exists(path)) :
+        os.remove(path)
+    else :
+        return None
 
 def removeDirectory(path):
     """Removes specified userProject directory even if directory is not empty. It will execute

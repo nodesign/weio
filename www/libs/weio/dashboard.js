@@ -55,7 +55,6 @@ $(document).ready(function () {
 var isEditorActive = null;
 
 
-
 $(window).resize(function() {
    updateIframeHeight();
    $('#weioIframe').find('#tree').empty();
@@ -178,7 +177,7 @@ function updateError(data) {
  */
 function deleteProject() {
     var rq = { "request": "deleteProject"};
-    editorSocket.send(JSON.stringify(rq));
+    dashboard.send(JSON.stringify(rq));
 }
 
 
@@ -208,7 +207,13 @@ var callbacks = {
  * After deletation of project reset project list and choose another to open
  */
 function projectDeleted(data) {
-    console.log("delete project here");
+    //console.log("delete project here");
+    
+    if (data.data == "reload page") {
+        randomNumber = Math.random();
+        var url = 'http://' + location.host + '/editor?'+ randomNumber; 
+        window.location = url;
+    }
 }
 
 /**
@@ -242,6 +247,8 @@ function updateProjects(data) {
     $("#userProjectsList").empty();
     $("#userProjectsList").append('<li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>');
     $("#userProjectsList").append('<li class="divider"></li>');
+    
+   
     
     for (var folder in data.data) {
         var s = "'"+String(data.data[folder])+"'";    
@@ -285,7 +292,8 @@ function newProjectIsCreated(data) {
     
     var rq = { "request": "getUserProjetsFolderList"};
     dashboard.send(JSON.stringify(rq));
-    // TODO change project in editor
+    
+    changeProject(data.path);
 }
 
 

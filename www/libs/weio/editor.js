@@ -150,6 +150,8 @@ $(document).ready(function () {
 			
 			// Remove DIV
             $(e.target).parents('.accordion-group').remove();
+                        
+            scaleIt();
         
         }   
    
@@ -801,7 +803,7 @@ function fileRemoved(data) {
         //console.log($(e.target).parents('.accordion-group'), $(e.target).parent('.accordion-group'));
         
         $("#file_"+currentId).remove();
-            
+        
         
     }
 }
