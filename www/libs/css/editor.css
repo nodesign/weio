@@ -50,6 +50,32 @@ div {
 .columns .leftSideBar #leftSideBarButton:hover {
   opacity: 1;
 }
+.columns .leftSideBar #searchInProject {
+  height: 13px;
+  margin-top: 10px;
+  margin-left: 10px;
+  background: #494949;
+  border-color: transparent;
+  margin-bottom: -15px;
+  width: 147px;
+}
+.columns .leftSideBar .search-bar {
+  text-align: center;
+  /* centers inline and inline-block children */
+
+}
+.columns .leftSideBar .search-bar .search-query,
+.columns .leftSideBar .search-bar .btn-primary {
+  display: inline-block;
+  /* allows for heights to be set */
+
+}
+.columns .leftSideBar .search-bar .search-query {
+  height: 30px;
+}
+.columns .leftSideBar .search-bar .btn-primary {
+  height: 40px;
+}
 .columns .leftSideBar .bottomButtons {
   width: 100%;
   height: 32px;
@@ -230,7 +256,7 @@ div {
 }
 /* CSS Tree menu styles */
 ol.tree {
-  padding: 10px 0;
+  padding: 23px 0;
   width: 200px;
   margin-left: 4px;
   margin-top: 0px;

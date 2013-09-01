@@ -70,7 +70,9 @@ function updateIframeHeight() {
  * Run Editor in targeted IFrame
  */ 
 function runEditor() {
-    $(".iframeContainer").attr("src", "editor.html");
+    // generate random number to prevent loading page from cache
+    var randomNumber = Math.random();
+    $(".iframeContainer").attr("src", "editor.html?" + randomNumber);
     $("#editorButtonHeader").attr("class", "top_tab active");
     $("#previewButtonHeader").attr("class", "top_tab");
 }
@@ -80,13 +82,14 @@ function runEditor() {
  * Run preview mode
  */
 function runPreview() {
-    document.getElementById("weioIframe").contentWindow.saveFocusedFile();
+    document.getElementById("weioIframe").contentWindow.saveAll();
     var confFile = "";
     
        $.getJSON('config.json', function(data) {
            confFile = data;
-           
-           $(".iframeContainer").attr("src", "userProjects/" + confFile.last_opened_project + "index.html");
+           // generate random number to prevent loading page from cache
+           var randomNumber = Math.random();
+           $(".iframeContainer").attr("src", "userProjects/" + confFile.last_opened_project + "index.html?"+randomNumber);
           // console.log(confFile.weio_lib_path);
      });
      
