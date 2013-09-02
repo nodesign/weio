@@ -818,12 +818,21 @@ function fileRemoved(data) {
  * Checks if index.html exists in project
  */
 function isIndexExists() {
+  //  console.log("DEBUG ", $("#tree").find("a"));
     
-    if ($(".tree").find("a").html() == "index.html") {
-        return true;
-    } else {
-        return false;
+    
+    var files = $(".tree").find("a");
+   
+    for (var i=0; i<files.length; i++) {
+        var file = files[i];
+        if ($(file).html()== "index.html") {
+            return true;
+        } else {
+            return false;
+        }
+        
     }
+    
     
 }
 
@@ -833,11 +842,18 @@ function isIndexExists() {
 
 function isMainExists() {
     
-    if ($(".tree").find("a").html() == "main.py") {
-        return true;
-    } else {
-        return false;
+    var files = $(".tree").find("a");
+    
+    for (var i=0; i<files.length; i++) {
+        var file = files[i];
+        if ($(file).html()== "main.py") {
+            return true;
+        } else {
+            return false;
+        }
+        
     }
+
     
 }
 
