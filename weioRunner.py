@@ -4,7 +4,6 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 import sys
 import json
 
-#import thread
 import threading
 
 from user import *
@@ -51,8 +50,8 @@ if __name__ == '__main__':
     # CALLING SETUP IF PRESENT
     if "setup" in vars(main):
         main.setup()
-    else :
-        print "WARNNING : setup() function don't exist."
+    #else :
+    #print "WARNNING : setup() function don't exist."
 
     for key in attach.procs :
         print key
