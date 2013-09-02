@@ -82,8 +82,9 @@ function runEditor() {
  */
 function runPreview() {
     document.getElementById("weioIframe").contentWindow.saveAll();
-    var confFile = "";
     
+    var confFile = "";
+    if (document.getElementById("weioIframe").contentWindow.isIndexExists()) {
        $.getJSON('config.json', function(data) {
            confFile = data;
            // generate random number to prevent loading page from cache
@@ -94,6 +95,9 @@ function runPreview() {
      
      $("#editorButtonHeader").attr("class", "top_tab");
      $("#previewButtonHeader").attr("class", "top_tab active");
+    } else {
+        alert("Preview is not possible because index.html don't exist inside project");
+    }
 }
 
 /*

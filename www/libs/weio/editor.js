@@ -623,6 +623,7 @@ function updateFileTree(data) {
 }
 
 
+
 function fixedCollapsing(showMe) {
 	
 	
@@ -813,6 +814,18 @@ function fileRemoved(data) {
     }
 }
 
+/* 
+ * Checks if index.html exists in project
+ */
+function isIndexExists() {
+    
+    if ($(".tree").find("a").html() == "index.html") {
+        return true;
+    } else {
+        return false;
+    }
+    
+}
 
 //////////////////////////////////////////////////////////////// SOCK JS DASHBOARD        
      
