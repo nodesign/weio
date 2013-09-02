@@ -132,7 +132,7 @@ class WeioDashBoardHandler(SockJSConnection):
         #processName = './userProjects/myFirstProject/weioMain.py'
         up = config["user_projects_path"]
         lp = config["last_opened_project"]
-        processName = up + lp + 'weioUserServer.py'
+        processName = up + lp + 'main.py'
 
 
         # check if file exists before launching
