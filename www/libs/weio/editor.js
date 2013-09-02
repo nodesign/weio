@@ -827,6 +827,20 @@ function isIndexExists() {
     
 }
 
+/* 
+ * Checks if main.py exists in project
+ */
+
+function isMainExists() {
+    
+    if ($(".tree").find("a").html() == "main.py") {
+        return true;
+    } else {
+        return false;
+    }
+    
+}
+
 //////////////////////////////////////////////////////////////// SOCK JS DASHBOARD        
      
 /*

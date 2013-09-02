@@ -81,10 +81,14 @@ function runEditor() {
  * Run preview mode
  */
 function runPreview() {
-    document.getElementById("weioIframe").contentWindow.saveAll();
+    
+    if (isEditorActive)
+        document.getElementById("weioIframe").contentWindow.saveAll();
     
     var confFile = "";
     if (document.getElementById("weioIframe").contentWindow.isIndexExists()) {
+        if (document.getElementById("weioIframe").contentWindow.isMainExists()) play();
+        
        $.getJSON('config.json', function(data) {
            confFile = data;
            // generate random number to prevent loading page from cache
@@ -98,6 +102,7 @@ function runPreview() {
     } else {
         alert("Preview is not possible because index.html don't exist inside project");
     }
+    isEditorActive = false;
 }
 
 /*
@@ -138,6 +143,8 @@ function prepareToPlay() {
         document.getElementById("weioIframe").contentWindow.play();
         document.getElementById("weioIframe").contentWindow.hideAlert();
         document.getElementById("weioIframe").contentWindow.clearErrorAnnotations();
+    } else {
+        play();
     }
 }
 

@@ -14,15 +14,20 @@ from weioLib.weioUserApi import *
 projectModule = "userProjects." + sys.argv[1] + ".main"
 
 #import module from argument list
+print projectModule
 main = __import__(projectModule, fromlist=[''])
 
 class WeioHandler(SockJSConnection):
+    
+    
     """Opens editor route."""
     def on_open(self, data):
         """On open asks weio for last saved project. List of files are scaned and sent to editor.
         Only contents of weioMain.py is sent at first time"""
         print "Opened WEIO API socket"
-
+        shared.websocketOpened = True
+        shared.websocketSend = self.emit
+    
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
         self.req = json.loads(data)
@@ -33,19 +38,31 @@ class WeioHandler(SockJSConnection):
             if attach.events[key].event in self.req['request'] :
                 attach.events[key].handler(self.req['data'])
 
+    def on_close(self, data):
+        shared.websocketOpened = False
+        
+    def emit(self, instruction, rq):
+        data = {}
+        data['serverPush'] = instruction
+        data['data'] = rq
+        self.send(json.dumps(data))
 
+    
 
 if __name__ == '__main__':
-    import logging
+    #import logging
     #logging.getLogger().setLevel(logging.DEBUG)
-
+    
+    shared.websocketOpened = False
+    
     WeioRouter = SockJSRouter(WeioHandler, '/api')
-
+    
+    port = 8090
     app = web.Application(WeioRouter.urls)
-    app.listen(8082)
+    app.listen(port)
 
-    logging.info(" [*] Listening on 0.0.0.0:8082/api")
-    print "Websocket is created at localhost:8082/api"
+    #logging.info(" [*] Listening on 0.0.0.0:8082/api")
+    print "Websocket is created at localhost:" + str(port) + "/api"
     
     # CALLING SETUP IF PRESENT
     if "setup" in vars(main):
