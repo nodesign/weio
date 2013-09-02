@@ -1,58 +1,44 @@
-from tornado import web, ioloop
-from sockjs.tornado import SockJSRouter, SockJSConnection
-
-import sys
-import json
-
-#import thread
-import threading 
-
-from user import *
-
-sys.path.append(r'./')
+import time
 from weioLib.weioUserApi import *
 
-from weioMain import *
+# Simple standalone application, no web interface
+# Reads digital potentiometer from A0 pin to blink LED slower or
+# faster at digital pin 13
 
-class WeioHandler(SockJSConnection):
-    """Opens editor route."""
-    def on_open(self, data):
-        """On open asks weio for last saved project. List of files are scaned and sent to editor.
-        Only contents of weioMain.py is sent at first time"""
-        print "Opened WEIO API socket"
+LED_PIN = 13
+POTENTIOMETER_PIN = "A0"
 
-    def on_message(self, data):
-        """Parsing JSON data that is comming from browser into python object"""
-        self.req = json.loads(data)
-        self.serve()
+def setup() :
 
-    def serve(self) :
-        for key in attach.events :
-            if attach.events[key].event in self.req['request'] :
-                attach.events[key].handler(self.req['data'])
+    # Attaches sensor function to infinite loop
+    attach.process(blinky, ("Test", 10))
 
+    # Attaches sensor function to infinite loop
+    attach.process(potentiometer)
+
+    # Instanciate shared objects
+    shared.val = 1
 
 
-if __name__ == '__main__':
-    import logging
-    logging.getLogger().setLevel(logging.DEBUG)
+###
+# Threads
+###
 
-    WeioRouter = SockJSRouter(WeioHandler, '/api')
-
-    app = web.Application(WeioRouter.urls)
-    app.listen(8087)
-
-    logging.info(" [*] Listening on 0.0.0.0:8087/api")
-
-    WeioUserSetup()
-
-    for key in attach.procs :
-        print key
-        #thread.start_new_thread(attach.procs[key].procFnc, attach.procs[key].procArgs)
-        t = threading.Thread(target=attach.procs[key].procFnc, args=attach.procs[key].procArgs)
-        t.daemon = True
-        t.start()
-
-    ioloop.IOLoop.instance().start()
+# These threads are like individual mini programs. Share data between them using shred variables
+# In this case shared object is shared.val
+# In most of cases this usage will work. If sync problems are encountered use lock library to lock
+# shared data between threads
+def potentiometer() :
+    while (1) :
+        print("potentiometer") 
+        shared.val+=1
+        time.sleep(1)
 
 
+def blinky(s, k) :
+    
+    while (1) :
+        print("blinky")
+        val = shared.val
+        print val
+        time.sleep(val)

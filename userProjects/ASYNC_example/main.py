@@ -1,7 +1,6 @@
 import time
-import sys
- 
-sys.path.append(r'./')
+import weio
+
 from weioLib.weioUserApi import *
 
 # Simple standalone application, no web interface
@@ -12,12 +11,9 @@ LED_PIN = 13
 POTENTIOMETER_PIN = "A0"
 
 
-def WeioUserSetup() :
+def setup() :
     # tells that on LED pin we want output
     #pinMode(LED_PIN, OUTPUT)
-
-    # Attaches interrupt from Web client
-    attach.event('setColor', buttonHandler)
 
     # Attaches sensor function to infinite loop
     attach.process(blinky, ("Test", 10))
@@ -28,28 +24,14 @@ def WeioUserSetup() :
     # Instanciate shared objects
     shared.val = 1
 
-
-###
-# Event Handlers
-###
-def buttonHandler(dataIn) :
-    #waelice.setColor(dataIn[0], dataIn[1], dataIn[2])
-    pass
-
-
-
 ###
 # Threads
 ###
 def potentiometer() :
-    #val = analogRead(POTENTIOMETER_PIN)
-    # map values between 0-1023 to time intervals 50 millis - 1000 millis
-    #val = map(val, 0,1023, 50,1000)
 
     while (1) :
         print("potentiometer") 
-        shared.val = shared.val + 1
-
+        shared.val = analogRead(POTENTIOMETER_PIN)
         time.sleep(1)
 
 
@@ -61,3 +43,9 @@ def blinky(s, k) :
         time.sleep(shared.val)
         print s
         print k
+        
+def analogRead(potar):
+    return 500
+    
+WeioUserSetup()
+weio()

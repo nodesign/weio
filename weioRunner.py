@@ -5,14 +5,17 @@ import sys
 import json
 
 #import thread
-import threading 
+import threading
 
 from user import *
 
-sys.path.append(r'./')
+
 from weioLib.weioUserApi import *
 
-from weioMain import *
+projectModule = "userProjects." + sys.argv[1] + ".main"
+
+#import module from argument list
+main = __import__(projectModule, fromlist=[''])
 
 class WeioHandler(SockJSConnection):
     """Opens editor route."""
@@ -35,16 +38,21 @@ class WeioHandler(SockJSConnection):
 
 if __name__ == '__main__':
     import logging
-    logging.getLogger().setLevel(logging.DEBUG)
+    #logging.getLogger().setLevel(logging.DEBUG)
 
     WeioRouter = SockJSRouter(WeioHandler, '/api')
 
     app = web.Application(WeioRouter.urls)
-    app.listen(8087)
+    app.listen(8082)
 
-    logging.info(" [*] Listening on 0.0.0.0:8087/api")
-
-    WeioUserSetup()
+    logging.info(" [*] Listening on 0.0.0.0:8082/api")
+    print "Websocket is created at localhost:8082/api"
+    
+    # CALLING SETUP IF PRESENT
+    if "setup" in vars(main):
+        main.setup()
+    else :
+        print "WARNNING : setup() function don't exist."
 
     for key in attach.procs :
         print key

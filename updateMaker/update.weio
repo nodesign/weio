@@ -1,9 +1,9 @@
 {
-    "description": "Path", 
+    "description": "Main.py", 
     "install_duration": 35, 
     "kill_flag": "NO", 
-    "md5": "81dd8f9921236c3c3280a5ce3915baa6", 
+    "md5": "1f2f0e5218dac5cb772dd595f18f8cb7", 
     "url": "http://www.we-io.net/downloads/weio.tar.gz", 
-    "version": "0.161", 
+    "version": "0.162", 
     "whatsnew": "<h3>WeIO Releases :</h3>\n<br>\n0.12 Bug fixes in architecture and design<br>\n<br>\n0.11 Bug fixes in architecture and design<br>\n"
 }

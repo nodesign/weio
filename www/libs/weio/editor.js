@@ -240,7 +240,10 @@ function createEditor(){
     editor.setShowPrintMargin(false);
     
     // On chage content
-    $('#codeEditorAce').keyup(function(){
+    $('#codeEditorAce').keyup(function(e){
+          // exclude arrowkeys
+          if ((e.keyCode!=38) && (e.keyCode!=40) && (e.keyCode!=37) && (e.keyCode!=39)) {
+            
 			// Remove previous change note
 			$('#codeEditorAce').parents('.accordion-group')
 			.find('.accordion-toggle')
@@ -257,6 +260,7 @@ function createEditor(){
 			editorsInStack[iOBJ].data = editor.getValue();
                               
             activeAutoSave = true;
+          }
 			
 		});
     
@@ -564,8 +568,9 @@ function updateError(data) {
                                                    type: "error" // also warning and information
                                                    }]);
                
-    
+        // TODO if it's inside this file. If file is not in project don't do anything
 		editor.gotoLine(lastErrorObj.line);
+        window.top.stop();
                
     },1000);
     

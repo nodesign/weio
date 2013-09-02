@@ -132,7 +132,8 @@ class WeioDashBoardHandler(SockJSConnection):
         #processName = './userProjects/myFirstProject/weioMain.py'
         up = config["user_projects_path"]
         lp = config["last_opened_project"]
-        processName = up + lp + 'main.py'
+        lp = lp.split("/")[0] 
+        processName = 'weioRunner.py'
 
 
         # check if file exists before launching
@@ -143,7 +144,7 @@ class WeioDashBoardHandler(SockJSConnection):
             print("weioMain indipendent process launching...")
             
             global weioPipe
-            weioPipe = subprocess.Popen(['python', '-u', processName], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            weioPipe = subprocess.Popen(['python', '-u', processName, lp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             
             global ioloopObj
             ioloopObj = ioloop.IOLoop.instance()
@@ -392,6 +393,8 @@ class WeioDashBoardHandler(SockJSConnection):
 
         weioFiles.createDirectory(config["user_projects_path"] + path)
         # ADD HERE SOME DEFAULT FILES
+        # adding __init__.py
+        weioFiles.saveRawContentToFile(config["user_projects_path"] + path + "/__init__.py", "")
         
         data['status'] = "New project created"
         data['path'] = path

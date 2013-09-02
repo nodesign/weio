@@ -10,10 +10,10 @@
         "index.html", 
         "weioMain.py"
     ], 
-    "last_opened_project": "myFirstProject/", 
+    "last_opened_project": "test/", 
     "port": 8081, 
     "user": "uros petrevski", 
     "user_projects_path": "userProjects/", 
     "weio_lib_path": "weioLib", 
-    "weio_version": "0.151"
+    "weio_version": "0.162"
 }
