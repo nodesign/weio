@@ -315,12 +315,14 @@ class WeioDashBoardHandler(SockJSConnection):
             errLine = 0
             data = {}
             data['serverPush'] = 'errorObjects'
-            errObject[len(errObject)-1]['reason'] = errReason
             
-            data['data'] = errObject
-            errObject = []
-            CONSOLE.send(json.dumps(data))
+            if (len(errObject)>0):
+                errObject[len(errObject)-1]['reason'] = errReason
             
+                data['data'] = errObject
+                errObject = []
+                CONSOLE.send(json.dumps(data))
+                print "ERR ",errObject
             ioloop.IOLoop.instance().remove_handler(weioPipe.stderr.fileno())
             stderrHandlerIsLive = False
             

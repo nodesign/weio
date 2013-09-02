@@ -186,6 +186,11 @@ def saveRawContentToFile(path, data):
     ret = inputFile.write(data)
     inputFile.close()
     
+def checkIfFileExists(path):
+    if (os.path.exists(path)) :
+        return True
+    else :
+        return False
         
 def checkIfPathIsInUserFolder(path):
     

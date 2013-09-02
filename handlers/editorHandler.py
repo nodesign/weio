@@ -85,17 +85,19 @@ class WeioEditorHandler(SockJSConnection):
         
         path = rq['data']
         
-        f = {}
-        f['name'] = weioFiles.getFilenameFromPath(path)
-        f['id'] = weioFiles.getStinoFromFile(path)
-        f['type'] = weioFiles.getFileType(path)
-        f['data'] = weioFiles.getRawContentFromFile(path)
-        f['path'] = path
+        if (weioFiles.checkIfFileExists(path)):
         
-        data['data'] = f
+            f = {}
+            f['name'] = weioFiles.getFilenameFromPath(path)
+            f['id'] = weioFiles.getStinoFromFile(path)
+            f['type'] = weioFiles.getFileType(path)
+            f['data'] = weioFiles.getRawContentFromFile(path)
+            f['path'] = path
+            
+            data['data'] = f
+            
+            self.send(json.dumps(data))
         
-        self.send(json.dumps(data))
-    
     def saveFile(self, rq):
         data = {}
         # echo given request
