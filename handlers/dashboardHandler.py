@@ -49,6 +49,10 @@ from weioLib import weioFiles
 # IMPORT BASIC CONFIGURATION FILE 
 from weioLib import weio_config
 
+global weioPipe
+global CONSOLE
+global ioloop
+
 # Global variable to store SockJSConnection calss instance
 # in order to call it's send() method from MainProgram thread
 CONSOLE = None

@@ -43,7 +43,7 @@ if (addr.indexOf(":")!=-1) {
     addr = 'http://' + a[0] + ':8082/api';
 }
 console.log(addr);
-_weio = new SockJS('http://localhost:8090/api');
+_weio = new SockJS('http://localhost:8082/api');
 
 var HIGH = "1";
 var LOW = "0";

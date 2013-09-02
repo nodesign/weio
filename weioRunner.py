@@ -1,4 +1,4 @@
-from tornado import web, ioloop
+from tornado import web, ioloop, options
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
 import sys
@@ -7,7 +7,6 @@ import json
 import threading
 
 from user import *
-
 
 from weioLib.weioUserApi import *
 
@@ -45,9 +44,7 @@ class WeioHandler(SockJSConnection):
         data = {}
         data['serverPush'] = instruction
         data['data'] = rq
-        self.send(json.dumps(data))
-
-    
+        self.send(json.dumps(data))   
 
 if __name__ == '__main__':
     #import logging
@@ -57,12 +54,13 @@ if __name__ == '__main__':
     
     WeioRouter = SockJSRouter(WeioHandler, '/api')
     
-    port = 8090
+    options.define("port", default=8082, type=int)
+    
     app = web.Application(WeioRouter.urls)
-    app.listen(port)
+    app.listen(options.options.port, "0.0.0.0")
 
     #logging.info(" [*] Listening on 0.0.0.0:8082/api")
-    print "Websocket is created at localhost:" + str(port) + "/api"
+    print "Websocket is created at localhost:" + str(options.options.port) + "/api"
     
     # CALLING SETUP IF PRESENT
     if "setup" in vars(main):
@@ -78,5 +76,4 @@ if __name__ == '__main__':
         t.start()
 
     ioloop.IOLoop.instance().start()
-
 

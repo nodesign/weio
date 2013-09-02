@@ -18,7 +18,7 @@ def buttonHandler(dataIn) :
     
 def push():
     weio.shared.numbers = 0
-    whsile(1):
+    while(1):
         if (weio.shared.websocketOpened) :
             a = weio.shared.numbers
             print "COUNTING...", a

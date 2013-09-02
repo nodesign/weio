@@ -31,12 +31,12 @@ def blinky() :
         print val
         time.sleep(val)
         
-
-# Attaches sensor function to infinite loop
-attach.process(blinky)
-
-# Attaches sensor function to infinite loop
-attach.process(potentiometer)
-
-# Instanciate shared objects
-shared.val = 1
+def setup():
+    # Attaches sensor function to infinite loop
+    attach.process(blinky)
+    
+    # Attaches sensor function to infinite loop
+    attach.process(potentiometer)
+    
+    # Instanciate shared objects
+    shared.val = 1
