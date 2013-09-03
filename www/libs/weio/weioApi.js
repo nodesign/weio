@@ -41,9 +41,12 @@ var addr = location.host;
 if (addr.indexOf(":")!=-1) {
     var a = addr.split(":");
     addr = 'http://' + a[0] + ':8082/api';
+} else {
+    var a = 'http://' + addr + ':8082/api';
+    addr = a;
 }
 console.log(addr);
-_weio = new SockJS('http://localhost:8082/api');
+_weio = new SockJS(addr);
 
 var HIGH = "1";
 var LOW = "0";

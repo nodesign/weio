@@ -818,7 +818,7 @@ function fileRemoved(data) {
  * Checks if index.html exists in project
  */
 function isIndexExists() {
-  //  console.log("DEBUG ", $("#tree").find("a"));
+    console.log("DEBUG ", $("#tree").find("a"));
     
     
     var files = $(".tree").find("a");

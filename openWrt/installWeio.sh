@@ -41,11 +41,14 @@ cd $WEIO/productionScripts/
 cd $BUILD_DIR
 tar -xzvf $WEIO/productionScripts/weio.tar.gz -C files/
 
+# Setting first time run flag
+python firstTimeFlag.py files/weio/config.weio
+
 # Install needed packages for WeIO
 cp $WEIO/openWrt/pkg_install.sh .
 ./pkg_install.sh
 
-# Copy configuration
+# Copy Carambola configuration file
 cp $WEIO/openWrt/weio-config-carambola2 .config
 
 # Build
