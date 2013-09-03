@@ -42,7 +42,7 @@ cd $BUILD_DIR
 tar -xzvf $WEIO/productionScripts/weio.tar.gz -C files/
 
 # Setting first time run flag
-python firstTimeFlag.py files/weio/config.weio
+python $WEIO/openWrt/firstTimeFlag.py files/weio/config.weio
 
 # Install needed packages for WeIO
 cp $WEIO/openWrt/pkg_install.sh .
