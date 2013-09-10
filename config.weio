@@ -1,5 +1,6 @@
 {
     "absolut_root_path": "/Users/uros/workNow/nodesign/weIO/weio/weio", 
+    "debug_mode": "True", 
     "dependencies_path": "www/", 
     "dns_name": "weio.local", 
     "editor_html_path": "www/dashboard.html", 
