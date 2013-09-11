@@ -71,6 +71,12 @@ from handlers import firstTimeHandler
 # IMPORT WEIO BUTTONS OBJECT
 from weioLib import weioWifiButtons
 
+# IMPORT WEIO FILE SUPPORT
+from weioLib import weioFiles
+
+# SHARED OBJECTS
+from weioLib.weioUserApi import *
+
 
 # This is user project index.html
 class WeioIndexHandler(tornado.web.RequestHandler):
@@ -84,8 +90,11 @@ class WeioIndexHandler(tornado.web.RequestHandler):
         if (firstTimeSwitch=="YES") :
             path = "www/firstTime.html"
         else :
-            path = confFile['user_projects_path'] + confFile['last_opened_project'] + "index.html"
-        
+            if (weioFiles.checkIfFileExists(confFile['user_projects_path'] + confFile['last_opened_project'] + "index.html")):
+                path = "www/userIndex.html"
+            else :
+                path = "www/error404.html"
+                    
         self.render(path, error="")
 
         
@@ -180,6 +189,10 @@ if __name__ == '__main__':
     
     # when going in release always put this to false to avoid overheating of CPU, be ecological!
     debugMode = confFile['debug_mode']
+    if ("False" in debugMode):
+        debugMode = False
+    else :
+        debugMode = True
 
     app = tornado.web.Application(list(WeioEditorRouter.urls) +
                             list(CloseRouter.urls) +
@@ -208,6 +221,7 @@ if __name__ == '__main__':
     # If we are on the WEIO machine, we have to assure connection before doing anything
     if (platform.machine() == 'mips') :
         wifiHandler.wifi.checkConnection()
+        shared.wifi = wifiHandler.wifi
     
     http_server = tornado.httpserver.HTTPServer(app)
     http_server.listen(tornado.options.options.port, address=confFile['ip'])
@@ -223,8 +237,8 @@ if __name__ == '__main__':
     #tornado.autoreload.watch('./editor/index.html')
     #tornado.autoreload.watch('./static/user_weio/index.html')
     
-    # this will start wathcing process, note that all python modules that has been modified will be reloaded directly
-    #tornado.autoreload.start(tornado.ioloop.IOLoop.instance())
+    # This will start wathcing process, note that all python modules that has been modified will be reloaded directly
+    # tornado.autoreload.start(tornado.ioloop.IOLoop.instance())
     
     wifiButtons = weioWifiButtons.WifiButtons()
     periodic = tornado.ioloop.PeriodicCallback(checkWifiButtons, 100)
