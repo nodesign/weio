@@ -18,4 +18,5 @@ def saveConfiguration(path, conf):
 config = getConfiguration(sys.argv[1])
 config['first_time_run'] = "YES"
 config['port'] = 80
+config['debug_mode'] = "False"
 saveConfiguration(sys.argv[1], config)

@@ -128,6 +128,7 @@ if (len(sys.argv)==3) :
     # Overwrite local configuration file
     config["weio_version"] = sys.argv[1]
     config["port"] = 80
+    config["debug_mode"] = "False"
     
     inputFile = open("../config.weio", 'w')
     ret = inputFile.write(json.dumps(config, indent=4, sort_keys=True))
