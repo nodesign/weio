@@ -7,6 +7,26 @@
 while true; 
 do
     cd /weio
+    # restart avahi in every case
+    avahi-daemon -k
+    avahi-daemon -D
+    # export AP and STA LEDs
+    if [ -f "/sys/class/gpio/gpio23/value" ]
+    then
+        echo "gpio 23 declared"
+    else
+        echo 23 > /sys/class/gpio/export
+    fi
+
+    if [ -f "/sys/class/gpio/gpio22/value" ]
+    then
+        echo "gpio 22 declared"
+    else
+        echo 22 > /sys/class/gpio/export
+    fi
+
+    echo in > /sys/class/gpio/gpio23/direction
+    echo in > /sys/class/gpio/gpio22/direction
     python server.py;
         
     if grep -q '"kill_flag": "YES"' /weio/config.weio

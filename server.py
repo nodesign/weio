@@ -68,6 +68,9 @@ from handlers import updaterHandler
 # IMPORT FIRST TIME HANDLER
 from handlers import firstTimeHandler
 
+# IMPORT WEIO BUTTONS OBJECT
+from weioLib import weioWifiButtons
+
 
 # This is user project index.html
 class WeioIndexHandler(tornado.web.RequestHandler):
@@ -110,13 +113,29 @@ class WeioCloseConnection(SockJSConnection):
 
     def on_message(self, msg):
         pass
-        
-        
+
+# Periodic callback that checks button state for AP and STA
+# if AP+STA over 3 seconds than reset
+def checkWifiButtons() :
+    global wifiButtons
+    state = wifiButtons.checkButtons()
+    if (state is not None) :
+        print state
+        if (state == "reset"):
+            exit() # only tornado reset
+        elif (state == "ap"):
+            pass
+            # go to ap
+        elif (state == "sta"):
+            pass
+            # go to sta
 
 if __name__ == '__main__':
     # Take configuration from conf file and use it to define parameters
     global confFile
     global firstTimeSwitch
+    global wifiButtons
+    
     confFile = weio_config.getConfiguration()
 
     # put absolut path in conf, needed for local testing on PC
@@ -158,10 +177,10 @@ if __name__ == '__main__':
         "cookie_secret": secret,
         "login_url": "/login",
     }
- 
     
-    
-    
+    # when going in release always put this to false to avoid overheating of CPU, be ecological!
+    debugMode = confFile['debug_mode']
+
     app = tornado.web.Application(list(WeioEditorRouter.urls) +
                             list(CloseRouter.urls) +
                             list(WeioAPIBridgeRouter.urls) +
@@ -180,7 +199,7 @@ if __name__ == '__main__':
                             [(r"/", WeioIndexHandler),
                                 (r"/(.*)", tornado.web.StaticFileHandler,
                                 {"path": confFile["dependencies_path"]})], 
-                            debug=True, **settings
+                            debug=debugMode, **settings
                           )
                           # DEBUG WILL DECREASE SPEED!!! HOW TO AVOID THIS??? see Watchers section down here
     
@@ -207,5 +226,10 @@ if __name__ == '__main__':
     # this will start wathcing process, note that all python modules that has been modified will be reloaded directly
     #tornado.autoreload.start(tornado.ioloop.IOLoop.instance())
     
+    wifiButtons = weioWifiButtons.WifiButtons()
+    periodic = tornado.ioloop.PeriodicCallback(checkWifiButtons, 100)
+    periodic.start()
+
+
     # STARTING SERVER
     tornado.ioloop.IOLoop.instance().start()
