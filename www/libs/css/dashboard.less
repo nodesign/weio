@@ -140,37 +140,44 @@ body {
         } /* end project name definition */
         
         /* main preview & editor navigation */
-        #editorButton {
-            position:relative;
-            width:35px;
-            top:-3px;
-            opacity: 0.5;
 
-            &:hover {
-                opacity: 1;
-            };
-
-        }
-
-        #previewButton {
-            position:relative;
-            width:35px;
-            top:-3px;
-            opacity: 0.5;
-            left:2px;
-
-            &:hover {
-                opacity: 1;
-            };
-        }
+.modeBT {
+                background-color: #383838;
+                padding: 0 5px;
+                height: 34px;
+                border-radius: 2px;
+                position: relative;
+                left: -22px;
+                top: 12px;
+}
         
-        .top_tab.active  {
+        #previewButtonHeader a, #editorButtonHeader a {
+    width: 20px;
+    height: 20px;
+    text-indent: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 0;
+    margin: 8px 4px;
+position: relative;
+background: transparent;
+box-shadow: none;
+&:hover, &:active {
+        background-position: 0px 0px;
+    }
+}
+#editorButtonHeader a {
+    background: url(../../img/weioEdit.png) 0px -20px no-repeat;
 
-             a {
-                 background: #383838 !important;
-                 color: white !important;
-             }
-         }
+}
+#previewButtonHeader a {
+    
+    background: url(../../img/weioPreview.png) 0px -20px no-repeat;
+ 
+}
+
+
+       
              
         
         /* status bar monitor */
@@ -314,9 +321,13 @@ body {
 
 }
 li.dropdown .dropdown-toggle  {
-        padding: 0 120px 0 15px !important;
+        padding: 0 35px 0 15px !important;
         margin-left: 10px;
 }
  .btn-group.open .btn.dropdown-toggle {
   color:#555;
  }
+
+
+
+
