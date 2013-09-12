@@ -126,28 +126,39 @@ body {
   top: 5px;
   position: relative;
 }
-.navbar-inner .container #editorButton {
+.navbar-inner .container .modeBT {
+  background-color: #383838;
+  padding: 0 5px;
+  height: 34px;
+  border-radius: 2px;
   position: relative;
-  width: 35px;
-  top: -3px;
-  opacity: 0.5;
+  left: -22px;
+  top: 12px;
 }
-.navbar-inner .container #editorButton:hover {
-  opacity: 1;
-}
-.navbar-inner .container #previewButton {
+.navbar-inner .container #previewButtonHeader a,
+.navbar-inner .container #editorButtonHeader a {
+  width: 20px;
+  height: 20px;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0;
+  margin: 8px 4px;
   position: relative;
-  width: 35px;
-  top: -3px;
-  opacity: 0.5;
-  left: 2px;
+  background: transparent;
+  box-shadow: none;
 }
-.navbar-inner .container #previewButton:hover {
-  opacity: 1;
+.navbar-inner .container #previewButtonHeader a:hover,
+.navbar-inner .container #editorButtonHeader a:hover,
+.navbar-inner .container #previewButtonHeader a:active,
+.navbar-inner .container #editorButtonHeader a:active {
+  background-position: 0px 0px;
 }
-.navbar-inner .container .top_tab.active a {
-  background: #383838 !important;
-  color: white !important;
+.navbar-inner .container #editorButtonHeader a {
+  background: url(../../img/weioEdit.png) 0px -20px no-repeat;
+}
+.navbar-inner .container #previewButtonHeader a {
+  background: url(../../img/weioPreview.png) 0px -20px no-repeat;
 }
 .navbar-inner .container #controlCenter {
   color: #cccccc;
@@ -259,7 +270,7 @@ li.dropdown .dropdown-toggle:hover {
   color: #eeeeee !important;
 }
 li.dropdown .dropdown-toggle {
-  padding: 0 120px 0 15px !important;
+  padding: 0 35px 0 15px !important;
   margin-left: 10px;
 }
 .btn-group.open .btn.dropdown-toggle {

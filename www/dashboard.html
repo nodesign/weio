@@ -38,7 +38,7 @@
         <div class="navbar-inner">
             <div class="container">
 
-                <a class="brand" href="#"><img src="img/weioLogo.png" id="logo"></img><h1>Weio</h1><div id="status" class="connected">Active</div> </a>
+                <a class="brand" href="#"><img src="img/weioLogo.png" id="logo"></img><h1>Weio</h1></a>
                 <div class="nav-collapse collapse"> 
                     <ul class="nav">
 
@@ -57,12 +57,15 @@
                                 
                             </ul>
                         </li>
-                       
+                       </ul>
+                        
 
-                        <li id="previewButtonHeader" class="top_tab"><a href="javascript:runPreview();" ><img src="img/weio-preview.png" id="editorButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Preview"></a></li>
-                        <li id="editorButtonHeader" class="top_tab active"><a href="javascript:runEditor();"><img src="img/weio-edit.png" id="previewButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Edit" ></a></li>
+                       <ul class="modeBT nav">
+                        <li id="previewButtonHeader" class="top_tab"><a href="javascript:runPreview();" id="editorButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Preview" >Preview</a></li>
+                        <li id="editorButtonHeader" class="top_tab"><a class="active" href="javascript:runEditor();" id="previewButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Edit" >Edit</a></li>
+                        </ul>
 
-                    </ul>
+                    
                     
                     <div id="controlCenter">
                         
