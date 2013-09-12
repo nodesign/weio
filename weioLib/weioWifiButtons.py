@@ -109,3 +109,5 @@ class WifiButtons :
             self.buff_buttonAP = self.buttonAP
             self.buff_buttonSTA = self.buttonSTA
             return None
+        else:
+            return None

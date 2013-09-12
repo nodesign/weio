@@ -25,6 +25,8 @@ def push():
             weio.shared.websocketSend("userMsg",a)
             time.sleep(0.5)
             weio.shared.numbers+=1
+        else :
+            time.sleep(0.1)
             
             
 # Attaches interrupt from Web client to "message" string

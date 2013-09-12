@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="../../../libs/jquery/jquery-2.0.2.min.js"></script>
+<script src="../../../libs/sockJS/sockjs-0.3.min.js"></script>
+<script src="../../../libs/weio/weioApi.js"></script>
+  <head >
+  
+    <style>
+        body {
+          background:white;          
+        }
+        
+        a {
+           color:black;    
+           font-family:Helvetica;
+           font-size:60px;
+           font-weight:bold;
+        }
+        
+    </style>
+
+  </head>
+
+  <body>
+    
+    <a id="ledText">
+        turn on LED        
+    </a>
+    <br>
+    <button type="button" onclick="turnLED()">Click Me!</button>
+    
+    <script>
+        var ledState = LOW;
+        var led_pin = 13;
+        
+        function turnLED() {
+            ledState = (ledState==LOW) ? HIGH : LOW; // invert state of LED 
+            digitalWrite(led_pin, ledState); // send instruction to WeIO
+            
+            if (ledState==LOW) 
+                $("#ledText").css("color", "black");
+            else
+                $("#ledText").css("color", "red");
+                
+        }
+        
+    </script>
+    
+  </body>
+</html>

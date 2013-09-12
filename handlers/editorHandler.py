@@ -45,6 +45,9 @@ import json
 from weioLib import weioIpAddress
 from weioLib import weioFiles
 
+# For shared variables between handlers
+from weioLib.weioUserApi import *
+
 
 # IMPORT BASIC CONFIGURATION FILE 
 from weioLib import weio_config
@@ -53,7 +56,6 @@ from weioLib import weio_config
 class WeioEditorHandler(SockJSConnection):
     global callbacks
     
-       
     # DEFINE CALLBACKS HERE
     # First, define callback that will be called from websocket
     
@@ -89,7 +91,7 @@ class WeioEditorHandler(SockJSConnection):
         
             f = {}
             f['name'] = weioFiles.getFilenameFromPath(path)
-            f['id'] = weioFiles.getStinoFromFile(path)
+            f['id']   = weioFiles.getStinoFromFile(path)
             f['type'] = weioFiles.getFileType(path)
             f['data'] = weioFiles.getRawContentFromFile(path)
             f['path'] = path
@@ -190,6 +192,11 @@ class WeioEditorHandler(SockJSConnection):
         # in the global variable that will be used
         # by the MainProgram thread
         CONSOLE = self
+        shared.editor = self.editorSender
+        
+
+    def editorSender(self, data):
+        self.send(json.dumps(data))
     
     
     def on_message(self, data):

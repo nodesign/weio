@@ -128,6 +128,7 @@ class WeioWifiHandler(SockJSConnection):
             wifi.essid =  rq['data']['essid']
             wifi.passwd =  rq['data']['passwd']
             wifi.setConnection("ap")
+#exit() # restart server
         
     def goToStaMode(self,rq):
         if (platform.machine() == 'mips') :
@@ -158,6 +159,7 @@ class WeioWifiHandler(SockJSConnection):
             wifi.checkConnection()
             data['mode'] = wifi.mode
             
+            # Is there a sens of doing this? Connection will be dead
             # Send response to the browser
             rsp={}
             rsp['requested'] = rq['request']
@@ -165,6 +167,8 @@ class WeioWifiHandler(SockJSConnection):
 
             # Send connection information to the client
             self.send(json.dumps(rsp))
+#           exit() # restart server
+            
         
 
     #########################################################################

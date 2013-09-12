@@ -626,9 +626,9 @@ function updateError(data) {
 var callbacksEditor = {
     "getFileTreeHtml" : updateFileTree,
     "status" : updateStatus,
-    //"stdout" : updateConsoleOutput,
-    //"stderr" : updateConsoleError,
-    //"sysConsole" : updateConsoleSys,
+    "stdout" : updateConsoleOutput,
+    "stderr" : updateConsoleError,
+    "sysConsole" : updateConsoleSys,
     "getFile": insertNewStrip,
     "saveFile": fileSaved,
     "createNewFile": refreshFiles,

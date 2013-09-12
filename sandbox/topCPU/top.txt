@@ -1,0 +1,24 @@
+[H[JMem: 42728K used, 19044K free, 0K shrd, 4392K buff, 16440K cached
+CPU:  18% usr   9% sys   0% nic  72% idle   0% io   0% irq   0% sirq
+Load average: 0.00 0.02 0.05 1/44 7713
+[7m  PID  PPID USER     STAT   VSZ %VSZ %CPU COMMAND[0m
+ 7318  7135 root     S    14432  23%  18% python server.py
+ 7713  6476 root     R     1516   2%   9% top -n 1
+ 7317     1 nobody   S     1740   3%   0% avahi-daemon: running [weio.local]
+ 5680     1 root     S     1540   2%   0% /sbin/netifd
+  573     1 root     S     1528   2%   0% /sbin/syslogd -C16
+ 6476     1 root     S     1528   2%   0% /bin/ash --login
+    1     0 root     S     1524   2%   0% init
+ 1045     1 root     S     1520   2%   0% /usr/sbin/ntpd -n -p 0.openwrt.pool.n
+  679     1 root     S     1520   2%   0% /sbin/watchdog -t 5 /dev/watchdog
+ 7135  6476 root     S     1520   2%   0% {run_weio.sh} /bin/sh ./run_weio.sh
+  575     1 root     S     1512   2%   0% /sbin/klogd
+ 5824     1 root     S     1420   2%   0% hostapd -P /var/run/wifi-phy0.pid -B
+  993   583 root     S     1172   2%   0% /usr/sbin/dropbear -F -P /var/run/dro
+  583     1 root     S     1020   2%   0% /sbin/procd
+ 5971     1 nobody   S      960   2%   0% /usr/sbin/dnsmasq -C /var/etc/dnsmasq
+  595   583 root     S <    880   1%   0% ubusd
+  577     1 root     S      860   1%   0% /sbin/hotplug2 --override --persisten
+    3     2 root     SW       0   0%   0% [ksoftirqd/0]
+ 2267     2 root     SW       0   0%   0% [kworker/u:2]
+ 5422     2 root     SW       0   0%   0% [kworker/u:0]

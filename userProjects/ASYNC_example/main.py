@@ -19,7 +19,7 @@ POTENTIOMETER_PIN = "A0"
 def potentiometer() :
     while (1) :
         print("potentiometer") 
-        shared.val+=1
+        shared.val += 1
         time.sleep(1)
 
 

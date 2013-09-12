@@ -1,9 +1,9 @@
 {
-    "description": "Main.py", 
+    "description": "Wifi shared", 
     "install_duration": 35, 
     "kill_flag": "NO", 
-    "md5": "1f2f0e5218dac5cb772dd595f18f8cb7", 
+    "md5": "e51c86a64765f5111f27d1a727dfdbb8", 
     "url": "http://www.we-io.net/downloads/weio.tar.gz", 
-    "version": "0.162", 
+    "version": "0.178", 
     "whatsnew": "<h3>WeIO Releases :</h3>\n<br>\n0.12 Bug fixes in architecture and design<br>\n<br>\n0.11 Bug fixes in architecture and design<br>\n"
 }

@@ -52,8 +52,8 @@ import json
 import hashlib
 import tarfile
 
-# Wifi detection and configuration module
-from weioWifi import weioWifi
+# For shared variables between handlers
+from weioLib.weioUserApi import *
 
 # Wifi detection route handler  
 class WeioUpdaterHandler(SockJSConnection):
@@ -76,9 +76,11 @@ class WeioUpdaterHandler(SockJSConnection):
 
     # checking version
     def checkVersion(self, response):
-        wifi = weioWifi.WeioWifi("wlan0")
+        wifi = None
         if (platform.machine() == 'mips') :
-            wifi.checkConnection()
+            wifi = shared.wifi
+            print "WIFI MODE ", wifi.mode
+            #wifi.checkConnection()
         else :
             wifi.mode = "sta"
         

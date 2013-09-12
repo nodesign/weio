@@ -45,6 +45,8 @@ import json
 from weioLib import weioIpAddress
 from weioLib import weioFiles
 
+# For shared variables between handlers
+from weioLib.weioUserApi import *
 
 # IMPORT BASIC CONFIGURATION FILE 
 from weioLib import weio_config
@@ -177,7 +179,8 @@ class WeioDashBoardHandler(SockJSConnection):
             lastLaunched = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
             consoleWelcome['data'] = 'WeIO user server launched ' + lastLaunched
-            CONSOLE.send(json.dumps(consoleWelcome))
+            shared.editor(data)
+            #CONSOLE.send(json.dumps(consoleWelcome))
         else : # FILE DON'T EXIST
             warning = {}
             warning['requested'] = rq['request']
@@ -216,7 +219,8 @@ class WeioDashBoardHandler(SockJSConnection):
                 consoleWelcome = {}
                 consoleWelcome['serverPush'] = "sysConsole"
                 consoleWelcome['data'] = 'WeIO user server stoped. It was runnig since : ' + lastLaunched
-                CONSOLE.send(json.dumps(consoleWelcome))
+                shared.editor(data)
+                    #CONSOLE.send(json.dumps(consoleWelcome))
                 global lastLaunched
                 lastLaunched = None
 
@@ -241,7 +245,8 @@ class WeioDashBoardHandler(SockJSConnection):
             data['status'] = "Check output console"
             
             # this is raw output, some basic parsing is needed in javascript \n etc...
-            CONSOLE.send(json.dumps(data))
+            shared.editor(data)
+        #   CONSOLE.send(json.dumps(data))
         
         if weioPipe.poll() is not None :
             """ Child is terminated STDOUT"""
@@ -308,7 +313,8 @@ class WeioDashBoardHandler(SockJSConnection):
             errReason = stderr
             
             # this is raw output, some basic parsing is needed in javascript \n etc...
-            CONSOLE.send(json.dumps(data))
+            shared.editor(data)
+            #CONSOLE.send(json.dumps(data))
         
         if weioPipe.poll() is not None :
             """ Child is terminated STDERR"""
@@ -326,7 +332,8 @@ class WeioDashBoardHandler(SockJSConnection):
             
                 data['data'] = errObject
                 errObject = []
-                CONSOLE.send(json.dumps(data))
+                shared.editor(data)
+                #CONSOLE.send(json.dumps(data))
                 print "ERR ",errObject
             ioloop.IOLoop.instance().remove_handler(weioPipe.stderr.fileno())
             stderrHandlerIsLive = False
@@ -347,7 +354,8 @@ class WeioDashBoardHandler(SockJSConnection):
         
         data['serverPush'] = 'sysConsole'
         data['data'] = platformS
-        CONSOLE.send(json.dumps(data))
+        shared.editor(data)
+        #CONSOLE.send(json.dumps(data))
 
     def getUserProjectsList(self, rq):
         

@@ -330,9 +330,10 @@ dashboard.onopen = function() {
     var rq = { "request": "getUser"};
     dashboard.send(JSON.stringify(rq));
     
+    /*
     var rq = { "request": "getPlatform"};
     dashboard.send(JSON.stringify(rq));
-    
+    */
 };
 
 /*
