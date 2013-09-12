@@ -198,23 +198,41 @@ div {
   height: 100%;
   right: 0;
   top: 0;
+  /*    	
+    	#consoleTitle {
+            position : relative;
+            top:11px;
+            left:3px;
+            color: #777;
+            padding-left: 12px;
+            font-size:20px;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            
+        }
+*/
+
 }
-.columns .rightSideBar #consoleTitle {
-  position: relative;
-  top: 11px;
-  left: 3px;
-  color: #777;
-  padding-left: 12px;
-  font-size: 20px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+.columns .rightSideBar #consoleTabs {
+  position: absolute;
+  background-color: #EAEAEA;
+  width: 100%;
+  height: 46px;
+}
+.columns .rightSideBar #consoleTabs #consoleTabsElements {
+  margin-top: 5px;
 }
 .columns .rightSideBar #consoleOutput {
   display: block;
   height: 100%;
   overflow: auto;
   padding: 15px;
-  color: #777;
+  color: black;
   text-decoration: none;
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 16px;
+  margin-left: 5px;
+  margin-top: 26px;
 }
 .columns .rightSideBar #consoleOutput #stderr {
   color: #ff0000;
@@ -230,7 +248,8 @@ div {
   background: transparent;
   border: 0;
   position: relative;
-  top: 11px;
+  top: 55px;
+  right: 13px;
   float: right;
   z-index: 1000;
   opacity: 0.5;
@@ -254,6 +273,26 @@ div {
 }
 .columns .rightSideBar #rightSideBarButton:hover {
   opacity: 1;
+}
+/*/// CONSOLE tabs*/
+.nav-pills > .active > a,
+.nav-pills > .active > a:hover,
+.nav-pills > .active > a:focus {
+  color: black;
+  background-color: transparent;
+  border-bottom: solid 4px #757575;
+  border-radius: 0px;
+  height: 18px;
+  font-size: 15px;
+}
+.nav-pills > li > a {
+  color: #757575;
+  font-size: 15px;
+}
+.nav-tabs > li,
+.nav-pills > li {
+  margin-left: 28px;
+  margin-right: 7px;
 }
 /*////////////////////////////*/
 #codeEditorAce {

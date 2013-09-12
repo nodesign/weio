@@ -134,6 +134,19 @@
         <div class="rightSideBar">
             <button class="closed" id="rightSideBarButton"> <i class="icon-chevron-left"></i> </button>
             <button id="trashConsole" class="open" onclick="clearConsole()"> <i class="icon-trash"></i> </button>
+            
+            <div id="consoleTabs">
+                <ul class="nav nav-pills" id="consoleTabsElements">
+                    <li class="active">
+                        <a href="#">Console</a>
+                    </li>
+                    <li><a href="#">Board</a></li>
+                    <li><a href="#">Stats</a></li>
+                    <li><a href="#">Documentation</a></li>
+                </ul>
+            
+            </div>
+            
             <p id="consoleTitle">Console</p>
             <p id="consoleOutput"></p>
         </div>
