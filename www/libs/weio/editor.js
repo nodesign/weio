@@ -94,6 +94,8 @@ $(document).ready(function () {
     var closedSideBarWidth = "15px";
 
     updateConsoleHeight();
+                  
+    $("#consoleTabs").hide(); 
 
     $("#leftSideBarButton").click(function(){
 
@@ -136,7 +138,7 @@ $(document).ready(function () {
             $("#rightSideBarButton").attr("class", "closed");
             $("#rightSideBarButton i").attr("class", "icon-chevron-left");
             $("#trashConsole").hide();
-            
+            $("#consoleTabs").hide();
 
         } else {
 
@@ -147,6 +149,7 @@ $(document).ready(function () {
             $("#rightSideBarButton").attr("class", "opened");
             $("#rightSideBarButton i").attr("class", "icon-chevron-right");
             $("#trashConsole").show();
+            $("#consoleTabs").show();
             
         }
        scaleIt();
@@ -910,6 +913,9 @@ editorSocket.onopen = function() {
     console.log('editor Web socket is opened');
     // get files
     var rq = { "request": "getFileTreeHtml"};
+    editorSocket.send(JSON.stringify(rq));
+    
+    rq = { "request": "getPlatform"};
     editorSocket.send(JSON.stringify(rq));
     
     

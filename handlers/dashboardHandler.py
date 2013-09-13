@@ -445,7 +445,6 @@ class WeioDashBoardHandler(SockJSConnection):
         #'getFile': sendFileContent,
         'play' : play,
         'stop' : stop,
-        'getPlatform': sendPlatformDetails,
         'getUserProjetsFolderList': getUserProjectsList,
         'changeProject': changeProject,
         #'saveFile': saveFile,
@@ -453,7 +452,7 @@ class WeioDashBoardHandler(SockJSConnection):
         #'deleteFile': deleteFile,
         'getUser': sendUserData,
         'createNewProject': newProject,
-        'deleteProject' : deleteCurrentProject,
+        'deleteProject' : deleteCurrentProject
         
     }
     

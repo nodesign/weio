@@ -161,6 +161,24 @@ class WeioEditorHandler(SockJSConnection):
             data['requested'] = rq['request']
             data['status'] = "Project has been saved"
             self.send(json.dumps(data))
+    
+    def sendPlatformDetails(self, rq):
+        
+        # get configuration from file
+        config = weio_config.getConfiguration()
+        
+        data = {}
+        
+        platformS = ""
+        
+        platformS += "WeIO version " + config["weio_version"] + " with Python " + platform.python_version() + " on " + platform.system() + "<br>"
+        platformS += "GPL 3, Nodesign.net 2013 Uros Petrevski & Drasko Draskovic <br>"
+        
+        data['serverPush'] = 'sysConsole'
+        data['data'] = platformS
+        self.send(json.dumps(data))
+        #CONSOLE.send(json.dumps(data))
+
         
     
     ##############################################################################################################################
@@ -174,7 +192,7 @@ class WeioEditorHandler(SockJSConnection):
         'getFile': sendFileContent,
         #'play' : play,
         #'stop' : stop,
-        #'getPlatform': sendPlatformDetails,
+        'getPlatform': sendPlatformDetails,
         #'getUserProjetsFolderList': getUserProjectsList,
         #'changeProject': changeProject,
         'saveFile': saveFile,
