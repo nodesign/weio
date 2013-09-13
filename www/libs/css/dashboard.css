@@ -143,7 +143,7 @@ body {
   overflow: hidden;
   padding: 0;
   margin: 8px 4px;
-  box-shadow: none;
+  box-shadow: none !important;
   background-position: 0px 0px !important;
   background-repeat: no-repeat !important;
 }
@@ -152,6 +152,7 @@ body {
 }
 .navbar-inner .container .icn-btn:active {
   background-position: 0px -40px !important;
+  box-shadow: none !important;
 }
 .navbar-inner .container #editorButtonHeader a {
   background: url(../../img/weioEdit.png);
@@ -203,7 +204,7 @@ body {
 .navbar-inner .container #statusBarText2 {
   margin: 0;
   font-weight: normal;
-  color: #b3cc05;
+  color: #b4f80a;
 }
 /* Definitions of buttons settings and wifi*/
 .navbar .btn,

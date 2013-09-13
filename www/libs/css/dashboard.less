@@ -159,7 +159,7 @@ body {
     overflow: hidden;
     padding: 0;
     margin: 8px 4px;
-    box-shadow: none;
+    box-shadow: none !important;
     background-position: 0px 0px !important;
     background-repeat: no-repeat !important;
     
@@ -169,6 +169,7 @@ body {
 
     &:active {
         background-position: 0px -40px !important;
+        box-shadow: none !important;
     }
 }
    
@@ -245,7 +246,7 @@ body {
          #statusBarText2 {
              margin: 0;
              font-weight: normal;
-             color: #b3cc05;
+             color: #b4f80a;
          }
          
          
@@ -347,3 +348,6 @@ li.dropdown .dropdown-toggle  {
 
 
 
+.navbar .nav > .active > a:focus {
+
+}
