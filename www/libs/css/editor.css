@@ -216,7 +216,7 @@ div {
   position: absolute;
   background-color: #EAEAEA;
   width: 100%;
-  height: 46px;
+  height: 44px;
 }
 .columns .rightSideBar #consoleTabs #consoleTabsElements {
   margin-top: 5px;
@@ -241,6 +241,9 @@ div {
 .columns .rightSideBar #consoleOutput #sys {
   color: #000;
   text-decoration: none;
+}
+.columns .rightSideBar #board-image {
+  margin: 70px 94px;
 }
 .columns .rightSideBar #trashConsole {
   display: none;
@@ -278,12 +281,13 @@ div {
 .nav-pills > .active > a,
 .nav-pills > .active > a:hover,
 .nav-pills > .active > a:focus {
-  color: black;
+  color: #383838;
+  font-weight: bold;
   background-color: transparent;
-  border-bottom: solid 4px #757575;
+  border-bottom: solid 3px #757575;
   border-radius: 0px;
   height: 18px;
-  font-size: 15px;
+  font-size: 14px;
 }
 .nav-pills > li > a {
   color: #757575;
@@ -291,8 +295,7 @@ div {
 }
 .nav-tabs > li,
 .nav-pills > li {
-  margin-left: 28px;
-  margin-right: 7px;
+  margin: 0 15px;
 }
 /*////////////////////////////*/
 #codeEditorAce {
@@ -309,7 +312,7 @@ div {
 }
 /* CSS Tree menu styles */
 ol.tree {
-  padding: 5px 0;
+  padding: 8px 0;
   width: 200px;
   margin-left: 4px;
   margin-top: 0px;
@@ -323,7 +326,7 @@ li {
 li #deleteProjectButton {
   position: absolute;
   margin-top: -18px;
-  right: 10px;
+  right: 15px;
   color: #c8c8c8;
   /*display:none;*/
 
@@ -351,7 +354,7 @@ li.file a:hover {
 }
 li.file i {
   position: relative;
-  right: 10px;
+  right: 15px;
   float: right;
   top: -18px;
   color: #c8c8c8;

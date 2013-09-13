@@ -129,11 +129,11 @@ body {
 .navbar-inner .container .modeBT {
   background-color: #383838;
   padding: 0 5px;
-  height: 34px;
+  height: 36px;
   border-radius: 2px;
   position: relative;
   left: -22px;
-  top: 12px;
+  top: 11px;
 }
 .navbar-inner .container .icn-btn {
   width: 20px;
@@ -172,16 +172,15 @@ body {
   height: 30px;
   text-align: center;
   position: fixed;
-  top: 12px;
+  top: 11px;
   left: 49%;
 }
 .navbar-inner .container #controlCenter #statusBar {
   color: #cccccc;
   float: left;
   width: 200px;
-  height: 30px;
+  height: 32px;
   text-align: center;
-  top: 12px;
   border-radius: 2px;
   background-color: #383838;
 }
@@ -189,7 +188,7 @@ body {
   background-color: #383838;
   padding: 0 5px;
   float: left;
-  height: 34px;
+  height: 36px;
   margin-left: 10px;
   border-radius: 2px;
 }
@@ -199,10 +198,11 @@ body {
 .navbar-inner .container #statusBarText1 {
   color: #999999;
   margin: 0;
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: normal;
 }
 .navbar-inner .container #statusBarText2 {
-  margin: 0;
+  margin: 2px 0;
   font-weight: normal;
   color: #b4f80a;
 }
@@ -257,9 +257,9 @@ body {
 .navbar .btn-group .dropdown-toggle,
 li.dropdown .dropdown-toggle {
   font-size: 13px;
-  height: 34px !important;
+  height: 36px !important;
   text-align: center;
-  top: 12px !important;
+  top: 11px !important;
   border-radius: 2px;
   background-color: #383838;
   padding: 0 20px;

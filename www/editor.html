@@ -138,15 +138,20 @@
             <div id="consoleTabs">
                 <ul class="nav nav-pills" id="consoleTabsElements">
                     <li class="active">
-                        <a href="#">Console</a>
+                        <a href="#console-pane" data-toggle="tab">Console</a>
                     </li>
-                    <li><a href="#">Board</a></li>
-                    <li><a href="#">Stats</a></li>
-                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#board-pane" data-toggle="tab">Board</a></li>
+                    <li><a href="#stats-pane" data-toggle="tab">Stats</a></li>
+                    <li><a href="#doc-pane" data-toggle="tab">Documentation</a></li>
                 </ul>
-            
             </div>
-            <p id="consoleOutput"></p>
+            <div class="tab-content">
+            
+            <div id="console-pane" class="tab-pane active"><p id="consoleOutput"></p></div>
+            <div id="board-pane" class="tab-pane"><img id="board-image" src="img/weioBoard.png"></div>
+            <div id="stats-pane" class="tab-pane"></div>
+            <div id="doc-pane" class="tab-pane"></div>
+            </div>
         </div>
     </div>
     <!-- 3-columns -->
