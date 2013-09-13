@@ -123,19 +123,16 @@ function createNewProject() {
 
 /**
  * Sets coresponding icon and message inside statusBar in the middle of header. 
- * Icon is string format defined in font awesome library, message is string format
- * If icon is not desired you can pass null as argument : setStatus(null, "hello world");
+ * 
+ * setStatus(line, "hello world");
+ * Line represents first or second line to display msg 0 or 1
  *
- * Icons are only used when synchronization is active or weioMain is running
- * Set status is always activated from server push messages, never from client,
- * except when closed socket is detected!
  */
-function setStatus(icon, message) {
-
-    // if (icon!=null) 
-    // $( "#statusBar" ).html('<p id="statusBarText"><i id="statusIcon" class="' + icon + '"></i>' + message + '</p>');
-    // else 
-    // $( "#statusBar" ).html('<p id="statusBarText">' + message + '</p>');
+function setStatus(line, message) {
+    if (line == 0)
+        $( "#statusBarText1" ).html(message);
+    else
+        $( "#statusBarText2" ).html(message);
 }
 
 function prepareToPlay() {
@@ -231,7 +228,7 @@ function projectDeleted(data) {
  * Shows local ip address on the screen
  */
 function showIpAddress(data){
-    setStatus(null, data.status);
+    setStatus(0, data.status);
 }
 
 /**
@@ -247,7 +244,7 @@ function showProjectName(data){
  */
 function updateStatus(data){
     console.log("data.status");
-    setStatus(null, data.status);
+    setStatus(1, data.status);
 }
 
 /**

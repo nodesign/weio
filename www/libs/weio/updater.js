@@ -92,12 +92,13 @@ function countTimeTillReload(data) {
     if (Math.round(weioUpdaterTimeTillReload)<100) {
         $("#progressStatus").html("Installing WeIO " + String(Math.round(weioUpdaterTimeTillReload)) + "%");
     } else {
+        $("#progressStatus").html("Finished, please reload this page");
         clearInterval(updaterTimerInterval);
         var randomNumber = Math.random();
         // prevent loading from cache
         var url = "http://" + location.host + "/editor?"+randomNumber;
         //location.reload();
-        window.location.href = url;
+       // window.location.href = url;
     }
 }
 
