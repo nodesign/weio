@@ -6,6 +6,8 @@ import json
 
 import threading
 
+import uuid
+
 from user import *
 
 from weioLib.weioUserApi import *
@@ -17,7 +19,7 @@ print projectModule
 main = __import__(projectModule, fromlist=[''])
 
 class WeioHandler(SockJSConnection):
-    
+    connectedClients = {}
     
     """Opens editor route."""
     def on_open(self, data):
@@ -26,6 +28,11 @@ class WeioHandler(SockJSConnection):
         print "Opened WEIO API socket"
         shared.websocketOpened = True
         shared.websocketSend = self.emit
+        
+        self.id = uuid.uuid4()
+        print "UUID ", self.id
+        shared.connectedClients[self.id] = self
+        shared.connectedClients.append(self)
     
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
@@ -40,6 +47,10 @@ class WeioHandler(SockJSConnection):
     def on_close(self, data):
         shared.websocketOpened = False
         
+#if (self.id in shared.connectedClients) :
+# del shared.connectedClients[self.id]
+    
+        
     def emit(self, instruction, rq):
         data = {}
         data['serverPush'] = instruction
@@ -51,6 +62,8 @@ if __name__ == '__main__':
     #logging.getLogger().setLevel(logging.DEBUG)
     
     shared.websocketOpened = False
+    shared.connectedClients = {}
+    
     
     WeioRouter = SockJSRouter(WeioHandler, '/api')
     

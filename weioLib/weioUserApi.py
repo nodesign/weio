@@ -8,7 +8,6 @@ INPUT = 1
 class WeioSharedVar(object):
     pass
 
-
 class WeioApiProcess():
     def __init__ (self, procFnc, procArgs) :
         self.procFnc = procFnc
