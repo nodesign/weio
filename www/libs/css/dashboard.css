@@ -144,12 +144,14 @@ body {
   padding: 0;
   margin: 8px 4px;
   box-shadow: none;
-  background-position: 0px -20px !important;
+  background-position: 0px 0px !important;
   background-repeat: no-repeat !important;
 }
-.navbar-inner .container .icn-btn:hover,
+.navbar-inner .container .icn-btn:hover {
+  background-position: 0px -20px !important;
+}
 .navbar-inner .container .icn-btn:active {
-  background-position: 0px 0px !important;
+  background-position: 0px -40px !important;
 }
 .navbar-inner .container #editorButtonHeader a {
   background: url(../../img/weioEdit.png);
@@ -158,10 +160,10 @@ body {
   background: url(../../img/weioPreview.png);
 }
 .navbar-inner .container #playButton a {
-  background: url(../../img/weioPreview.png);
+  background: url(../../img/weioPlay.png);
 }
 .navbar-inner .container #stopButton a {
-  background: url(../../img/weioPreview.png);
+  background: url(../../img/weioStop.png);
 }
 .navbar-inner .container #controlCenter {
   color: #cccccc;
@@ -193,8 +195,15 @@ body {
 .navbar-inner .container #statusIcon {
   margin-right: 8px;
 }
-.navbar-inner .container #statusBarText {
-  margin-top: 7px;
+.navbar-inner .container #statusBarText1 {
+  color: #999999;
+  margin: 0;
+  font-size: 10px;
+}
+.navbar-inner .container #statusBarText2 {
+  margin: 0;
+  font-weight: normal;
+  color: #b3cc05;
 }
 /* Definitions of buttons settings and wifi*/
 .navbar .btn,

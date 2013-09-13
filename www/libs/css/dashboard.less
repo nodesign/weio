@@ -160,11 +160,15 @@ body {
     padding: 0;
     margin: 8px 4px;
     box-shadow: none;
-    background-position: 0px -20px !important;
+    background-position: 0px 0px !important;
     background-repeat: no-repeat !important;
     
-    &:hover, &:active {
-        background-position: 0px 0px !important;
+    &:hover {
+        background-position: 0px -20px !important;
+    }
+
+    &:active {
+        background-position: 0px -40px !important;
     }
 }
    
@@ -179,12 +183,12 @@ body {
 }
 
 #playButton a {
-    background: url(../../img/weioPreview.png);
+    background: url(../../img/weioPlay.png);
 
 }
 #stopButton a {
     
-    background: url(../../img/weioPreview.png);
+    background: url(../../img/weioStop.png);
  
 }
 
@@ -232,8 +236,16 @@ body {
              margin-right:8px;
          }
 
-         #statusBarText {
-             margin-top:7px;
+         #statusBarText1 {
+             color: #999999;
+            margin: 0;
+            font-size: 10px;
+
+         }
+         #statusBarText2 {
+             margin: 0;
+             font-weight: normal;
+             color: #b3cc05;
          }
          
          

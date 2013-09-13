@@ -132,10 +132,10 @@ function createNewProject() {
  */
 function setStatus(icon, message) {
 
-    if (icon!=null) 
-    $( "#statusBar" ).html('<p id="statusBarText"><i id="statusIcon" class="' + icon + '"></i>' + message + '</p>');
-    else 
-    $( "#statusBar" ).html('<p id="statusBarText">' + message + '</p>');
+    // if (icon!=null) 
+    // $( "#statusBar" ).html('<p id="statusBarText"><i id="statusIcon" class="' + icon + '"></i>' + message + '</p>');
+    // else 
+    // $( "#statusBar" ).html('<p id="statusBarText">' + message + '</p>');
 }
 
 function prepareToPlay() {
