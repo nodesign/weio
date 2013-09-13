@@ -135,8 +135,7 @@ body {
   left: -22px;
   top: 12px;
 }
-.navbar-inner .container #previewButtonHeader a,
-.navbar-inner .container #editorButtonHeader a {
+.navbar-inner .container .icn-btn {
   width: 20px;
   height: 20px;
   text-indent: 100%;
@@ -144,21 +143,25 @@ body {
   overflow: hidden;
   padding: 0;
   margin: 8px 4px;
-  position: relative;
-  background: transparent;
   box-shadow: none;
+  background-position: 0px -20px !important;
+  background-repeat: no-repeat !important;
 }
-.navbar-inner .container #previewButtonHeader a:hover,
-.navbar-inner .container #editorButtonHeader a:hover,
-.navbar-inner .container #previewButtonHeader a:active,
-.navbar-inner .container #editorButtonHeader a:active {
-  background-position: 0px 0px;
+.navbar-inner .container .icn-btn:hover,
+.navbar-inner .container .icn-btn:active {
+  background-position: 0px 0px !important;
 }
 .navbar-inner .container #editorButtonHeader a {
-  background: url(../../img/weioEdit.png) 0px -20px no-repeat;
+  background: url(../../img/weioEdit.png);
 }
 .navbar-inner .container #previewButtonHeader a {
-  background: url(../../img/weioPreview.png) 0px -20px no-repeat;
+  background: url(../../img/weioPreview.png);
+}
+.navbar-inner .container #playButton a {
+  background: url(../../img/weioPreview.png);
+}
+.navbar-inner .container #stopButton a {
+  background: url(../../img/weioPreview.png);
 }
 .navbar-inner .container #controlCenter {
   color: #cccccc;
@@ -186,14 +189,6 @@ body {
   height: 34px;
   margin-left: 10px;
   border-radius: 2px;
-}
-.navbar-inner .container #controlCenter .serverBT a {
-  padding: 0 5px;
-  line-height: 32px;
-  opacity: 0.5;
-}
-.navbar-inner .container #controlCenter .serverBT a:hover {
-  opacity: 1;
 }
 .navbar-inner .container #statusIcon {
   margin-right: 8px;

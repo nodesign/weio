@@ -61,8 +61,12 @@
                         
 
                        <ul class="modeBT nav">
-                        <li id="previewButtonHeader" class="top_tab"><a href="javascript:runPreview();" id="editorButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Preview" >Preview</a></li>
-                        <li id="editorButtonHeader" class="top_tab"><a class="active" href="javascript:runEditor();" id="previewButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Edit" >Edit</a></li>
+                        <li id="previewButtonHeader" class="top_tab">
+                          <a class="icn-btn" href="javascript:runPreview();" id="editorButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Preview">Preview</a>
+                        </li>
+                        <li id="editorButtonHeader" class="top_tab">
+                          <a class="icn-btn active" href="javascript:runEditor();" id="previewButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Edit" >Edit</a>
+                        </li>
                         </ul>
 
                     
@@ -75,8 +79,12 @@
                      
                      
                      <ul class="serverBT nav">
-                     <li  class="top_tab"><a href="javascript:prepareToPlay();" id="playButton" ><img src="img/weio-play.png" id="playButtonIcon" onmouseover="$(this).tooltip()" data-placement="bottom" title="Run server"></img></a></li>
-                     <li class="top_tab "><a href="javascript:stop();" id="stopButton"><img src="img/weio-stop.png" id="stopButtonIcon" onmouseover="$(this).tooltip()" data-placement="bottom" title="Stop server"></img></a></li>
+                     <li id="playButton" class="top_tab">
+                      <a class="icn-btn" href="javascript:prepareToPlay();" onmouseover="$(this).tooltip()" data-placement="bottom">Play</a>
+                    </li>
+                     <li id="stopButton" class="top_tab ">
+                      <a class="icn-btn" href="javascript:stop();" onmouseover="$(this).tooltip()" data-placement="bottom">Stop</a>
+                    </li>
                      </ul>
                      
                      

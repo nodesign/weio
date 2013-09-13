@@ -150,8 +150,8 @@ body {
                 left: -22px;
                 top: 12px;
 }
-        
-        #previewButtonHeader a, #editorButtonHeader a {
+
+.icn-btn {
     width: 20px;
     height: 20px;
     text-indent: 100%;
@@ -159,20 +159,32 @@ body {
     overflow: hidden;
     padding: 0;
     margin: 8px 4px;
-position: relative;
-background: transparent;
-box-shadow: none;
-&:hover, &:active {
-        background-position: 0px 0px;
+    box-shadow: none;
+    background-position: 0px -20px !important;
+    background-repeat: no-repeat !important;
+    
+    &:hover, &:active {
+        background-position: 0px 0px !important;
     }
 }
+   
+
 #editorButtonHeader a {
-    background: url(../../img/weioEdit.png) 0px -20px no-repeat;
+    background: url(../../img/weioEdit.png);
 
 }
 #previewButtonHeader a {
     
-    background: url(../../img/weioPreview.png) 0px -20px no-repeat;
+    background: url(../../img/weioPreview.png);
+}
+
+#playButton a {
+    background: url(../../img/weioPreview.png);
+
+}
+#stopButton a {
+    
+    background: url(../../img/weioPreview.png);
  
 }
 
@@ -209,14 +221,6 @@ box-shadow: none;
                 height: 34px;
                 margin-left:10px;
                 border-radius: 2px;
-                a {
-                    padding: 0 5px;
-                    line-height: 32px;
-                    opacity: 0.5;
-                    &:hover {
-                        opacity: 1;
-                    }
-                }
             }
 
 
