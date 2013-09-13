@@ -76,7 +76,7 @@ class WeioUpdaterHandler(SockJSConnection):
 
     # checking version
     def checkVersion(self, response):
-        wifi = None
+        wifi = "ap"
         if (platform.machine() == 'mips') :
             wifi = shared.wifi
             print "WIFI MODE ", wifi.mode
