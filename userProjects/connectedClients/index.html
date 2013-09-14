@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="../../../libs/jquery/jquery-2.0.2.min.js"></script>
+<script src="../../../libs/sockJS/sockjs-0.3.min.js"></script>
+<script src="../../../libs/weio/weioApi.js"></script>
+  <head >
+    <title>My first Web app</title>
+    <style>
+        body {
+          background:black;
+        }
+        font {
+           font-family:Helvetica;
+           font-size:200px;
+           font-weight:bold;
+           text-transform:uppercase;
+        }
+        p {
+           cursor:pointer;
+           margin:0.2em;
+           line-height:1em;
+        }
+        
+        a {
+            color:red;
+            font-size:30px;
+        }
+        
+    </style>
+
+    <script>
+    
+    weioCallbacks.userMsg = helloFromWeio;
+    
+    function helloFromWeio(data) {
+        console.log("HELLO FROM WEIO :", data);
+        $("#numbers").empty();
+        $("#numbers").html(data.data);
+        
+    }
+    
+    var light = false;
+
+    $(document).ready(function () {
+       lights();
+    });
+
+    function lights() {
+
+        if (light) {
+            
+            $(phrase).html("Turn OFF the light!");
+            $("body").css("background","white");
+            $("#phrase").css("color","black");
+            genericMessage("message", "ON");
+            light = !light;
+        } else {
+           
+            $(phrase).html("Turn ON the light!");
+            $("body").css("background","black");
+            $("#phrase").css("color","white");
+            genericMessage("message", "OFF");
+            light = !light;
+        }
+    }
+    </script>
+  </head>
+
+  <body>
+
+    <font>
+        <a id="numbers"></a>
+        <p id="phrase" onclick="lights()"></p>
+    </font>
+
+  </body>
+</html>
