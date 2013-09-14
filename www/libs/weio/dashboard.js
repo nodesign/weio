@@ -160,6 +160,7 @@ function prepareToPlay() {
 function play(){
     var rq = { "request": "play"};
     dashboard.send(JSON.stringify(rq));
+    document.getElementById("weioIframe").contentWindow.clearConsole();
 }
 
 function stop(){
