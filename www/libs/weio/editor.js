@@ -636,7 +636,8 @@ var callbacksEditor = {
     "saveFile": fileSaved,
     "createNewFile": refreshFiles,
     "deleteFile": fileRemoved,
-    "saveAll": allFilesSaved
+    "saveAll": allFilesSaved,
+    "errorObjects": updateError
 }
 
 function allFilesSaved(data) {
