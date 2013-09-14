@@ -36,44 +36,44 @@
 #
 ###
 
-import os
 from fcntl import ioctl
 import struct
 import platform
 
-class lm75:
+class WeioLm75:
 
-    # i2c device address
-    deviceAddress = 0x4f
-    # set instruction to get temperature - 0x0 to get temperature
-    inst = struct.pack('B', 0x0)
-
-    # file path
-    filePath = "/dev/i2c-0"
-
-    # from i2c-dev.h
-    I2C_SLAVE = 0x0703
-
-    # file descriptor
-    global f
+    # Kernel driver definition
+    # SDA GPIO18
+    # SCL GPIO19
 
     def __init__(self):
        
         if (platform.machine() == 'mips') :
-            global f    
+                        
+            # file path
+            filePath = "/dev/i2c-0"
+
+            # from i2c-dev.h
+            I2C_SLAVE = 0x0703
+            
             # open file
-            f = open(filePath, "r+")
+            self.f = open(filePath, "r+")
 
             # set device address
-            ioctl(f, I2C_SLAVE, 0x4f)
+            ioctl(self.f, I2C_SLAVE, 0x4f)
+
+            # i2c device address
+            self.deviceAddress = 0x4f
+            # set instruction to get temperature - 0x0 to get temperature
+            self.inst = struct.pack('B', 0x0)
         
     def getTemperature(self):
         if (platform.machine() == 'mips') :
             # ask for a temperature
-            f.write(inst)
+            self.f.write(self.inst)
 
             # get two bytes as result
-            rcv = f.read(2)
+            rcv = self.f.read(2)
         
             # do data conversion see LM75B datasheet
             temp  = struct.unpack('B', rcv[0])[0] << 8
@@ -82,5 +82,5 @@ class lm75:
             temp >>= 5
             return float(temp)*0.125
         else :
-            print "This is fake temperature 25.123, only for testing purposes on this architecture"
+            print "This is fake temperature 25.123, testing purposes"
             return 25.123
