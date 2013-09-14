@@ -168,7 +168,7 @@ function genericMessage(instruction, data) {
         var askWeio = { "request": instruction, "data" : data, "uuid" : uuid };
         _weio.send(JSON.stringify(askWeio));
     } else {
-        console.log("Warning, message tried to be send when websocket was not yet completely opened");
+        console.log("Warning, message tried to be sent when websocket was not yet completely opened");
     }
 }
 
