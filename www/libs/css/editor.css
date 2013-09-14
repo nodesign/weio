@@ -205,19 +205,6 @@ div {
   height: 100%;
   right: 0;
   top: 0;
-  /*    	
-    	#consoleTitle {
-            position : relative;
-            top:11px;
-            left:3px;
-            color: #777;
-            padding-left: 12px;
-            font-size:20px;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            
-        }
-*/
-
 }
 .columns .rightSideBar #consoleTabs {
   position: absolute;
@@ -227,6 +214,9 @@ div {
 }
 .columns .rightSideBar #consoleTabs #consoleTabsElements {
   margin-top: 5px;
+}
+.columns .rightSideBar .tab-content {
+  width: 100%;
 }
 .columns .rightSideBar #consoleOutput {
   display: block;
@@ -239,7 +229,7 @@ div {
   font-size: 12px;
   line-height: 16px;
   margin-left: 5px;
-  margin-top: 44px;
+  margin-top: 19px;
 }
 .columns .rightSideBar #consoleOutput #stderr {
   color: #ff0000;
