@@ -169,7 +169,7 @@ class WeioDashBoardHandler(SockJSConnection):
             
             # Inform client the we run subprocess
             data['requested'] = rq['request']
-            data['status'] = "User server is running!"
+            data['status'] = "User program is running!"
             self.send(json.dumps(data))
             
             
@@ -218,7 +218,7 @@ class WeioDashBoardHandler(SockJSConnection):
             if lastLaunched is not None :
                 consoleWelcome = {}
                 consoleWelcome['serverPush'] = "sysConsole"
-                consoleWelcome['data'] = 'WeIO user server stoped. It was runnig since : ' + lastLaunched
+                consoleWelcome['data'] = 'WeIO user program stoped. It was runnig since : ' + lastLaunched
                 shared.editor(consoleWelcome)
                 
                 global lastLaunched

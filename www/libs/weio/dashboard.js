@@ -45,7 +45,13 @@ var dashboard = new SockJS('http://' + location.host + '/dashboard');
  */
 $(document).ready(function () {
     updateIframeHeight();
-    runEditor();
+
+    // generate random number to prevent loading page from cache
+    var randomNumber = Math.random();
+      
+    $(".iframeContainer").attr("src", "editor.html?" + randomNumber);
+                  
+   runEditor();
     
 }); /* end of document on ready event */
 
@@ -68,12 +74,16 @@ function updateIframeHeight() {
 /* 
  * Run Editor in targeted IFrame
  */ 
+
 function runEditor() {
-    // generate random number to prevent loading page from cache
-    var randomNumber = Math.random();
-    $(".iframeContainer").attr("src", "editor.html?" + randomNumber);
+    
+    $(".iframeContainer").show();
+    $(".iframeContainerIndex").hide();
+
     $("#editorButtonHeader").attr("class", "top_tab active");
     $("#previewButtonHeader").attr("class", "top_tab");
+
+    isEditorActive = true;    
 }
 
 
@@ -85,23 +95,25 @@ function runPreview() {
     if (isEditorActive)
         document.getElementById("weioIframe").contentWindow.saveAll();
     
-    var confFile = "";
-    if (document.getElementById("weioIframe").contentWindow.isIndexExists()) {
-        if (document.getElementById("weioIframe").contentWindow.isMainExists()) play();
-        
-       $.getJSON('config.json', function(data) {
-           confFile = data;
-           // generate random number to prevent loading page from cache
-           var randomNumber = Math.random();
-           $(".iframeContainer").attr("src", "userProjects/" + confFile.last_opened_project + "index.html?"+randomNumber);
-          // console.log(confFile.weio_lib_path);
-     });
-     
-     $("#editorButtonHeader").attr("class", "top_tab");
-     $("#previewButtonHeader").attr("class", "top_tab active");
-    } else {
-        alert("Preview is not possible because index.html don't exist inside project");
-    }
+    play();
+    
+    
+    $.getJSON('config.json', function(data) {
+              var confFile = data;
+              // generate random number to prevent loading page from cache
+              var randomNumber = Math.random();
+              
+              $(".iframeContainerIndex").attr("src", "userProjects/" + confFile.last_opened_project + "index.html?"+randomNumber);
+              // console.log(confFile.weio_lib_path);
+              $(".iframeContainerIndex").css("height", screen.height-60+ "px");
+              $(".iframeContainerIndex").show();
+              
+              $(".iframeContainer").hide();
+              });
+    
+    $("#editorButtonHeader").attr("class", "top_tab");
+    $("#previewButtonHeader").attr("class", "top_tab active");
+    
     isEditorActive = false;
 }
 
@@ -281,6 +293,7 @@ function isPlaying(data) {
 
 function stopped(data) {
     $("#playButton").attr("class", "top_tab");
+    updateStatus(data);
 }
 
 /**
