@@ -263,7 +263,7 @@ function updateWifiCells(data) {
    
    for (var cell in cellList) {
        if (cellList[cell].connected) {
-           $("#connectedWifiName").html('<img src="img/wifi' + getCellQuality(cellList[cell]) + 'b.png" id="wifiIcons"></img>' + cellList[cell].essid);
+           $("#connectedWifiName").html('<img src="img/wifi' + getCellQuality(cellList[cell]) + '.png" id="wifiIcons"></img>' + cellList[cell].essid);
            break;
        }
    }
