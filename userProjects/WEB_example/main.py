@@ -33,6 +33,6 @@ def push():
             
 # Attaches interrupt from Web client to "message" string
 weio.attach.event('message', buttonHandler)
-    
+
 # Attaches event from server to browser
 weio.attach.process(push)

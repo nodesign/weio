@@ -220,7 +220,7 @@ class WeioDashBoardHandler(SockJSConnection):
                 consoleWelcome['serverPush'] = "sysConsole"
                 consoleWelcome['data'] = 'WeIO user server stoped. It was runnig since : ' + lastLaunched
                 shared.editor(consoleWelcome)
-                    #CONSOLE.send(json.dumps(consoleWelcome))
+                
                 global lastLaunched
                 lastLaunched = None
 

@@ -24,7 +24,6 @@ class WeioApiInterrupt():
         self.edge = edge
         self.event = event
 
-
 class WeioAttach():
     def __init__(self):
         self.procs = {}
@@ -44,11 +43,15 @@ class WeioAttach():
         intr = WeioApiInterrupt(pin, edge, event)
         slef.ints[pin] = intr
 
+class WeioClient():
+    
+    def __init__(self, info, sender):
+        self.info = info
+        self.send = sender
+        
 
 ###
 # Global instances
 ###
 attach = WeioAttach()
 shared = WeioSharedVar()
-
-

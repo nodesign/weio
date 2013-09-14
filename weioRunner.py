@@ -19,25 +19,21 @@ print projectModule
 main = __import__(projectModule, fromlist=[''])
 
 class WeioHandler(SockJSConnection):
-    connectedClients = {}
     
-    """Opens editor route."""
+    
+    
     def on_open(self, data):
-        """On open asks weio for last saved project. List of files are scaned and sent to editor.
-        Only contents of weioMain.py is sent at first time"""
         print "Opened WEIO API socket"
         shared.websocketOpened = True
-        shared.websocketSend = self.emit
-        
-        self.id = uuid.uuid4()
-        print "UUID ", self.id
-        shared.connectedClients[self.id] = self
-        shared.connectedClients.append(self)
-    
+        #shared.websocketSend = self.emit
+        attach.event('_info', self.clientInfo)
+        self.ip = data.ip
+         
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
         self.req = json.loads(data)
         self.serve()
+        
 
     def serve(self) :
         for key in attach.events :
@@ -46,10 +42,33 @@ class WeioHandler(SockJSConnection):
 
     def on_close(self, data):
         shared.websocketOpened = False
+            # for client in shared.connectedClients :
+            #if self.id in client :
+            #   shared.connectedClients.remove(client)
+            #    print "client uuid : " + self.id + " closed"
+
+
+    def clientInfo(self,data) :
+        print "New client connected with uuid " + data["uuid"]
+        self.id = data["uuid"]
+        data["ip"] = self.ip
         
-#if (self.id in shared.connectedClients) :
-# del shared.connectedClients[self.id]
-    
+        if (len(shared.connectedClients)==0):
+            newClient = WeioClient(data, self.emit) 
+            shared.connectedClients.append(newClient)
+        else :
+            
+            present = False
+            # don't register multiple times same client
+            for client in shared.connectedClients :
+                if (self.id in client.info["uuid"]):
+                    present = True
+                    break
+            
+            if present is False:
+                newClient = WeioClient(data, self.emit) 
+                shared.connectedClients.append(newClient)
+        
         
     def emit(self, instruction, rq):
         data = {}
@@ -62,7 +81,7 @@ if __name__ == '__main__':
     #logging.getLogger().setLevel(logging.DEBUG)
     
     shared.websocketOpened = False
-    shared.connectedClients = {}
+    shared.connectedClients = []
     
     
     WeioRouter = SockJSRouter(WeioHandler, '/api')
@@ -71,6 +90,8 @@ if __name__ == '__main__':
     
     app = web.Application(WeioRouter.urls)
     app.listen(options.options.port, "0.0.0.0")
+    
+    
 
     #logging.info(" [*] Listening on 0.0.0.0:8082/api")
     print "Websocket is created at localhost:" + str(options.options.port) + "/api"
@@ -89,4 +110,3 @@ if __name__ == '__main__':
         t.start()
 
     ioloop.IOLoop.instance().start()
-
