@@ -151,28 +151,6 @@ body {
                 top: 11px;
 }
 
-.icn-btn {
-    width: 20px;
-    height: 20px;
-    text-indent: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    padding: 0;
-    margin: 8px 4px;
-    box-shadow: none !important;
-    background-position: 0px 0px !important;
-    background-repeat: no-repeat !important;
-    
-    &:hover {
-        background-position: 0px -20px !important;
-    }
-
-    &:active {
-        background-position: 0px -40px !important;
-        box-shadow: none !important;
-    }
-}
-   
 
 #editorButtonHeader a {
     background: url(../../img/weioEdit.png);
@@ -192,6 +170,38 @@ body {
     background: url(../../img/weioStop.png);
  
 }
+
+
+.top_tab .icn-btn {
+    width: 20px;
+    height: 20px;
+    text-indent: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 0;
+    margin: 8px 4px;
+    box-shadow: none !important;
+    background-repeat: no-repeat !important;
+    
+    &:hover {
+        background-position: 0px -20px !important;
+    }
+    &:active {
+        background-position: 0px -40px !important;
+    }
+
+}
+
+.nav >.active > a {
+        background-position: 0px -40px !important;
+
+
+}
+
+
+
+   
+
 
 
        
@@ -346,8 +356,3 @@ li.dropdown .dropdown-toggle  {
  }
 
 
-
-
-.navbar .nav > .active > a:focus {
-
-}

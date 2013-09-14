@@ -135,25 +135,6 @@ body {
   left: -22px;
   top: 11px;
 }
-.navbar-inner .container .icn-btn {
-  width: 20px;
-  height: 20px;
-  text-indent: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  padding: 0;
-  margin: 8px 4px;
-  box-shadow: none !important;
-  background-position: 0px 0px !important;
-  background-repeat: no-repeat !important;
-}
-.navbar-inner .container .icn-btn:hover {
-  background-position: 0px -20px !important;
-}
-.navbar-inner .container .icn-btn:active {
-  background-position: 0px -40px !important;
-  box-shadow: none !important;
-}
 .navbar-inner .container #editorButtonHeader a {
   background: url(../../img/weioEdit.png);
 }
@@ -165,6 +146,26 @@ body {
 }
 .navbar-inner .container #stopButton a {
   background: url(../../img/weioStop.png);
+}
+.navbar-inner .container .top_tab .icn-btn {
+  width: 20px;
+  height: 20px;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0;
+  margin: 8px 4px;
+  box-shadow: none !important;
+  background-repeat: no-repeat !important;
+}
+.navbar-inner .container .top_tab .icn-btn:hover {
+  background-position: 0px -20px !important;
+}
+.navbar-inner .container .top_tab .icn-btn:active {
+  background-position: 0px -40px !important;
+}
+.navbar-inner .container .nav > .active > a {
+  background-position: 0px -40px !important;
 }
 .navbar-inner .container #controlCenter {
   color: #cccccc;
