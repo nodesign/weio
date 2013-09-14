@@ -271,19 +271,16 @@ function reloadIFrame(data) {
 
 function isPlaying(data) {
     if (data.state!="error") {
-        $("#playButtonIcon").attr("src", "img/weio-play-green.png");
-        $("#playButton").css("opacity", "1");
+        $("#playButton").attr("class", "top_tab active");
     } else {
-        $("#playButtonIcon").attr("src", "img/weio-play-red.png");
-        $("#playButton").css("opacity", "1");
+        $("#playButton").attr("class", "top_tab");
+        
     }
     updateStatus(data);
 }
 
 function stopped(data) {
-    $("#playButtonIcon").attr("src", "img/weio-play.png"); 
-    $("#playButton").css("opacity", "0.5");
-    
+    $("#playButton").attr("class", "top_tab");
 }
 
 /**
