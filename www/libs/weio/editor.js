@@ -157,7 +157,7 @@ $(document).ready(function () {
 
     });
                 
-      
+  $("#rightSideBarButton").trigger("click");
   window.setInterval("autoSave()",autoSaveInterval); 
                    
                   
