@@ -77,8 +77,11 @@ function updateIframeHeight() {
 
 function runEditor() {
     
-    $(".iframeContainer").show();
-    $(".iframeContainerIndex").hide();
+    //$(".iframeContainer").show();
+    $(".iframeContainer").animate( { "margin-top": "60px" }, { queue: false, duration: 500 });
+    $(".iframeContainerIndex").animate( { "margin-top": screen.height+60+"px" }, { queue: false, duration: 500 });
+    
+    //$(".iframeContainerIndex").hide();
 
     $("#editorButtonHeader").attr("class", "top_tab active");
     $("#previewButtonHeader").attr("class", "top_tab");
@@ -105,11 +108,15 @@ function runPreview() {
               
               $(".iframeContainerIndex").attr("src", "userProjects/" + confFile.last_opened_project + "index.html?"+randomNumber);
               // console.log(confFile.weio_lib_path);
-              $(".iframeContainerIndex").css("height", screen.height-60+ "px");
-              $(".iframeContainerIndex").show();
+              $(".iframeContainerIndex").css("height", screen.height-60 + "px");
+              $(".iframeContainerIndex").css("margin-top", screen.height+60 + "px");
               
-              $(".iframeContainer").hide();
+              //$(".iframeContainer").hide();
               });
+    
+    //$(".iframeContainers").animate( { "margin-top": -screen.height }, { queue: false, duration: 500 });
+    $(".iframeContainer").animate( { "margin-top": -screen.height }, { queue: false, duration: 500 });
+    $(".iframeContainerIndex").animate( { "margin-top": "40px" }, { queue: false, duration: 500 });
     
     $("#editorButtonHeader").attr("class", "top_tab");
     $("#previewButtonHeader").attr("class", "top_tab active");
