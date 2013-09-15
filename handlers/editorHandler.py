@@ -179,6 +179,19 @@ class WeioEditorHandler(SockJSConnection):
         self.send(json.dumps(data))
         #CONSOLE.send(json.dumps(data))
 
+
+    def iteratePacketRequests(self, rq) :
+        
+        requests = rq["packets"]
+        
+        for uniqueRq in requests:
+            request = uniqueRq['request']
+            if request in callbacks:
+                callbacks[request](self, uniqueRq)
+            else :
+                print "unrecognised request ", uniqueRq['request']
+
+
         
     
     ##############################################################################################################################
@@ -198,7 +211,8 @@ class WeioEditorHandler(SockJSConnection):
         'saveFile': saveFile,
         'createNewFile': createNewFile,
         'deleteFile': deleteFile,
-        'saveAll' : saveAll
+        'saveAll' : saveAll,
+        'packetRequests': iteratePacketRequests
         #'getUser': sendUserData,
     
     }

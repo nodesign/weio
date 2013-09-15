@@ -40,23 +40,83 @@
  */
 var _weio;
 
-/*
- * Identify server address and port to open websocket
- */
-var _addr = location.host;
-if (_addr.indexOf(":")!=-1) {
-    var a = _addr.split(":");
-    _addr = 'http://' + a[0] + ':8082/api';
-} else {
-    var a = 'http://' + _addr + ':8082/api';
-    _addr = a;
-}
-console.log("WebSocket connecting to " + _addr);
 
-/*
- * WebSocket openning
- */
-_weio = new SockJS(_addr);
+$(document).ready(function() {
+
+    /*
+     * Identify server address and port to open websocket
+     */
+    var _addr = location.host;
+    if (_addr.indexOf(":")!=-1) {
+        var a = _addr.split(":");
+        _addr = 'http://' + a[0] + ':8082/api';
+    } else {
+        var a = 'http://' + _addr + ':8082/api';
+        _addr = a;
+    }
+    console.log("WebSocket connecting to " + _addr);
+
+    /*
+     * WebSocket openning
+     */
+    _weio = new SockJS(_addr);
+                  
+                      
+        
+
+    _weio.onopen = function() {
+        console.log('socket opened for weio API');
+        
+        // Client info will be sent to server
+        data = {};
+        data.appCodeName = navigator.appCodeName;
+        data.appName = navigator.appName;
+        data.appVersion = navigator.appVersion;
+        data.cookieEnabled = navigator.cookieEnabled;
+        data.onLine = navigator.onLine;
+        data.platform = navigator.platform;
+        data.userAgent = navigator.userAgent;
+        
+        uuid = _generateUUID()
+        data.uuid = uuid;
+        
+        // Say hello to server with some client data
+        var rq = { "request": "_info", "data":data};
+        _weio.send(JSON.stringify(rq));
+
+    };
+
+
+    _weio.onmessage = function(e) {
+        // JSON data is parsed into object
+        data = JSON.parse(e.data);
+        console.log(data);
+        
+        if ("requested" in data) {
+            // this is instruction that was echoed from server + data as response
+            instruction = data.requested;  
+            if (instruction in weioCallbacks) 
+                weioCallbacks[instruction](data);
+        } else if ("serverPush" in data) {
+            // this is instruction that was echoed from server + data as response
+            
+            instruction = data.serverPush;  
+            if (instruction in weioCallbacks) 
+                weioCallbacks[instruction](data);
+            
+        }
+
+    };
+
+    _weio.onclose = function() {
+      console.log('socket is closed for editor');
+    };
+
+
+ 
+                  
+});
+
 
 
 /* 
@@ -97,54 +157,6 @@ function _generateUUID(){
 var weioCallbacks = {}
 
 
-_weio.onopen = function() {
-    console.log('socket opened for weio API');
-    
-    // Client info will be sent to server
-    data = {};
-    data.appCodeName = navigator.appCodeName;
-    data.appName = navigator.appName;
-    data.appVersion = navigator.appVersion;
-    data.cookieEnabled = navigator.cookieEnabled;
-    data.onLine = navigator.onLine;
-    data.platform = navigator.platform;
-    data.userAgent = navigator.userAgent;
-    
-    uuid = _generateUUID()
-    data.uuid = uuid;
-    
-    // Say hello to server with some client data
-    var rq = { "request": "_info", "data":data};
-    _weio.send(JSON.stringify(rq));
-
-};
-
-
-_weio.onmessage = function(e) {
-    // JSON data is parsed into object
-    data = JSON.parse(e.data);
-    console.log(data);
-    
-    if ("requested" in data) {
-        // this is instruction that was echoed from server + data as response
-        instruction = data.requested;  
-        if (instruction in weioCallbacks) 
-            weioCallbacks[instruction](data);
-    } else if ("serverPush" in data) {
-        // this is instruction that was echoed from server + data as response
-        
-        instruction = data.serverPush;  
-        if (instruction in weioCallbacks) 
-            weioCallbacks[instruction](data);
-        
-    }
-
-};
-
-_weio.onclose = function() {
-  console.log('socket is closed for editor');
-};
-
 /* 
  * Low level electronics instructions from JS
  */
@@ -155,9 +167,6 @@ function digitalWrite(pin, value) {
 function pinMode(pin, mode) {
   genericMessage("pinMode", [pin,mode]);
 };
-
-
-
 
 /*
  * Generic handler for sending messages to server

@@ -74,7 +74,7 @@ lastLaunched = None
 # Wifi detection route handler  
 class WeioDashBoardHandler(SockJSConnection):
     global callbacks
-    
+
     # Handler sanity, True alive, False dead
     global stdoutHandlerIsLive
     global stderrHandlerIsLive
@@ -433,6 +433,19 @@ class WeioDashBoardHandler(SockJSConnection):
             data['data'] = "ask to create new project"
         
         self.send(json.dumps(data))
+
+    def iteratePacketRequests(self, rq) :
+        
+        requests = rq["packets"]
+
+        for uniqueRq in requests:
+            request = uniqueRq['request']
+            if request in callbacks:
+                callbacks[request](self, uniqueRq)
+            else :
+                print "unrecognised request ", uniqueRq['request']
+                    
+                
     
 ##############################################################################################################################
     # DEFINE CALLBACKS IN DICTIONARY
@@ -452,7 +465,8 @@ class WeioDashBoardHandler(SockJSConnection):
         #'deleteFile': deleteFile,
         'getUser': sendUserData,
         'createNewProject': newProject,
-        'deleteProject' : deleteCurrentProject
+        'deleteProject' : deleteCurrentProject,
+        'packetRequests': iteratePacketRequests
         
     }
     

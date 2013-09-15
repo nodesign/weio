@@ -38,6 +38,12 @@
  *
  **/
 
+
+/*
+ * SockJS object, Web socket
+ */
+var editorSocket;
+
 /*
  * ACE Editor, there is only one editor that travels thru DOM space
  * It appears at good strip at good time
@@ -265,6 +271,75 @@ $(document).ready(function () {
   // Ace editor creation
   createEditor();
   
+                
+    //////////////////////////////////////////////////////////////// SOCK JS EDITOR        
+         
+    /*
+     * SockJS object, Web socket
+     */
+    editorSocket = new SockJS('http://' + location.host + '/editor/editorSocket');
+    /*
+     * On opening of wifi web socket ask server to scan wifi networks
+     */
+    editorSocket.onopen = function() {
+        console.log('editor Web socket is opened');
+        // get files
+        
+        editorPacket = new Array();
+        
+        var rq = { "request": "getFileTreeHtml"};
+        //editorSocket.send(JSON.stringify(rq));
+        
+        editorPacket.push(rq);
+        
+        rq = { "request": "getPlatform"};
+        //editorSocket.send(JSON.stringify(rq));
+        
+        editorPacket.push(rq);
+        
+        rq = { "request" : "packetRequests", "packets":editorPacket};
+        console.log("sending dashboard packets together ", rq);
+        
+        editorSocket.send(JSON.stringify(rq));
+        //setTimeout(function(){editorSocket.send(JSON.stringify(rq))},1000);
+    };
+
+    /*
+     * Dashboard parser, what we got from server
+     */
+    editorSocket.onmessage = function(e) {
+        //console.log('Received: ' + e.data);
+
+        // JSON data is parsed into object
+        data = JSON.parse(e.data);
+        console.log(data);
+
+        // switch
+       if ("requested" in data) {
+           // this is instruction that was echoed from server + data as response
+           instruction = data.requested;  
+           if (instruction in callbacksEditor) 
+               callbacksEditor[instruction](data);
+       } else if ("serverPush" in data) {
+              // this is instruction that was echoed from server + data as response
+              instruction = data.serverPush;  
+              if (instruction in callbacksEditor) 
+                  callbacksEditor[instruction](data);
+              
+       }
+                     
+       
+    };
+
+
+
+    editorSocket.onclose = function() {
+        // turn on red light if disconnected
+        console.log('Dashboard Web socket is closed');
+        
+    };
+
+
    
 }); /* end of document on ready event */
 
@@ -900,61 +975,5 @@ function isMainExists() {
 
     
 }
-
-//////////////////////////////////////////////////////////////// SOCK JS DASHBOARD        
-     
-/*
- * SockJS object, Web socket
- */
-var editorSocket = new SockJS('http://' + location.host + '/editor/editorSocket');
-/*
- * On opening of wifi web socket ask server to scan wifi networks
- */
-editorSocket.onopen = function() {
-    console.log('editor Web socket is opened');
-    // get files
-    var rq = { "request": "getFileTreeHtml"};
-    editorSocket.send(JSON.stringify(rq));
-    
-    rq = { "request": "getPlatform"};
-    editorSocket.send(JSON.stringify(rq));
-    
-    
-};
-
-/*
- * Dashboard parser, what we got from server
- */
-editorSocket.onmessage = function(e) {
-    //console.log('Received: ' + e.data);
-
-    // JSON data is parsed into object
-    data = JSON.parse(e.data);
-    console.log(data);
-
-    // switch
-   if ("requested" in data) {
-       // this is instruction that was echoed from server + data as response
-       instruction = data.requested;  
-       if (instruction in callbacksEditor) 
-           callbacksEditor[instruction](data);
-   } else if ("serverPush" in data) {
-          // this is instruction that was echoed from server + data as response
-          instruction = data.serverPush;  
-          if (instruction in callbacksEditor) 
-              callbacksEditor[instruction](data);
-          
-   }
-                 
-   
-};
-
-
-
-editorSocket.onclose = function() {
-    // turn on red light if disconnected
-    console.log('Dashboard Web socket is closed');
-    
-};
 
 

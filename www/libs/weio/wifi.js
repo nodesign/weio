@@ -37,13 +37,6 @@
 
 
 /**
- * Wifi SockJS object, Web socket for scaning and changing wifi parameters
- */
-var wifiSocket = new SockJS('http://' + location.host + '/wifi');
-
-
-
-/**
  * Wifi Json structure. Interesting keys are : 
  * essid (string), 
  * quality (0-70 integer),
@@ -119,6 +112,54 @@ function injectWifiNetworksInDropMenu() {
     
     
     
+    //////////////////////////////////////////////////////////////////////////////////////////////////// SOCK JS WIFI        
+    
+    
+    /**
+     * Wifi SockJS object, Web socket for scaning and changing wifi parameters
+     */
+    var wifiSocket = new SockJS('http://' + location.host + '/wifi');
+
+
+
+    
+    /*
+    * On opening of wifi web socket ask server to scan wifi networks
+    */
+    wifiSocket.onopen = function() {
+        console.log('Wifi Web socket is opened');
+        //setTimeout(function(){scanWifiNetworks()},4000);
+        //scanWifiNetworks();
+    };
+
+    /*
+    * Wifi web socket parser, what we got from server
+    */
+    wifiSocket.onmessage = function(e) {
+        //console.log('Received: ' + e.data);
+
+        // JSON data is parsed into object
+        data = JSON.parse(e.data);
+        console.log(data);
+
+        if ("requested" in data) {
+              // this is instruction that was echoed from server + data as response
+              instruction = data.requested;  
+                
+              if (instruction in callbacksWifi) 
+                  callbacksWifi[instruction](data);
+          } else if ("serverPush" in data) {
+                 // this is instruction that was echoed from server + data as response
+                 
+                 instruction = data.serverPush;  
+                 if (instruction in callbacksWifi) 
+                     callbacksWifi[instruction](data);
+          }
+    };
+
+    wifiSocket.onclose = function() {
+        console.log('Wifi Web socket is closed');
+    };
 
    
     // don't do it here avoid infinite loop
@@ -281,42 +322,3 @@ function updateWifiMode(data) {
     }
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////// SOCK JS WIFI        
-    
-/*
-* On opening of wifi web socket ask server to scan wifi networks
-*/
-wifiSocket.onopen = function() {
-    console.log('Wifi Web socket is opened');
-    setTimeout(function(){scanWifiNetworks()},5000);
-    //scanWifiNetworks();
-};
-
-/*
-* Wifi web socket parser, what we got from server
-*/
-wifiSocket.onmessage = function(e) {
-    //console.log('Received: ' + e.data);
-
-    // JSON data is parsed into object
-    data = JSON.parse(e.data);
-    console.log(data);
-
-    if ("requested" in data) {
-          // this is instruction that was echoed from server + data as response
-          instruction = data.requested;  
-            
-          if (instruction in callbacksWifi) 
-              callbacksWifi[instruction](data);
-      } else if ("serverPush" in data) {
-             // this is instruction that was echoed from server + data as response
-             
-             instruction = data.serverPush;  
-             if (instruction in callbacksWifi) 
-                 callbacksWifi[instruction](data);
-      }
-};
-
-wifiSocket.onclose = function() {
-    console.log('Wifi Web socket is closed');
-};

@@ -38,8 +38,7 @@
 /*
  * SockJS object, Web socket
  */
-var dashboard = new SockJS('http://' + location.host + '/dashboard');
-
+var dashboard;
 /*
  * When all DOM elements are fully loaded
  */
@@ -52,6 +51,91 @@ $(document).ready(function () {
     $(".iframeContainer").attr("src", "editor.html?" + randomNumber);
                   
    runEditor();
+                  
+   dashboard = new SockJS('http://' + location.host + '/dashboard');
+                  
+//////////////////////////////////////////////////////////////// SOCK JS DASHBOARD        
+        
+/*
+ * On opening of wifi web socket ask server to scan wifi networks
+ */
+    dashboard.onopen = function() {
+        console.log('Dashboard Web socket is opened');
+        // turn on green light if connected
+        // get ip address
+        
+        isEditorActive = true;
+        
+        var dashboardPacket = new Array();
+        
+        var rq = { "request": "getIp"};
+        //dashboard.send(JSON.stringify(rq));
+        
+        dashboardPacket.push(rq);
+        
+        rq = { "request": "getLastProjectName"};
+        //dashboard.send(JSON.stringify(rq));
+        
+        dashboardPacket.push(rq);
+        
+        
+        rq = { "request": "getUserProjetsFolderList"};
+        //dashboard.send(JSON.stringify(rq));
+        
+        dashboardPacket.push(rq);
+        
+        rq = { "request": "getUser"};
+        //dashboard.send(JSON.stringify(rq));
+        
+        dashboardPacket.push(rq);
+        
+        rq = { "request" : "packetRequests", "packets":dashboardPacket};
+        console.log("sending dashboard packets together ", rq);
+        dashboard.send(JSON.stringify(rq));
+        //setTimeout(function(){dashboard.send(JSON.stringify(rq))},1000);
+
+        
+        
+        /*
+        var rq = { "request": "getPlatform"};
+        dashboard.send(JSON.stringify(rq));
+        */
+    };
+
+    /*
+     * Dashboard parser, what we got from server
+     */
+    dashboard.onmessage = function(e) {
+        //console.log('Received: ' + e.data);
+
+        // JSON data is parsed into object
+        data = JSON.parse(e.data);
+        console.log(data);
+
+        if ("requested" in data) {
+              // this is instruction that was echoed from server + data as response
+              instruction = data.requested;  
+              if (instruction in callbacks) 
+                  callbacks[instruction](data);
+          } else if ("serverPush" in data) {
+                 // this is instruction that was echoed from server + data as response
+                 
+                 instruction = data.serverPush;  
+                 if (instruction in callbacks) 
+                     callbacks[instruction](data);
+
+          }
+        
+        
+    };
+
+    dashboard.onclose = function() {
+        // turn on red light if disconnected
+        console.log('Dashboard Web socket is closed');
+        isEditorActive = false;
+        $("#status").attr("class", "disconnected");
+    };   
+
     
 }); /* end of document on ready event */
 
@@ -323,65 +407,4 @@ function newProjectIsCreated(data) {
 }
 
 
-//////////////////////////////////////////////////////////////// SOCK JS DASHBOARD        
-        
-/*
- * On opening of wifi web socket ask server to scan wifi networks
- */
-dashboard.onopen = function() {
-    console.log('Dashboard Web socket is opened');
-    // turn on green light if connected
-    // get ip address
-    isEditorActive = true;
-    var rq = { "request": "getIp"};
-    dashboard.send(JSON.stringify(rq));
-    
-    var rq = { "request": "getLastProjectName"};
-    dashboard.send(JSON.stringify(rq));
-    
-    var rq = { "request": "getUserProjetsFolderList"};
-    dashboard.send(JSON.stringify(rq));
-    
-    var rq = { "request": "getUser"};
-    dashboard.send(JSON.stringify(rq));
-    
-    /*
-    var rq = { "request": "getPlatform"};
-    dashboard.send(JSON.stringify(rq));
-    */
-};
 
-/*
- * Dashboard parser, what we got from server
- */
-dashboard.onmessage = function(e) {
-    //console.log('Received: ' + e.data);
-
-    // JSON data is parsed into object
-    data = JSON.parse(e.data);
-    console.log(data);
-
-    if ("requested" in data) {
-          // this is instruction that was echoed from server + data as response
-          instruction = data.requested;  
-          if (instruction in callbacks) 
-              callbacks[instruction](data);
-      } else if ("serverPush" in data) {
-             // this is instruction that was echoed from server + data as response
-             
-             instruction = data.serverPush;  
-             if (instruction in callbacks) 
-                 callbacks[instruction](data);
-
-      }
-    
-    
-};
-
-
-dashboard.onclose = function() {
-    // turn on red light if disconnected
-    console.log('Dashboard Web socket is closed');
-    isEditorActive = false;
-    $("#status").attr("class", "disconnected");
-};
