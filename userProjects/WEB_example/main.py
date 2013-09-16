@@ -16,15 +16,18 @@ def buttonHandler(dataIn) :
     weio.shared.numbers = 0
     
     
+    
 def push():
     weio.shared.numbers = 0
-    print weio.shared.connectedClients
+    
     while(1):
         if (weio.shared.websocketOpened) :
-            #print weio.shared.connectedClients
+            print len(weio.shared.connectedClients)
             a = weio.shared.numbers
             print "COUNTING...", a  
-            weio.shared.websocketSend("userMsg",a)
+            firstConnected = weio.shared.connectedClients[0]
+            firstConnected.emit("userMsg",a)
+            
             time.sleep(0.5)
             weio.shared.numbers+=1
         else :

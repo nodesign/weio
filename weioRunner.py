@@ -20,7 +20,7 @@ main = __import__(projectModule, fromlist=[''])
 
 class WeioHandler(SockJSConnection):
     
-    
+    connections = []
     
     def on_open(self, data):
         print "Opened WEIO API socket"
@@ -28,6 +28,7 @@ class WeioHandler(SockJSConnection):
         #shared.websocketSend = self.emit
         attach.event('_info', self.clientInfo)
         self.ip = data.ip
+        self.connections.append(self)
          
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
@@ -52,22 +53,23 @@ class WeioHandler(SockJSConnection):
         print "New client connected with uuid " + data["uuid"]
         self.id = data["uuid"]
         data["ip"] = self.ip
-        
-        if (len(shared.connectedClients)==0):
-            newClient = WeioClient(data, self.emit) 
-            shared.connectedClients.append(newClient)
-        else :
-            
-            present = False
-            # don't register multiple times same client
-            for client in shared.connectedClients :
-                if (self.id in client.info["uuid"]):
-                    present = True
-                    break
-            
-            if present is False:
-                newClient = WeioClient(data, self.emit) 
-                shared.connectedClients.append(newClient)
+        shared.connectedClients = self.connections
+
+#        if (len(shared.connectedClients)==0):
+#            newClient = WeioClient(data, self.emit) 
+#            shared.connectedClients.append(newClient)
+#        else :
+#            
+#            present = False
+#            # don't register multiple times same client
+#            for client in shared.connectedClients :
+#                if (self.id in client.info["uuid"]):
+#                    present = True
+#                    break
+#            
+#            if present is False:
+#                newClient = WeioClient(data, self.emit) 
+#                shared.connectedClients.append(newClient)
         
         
     def emit(self, instruction, rq):

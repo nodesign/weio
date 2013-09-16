@@ -154,7 +154,7 @@ function _generateUUID(){
  * Define callbacks here and request keys
  * Each key is binded to coresponding function
  */
-var weioCallbacks = {}
+var weioCallbacks = {};
 
 
 /* 
