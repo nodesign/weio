@@ -241,8 +241,10 @@ if __name__ == '__main__':
     # tornado.autoreload.start(tornado.ioloop.IOLoop.instance())
     
     wifiButtons = weioWifiButtons.WifiButtons()
-    periodic = tornado.ioloop.PeriodicCallback(checkWifiButtons, 100)
-    periodic.start()
+    
+    # Activate buttons only when hardware is ready
+    #periodic = tornado.ioloop.PeriodicCallback(checkWifiButtons, 100)
+    #periodic.start()
 
 
     # STARTING SERVER
