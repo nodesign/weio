@@ -34,8 +34,17 @@
     
     function helloFromWeio(data) {
         console.log("HELLO FROM WEIO :", data);
-        $("#numbers").empty();
-        $("#numbers").html(data.data);
+        if (data.data == 1) {
+            $(phrase).html("Turn OFF the light!");
+            $("body").css("background","white");
+            $("#phrase").css("color","black");
+            light = !light;
+        } else {
+            $(phrase).html("Turn ON the light!");
+            $("body").css("background","black");
+            $("#phrase").css("color","white");
+            light = !light;
+        }
         
     }
     
@@ -69,7 +78,6 @@
   <body>
 
     <font>
-        <a id="numbers"></a>
         <p id="phrase" onclick="lights()"></p>
     </font>
 

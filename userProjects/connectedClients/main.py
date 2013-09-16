@@ -1,5 +1,5 @@
 from weioLib import weio
-import random
+
 
 
 # Click on button in browser
@@ -25,7 +25,12 @@ def buttonHandler(dataIn) :
         print "******************************************"
         # Generate some random integer and send to all clients, change is immediate and
         # in all browsers at once
-        websocket.send("userMsg", random.randint(0,10))
+        
+        
+        if ("ON" in dataIn) :
+            websocket.send("userMsg", 1)
+        else :
+            websocket.send("userMsg", 0)
         
         
 # Attaches interrupt from Web client to "message" string
