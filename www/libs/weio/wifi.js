@@ -165,7 +165,7 @@ function injectWifiNetworksInDropMenu() {
         var wifiQuality = '<img src="img/wifi' + getCellQuality(wifi[cell]) + '.png" id="wifiIcons"></img>';
         
         var formatedWifi = "'" + wifi[cell].mac + "'";
-        $("#wifiNetworks").append('<li><a tabindex="-1" onclick="prepareToChangeWifi('+ formatedWifi + ')" role="button" data-toggle="modal">' + currentConnection + wifi[cell].essid  + wifiQuality + secureWifi + '</a></li>');
+        $("#wifiNetworks").append('<li><a tabindex="-1" onclick="prepareToChangeWifi('+ formatedWifi + ')" role="button" data-toggle="modal">' + currentConnection  + wifiQuality + wifi[cell].essid+ secureWifi + '</a></li>');
     }
     
     
