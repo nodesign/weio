@@ -116,13 +116,10 @@ div {
   left: 199px;
   right: 15px;
   height: 100%;
-  /*
-        background-image:url('../../img/designParis.png');
-        background-repeat:no-repeat;
-        background-attachment:fixed;
-        background-position:center; 
-        */
-
+  background-image: url('../../img/watermark.png');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
   /*
          * ALL ACCORDIONS
          */
