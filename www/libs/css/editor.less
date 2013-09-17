@@ -25,9 +25,9 @@
 @closedSideBarWidth: 15px;
 
 body, div {
-	padding:0;
-	margin:0;
-	overflow:hidden;
+    padding:0;
+    margin:0;
+    overflow:hidden;
 
 }
 
@@ -36,22 +36,22 @@ body, div {
  * Editor CSS
  */
 .columns {
-	position:relative;
-	width:100%;
+    position:relative;
+    width:100%;
 
     .leftSideBar {
-    	background-color: @leftSideBarColor;
-    	width:@leftSideBarWidth;
-    	position:fixed;
+        background-color: @leftSideBarColor;
+        width:@leftSideBarWidth;
+        position:fixed;
         height:100%;
-    	left:0;
-    	top:0;
-    	
-    	#leftSideBarButton {
-    	    position: absolute;
-    	    color: #FFF;
-    	    opacity:0.5;
-    	    font-size: 14px;
+        left:0;
+        top:0;
+        
+        #leftSideBarButton {
+            position: absolute;
+            color: #FFF;
+            opacity:0.5;
+            font-size: 14px;
             width: 25px;
             height: 25px;
             padding: 6px;
@@ -60,16 +60,16 @@ body, div {
             top: 50%;
             left: (@leftSideBarWidth - 22px);
             z-index:1000;
-    	    
-    	    &:hover {
+            
+            &:hover {
                 opacity: 1;
             };
-    	    
-	    }
+            
+        }
         
                      
-	    
-	    .bottomButtons {
+        
+        .bottomButtons {
             width: 100%;
             height: 32px;
             background-color: rgba(0,0,0, 0.2);
@@ -135,21 +135,21 @@ body, div {
             
         }
         
-    	
+        
     }
     
     .editorContainer {
-    	background-color: @codingZoneColor;
-    	position:fixed;
-    	left:@leftSideBarWidth;
-    	right:@closedSideBarWidth;
+        background-color: @codingZoneColor;
+        position:fixed;
+        left:@leftSideBarWidth;
+        right:@closedSideBarWidth;
         height:100%;
         background-image:url('../../img/watermark.png');
         background-repeat:no-repeat;
         background-attachment:fixed;
         background-position:center; 
        
-    	
+        
         #errorAlert {
             border-radius:0px;
             position:relative;
@@ -175,7 +175,7 @@ body, div {
         
         
         
-    	/*
+        /*
          * ALL ACCORDIONS
          */
 
@@ -217,7 +217,7 @@ body, div {
                   &:hover {
                      opacity: 1; 
                   }   
-          	  }
+              }
           
         }
         .accordion-body.in.collapse {
@@ -226,7 +226,7 @@ body, div {
         
         
         
-	    
+        
         .editor { 
             position: absolute;
             top: 0;
@@ -235,16 +235,16 @@ body, div {
             left: 0;
             height:100%;
         }
-    	
+        
     }
     
     .rightSideBar {
-    	background-color: @rightSideBarColor;
-    	width:@closedSideBarWidth;
-    	position:fixed;
-    	height:100%;
-    	right:0;
-    	top:0;
+        background-color: @rightSideBarColor;
+        width:@closedSideBarWidth;
+        position:fixed;
+        height:100%;
+        right:0;
+        top:0;
         
         #consoleTabs {
             position:absolute;
@@ -282,16 +282,95 @@ body, div {
             }
             
             #sys {
-                color:#4AB5CE;
+                color:#000;
                 text-decoration:none;
             }
             
         }
 
+        
+
+
+        /*
+         * BOARD IMAGE AND PINS BUTTONS 
+         */
+
         #board-image {
 
             margin: 70px 94px;
+        } 
+
+        // pin array position ( 1=left, 2=right ) //
+
+        ul#pinlist1 {
+            position: absolute;
+            left: 26px;
+            top: 147px;
         }
+
+        ul#pinlist2 {
+
+            position: absolute;
+            right: 48px;
+            top: 147px;
+        }
+        
+        // general pin style //
+
+        li.pin, li.pin_on {
+            list-style: none;
+            margin: 2px;
+
+            a {
+                text-indent: -99999px;
+                display: block;
+                width: 34px;
+                height: 10px; 
+                border-radius: 10px;
+                cursor: pointer;
+            }
+
+        }
+
+        // inactive pin //
+
+        li.pin a {
+            
+                background-color: white;
+                border: 1px solid #CECECE;
+                
+                &:hover {
+                    background-color: #CECECE;
+                }
+
+                &:active {
+                    background-color: #4ab5ce;
+                    border-color: #4ab5ce;
+                }
+
+        }
+
+        // active pin //
+
+        li.pin_on a {
+            
+                background-color: #4ab5ce;
+                border: 1px solid #4ab5ce;
+                 &:hover {
+                    background-color: #CECECE;
+                    border: 1px solid #CECECE;
+                }
+                &:active {
+                    background-color: #4ab5ce;
+                    border-color: #4ab5ce;
+                }
+
+        }
+
+        /*
+         * END OF BOARD IMAGE AND PINS BUTTONS 
+         */
+        
 
         #trashConsole {
             display:none;
@@ -309,12 +388,12 @@ body, div {
             };
 
         }
-    	
-    	#rightSideBarButton {
-    	    position:absolute;
-    	    color: #000;
-    	    opacity:0.5;
-    	    font-size: 14px;
+        
+        #rightSideBarButton {
+            position:absolute;
+            color: #000;
+            opacity:0.5;
+            font-size: 14px;
             width: 25px;
             height: 25px;
             padding: 6px;
@@ -323,15 +402,15 @@ body, div {
             top: 50%;
             right: (@closedSideBarWidth - 18px);
             z-index:1000;
-    	    
-    	    &:hover {
+            
+            &:hover {
                 opacity: 1;
             };
-    	    
-	    }
-	    
-	    
-    	
+            
+        }
+        
+        
+        
     }
     
 }
@@ -496,6 +575,10 @@ li input:checked + ol
 }
 li input:checked + ol > li { display: block; margin: 0 0 6px;  /* 2px */}
 li input:checked + ol > li:last-child { margin: 0 0 6px; /* 1px */ }
+
+
+
+
 
 
 

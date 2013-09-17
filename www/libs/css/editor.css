@@ -202,6 +202,14 @@ div {
   height: 100%;
   right: 0;
   top: 0;
+  /*
+         * BOARD IMAGE AND PINS BUTTONS 
+         */
+
+  /*
+         * END OF BOARD IMAGE AND PINS BUTTONS 
+         */
+
 }
 .columns .rightSideBar #consoleTabs {
   position: absolute;
@@ -233,11 +241,58 @@ div {
   text-decoration: none;
 }
 .columns .rightSideBar #consoleOutput #sys {
-  color: #4AB5CE;
+  color: #000;
   text-decoration: none;
 }
 .columns .rightSideBar #board-image {
   margin: 70px 94px;
+}
+.columns .rightSideBar ul#pinlist1 {
+  position: absolute;
+  left: 26px;
+  top: 147px;
+}
+.columns .rightSideBar ul#pinlist2 {
+  position: absolute;
+  right: 48px;
+  top: 147px;
+}
+.columns .rightSideBar li.pin,
+.columns .rightSideBar li.pin_on {
+  list-style: none;
+  margin: 2px;
+}
+.columns .rightSideBar li.pin a,
+.columns .rightSideBar li.pin_on a {
+  text-indent: -99999px;
+  display: block;
+  width: 34px;
+  height: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.columns .rightSideBar li.pin a {
+  background-color: white;
+  border: 1px solid #CECECE;
+}
+.columns .rightSideBar li.pin a:hover {
+  background-color: #CECECE;
+}
+.columns .rightSideBar li.pin a:active {
+  background-color: #4ab5ce;
+  border-color: #4ab5ce;
+}
+.columns .rightSideBar li.pin_on a {
+  background-color: #4ab5ce;
+  border: 1px solid #4ab5ce;
+}
+.columns .rightSideBar li.pin_on a:hover {
+  background-color: #CECECE;
+  border: 1px solid #CECECE;
+}
+.columns .rightSideBar li.pin_on a:active {
+  background-color: #4ab5ce;
+  border-color: #4ab5ce;
 }
 .columns .rightSideBar #trashConsole {
   display: none;
