@@ -15,7 +15,7 @@ from weioLib.weioUserApi import *
 projectModule = "userProjects." + sys.argv[1] + ".main"
 
 #import module from argument list
-print projectModule
+#print projectModule
 main = __import__(projectModule, fromlist=[''])
 
 class WeioHandler(SockJSConnection):
@@ -23,7 +23,7 @@ class WeioHandler(SockJSConnection):
     connections = []
     
     def on_open(self, data):
-        print "Opened WEIO API socket"
+        print "*SYSOUT*Opened WEIO API socket"
         shared.websocketOpened = True
         #shared.websocketSend = self.emit
         attach.event('_info', self.clientInfo)
@@ -50,26 +50,27 @@ class WeioHandler(SockJSConnection):
 
 
     def clientInfo(self,data) :
-        print "New client connected with uuid " + data["uuid"]
+        
         self.id = data["uuid"]
         data["ip"] = self.ip
-        shared.connectedClients = self.connections
-
-#        if (len(shared.connectedClients)==0):
-#            newClient = WeioClient(data, self.emit) 
-#            shared.connectedClients.append(newClient)
-#        else :
-#            
-#            present = False
-#            # don't register multiple times same client
-#            for client in shared.connectedClients :
-#                if (self.id in client.info["uuid"]):
-#                    present = True
-#                    break
-#            
-#            if present is False:
-#                newClient = WeioClient(data, self.emit) 
-#                shared.connectedClients.append(newClient)
+        
+        if (len(shared.connectedClients)==0):
+            print "*SYSOUT*New client connected with uuid " + data["uuid"]
+            newClient = WeioClient(data, self.connections[-1]) 
+            shared.connectedClients.append(newClient)
+        else :
+            
+            present = False
+            # don't register multiple times same client
+            for client in shared.connectedClients :
+                if (self.id in client.info["uuid"]):
+                    present = True
+                    break
+            
+            if present is False:
+                print "*SYSOUT*New client connected with uuid " + data["uuid"]
+                newClient = WeioClient(data, self.connections[-1]) 
+                shared.connectedClients.append(newClient)
         
         
     def emit(self, instruction, rq):
@@ -96,7 +97,7 @@ if __name__ == '__main__':
     
 
     #logging.info(" [*] Listening on 0.0.0.0:8082/api")
-    print "Websocket is created at localhost:" + str(options.options.port) + "/api"
+    print "*SYSOUT*Websocket is created at localhost:" + str(options.options.port) + "/api"
     
     # CALLING SETUP IF PRESENT
     if "setup" in vars(main):
