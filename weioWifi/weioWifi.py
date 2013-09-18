@@ -43,25 +43,12 @@ import sys, os, logging
 
 import iwInfo
 
+from weioLib import weioSubprocess
+
 
 logging.basicConfig()
 log = logging.getLogger("WeioWifi")
 log.setLevel(logging.DEBUG)
-
-def weioCommand(command) :
-    output = "PLACEHOLDER"
-
-    print(str(command))
-
-    try :
-        output = subprocess.check_output(command, shell=True)
-    except :
-        print("Comand ERROR : " + str(output) + " " + command)
-        output = "ERR_CMD"
-	
-    print output
-    return output
-
 
 class WeioWifi() :
     def __init__(self, interface):
@@ -70,14 +57,12 @@ class WeioWifi() :
         self.mode = None
         self.passwd = ""
 
-        self.reconfTime = 10
-
     def checkConnection(self) :
         command = "iwconfig " + self.interface
 
         print "CHECK CONNECTION"
 
-        status = weioCommand(command)
+        status = weioSubprocess.shellBlocking(command)
 
         print(str(status))
         # We are in STA mode, so check if we are connected
@@ -100,11 +85,9 @@ class WeioWifi() :
         while (self.mode == None) :
             # Move to Master mode
             print "Trying to move to AP RESCUE mode..."
-            weioCommand("scripts/wifi_set_mode.sh rescue")
-            # Wait for network to reconfigure
-            time.sleep(self.reconfTime)
-            # Check what happened
-            self.checkConnection()
+            weioSubprocess.shellBlocking("scripts/wifi_set_mode.sh rescue")
+            # Restart Tornado (shell script bring it up whenever it exits)
+            exit()
 
         # At this point connection has been maid, and all we have to do is check ESSID
         for word in status.split(" ") :
@@ -114,7 +97,7 @@ class WeioWifi() :
 
     def setConnection(self, mode) :
         """ First shut down the WiFi on Carambola """
-        weioCommand("wifi down")
+        weioSubprocess.shellBlocking("wifi down")
 
         if (mode is 'ap') :
             fname = "/etc/config/wireless.ap"
@@ -123,18 +106,21 @@ class WeioWifi() :
                 out_fname = fname + ".tmp"
                 out = open(out_fname, "w")
                 for line in f:
-                    line = re.sub(r"option\s+ssid\s.*$", r"option ssid " + "'" + self.essid + "'", line)
+                    line = re.sub(r"option\s+ssid\s.*$", r"option ssid " +
+                            "'" + self.essid + "'", line)
                     if (self.passwd != ""):
-                        line = re.sub(r"option\s+key\s.*$", r"option key " + "'" + self.passwd + "'", line)
+                        line = re.sub(r"option\s+key\s.*$", r"option key " +
+                                "'" + self.passwd + "'", line)
                     #if (self.encryption != "")
-                    #    line = re.sub(r'option\s+encryption\s.*$', r'option encryption ' + self.encryption, line)
+                    #    line = re.sub(r'option\s+encryption\s.*$', r'option encryption '
+                    #           + self.encryption, line)
                     out.write(line)
                 out.close()
                 os.rename(out_fname, fname)
                 shutil.copy(fname, "/etc/config/wireless")
 
             cmd = "scripts/wifi_set_mode.sh ap"
-            weioCommand(cmd)
+            weioSubprocess.shellBlocking(cmd)
 
         elif (mode is 'sta') :
             """ Change the /etc/config/wireless.sta : replace the params """
@@ -146,14 +132,15 @@ class WeioWifi() :
                 for line in f:
                     line = re.sub(r'option\s+ssid\s.*$', r'option ssid ' + self.essid, line)
                     line = re.sub(r'option\s+key\s.*$', r'option key ' + self.passwd, line)
-                    line = re.sub(r'option\s+encryption\s.*$', r'option encryption ' + self.encryption, line)
+                    line = re.sub(r'option\s+encryption\s.*$', r'option encryption ' +
+                            self.encryption, line)
                     out.write(line)
                 out.close()
                 os.rename(out_fname, fname)
                 shutil.copy(fname, "/etc/config/wireless")
 
             cmd = "scripts/wifi_set_mode.sh sta"
-            weioCommand(cmd)
+            weioSubprocess.shellBlocking(cmd)
 
     def getCurrentEssidName(self) :                
         """Get current ESSID name from configuration file - wireless"""

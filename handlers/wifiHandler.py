@@ -46,6 +46,7 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 
 from weioLib import weioFiles
 from weioLib import weio_config
+from weioLib import weioUnblock
 
 import functools
 
@@ -91,9 +92,14 @@ def weioWifiParseScan() :
 
     return data
 
-
-# Wifi detection route handler  
+###
+# Non-blocking WiFi route handler
+###
 class WeioWifiHandler(SockJSConnection):
+    """ Wifi detection route handler.
+    It's on_message() function runs in a separate thread not to block ioloop.
+    """
+
     global wifi
     global callbacks
     
@@ -128,7 +134,7 @@ class WeioWifiHandler(SockJSConnection):
             wifi.essid =  rq['data']['essid']
             wifi.passwd =  rq['data']['passwd']
             wifi.setConnection("ap")
-#exit() # restart server
+            #exit() # restart server
         
     def goToStaMode(self,rq):
         if (platform.machine() == 'mips') :
@@ -167,7 +173,7 @@ class WeioWifiHandler(SockJSConnection):
 
             # Send connection information to the client
             self.send(json.dumps(rsp))
-#           exit() # restart server
+            #exit() # restart server
             
         
 
@@ -181,6 +187,13 @@ class WeioWifiHandler(SockJSConnection):
         'goSta' : goToStaMode,
     }   
 
+    ###
+    # This function has to call shell iwconfig procedires
+    # to determine WiFi interface mode.
+    # These are blocking calls and can block ioloop.
+    # We assure that function is run in a separate thread with @unblock decorator.
+    ###
+    @weioUnblock.unblock
     def on_open(self, info) :
         if (platform=='mips'):
             wifi.checkConnection()
@@ -201,7 +214,12 @@ class WeioWifiHandler(SockJSConnection):
         self.send(json.dumps(msg))
 
         
-
+    ###
+    # This function has to call WiFi scan procedures
+    # via shell subprocesses. These are blocking calls and can block ioloop.
+    # We assure that function is run in a separate thread with @unblock decorator.
+    ###
+    @weioUnblock.unblock
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
         req = json.loads(data)

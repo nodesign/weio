@@ -86,8 +86,8 @@ $(document).ready(function() {
      */
     wifiSocket.onopen = function() {
         console.log('Wifi Web socket is opened');
-        setTimeout(function(){scanWifiNetworks()},5000);
-        //scanWifiNetworks();
+        //setTimeout(function(){scanWifiNetworks()},5000);
+        scanWifiNetworks();
     };
 
     /*
