@@ -49,8 +49,6 @@ def shellAsync(command) :
     this function should be called ONLY with tornado.gen yield
     """
 
-    print "HERE !!!"
-
     try :
         output = subprocess.check_output(command, shell=True)
     except :
@@ -84,11 +82,10 @@ class WeioShellCommand():
 
     @weioUnblock.unblock
     def execute(self, callback) :
-        """ Uses Tornado Generator to wait for the outputi,
-        although the command is executed asynchroniously to unblock ioloop
+        """ Tornado Generator is waiting for the output with yield,
+        although the command itselfis executed asynchroniously to unblock ioloop
         """
 
-        print "EXECUTING ", self.command 
         result = shellBlocking(self.command)
 
         callback(result)
