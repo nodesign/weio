@@ -17,9 +17,10 @@
 <script src="libs/jquery/jquery-2.0.2.min.js"> </script>
 <script src="libs/bootstrap/js/bootstrap.min.js"> </script>
 <script src="libs/sockJS/sockjs-0.3.min.js"> </script>
+<script src="libs/chartJS/Chart.min.js"> </script>
 
 <script src="libs/weio/editor.js?n=1"> </script>
-
+<script src="libs/weio/stats.js?n=1"> </script>
 
 <!-- Ace code editor -->
 <script src="libs/ace/ace.js"> </script>
@@ -138,11 +139,11 @@
             <div id="consoleTabs">
                 <ul class="nav nav-pills" id="consoleTabsElements">
                     <li class="active">
-                        <a href="#console-pane" data-toggle="tab">Console</a>
+                        <a id="tabConsole" href="#console-pane" data-toggle="tab">Console</a>
                     </li>
-                    <li><a href="#board-pane" data-toggle="tab">Board</a></li>
-                    <li><a href="#stats-pane" data-toggle="tab">Stats</a></li>
-                    <li><a href="#doc-pane" data-toggle="tab">Documentation</a></li>
+                    <li><a id="tabBoard" href="#board-pane" data-toggle="tab">Board</a></li>
+                    <li><a id="tabStats" href="#stats-pane" data-toggle="tab">Stats</a></li>
+                    <li><a id="tabDocumentation"href="#doc-pane" data-toggle="tab">Documentation</a></li>
                 </ul>
             </div>
             <div class="tab-content">
@@ -168,7 +169,7 @@
                     <li id ="pin13"class="pin"><a>pin</a></li>
                     <li id ="pin14"class="pin"><a>pin</a></li>
                     <li id ="pin15"class="pin"><a>pin</a></li>
-                    <li id ="pin16"class="pin"><a>pin</a></li>
+                    
 
                                     
                 </ul>
@@ -190,14 +191,112 @@
                     <li id ="pin13"class="pin"><a>pin</a></li>
                     <li id ="pin14"class="pin"><a>pin</a></li>
                     <li id ="pin15"class="pin"><a>pin</a></li>
-                    <li id ="pin16"class="pin"><a>pin</a></li>
+                   
                                     
                 </ul>
                     
             
             
             </div>
-            <div id="stats-pane" class="tab-pane"></div>
+                
+            <div id="stats-pane" class="tab-pane">
+                <div class="row-fluid">
+                    <div class="span12">
+                        
+                        
+                        <div class="row-fluid">
+                            <div class="span9 statMainTitle">Cpu</div>
+                        </div>
+                        
+                        <div class="row-fluid">
+                            
+                            <div class="span3">
+                            <canvas id="cpuViz" class="statChartViz"></canvas>
+                            </div>
+                            <div class="span3">
+                                <li id ="cpuUser" class="statBigNumbers statRed">0%</li>
+                                <li id ="cpuUserTitre" class="statTitle">user</li>
+                            </div>
+                            <div class="span3">
+                                <li id ="cpuSystem" class="statBigNumbers statGreen">0%</li>
+                                <li id ="cpuSystemTitre" class="statTitle">system</li>
+                            </div>
+                            <div class="span3">
+                                <li id ="cpuIdle" class="statBigNumbers statBlack">0%</li>
+                                <li id ="cpuIdleTitre" class="statTitle">idle</li>
+                            </div>
+                        
+                        </div>
+                        <hr>
+                        
+                        
+                        <!-- ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+                        
+                        <div class="row-fluid">
+                            
+                            <div class="span9 statMainTitle">Ram</div>
+                        </div>
+                        
+                        <div class="row-fluid">
+                            
+                            <div class="span3">
+                                <canvas id="ramViz" class="statChartViz"></canvas>
+                            </div>
+                            <div class="span3">
+                                <li id ="ramUsed" class="statBigNumbers statRed">0Mb</li>
+                                <li class="statTitle">used</li>
+                            </div>
+                            <div class="span3">
+                                <li id ="ramFree" class="statBigNumbers statGreen">0Mb</li>
+                                <li class="statTitle">free</li>
+                            </div>
+                            
+                            <div class="span3">
+                               
+                            </div>
+                            
+                        </div>
+                        <hr>
+                        
+                        
+                        <!-- ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+                        
+                        
+                        <!-- ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+                        
+                        <div class="row-fluid">
+                            
+                            <div class="span9 statMainTitle">Flash</div>
+                        </div>
+                        
+                        <div class="row-fluid">
+                            
+                            <div class="span3">
+                                <canvas id="flashViz" class="statChartViz"></canvas>
+                            </div>
+                            <div class="span3">
+                                <li id ="flashUsed" class="statBigNumbers statRed">0Mb</li>
+                                <li class="statTitle">used</li>
+                            </div>
+                            <div class="span3">
+                                <li id ="flashFree" class="statBigNumbers statGreen">0Mb</li>
+                                <li class="statTitle">free</li>
+                            </div>
+                            <div class="span3">
+                           
+                            </div>
+                            
+                        </div>
+                        <hr>
+                        
+                        
+                        <!-- ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+                    </div>
+                </div>
+            
+            </div>
+                
             <div id="doc-pane" class="tab-pane"></div>
             </div>
         </div>

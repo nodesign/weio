@@ -15,4 +15,10 @@ def disk_usage(path):
     used = (st.f_blocks - st.f_bfree) * st.f_frsize
     return _ntuple_diskusage(total/1000000, used/1000000, free/1000000)
     
-print disk_usage('/').free
+
+a = disk_usage('/')
+print a.free, " free,", a.used, " used,", a.total, " total"
+   
+#print disk_usage('/').free, " FREE"
+#print disk_usage('/').used, " USED"
+#print disk_usage('/').total, " TOTAL"

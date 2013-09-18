@@ -265,7 +265,12 @@ $(document).ready(function () {
                    }
            }
                        
+                       
+                       
+                          
    });
+                  
+
                   
 
   // Ace editor creation
@@ -338,6 +343,33 @@ $(document).ready(function () {
         console.log('Dashboard Web socket is closed');
         
     };
+                  
+                  
+                  
+                  
+                  
+      //////////////// CONSOLE TABS
+                       
+       $("#tabBoard").click(function(e) {
+                       
+            stopDataViz();
+                       
+        });
+                       
+       $("#tabStats").click(function(e) {
+                            console.log("dfkjdvjdfklbjklfdsbvkjlbdfsklvbdksflbvkldjfsbvklfdsbvkldfsjbvlbldjklv");           
+            startDataViz();
+      });
+                       
+       $("#tabSocumentation").click(function(e) {
+                       
+            stopDataViz();
+                       
+      });
+
+      
+    
+
 
 
    
@@ -693,7 +725,6 @@ function updateError(data) {
     },1000);
     
 }
-
 
 
 //CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////

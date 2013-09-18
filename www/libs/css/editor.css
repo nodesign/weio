@@ -210,6 +210,14 @@ div {
          * END OF BOARD IMAGE AND PINS BUTTONS 
          */
 
+  /*
+         * STATS DATAVIZ
+         */
+
+  /*
+         * END OF STATS DATAVIZ
+         */
+
 }
 .columns .rightSideBar #consoleTabs {
   position: absolute;
@@ -241,7 +249,7 @@ div {
   text-decoration: none;
 }
 .columns .rightSideBar #consoleOutput #sys {
-  color: #000;
+  color: #4ab5ce;
   text-decoration: none;
 }
 .columns .rightSideBar #board-image {
@@ -293,6 +301,48 @@ div {
 .columns .rightSideBar li.pin_on a:active {
   background-color: #4ab5ce;
   border-color: #4ab5ce;
+}
+.columns .rightSideBar #stats-pane {
+  padding: 40px 20px !important;
+}
+.columns .rightSideBar #cpuStrip {
+  margin-bottom: 20px !important;
+}
+.columns .rightSideBar .statBigNumbers {
+  font-size: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  margin-bottom: 5px;
+  margin-top: 15px;
+}
+.columns .rightSideBar .statGreen {
+  color: #B4F90B;
+}
+.columns .rightSideBar .statRed {
+  color: #f85c32;
+}
+.columns .rightSideBar .statBlack {
+  color: #383838;
+}
+.columns .rightSideBar .statTitle {
+  font-size: 14px;
+  color: #888;
+}
+.columns .rightSideBar .statMainTitle {
+  font-size: 22px;
+  color: #888;
+  margin-bottom: 5px;
+  margin-left: 24px;
+  background-color: transparent;
+}
+.columns .rightSideBar .statChartViz {
+  /*position:relative;*/
+
+  /*margin-top:33px !important;*/
+
+  margin-left: -22px !important;
+  width: 144px !important;
+  height: 71px !important;
 }
 .columns .rightSideBar #trashConsole {
   display: none;
