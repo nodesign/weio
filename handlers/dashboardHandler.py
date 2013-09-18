@@ -238,7 +238,11 @@ class WeioDashBoardHandler(SockJSConnection):
             #pack and go
             data = {}
             
-            data['serverPush'] = 'stdout'
+            if ("*SYSOUT*" in line) :
+                stdout = line.split("*SYSOUT*")[1]
+                data['serverPush'] = 'sysConsole'
+            else :
+                data['serverPush'] = 'stdout'
             data['data'] = stdout
             
             # TODO, send this only once, at the beginning

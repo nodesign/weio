@@ -45,9 +45,9 @@ class WeioAttach():
 
 class WeioClient():
     
-    def __init__(self, info, sender):
+    def __init__(self, info, connection):
         self.info = info
-        self.send = sender
+        self.connection = connection
         
 
 ###

@@ -68,6 +68,10 @@ from handlers import updaterHandler
 # IMPORT FIRST TIME HANDLER
 from handlers import firstTimeHandler
 
+# IMPORT STATS HANDLER
+from handlers import statsHandler
+
+
 # IMPORT WEIO BUTTONS OBJECT
 from weioLib import weioWifiButtons
 
@@ -174,6 +178,10 @@ if __name__ == '__main__':
     # FIRST TIME ROUTER
     WeioFirstTimeRouter = SockJSRouter(firstTimeHandler.WeioFirstTimeHandler, '/firstTime')
     
+    # STATS ROUTER
+    WeioStatsRouter = SockJSRouter(statsHandler.WeioStatsHandler, '/editor/stats')
+
+    
     #GENERAL ROUTES
     CloseRouter = SockJSRouter(WeioCloseConnection, '/close')
     
@@ -201,6 +209,7 @@ if __name__ == '__main__':
                             list(WeioWifiRouter.urls) +
                             list(WeioUpdaterRouter.urls) +
                             list(WeioFirstTimeRouter.urls) +
+                            list(WeioStatsRouter.urls)+
                             #list(WeioHeaderRouter.urls) +
                             #list(WeioAPIBridgeRouter.urls) +
                           
