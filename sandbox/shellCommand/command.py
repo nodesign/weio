@@ -1,7 +1,9 @@
 import sys
-import weioCommand
 #import subprocess
-sys.path.append('./')
+sys.path.append('/home/drasko/nodesign/weio')
+
+from weioLib import weioSubprocess
+
 
 command = 'sh waitMe.sh'
 
@@ -20,8 +22,8 @@ def aashellBlocking(command) :
     return output
 
 
-test = weioCommand.shellAsync(command)
+test = weioSubprocess.commandAsync(command)
 
-print test
+print "AAA, ", test
 
 print "OUT"
