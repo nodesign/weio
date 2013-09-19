@@ -86,6 +86,8 @@ class WeioWifi() :
             # Move to Master mode
             print "Trying to move to AP RESCUE mode..."
             weioSubprocess.shellBlocking("scripts/wifi_set_mode.sh rescue")
+            # Give it some time before restart...
+            time.sleep(5)
             # Restart Tornado (shell script bring it up whenever it exits)
             exit()
 
