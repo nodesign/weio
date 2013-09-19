@@ -195,7 +195,7 @@ class WeioWifiHandler(SockJSConnection):
     ###
     @weioUnblock.unblock
     def on_open(self, info) :
-        if (platform=='mips'):
+        if (platform.machine() == 'mips'):
             wifi.checkConnection()
         
         myMode = wifi.mode
@@ -203,7 +203,7 @@ class WeioWifiHandler(SockJSConnection):
         msg['serverPush'] = 'mode'
         msg['mode'] = myMode
         
-        if (platform!='mips'):
+        if (platform.machine() != 'mips'):
             myMode = "sta" # simulation
         print "MODE WIFI ", myMode
         if ("ap" in myMode):
