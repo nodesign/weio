@@ -321,6 +321,9 @@ div {
 .columns .rightSideBar .statRed {
   color: #f85c32;
 }
+.columns .rightSideBar .statBlue {
+  color: #3CDDF7;
+}
 .columns .rightSideBar .statBlack {
   color: #383838;
 }

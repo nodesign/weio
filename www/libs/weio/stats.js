@@ -160,7 +160,7 @@ function updateDataViz(data) {
     },
     {
     value : cpu.system,
-    color:"#B4F90B"
+    color:"#3CDDF7"
     },
     {
     value : cpu.idle,
@@ -173,7 +173,7 @@ function updateDataViz(data) {
     // RAM
     {
         value: parseFloat(ram.free),
-        color:"#B4F90B"
+        color:"#3CDDF7"
     },
     {
         value : parseFloat(ram.used),
@@ -186,7 +186,7 @@ function updateDataViz(data) {
     // FLASH
     {
         value: parseFloat(flash.free),
-        color:"#B4F90B"
+        color:"#3CDDF7"
     },
     {
         value : parseFloat(flash.used),
