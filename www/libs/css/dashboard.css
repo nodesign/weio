@@ -127,13 +127,32 @@ body {
   position: relative;
 }
 .navbar-inner .container .modeBT {
-  background-color: #383838;
-  padding: 0 5px;
-  height: 36px;
+  height: 60px;
+  padding: 0;
   border-radius: 2px;
-  position: relative;
-  left: -22px;
-  top: 11px;
+}
+.navbar-inner .container .modeBT .top_tab {
+  height: 49px;
+  padding: 0 4px;
+  margin-top: 11px;
+  border-radius: 2px 2px 0px 0px;
+}
+.navbar-inner .container .modeBT .top_tab a {
+  width: 23px;
+  height: 23px;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0;
+  margin: 9px 4px;
+  box-shadow: none !important;
+  background-repeat: no-repeat !important;
+}
+.navbar-inner .container .modeBT .top_tab a:hover {
+  background-position: 0px -20px !important;
+}
+.navbar-inner .container .modeBT .top_tab a:active {
+  background-position: 0px -40px !important;
 }
 .navbar-inner .container #editorButtonHeader a {
   background: url(../../img/weioEdit.png);
@@ -167,6 +186,22 @@ body {
 .navbar-inner .container .nav > .active > a {
   background-position: 0px -40px !important;
 }
+.navbar-inner .container .nav > .selected {
+  background: #383838;
+}
+.navbar-inner .container .nav > .selected a {
+  background-position: 0px -40px !important;
+}
+.navbar-inner .container .serverBT {
+  position: relative;
+  background-color: #383838;
+  padding: 0 5px;
+  float: left;
+  height: 36px;
+  top: 11px;
+  left: -15px;
+  border-radius: 2px;
+}
 .navbar-inner .container #controlCenter {
   color: #cccccc;
   width: 300px;
@@ -179,19 +214,11 @@ body {
 .navbar-inner .container #controlCenter #statusBar {
   color: #cccccc;
   float: left;
-  width: 200px;
+  width: 287px;
   height: 32px;
   text-align: center;
   border-radius: 2px;
   background-color: #383838;
-}
-.navbar-inner .container #controlCenter .serverBT {
-  background-color: #383838;
-  padding: 0 5px;
-  float: left;
-  height: 36px;
-  margin-left: 10px;
-  border-radius: 2px;
 }
 .navbar-inner .container #statusIcon {
   margin-right: 8px;
@@ -206,6 +233,9 @@ body {
   margin: 2px 0;
   font-weight: normal;
   color: #CCCDCE;
+}
+.navbar .nav {
+  margin: 0px;
 }
 /* Definitions of buttons settings and wifi*/
 .navbar .btn,
@@ -287,7 +317,7 @@ li.dropdown .dropdown-toggle:hover {
   color: #eeeeee !important;
 }
 li.dropdown .dropdown-toggle {
-  padding: 0 35px 0 15px !important;
+  padding: 0 50px 0 15px !important;
   margin-left: 10px;
 }
 .btn-group.open .btn.dropdown-toggle {

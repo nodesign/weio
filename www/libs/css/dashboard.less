@@ -142,14 +142,44 @@ body {
         /* main preview & editor navigation */
 
 .modeBT {
-                background-color: #383838;
-                padding: 0 5px;
-                height: 36px;
+                height: 60px;
+                padding: 0;
                 border-radius: 2px;
-                position: relative;
-                left: -22px;
-                top: 11px;
+    
+    
+    .top_tab {
+        height: 49px;
+        padding: 0 4px;
+        margin-top:11px;
+        border-radius:2px 2px 0px 0px;
+        
+        a {
+            width: 23px;
+            height: 23px;
+            text-indent: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            padding: 0;
+            margin: 9px 4px;
+            box-shadow: none !important;
+            background-repeat: no-repeat !important;
+            
+            &:hover {
+                background-position: 0px -20px  !important;
+            }
+            &:active {
+                background-position: 0px -40px  !important;
+            }
+            
+        }
+        
+    }
+    
 }
+        
+
+        
+
 
 
 #editorButtonHeader a {
@@ -191,17 +221,36 @@ body {
     }
 
 }
-
-.nav >.active > a {
-        background-position: 0px -40px !important;
+        
 
 
+
+.nav > .active > a {
+            background-position: 0px -40px !important;
+}
+        
+
+
+
+ .nav > .selected {
+            background: #383838;
+            a {
+                background-position: 0px -40px !important;
+                
+                
+            }            
 }
 
-
-
-   
-
+.serverBT {
+    position:relative;
+    background-color: #383838;
+    padding: 0 5px;
+    float: left;
+    height: 36px;
+    top:11px;
+    left:-15px;
+    border-radius: 2px;
+}
 
 
        
@@ -222,21 +271,13 @@ body {
             #statusBar {
                 color: rgb(204, 204, 204);
                 float: left;
-                width:200px;
+                width:287px;
                 height:32px;
                 text-align:center;
                 border-radius: 2px;
                 background-color: #383838;
             }
-            .serverBT {
-                background-color: #383838;
-                padding: 0 5px;
-                float: left;
-                height: 36px;
-                margin-left:10px;
-                border-radius: 2px;
-            }
-
+           
 
 
         }
@@ -264,7 +305,9 @@ body {
     } /* end container */
 }
 
-
+.navbar .nav {
+    margin:0px;   
+}
 
 /* Definitions of buttons settings and wifi*/
 
@@ -361,11 +404,13 @@ body {
 
 }
 li.dropdown .dropdown-toggle  {
-        padding: 0 35px 0 15px !important;
+        padding: 0 50px 0 15px !important;
         margin-left: 10px;
 }
  .btn-group.open .btn.dropdown-toggle {
   color:#555;
  }
+
+
 
 

@@ -167,7 +167,7 @@ function runEditor() {
     
     //$(".iframeContainerIndex").hide();
 
-    $("#editorButtonHeader").attr("class", "top_tab active");
+    $("#editorButtonHeader").attr("class", "top_tab selected");
     $("#previewButtonHeader").attr("class", "top_tab");
 
     isEditorActive = true;    
@@ -203,7 +203,7 @@ function runPreview() {
     $(".iframeContainerIndex").animate( { "margin-top": "40px" }, { queue: false, duration: 500 });
     
     $("#editorButtonHeader").attr("class", "top_tab");
-    $("#previewButtonHeader").attr("class", "top_tab active");
+    $("#previewButtonHeader").attr("class", "top_tab selected");
     
     isEditorActive = false;
 }

@@ -40,8 +40,21 @@
 
                 <a class="brand" href="#"><img src="img/weioLogo.png" id="logo"></img><h1>Weio</h1></a>
                 <div class="nav-collapse collapse"> 
-                    <ul class="nav">
+                    
+                    
+                    <ul class="modeBT nav">
+                        <li id="previewButtonHeader" class="top_tab">
+                          <a href="javascript:runPreview();" id="previewButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Preview">Preview</a>
+                        </li>
+                        <li id="editorButtonHeader" class="top_tab">
+                          <a href="javascript:runEditor();" id="editorButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Edit" >Edit</a>
+                        </li>
+                    </ul>
 
+                    
+                    
+                    <ul class="nav">
+                        
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" id="projectTitle" data-toggle="dropdown" >loading...</a>
                             <ul class="dropdown-menu" id="userProjectsList">
@@ -59,16 +72,17 @@
                         </li>
                        </ul>
                         
-
-                       <ul class="modeBT nav">
-                        <li id="previewButtonHeader" class="top_tab">
-                          <a class="icn-btn" href="javascript:runPreview();" id="previewButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Preview">Preview</a>
-                        </li>
-                        <li id="editorButtonHeader" class="top_tab">
-                          <a class="icn-btn" href="javascript:runEditor();" id="editorButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Edit" >Edit</a>
-                        </li>
-                        </ul>
+                        
+                                         
                     
+                    <ul class="serverBT nav">
+                        <li id="playButton" class="top_tab">
+                            <a class="icn-btn" href="javascript:prepareToPlay();" onmouseover="$(this).tooltip()" data-placement="bottom">Play</a>
+                        </li>
+                        <li id="stopButton" class="top_tab ">
+                            <a class="icn-btn" href="javascript:stop();" onmouseover="$(this).tooltip()" data-placement="bottom">Stop</a>
+                        </li>
+                    </ul>
                     
                     
                     <div id="controlCenter">
@@ -78,20 +92,7 @@
                             <p id="statusBarText2">Gimme some good code!</p>
                      </span>
                      
-                     
-                     <ul class="serverBT nav">
-                     <li id="playButton" class="top_tab">
-                      <a class="icn-btn" href="javascript:prepareToPlay();" onmouseover="$(this).tooltip()" data-placement="bottom">Play</a>
-                    </li>
-                     <li id="stopButton" class="top_tab ">
-                      <a class="icn-btn" href="javascript:stop();" onmouseover="$(this).tooltip()" data-placement="bottom">Stop</a>
-                    </li>
-                     </ul>
-                     
-                     
-                     
-                     
-                   </div>
+                    </div>
                        
                     <div class="user pull-right">
                         
