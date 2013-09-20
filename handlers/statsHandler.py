@@ -45,6 +45,7 @@ sys.path.append(r'./');
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
 from weioLib import weioTopStats
+from weioLib import weioUnblock
 
 
 import functools
@@ -67,6 +68,13 @@ class WeioStatsHandler(SockJSConnection):
     def top(self, data) :
         self.periodic.start()
         
+    ###
+    # This function has to call shell top procedires
+    # to determine cpu, flash and ram statistics
+    # These are blocking calls and can block ioloop.
+    # We assure that function is run in a separate thread with @unblock decorator.
+    ###
+    @weioUnblock.unblock
     def getData(self, rq='getTopPeriodic'):
         
         data = {}
