@@ -668,12 +668,14 @@ function updateConsoleOutput(data) {
 function updateConsoleError(data) {
 
     var stderr = data.data;
-    $('#consoleOutput').append("<a id='stderr'>" + stderr + "<br></a>");
+    //$('#consoleOutput').append("<a id='stderr'>" + stderr + "<br></a>");
+    $('#consoleOutput').append("<div class='alert alert-error'>" + stderr + "<br></div>");
 }
 
 function updateConsoleSys(data) {
     var sys = data.data;
-    $('#consoleOutput').append("<a id='sys'>" + sys + "<br></a>");
+    //$('#consoleOutput').append("<a id='sys'>" + sys + "<br></a>");
+    $('#consoleOutput').append("<div class='alert alert-info'>" + sys + "<br></div>");
 }
 
 function updateError(data) {
