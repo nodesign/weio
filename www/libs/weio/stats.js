@@ -43,7 +43,6 @@ var flashViz;
 
 var serverProcessRunning = false;
 
-
 var defs = {
 	//Boolean - Whether we should show a stroke on each segment
 	segmentShowStroke : true,
@@ -157,7 +156,6 @@ function updateDataViz(data) {
     cpuViz.Doughnut(cpuData, defs);
     // Call this only one in previous objet otherwise it will create 3 separate calls on server
     defs.onAnimationComplete = null;
-    defs.animation = false;
     
     ramViz.Doughnut(ramData, defs);
     flashViz.Doughnut(flashData, defs);

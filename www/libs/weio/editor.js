@@ -348,7 +348,13 @@ $(document).ready(function () {
                   
                   
       //////////////// CONSOLE TABS
+              
+        $("#tabConsole").click(function(e) {
                        
+            stopDataViz();
+                       
+        });          
+                  
        $("#tabBoard").click(function(e) {
                        
             stopDataViz();
@@ -360,7 +366,7 @@ $(document).ready(function () {
             startDataViz();
       });
                        
-       $("#tabSocumentation").click(function(e) {
+       $("#tabDocumentation").click(function(e) {
                        
             stopDataViz();
                        
