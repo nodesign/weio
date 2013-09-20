@@ -150,7 +150,7 @@ class WeioStatsHandler(SockJSConnection):
         # Call callback by key directly from socket
         global callbacks
         request = rq['request']
-        print "REQUEST " + request 
+        #print "REQUEST " + request 
         if request in callbacks :
             callbacks[request](self, rq)
         else :
