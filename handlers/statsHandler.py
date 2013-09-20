@@ -61,12 +61,13 @@ class WeioStatsHandler(SockJSConnection):
     global callbacks
     
     # cadence for periodic sampling in millis
-    cadence = 2000; 
+    cadence = 2000;
+    
   
     def top(self, data) :
         self.periodic.start()
         
-    def getData(self):
+    def getData(self, rq='getTopPeriodic'):
         
         data = {}
         
@@ -93,7 +94,7 @@ class WeioStatsHandler(SockJSConnection):
             ram = { "free" : freeRam, "used": usedRam }
             flash = { "free" : dd, "used":rr }
             
-            data['requested'] = 'getTop'
+            data['requested'] = rq
             data['data'] = {"cpu" : cpu, "ram" : ram, "flash" : flash}
         
         else :
@@ -102,10 +103,13 @@ class WeioStatsHandler(SockJSConnection):
             flashData = weioTopStats.getSpaceUsage("/")
             
             
-            data['requested'] = 'getTop'
+            data['requested'] = rq
             data['data'] = {"cpu" : cpuRamData["cpu"], "ram" : cpuRamData["mem"], "flash" : flashData}
         
         self.send(json.dumps(data))
+
+    def getTopOnce(self, data) :
+        self.getData('getTop')
     
     def stopTop(self, data): 
         # stop periodic calls
@@ -116,8 +120,9 @@ class WeioStatsHandler(SockJSConnection):
     # Second, associate key with right function to be called
     # key is comming from socket and call associated function
     callbacks = {
-        'getTop' : top,
-        'stopTop' : stopTop
+        'getTopPeriodic' : top,
+        'stopTopPeriodic' : stopTop,
+        'getTop' : getTopOnce
     }   
     
     def on_open(self, info) :

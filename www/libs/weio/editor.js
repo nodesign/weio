@@ -190,7 +190,6 @@ $(document).ready(function () {
 			}
 
 			var iOBJ = findObjectInArray($(e.target).parents('.accordion-group').attr('id').split("_")[1]);
-			
 			// Save
 			saveFile(editorsInStack[iOBJ]);
 			
@@ -357,7 +356,7 @@ $(document).ready(function () {
         });
                        
        $("#tabStats").click(function(e) {
-                            console.log("dfkjdvjdfklbjklfdsbvkjlbdfsklvbdksflbvkldjfsbvklfdsbvkldfsjbvlbldjklv");           
+                                    
             startDataViz();
       });
                        
