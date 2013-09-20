@@ -41,6 +41,8 @@ var cpuViz;
 var ramViz;
 var flashViz;
 
+var serverProcessRunning = false;
+
 
 var defs = {
 	//Boolean - Whether we should show a stroke on each segment
@@ -127,11 +129,6 @@ $(document).ready(function () {
 });
 
 
-function stopDataViz() {
-    var rq = { "request": "stopTopPeriodic"};
-    statSocket.send(JSON.stringify(rq));
-}
-
 
 
 function updateDataViz(data) {
@@ -158,9 +155,12 @@ function updateDataViz(data) {
     
    
     cpuViz.Doughnut(cpuData, defs);
+    // Call this only one in previous objet otherwise it will create 3 separate calls on server
+    defs.onAnimationComplete = null;
+    defs.animation = false;
+    
     ramViz.Doughnut(ramData, defs);
     flashViz.Doughnut(flashData, defs);
-    
     
 }
 
@@ -221,18 +221,33 @@ function animateDataViz(data) {
     defs.onAnimationComplete = requestPeriodicStats;
     defs.animation = true;
     
-    console.out = 
+    serverProcessRunning==false;
     
     updateDataViz(data);
+ 
 }
 
 
 function requestPeriodicStats() {
-    var rq = { "request": "getTopPeriodic"};
-    statSocket.send(JSON.stringify(rq));
-    defs.onAnimationComplete = null;
-    defs.animation = false;
+    if (serverProcessRunning==false) {
+        var rq = { "request": "getTopPeriodic"};
+        statSocket.send(JSON.stringify(rq));
+            
+        defs.onAnimationComplete = null;
+        defs.animation = false;
+        
+        serverProcessRunning = true;
+    }
 }
+
+
+function stopDataViz() {
+    var rq = { "request": "stopTopPeriodic"};
+    statSocket.send(JSON.stringify(rq));
+    serverProcessRunning = true;
+    
+}
+
 
 //CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
@@ -241,15 +256,24 @@ function requestPeriodicStats() {
  */
 var callbacksStats = {
     "getTop": animateDataViz,
-    "getTopPeriodic": updateDataViz
+    "getTopPeriodic": updateDataViz,
+    "stopTopPeriodic" : deblockInterface
 }
 
 
 function startDataViz() {
+    
     var rq = { "request": "getTop"};
     statSocket.send(JSON.stringify(rq));
+    console.log("GET TOP ", serverProcessRunning);
+
 }
 
+
+function deblockInterface(data) {
+    console.log("STOPed PERIODIC");
+    serverProcessRunning = false;
+}
 
 
 

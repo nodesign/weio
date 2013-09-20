@@ -119,9 +119,12 @@ class WeioStatsHandler(SockJSConnection):
     def getTopOnce(self, data) :
         self.getData('getTop')
     
-    def stopTop(self, data): 
+    def stopTop(self, rq): 
         # stop periodic calls
         self.periodic.stop()
+        data = {}
+        data['requested'] = rq['request']
+        self.send(json.dumps(data))
     
     #########################################################################
     # DEFINE CALLBACKS IN DICTIONARY
@@ -147,7 +150,7 @@ class WeioStatsHandler(SockJSConnection):
         # Call callback by key directly from socket
         global callbacks
         request = rq['request']
-        
+        print "REQUEST " + request 
         if request in callbacks :
             callbacks[request](self, rq)
         else :
