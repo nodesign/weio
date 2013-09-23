@@ -44,33 +44,56 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 import json
 
 
-from weioLib import weioGpio
 from weioLib import weioGlobals
 
 
 class WeioAPIBridgeHandler(SockJSConnection):
 
-    """Opens editor route."""
-    def on_open(self, data):
-        """On open asks weio for last saved project. List of files are scaned and sent to editor.
-        Only contents of weio_main.py is sent at first time"""
-        print "Opened WEIO API socket"
+    
+    
+    def iteratePacketRequests(self, rq) :
+        
+        requests = rq["packets"]
+        
+        for uniqueRq in requests:
+            request = uniqueRq['request']
+            if request in callbacks:
+                callbacks[request](self, uniqueRq)
+            else :
+                print "unrecognised request ", uniqueRq['request']
 
+    
+    ##############################################################################################################################
+    # DEFINE CALLBACKS IN DICTIONARY
+    # Second, associate key with right function to be called
+    # key is comming from socket and call associated function
+    callbacks = {
+        
+        'packetRequests': iteratePacketRequests
+    
+    }
+    
+    def on_open(self, info) :
+        
+        global CONSOLE
+        # Store instance of the ConsoleConnection class
+        # in the global variable that will be used
+        # by the MainProgram thread
+        CONSOLE = self
+    
+    
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
         req = json.loads(data)
         self.serve(req)
-
-    def serve(self, rq) :
-
-
-        if 'digitalWrite' in rq['request'] :
-
-            ins = rq['data']
-            weio_gpio.digitalWrite(str(ins[0]), str(ins[1]))
-            #print ins
-
-        elif 'pinMode' in rq['request'] :
-            ins = rq['data']
-            weio_gpio.digitalWrite(ins[0], ins[1])
-
+    
+    def serve(self, rq):
+        """Parsed input from browser ready to be served"""
+        # Call callback by key directly from socket
+        global callbacks
+        request = rq['request']
+        
+        if request in callbacks :
+            callbacks[request](self, rq)
+        else :
+            print "unrecognised request ", rq['request']

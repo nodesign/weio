@@ -1,0 +1,42 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<script src="../../../libs/jquery/jquery-2.0.2.min.js"></script>
+<script src="../../../libs/sockJS/sockjs-0.3.min.js"></script>
+<script src="../../../libs/weio/weioApi.js"></script>
+<script src="gyro.js"></script>
+
+<head> 
+    <meta charset="utf-8" /> 
+	<title>gyro.js - easy access to your web browsers built in accelerometer's and gyroscope's</title>
+</head>
+<body>
+	<p>This Example just print's the raw accelerometer and gyro data. Will return null if no device information is found.</p>
+	<p>gyro.getFeatures: <span id="features"></span></p>
+	<span id="example"></span>
+	
+	<script>
+    
+        gyro.frequency = 100;
+        
+		gyro.startTracking(function(o) {
+			
+            var b = document.getElementById('example'),
+			f = document.getElementById('features');
+			
+            f.innerHTML = gyro.getFeatures();
+			b.innerHTML = "<p> x = " + o.x + "</p>" +
+										"<p> y = " + o.y + "</p>" +
+										"<p> z = " + o.z + "</p>" +
+										"<p> alpha = " + o.alpha + "</p>" +
+										"<p> beta = " + o.beta + "</p>" +
+										"<p> gamma = " + o.gamma + "</p>";
+                                        
+            
+            genericMessage("message", o.beta);
+		});
+        
+        
+        
+	</script>
+</body>
+</html>

@@ -156,6 +156,9 @@ function _generateUUID(){
  */
 var weioCallbacks = {};
 
+function isWeioReady() {
+    return _weio.readyState;
+}
 
 /* 
  * Low level electronics instructions from JS
@@ -168,12 +171,14 @@ function pinMode(pin, mode) {
   genericMessage("pinMode", [pin,mode]);
 };
 
+
+
 /*
  * Generic handler for sending messages to server
  */
 function genericMessage(instruction, data) {
     // avoid sending messages to websocket that is not yet opened
-    if (_weio.readyState != 0) {
+    if (isWeioReady() != 0) {
         var askWeio = { "request": instruction, "data" : data, "uuid" : uuid };
         _weio.send(JSON.stringify(askWeio));
     } else {
