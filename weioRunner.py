@@ -6,10 +6,6 @@ import json
 
 import threading
 
-import uuid
-
-from user import *
-
 from weioLib.weioUserApi import *
 
 projectModule = "userProjects." + sys.argv[1] + ".main"
@@ -113,3 +109,4 @@ if __name__ == '__main__':
         t.start()
 
     ioloop.IOLoop.instance().start()
+
