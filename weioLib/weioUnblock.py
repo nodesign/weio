@@ -37,7 +37,8 @@
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial, wraps
 
-EXECUTOR = ThreadPoolExecutor(max_workers=4)
+# Let's say 10 threads for unblocking purposes. Augment if needed.
+EXECUTOR = ThreadPoolExecutor(max_workers=10)
 
 
 def unblock(f):
