@@ -122,9 +122,13 @@ class WeioStatsHandler(SockJSConnection):
     def stopTop(self, rq): 
         # stop periodic calls
         self.periodic.stop()
-        data = {}
-        data['requested'] = rq['request']
-        self.send(json.dumps(data))
+
+        if (rq is not None):
+            data = {}
+            data['requested'] = rq['request']
+            self.send(json.dumps(data))
+        else:
+            pass
     
     #########################################################################
     # DEFINE CALLBACKS IN DICTIONARY
@@ -155,8 +159,7 @@ class WeioStatsHandler(SockJSConnection):
             callbacks[request](self, rq)
         else :
             print "unrecognised request"
+
     def on_close(self) :
         print("socket closed")
         self.stopTop(None)
-        pass
-
