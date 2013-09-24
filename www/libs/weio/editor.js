@@ -669,6 +669,7 @@ function deleteProject() {
 function updateConsoleOutput(data) {
     var stdout = data.data;
     $('#consoleOutput').append(stdout + "<br>");
+    scrollConsoleToBottom();
 }
 
 function updateConsoleError(data) {
@@ -676,12 +677,14 @@ function updateConsoleError(data) {
     var stderr = data.data;
     //$('#consoleOutput').append("<a id='stderr'>" + stderr + "<br></a>");
     $('#consoleOutput').append("<div class='alert alert-error'>" + stderr + "<br></div>");
+    scrollConsoleToBottom();
 }
 
 function updateConsoleSys(data) {
     var sys = data.data;
     //$('#consoleOutput').append("<a id='sys'>" + sys + "<br></a>");
     $('#consoleOutput').append("<div class='alert alert-info'>" + sys + "<br></div>");
+    scrollConsoleToBottom();
 }
 
 function updateError(data) {
@@ -730,7 +733,17 @@ function updateError(data) {
         window.top.stop();
                
     },1000);
+    scrollConsoleToBottom();
     
+}
+
+/*
+ * Scrolling till bottom of console
+ * In that way we see always the last info
+ */
+function scrollConsoleToBottom(){
+    var elem = document.getElementById('consoleOutput');
+    elem.scrollTop = elem.scrollHeight;
 }
 
 
