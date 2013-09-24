@@ -41,6 +41,14 @@
 var _weio;
 
 
+//CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////x  
+/**
+ * Define callbacks here and request keys
+ * Each key is binded to coresponding function
+ */
+var weioCallbacks = {};
+
+
 $(document).ready(function() {
 
     /*
@@ -60,9 +68,6 @@ $(document).ready(function() {
      * WebSocket openning
      */
     _weio = new SockJS(_addr);
-                  
-                      
-        
 
     _weio.onopen = function() {
         console.log('socket opened for weio API');
@@ -148,13 +153,6 @@ function _generateUUID(){
 }
 
 
-
-//CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////x  
-/**
- * Define callbacks here and request keys
- * Each key is binded to coresponding function
- */
-var weioCallbacks = {};
 
 function isWeioReady() {
     return _weio.readyState;

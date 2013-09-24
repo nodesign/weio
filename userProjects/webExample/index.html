@@ -7,36 +7,58 @@
 
 <head> 
     <meta charset="utf-8" /> 
-	<title>gyro.js - easy access to your web browsers built in accelerometer's and gyroscope's</title>
+    <title>My first Web app</title>
 </head>
-<body>
-	<p>This Example just print's the raw accelerometer and gyro data. Will return null if no device information is found.</p>
-	<p>gyro.getFeatures: <span id="features"></span></p>
-	<span id="example"></span>
-	
-	<script>
+
+    <style>
+        
+      #logoContainer {
+        position:fixed;
+        top:0;
+        bottom:0;
+        width:100%;
+        height:100%;
+        text-indent:-9999em;
+        background:url("weioLogo.png") center center no-repeat;
+      }
+        
+    </style>
     
+    
+<body>
+    
+    <div id="logoContainer"> 
+        weio logo goes here
+    </div>
+    
+    <script>
+
         gyro.frequency = 100;
+        var beta_buff = 0;
+    	gyro.startTracking(function(o) {
+            var delta = Math.abs(beta_buff-o.beta);
+            if (delta > 2.0) {
+                genericMessage("message", o.beta);
+            }
+            beta_buff = o.beta;
+    	});
         
-		gyro.startTracking(function(o) {
-			
-            var b = document.getElementById('example'),
-			f = document.getElementById('features');
-			
-            f.innerHTML = gyro.getFeatures();
-			b.innerHTML = "<p> x = " + o.x + "</p>" +
-										"<p> y = " + o.y + "</p>" +
-										"<p> z = " + o.z + "</p>" +
-										"<p> alpha = " + o.alpha + "</p>" +
-										"<p> beta = " + o.beta + "</p>" +
-										"<p> gamma = " + o.gamma + "</p>";
-                                        
-            
-            genericMessage("message", o.beta);
-		});
+        weioCallbacks.usrMsg = changeColorFromWeio;
+        function changeColorFromWeio(data) {
+            rgb = "rgb("+ 
+                  String(data.data.red) + "," + 
+                  String(data.data.green) + "," + 
+                  String(data.data.blue) + ")"; 
+            console.log(data.data.red);
+            $("body").css("background-color", rgb);
+            //console.log("YUPIIIIII");
+            //console.log(data);
+        }
         
-        
-        
-	</script>
+    </script>
+    
 </body>
 </html>
+
+
+
