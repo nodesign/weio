@@ -138,6 +138,7 @@ def getFileType(path):
         ".js": "javascript",
         ".html":"html",
         ".txt" : "text",
+        ".md":"text",
         ".json": "json",
         ".svg": "svg",
         ".xml":"xml",
