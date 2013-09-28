@@ -358,6 +358,7 @@ $(document).ready(function () {
        $("#tabBoard").click(function(e) {
                        
             stopDataViz();
+            connectToBoard();
                        
         });
                        

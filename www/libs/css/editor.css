@@ -400,6 +400,10 @@ div {
   margin: 0 15px;
 }
 /*////////////////////////////*/
+/* ALERTS CONSOLE */
+.alert {
+  margin-bottom: 2px;
+}
 #codeEditorAce {
   position: absolute;
   top: 0;

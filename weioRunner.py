@@ -8,21 +8,32 @@ import threading
 
 from weioLib.weioUserApi import *
 
+# add SD card path
+sys.path.append('/sd')
+
 projectModule = "userProjects." + sys.argv[1] + ".main"
 
 #import module from argument list
 #print projectModule
+
+# WAY TO IMPORT FROM SD CARD
+#import imp
+#main = imp.load_source(projectModule, '/sd/userProjects/'+sys.argv[1]+'/main.py')
+
+# WAY TO IMPORT FROM LOCAL
 main = __import__(projectModule, fromlist=[''])
 
 class WeioHandler(SockJSConnection):
     
     connections = []
     
+    
     def on_open(self, data):
         #print "*SYSOUT*Opened WEIO API socket"
         shared.websocketOpened = True
         #shared.websocketSend = self.emit
         attach.event('_info', self.clientInfo)
+        attach.event('_getBoardData', self.sendBoardData)
         self.ip = data.ip
         self.connections.append(self)
          
@@ -67,6 +78,18 @@ class WeioHandler(SockJSConnection):
                 print "*SYSOUT* "+ data["appVersion"] + " connected with uuid " + data["uuid"] + " from " + data["ip"]
                 newClient = WeioClient(data, self.connections[-1]) 
                 shared.connectedClients.append(newClient)
+
+    def sendBoardData(self, rq) :
+        data = {}
+        data["requested"] = '_getBoardData'
+        
+        pinSet = shared.declaredPins
+        pins = []
+        for pin in pinSet:           
+            pins.append(pin)
+        print "*SYSOUT* ", pins
+        data["data"] = pins 
+        self.send(json.dumps(data))
         
         
     def emit(self, instruction, rq):
