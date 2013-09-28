@@ -138,7 +138,11 @@ def getFileType(path):
         ".js": "javascript",
         ".html":"html",
         ".txt" : "text",
-        ".json": "json"
+        ".json": "json",
+        ".svg": "svg",
+        ".xml":"xml",
+        ".less":"less",
+        ".coffee":"coffee"
         }
          
         if (extension in types) :
