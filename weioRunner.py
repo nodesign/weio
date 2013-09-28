@@ -19,7 +19,7 @@ class WeioHandler(SockJSConnection):
     connections = []
     
     def on_open(self, data):
-        print "*SYSOUT*Opened WEIO API socket"
+        #print "*SYSOUT*Opened WEIO API socket"
         shared.websocketOpened = True
         #shared.websocketSend = self.emit
         attach.event('_info', self.clientInfo)
@@ -51,7 +51,7 @@ class WeioHandler(SockJSConnection):
         data["ip"] = self.ip
         
         if (len(shared.connectedClients)==0):
-            print "*SYSOUT*New client connected with uuid " + data["uuid"]
+            print "*SYSOUT* "+ data["appVersion"] + " connected with uuid " + data["uuid"] + " from " + data["ip"]
             newClient = WeioClient(data, self.connections[-1]) 
             shared.connectedClients.append(newClient)
         else :
@@ -64,7 +64,7 @@ class WeioHandler(SockJSConnection):
                     break
             
             if present is False:
-                print "*SYSOUT*New client connected with uuid " + data["uuid"]
+                print "*SYSOUT* "+ data["appVersion"] + " connected with uuid " + data["uuid"] + " from " + data["ip"]
                 newClient = WeioClient(data, self.connections[-1]) 
                 shared.connectedClients.append(newClient)
         
