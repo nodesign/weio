@@ -21,7 +21,6 @@ class WeioGpio():
         self.pwm1BeginCalled = False
         
         #print "Hello from GPIO"
-        
     
     def pinMode(self, pin, mode) :
         """Sets pin to input or output mode. Available modes are : OUTPUT, INPUT (high Z), INPUT_PULLDOWN, INPUT_PULLUP, ADC_INPUT"""
@@ -36,6 +35,15 @@ class WeioGpio():
     def digitalWrite(self,pin, state) :
         """Sets voltage to +3.3V or Ground on corresponding pin. This function takes two parameters : pin number and it's state that can be HIGH = +3.3V or LOW = Ground"""
         if shared.declaredPins[pin] != OUTPUT:
+            # If on these pins PWM was previously declared, kill it
+            if ((pin >= pwms[0]) and (pin <= pwms[2])):
+                if self.pwm0BeginCalled is True:
+                    self.uper.pwm0_end()
+            
+            if ((pin >= pwms[3]) and (pin <= pwms[-1])):
+                if self.pwm1BeginCalled is True:
+                    self.uper.pwm1_end()
+                
             self.uper.setPrimary(pins[pin])
             self.uper.pinMode(pins[pin], OUTPUT)
             shared.declaredPins[pin] = OUTPUT
@@ -45,6 +53,16 @@ class WeioGpio():
     def digitalRead(self,pin) :
         """Reads actual voltage on corresponding pin. There are two possible answers : 0 if pin is connected to the Ground or 1 if positive voltage is detected"""
         if (shared.declaredPins[pin] != INPUT) or (shared.declaredPins[pin] != INPUT_PULLUP) or (shared.declaredPins[pin] != INPUT_PULLDOWN) :
+            # If on these pins PWM was previously declared, kill it
+            if ((pin >= pwms[0]) and (pin <= pwms[2])):
+                if self.pwm0BeginCalled is True:
+                    self.uper.pwm0_end()
+            
+            if ((pin >= pwms[3]) and (pin <= pwms[-1])):
+                if self.pwm1BeginCalled is True:
+                    self.uper.pwm1_end()
+
+        
             self.uper.setPrimary(pins[pin])
             self.uper.pinMode(pins[pin], INPUT)
             shared.declaredPins[pin] = INPUT
