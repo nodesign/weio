@@ -39,14 +39,14 @@ class WeioHandler(SockJSConnection):
          
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
-        self.req = json.loads(data)
-        self.serve()
+        #self.req = json.loads(data)
+        self.serve(json.loads(data))
         
 
-    def serve(self) :
+    def serve(self, data) :
         for key in attach.events :
-            if attach.events[key].event in self.req['request'] :
-                attach.events[key].handler(self.req['data'])
+            if attach.events[key].event in data['request'] :
+                attach.events[key].handler(data['data'])
 
     def on_close(self, data):
         shared.websocketOpened = False
@@ -83,12 +83,8 @@ class WeioHandler(SockJSConnection):
         data = {}
         data["requested"] = '_getBoardData'
         
-        pinSet = shared.declaredPins
-        pins = []
-        for pin in pinSet:           
-            pins.append(pin)
-        print "*SYSOUT* ", pins
-        data["data"] = pins 
+        #print "*SYSOUT* ", pins
+        data["data"] = shared.declaredPins 
         self.send(json.dumps(data))
         
         

@@ -13,6 +13,9 @@ INPUT_PULLDOWN = 2
 INPUT = 0
 ADC_INPUT = 5
 OUTPUT = 1
+PWM0_OUTPUT = 6
+PWM1_OUTPUT = 7
+PWM_OUTPUT = 8
 
 # This is remapping of uper pinouts to WeIO pinouts
 #         UPER  FUNC   WEIO
@@ -67,6 +70,15 @@ adcs.append(29)
 adcs.append(30)
 adcs.append(31)
 adcs.append(32)
+
+# WeIO pwm pins
+pwms = []
+pwms.append(19)
+pwms.append(20)
+pwms.append(21)
+pwms.append(22)
+pwms.append(23)
+pwms.append(24)
 
 
 #####################

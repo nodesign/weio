@@ -113,7 +113,7 @@ function connectToBoard() {
         };
             
     } else {
-        var rq = { "request": "_getBoardData"};
+        var rq = { "request": "_getBoardData", "data":""};
         boardSocket.send(JSON.stringify(rq));
     }
 
@@ -125,9 +125,9 @@ function boardData(data) {
     
     for (var i=0; i<32; i++) $("#pin"+String(i)).attr("class", "pin");
     
-    for (i in data.data) {
-        $("#pin"+String(data.data[i])).attr("class", "pin_on");
-    }
+    for (i in data.data) 
+        if (data.data[i] != -1) 
+            $("#pin"+String(i)).attr("class", "pin_on");
     
 }
 
