@@ -80,6 +80,25 @@ pwms.append(22)
 pwms.append(23)
 pwms.append(24)
 
+# Interrupt modes
+# HIGH and LOW were already declared
+# LOW 0 
+# HIGH 1
+CHANGE = 2
+RISING = 3
+FALLING = 4
+
+# String as response from LPC, this replaces numbers 0-4
+interruptKey = []
+interruptKey.append("LOW")
+interruptKey.append("HIGH")
+interruptKey.append("CHANGE")
+interruptKey.append("RISING")
+interruptKey.append("FALLING")
+
+# number of hard interrupts
+HARD_INTERRUPTS = 8
+
 
 #####################
 # WeIO User Classes
