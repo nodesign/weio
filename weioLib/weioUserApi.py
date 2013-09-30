@@ -89,12 +89,12 @@ RISING = 3
 FALLING = 4
 
 # String as response from LPC, this replaces numbers 0-4
-interruptKey = []
-interruptKey.append("LOW")
-interruptKey.append("HIGH")
-interruptKey.append("CHANGE")
-interruptKey.append("RISING")
-interruptKey.append("FALLING")
+interruptType = []
+interruptType.append("LOW")
+interruptType.append("HIGH")
+interruptType.append("CHANGE")
+interruptType.append("RISING")
+interruptType.append("FALLING")
 
 # number of hard interrupts
 HARD_INTERRUPTS = 8
