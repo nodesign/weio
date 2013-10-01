@@ -1,11 +1,11 @@
-from devices import uper
+#from devices import uper
 from weioLib import weio
 import colorsys
 
 def buttonHandler(dataIn) :
     if dataIn is not None :
-        print "FROM BROWSER: ", dataIn
-        beta = float(dataIn)
+        print "FROM BROWSER: ", dataIn["data"], " uuid: ", dataIn["uuid"]
+        beta = float(dataIn["data"])
         
         # put limiters
         if (beta>88):
@@ -37,13 +37,14 @@ def buttonHandler(dataIn) :
             client.connection.emit("usrMsg", colorData)
    
         
+        
 def setColor(r,g,b):
     red = (255-r)*78
     green = (255-g)*78
     blue = (255-b)*78
-    uper.pwm0_set(2,blue)
-    uper.pwm0_set(0,red)
-    uper.pwm0_set(1,green)
+  #  uper.pwm0_set(2,blue)
+   # uper.pwm0_set(0,red)
+   # uper.pwm0_set(1,green)
     
 
 def mapf(value,istart,istop,ostart,ostop) :
@@ -52,16 +53,16 @@ def mapf(value,istart,istop,ostart,ostop) :
 # Attaches interrupt from Web client to "message" string
 weio.attach.event('message', buttonHandler)
 
-uper = uper.UPER()
+#uper = uper.UPER()
 
 # blue
-uper.setSecondary(22)
+#uper.setSecondary(22)
 # red
-uper.setSecondary(29)
+#uper.setSecondary(29)
 # green
-uper.setSecondary(28)
+#uper.setSecondary(28)
 
 # 19890 divided by 255 is 78
-uper.pwm0_begin(19890)
+#uper.pwm0_begin(19890)
 
 print "Starting"
