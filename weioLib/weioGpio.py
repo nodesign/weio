@@ -1,3 +1,39 @@
+### 
+#
+# WEIO Web Of Things Platform
+# Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
+# All rights reserved
+#
+#               ##      ## ######## ####  #######  
+#               ##  ##  ## ##        ##  ##     ## 
+#               ##  ##  ## ##        ##  ##     ## 
+#               ##  ##  ## ######    ##  ##     ## 
+#               ##  ##  ## ##        ##  ##     ## 
+#               ##  ##  ## ##        ##  ##     ## 
+#                ###  ###  ######## ####  #######
+#
+#                    Web Of Things Platform 
+#
+# This file is part of WEIO
+# WEIO is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# WEIO is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Authors : 
+# Uros PETREVSKI <uros@nodesign.net>
+# Drasko DRASKOVIC <drasko.draskovic@gmail.com>
+#
+###
+
 from devices import uper
 from weioLib.weioUserApi import shared, pins, adcs, pwms, HIGH, LOW, INPUT, INPUT_PULLDOWN, INPUT_PULLUP, OUTPUT, ADC_INPUT, PWM_OUTPUT, PWM0_OUTPUT, PWM1_OUTPUT
 from weioLib.weioUserApi import CHANGE, RISING, FALLING, HARD_INTERRUPTS
@@ -26,14 +62,14 @@ class WeioGpio():
         self.interrupts = []
         for i in range(0,HARD_INTERRUPTS):
             # 1 is available
-            self.interrupts.append(1)
+            self.interrupts.append(None)
     
     #print "Hello from GPIO"
     
     def mainInterrupt(self, data):
-        id = data[1][0]
+        myid = data[1][0]
         for inter in self.interrupts:
-            if inter.id == id:
+            if inter.myid == myid:
                 inter.callback(data[1][1])
                 break
     
@@ -100,7 +136,7 @@ class WeioGpio():
             
             out = self.proportion(value, 0, self.pwm0Limit, self.pwm0PortPeriod, 0)
             self.uper.pwm0_set(pwmPin, int(out))
-            #print "PWM on ", pwmPin, " value ", int(out)
+        #print "PWM on ", pwmPin, " value ", out
         
         elif ((pin >= pwms[3]) and (pin <= pwms[-1])):
             #port1
@@ -121,7 +157,7 @@ class WeioGpio():
                 value = self.pwm1Limit
             out = self.proportion(value, 0, self.pwm1Limit, self.pwm1PortPeriod, 0)
             self.uper.pwm1_set(pwmPin, int(out))
-            #print "PWM on ", pwmPin, " value ", int(out)
+        #print "PWM on ", pwmPin, " value ", out
         
         else :
             print "*SYSOUT*Error! Pin " + str(pin) + " is not PWM pin, PWMs are on pins 19-24!"
@@ -184,31 +220,32 @@ class WeioGpio():
             print "*SYSOUT*Error! PWM limit can't be superior than " + min(self.pwm0PortPeriod, self.pwm1PortPeriod)  + " , 0 or inferior than 0"
     
     def attachInterrupt(self, pin, mode, callback):
-        id = self.getAvailableInterruptId()
-        if id is not None :
-            inter = Interrupt(id, pin, mode, callback)
-            self.interrupts[id] = inter
-            self.uper.attachInterrupt(id, pins[pin], mode)
+        myid = self.getAvailableInterruptId()
+        if myid is not None :
+            inter = Interrupt(myid, pin, mode, callback)
+            self.interrupts[myid] = inter
+            self.uper.attachInterrupt(myid, pins[pin], mode)
 
     def detachInterrupt(self, pin):
-        for inter in self.interrupts:
-            if (inter.pin == pin):
-                self.interrupts[inter.id] = 1
-                self.detachInterrupt(inter.id)
-                break
+        
+        for m in self.interrupts:
+            if not(m is None):
+                if (m.pin==pin):
+                    #print "pin to be detached ", m.pin
+                    self.uper.detachInterrupt(m.myid)
+                    
             
-
     def getAvailableInterruptId(self) :
         for i in range(0,HARD_INTERRUPTS):
-            if self.interrupts[i] == 1:
+            if self.interrupts[i] == None:
                 return i
         print "*SYSOUT*Error! There is only " + str(HARD_INTERRUPTS) + " interrupts available" 
         return None
             
 
 class Interrupt():
-    def __init__(self, id, pin, mode, callback):
-        self.id = id
+    def __init__(self, myid, pin, mode, callback):
+        self.myid = myid
         self.pin = pin
         self.mode = mode
         self.callback = callback
