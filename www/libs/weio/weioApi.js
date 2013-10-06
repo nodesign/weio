@@ -117,9 +117,6 @@ $(document).ready(function() {
       console.log('socket is closed for editor');
     };
 
-
- 
-                  
 });
 
 
@@ -127,10 +124,8 @@ $(document).ready(function() {
 /* 
  * GLOBALS
  */
-var HIGH = "1";
-var LOW = "0";
-var OUTPUT = "out";
-var INPUT = "in";
+var HIGH = 1;
+var LOW = 0;
 
 /*
  * Unique UUID number of this session
@@ -169,6 +164,14 @@ function pinMode(pin, mode) {
   genericMessage("pinMode", [pin,mode]);
 };
 
+function analogRead(pin, callback) { 
+    // create new callback call
+    var fName = callback.name;
+    //console.log("callback name:" + fName);
+    weioCallbacks[fName] = callback
+    genericMessage("analogRead", [pin,fName]);
+    //console.log("Callbacks", weioCallbacks);
+};
 
 
 /*

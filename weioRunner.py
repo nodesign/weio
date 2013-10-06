@@ -7,6 +7,8 @@ import json
 import threading
 
 from weioLib.weioUserApi import *
+from weioLib.weioGpio import WeioGpio
+import platform
 
 # add SD card path
 sys.path.append('/sd')
@@ -27,7 +29,6 @@ class WeioHandler(SockJSConnection):
     
     connections = []
     
-    
     def on_open(self, data):
         #print "*SYSOUT*Opened WEIO API socket"
         shared.websocketOpened = True
@@ -36,7 +37,23 @@ class WeioHandler(SockJSConnection):
         attach.event('_getBoardData', self.sendBoardData)
         self.ip = data.ip
         self.connections.append(self)
-         
+        
+        if (platform.machine()=="mips"):
+            # WeIO API bindings from websocket to lower levels
+            attach.event('digitalWrite', self.callDigitalWrite)
+            attach.event('digitalRead', self.callDigitalRead)
+            attach.event('inputMode', self.callInputMode)
+            attach.event('analogRead', self.callAnalogRead)
+            attach.event('pwmWrite', self.callPwmWrite)
+            attach.event('setPwmPeriod', self.callSetPwmPeriod)
+            attach.event('setPwmLimit', self.callSetPwmLimit)
+            attach.event('setPwmPeriod0', self.callSetPwmPeriod0)
+            attach.event('setPwmPeriod1', self.callSetPwmPeriod1)
+            attach.event('setPwmLimit0', self.callSetPwmLimit0)
+            attach.event('setPwmLimit1', self.callSetPwmLimit1)
+            attach.event('attachInterrupt', self.callAttachInterrupt)
+            attach.event('detachInterrupt', self.callDetachInterrupt)
+             
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
         #self.req = json.loads(data)
@@ -44,6 +61,7 @@ class WeioHandler(SockJSConnection):
         
 
     def serve(self, data) :
+        #print data
         for key in attach.events :
             if attach.events[key].event in data['request'] :
                 attach.events[key].handler(data['data'])
@@ -92,7 +110,61 @@ class WeioHandler(SockJSConnection):
         data = {}
         data['serverPush'] = instruction
         data['data'] = rq
-        self.send(json.dumps(data))   
+        self.send(json.dumps(data))
+
+    # WeIO API bindings from websocket to lower levels
+    def callDigitalWrite(self, data) :
+        #print "FROM JS ", data
+        shared.gpio.digitalWrite(data[0],data[1])
+
+    def callDigitalRead(self, data) :
+        shared.gpio.digitalRead(data[0])
+
+    def callInputMode(self, data) :
+        shared.gpio.inputMode(data[0],data[1])
+
+    def callAnalogRead(self, data) :
+        #print "From browser ", data
+        value = shared.gpio.analogRead(data[0]) # this is pin number
+        bck = {}
+        bck["serverPush"] = data[1] # this is callback for JS
+        bck["data"] = value 
+        self.send(json.dumps(bck))
+
+    def callPwmWrite(self, data) :
+        shared.gpio.pwmWrite(self, data[0],data[1])
+
+    def callSetPwmPeriod(self, data) :
+        shared.gpio.pwmPeriod(data[0])  
+
+    def callSetPwmPeriod0(self, data) :
+        shared.gpio.pwmPeriod0(data[0])
+
+    def callSetPwmPeriod1(self, data) :
+        shared.gpio.pwmPeriod1(data[0])
+
+    def callSetPwmLimit(self, data) :
+        shared.gpio.pwmLimit(data[0])
+
+    def callSetPwmLimit0(self, data) :
+        shared.gpio.pwmLimit0(data[0])
+
+    def callSetPwmLimit1(self, data) :
+        shared.gpio.pwmLimit1(data[0])
+
+    def callAttachInterrupt(self, data):
+        shared.gpio.attachInterrupt(data[0], data[1])
+
+    def callDetachInterrupt(self, data) :
+        shared.gpio.detachInterrupt(data[0])
+
+    def genericInterrupt(self, data):
+        #type = data["type"]
+        #data = {}
+        #data["requested"] = 'analogRead'
+        #data["data"] = value 
+        #self.send(json.dumps(data))
+        pass
 
 if __name__ == '__main__':
     #import logging
@@ -100,6 +172,11 @@ if __name__ == '__main__':
     
     shared.websocketOpened = False
     shared.connectedClients = []
+    
+    # Shared gpio object over all classes inside project
+    # There cannot be two instances od WeioGpio
+    if (platform.machine()=="mips"):
+        shared.gpio = WeioGpio()
     
     
     WeioRouter = SockJSRouter(WeioHandler, '/api')
@@ -110,7 +187,6 @@ if __name__ == '__main__':
     app.listen(options.options.port, "0.0.0.0")
     
     
-
     #logging.info(" [*] Listening on 0.0.0.0:8082/api")
     print "*SYSOUT*Websocket is created at localhost:" + str(options.options.port) + "/api"
     
