@@ -1,12 +1,12 @@
 from weioLib.weioGpio import WeioGpio
-from weioLib.weioUserApi import attach, FALLING, RISING, interruptType
+from weioLib.weioUserApi import attach, shared, FALLING, RISING, interruptType
 import time
 
 def setup() :
     attach.process(testInterruptions)
     
 def testInterruptions():
-    weio = WeioGpio()
+    weio = shared.gpio
     
     # attach interruption on pin 15, activate on Falling edge
     # attach interruption on pin 30, activate on Rising edge

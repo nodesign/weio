@@ -1,11 +1,15 @@
-#from devices import uper
+from weioLib.weioUserApi import shared
 from weioLib import weio
 import colorsys
 
+def setup():
+    shared.gpio.setPwmPeriod(2000)
+
 def buttonHandler(dataIn) :
     if dataIn is not None :
-        print "FROM BROWSER: ", dataIn["data"], " uuid: ", dataIn["uuid"]
-        beta = float(dataIn["data"])
+        print dataIn
+        #print "FROM BROWSER: ", dataIn["data"], " uuid: ", dataIn["uuid"]
+        beta = float(dataIn)
         
         # put limiters
         if (beta>88):
@@ -14,7 +18,7 @@ def buttonHandler(dataIn) :
             beta = -88
         
         # map interval between -88 and 88 to 0.0 - 1.0
-        hue = mapf(beta,-88,88, 0,1)
+        hue = proportion(beta,-88,88, 0,1)
         # drive HUE color and transform to rgb for LED 
         rgb = colorsys.hsv_to_rgb(hue, 1.0, 1.0)
         
@@ -35,34 +39,18 @@ def buttonHandler(dataIn) :
         
         for client in weio.shared.connectedClients :
             client.connection.emit("usrMsg", colorData)
-   
-        
-        
-def setColor(r,g,b):
-    red = (255-r)*78
-    green = (255-g)*78
-    blue = (255-b)*78
-  #  uper.pwm0_set(2,blue)
-   # uper.pwm0_set(0,red)
-   # uper.pwm0_set(1,green)
-    
 
-def mapf(value,istart,istop,ostart,ostop) :
-    return ostart + (ostop - ostart) * ((value - istart) / (istop - istart))
+      
+def setColor(r,g,b):
+    global gpio
+    
+    shared.gpio.pwmWrite(19,255-b)
+    shared.gpio.pwmWrite(20,255-r)
+    shared.gpio.pwmWrite(21,255-g)
+
+
+def proportion(value,istart,istop,ostart,ostop) :
+        return float(ostart) + (float(ostop) - float(ostart)) * ((float(value) - float(istart)) / (float(istop) - float(istart)))
 
 # Attaches interrupt from Web client to "message" string
 weio.attach.event('message', buttonHandler)
-
-#uper = uper.UPER()
-
-# blue
-#uper.setSecondary(22)
-# red
-#uper.setSecondary(29)
-# green
-#uper.setSecondary(28)
-
-# 19890 divided by 255 is 78
-#uper.pwm0_begin(19890)
-
-print "Starting"
