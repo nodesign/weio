@@ -49,8 +49,8 @@ class WeioGpio():
         for i in range(0,len(pins)):
             shared.declaredPins.append(-1)
         
-        self.pwm0PortPeriod = 20000
-        self.pwm1PortPeriod = 20000
+        self.pwm0PortPeriod = 2000
+        self.pwm1PortPeriod = 2000
         
         self.pwm0Limit = 255
         self.pwm1Limit = 255
@@ -127,9 +127,9 @@ class WeioGpio():
             
             # Security limiters
             if (value < 0) :
-                value = 0
-            if (value > self.pwm0Limit):
                 value = self.pwm0Limit
+            if (value > self.pwm0Limit):
+                value = 0
             
             out = self.proportion(value, 0, self.pwm0Limit, self.pwm0PortPeriod, 0)
             self.uper.pwm0_set(pwmPin, int(out))
@@ -144,15 +144,15 @@ class WeioGpio():
                     self.pwm1BeginCalled = True
                 
                 shared.declaredPins[pin] = PWM1_OUTPUT
-            
-            pwmPin = 3-pwms.index(pin)
+            #print "PWM index ", pwms.index(pin)
+            pwmPin = abs(3-pwms.index(pin))
             
             # Security limiters
             if (value < 0) :
+                value = self.pwm0Limit
+            if (value > self.pwm0Limit):
                 value = 0
-            if (value > self.pwm1Limit):
-                value = self.pwm1Limit
-
+            
             out = self.proportion(value, 0, self.pwm1Limit, self.pwm1PortPeriod, 0)
             self.uper.pwm1_set(pwmPin, int(out))
         #print "PWM on ", pwmPin, " value ", out
@@ -214,7 +214,7 @@ class WeioGpio():
     
     def setPwmLimit(self, limit):
         """Overrides default limit of 8bits for PWM precision. This value sets PWM counting upper limit and it's expressed as decimal value. This limit will be applied to all 6 PWM pins.
-"""
+            """
         if ((limit > 0) and (limit <= self.pwm0PortPeriod) and (limit <= self.pwm1PortPeriod)):
             self.pwm0Limit = limit
             self.pwm1Limit = limit
@@ -227,7 +227,7 @@ class WeioGpio():
             inter = Interrupt(myid, pin, mode, callback)
             self.interrupts[myid] = inter
             self.uper.attachInterrupt(myid, pins[pin], mode)
-
+    
     def detachInterrupt(self, pin):
         
         for m in self.interrupts:
@@ -235,15 +235,15 @@ class WeioGpio():
                 if (m.pin==pin):
                     #print "pin to be detached ", m.pin
                     self.uper.detachInterrupt(m.myid)
-                    
-            
+    
+    
     def getAvailableInterruptId(self) :
         for i in range(0,HARD_INTERRUPTS):
             if self.interrupts[i] == None:
                 return i
         print "*SYSOUT*Error! There is only " + str(HARD_INTERRUPTS) + " interrupts available" 
         return None
-            
+
 
 class Interrupt():
     def __init__(self, myid, pin, mode, callback):
@@ -251,13 +251,3 @@ class Interrupt():
         self.pin = pin
         self.mode = mode
         self.callback = callback
-        
-
-        
-
-
-
-
-
-
-            
