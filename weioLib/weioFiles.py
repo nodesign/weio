@@ -42,6 +42,9 @@ import shutil
 import os
 from os import listdir, sep
 from os.path import abspath, basename, isdir
+import uuid
+from shutil import move
+
 #from sys import argv
 
 
@@ -186,10 +189,21 @@ def saveRawContentToFile(path, data):
      can explore the whole OS. Use checkIfPathIsInUserFolder(path) function to check if path is in user
      only folder."""
     
-    inputFile = open(path, 'w')
-    print(inputFile)
-    ret = inputFile.write(data)
-    inputFile.close()
+    tmp = "./"+str(uuid.uuid1())
+    
+    try :
+        inputFile = open(tmp, 'w')
+        print(inputFile)
+        ret = inputFile.write(data)
+        inputFile.close()
+    except NameError:
+        print NameError
+        os.remove(tmp)
+        return -1
+    
+    shutil.move(tmp, path)
+    return 0
+
     
 def checkIfFileExists(path):
     if (os.path.exists(path)) :

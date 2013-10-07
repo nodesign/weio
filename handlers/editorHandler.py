@@ -44,6 +44,7 @@ import functools
 import json
 from weioLib import weioIpAddress
 from weioLib import weioFiles
+from weioLib import weioUnblock
 
 # For shared variables between handlers
 from weioLib.weioUserApi import *
@@ -59,7 +60,7 @@ class WeioEditorHandler(SockJSConnection):
     # DEFINE CALLBACKS HERE
     # First, define callback that will be called from websocket
     
-    
+    @weioUnblock.unblock
     def getTreeInHTML(self,rq):
         
         # get configuration from file
@@ -76,7 +77,7 @@ class WeioEditorHandler(SockJSConnection):
         self.send(json.dumps(data))
     
 
-    
+    @weioUnblock.unblock
     def sendFileContent(self, rq):
         data = {}
         # echo given request
@@ -99,18 +100,22 @@ class WeioEditorHandler(SockJSConnection):
             data['data'] = f
             
             self.send(json.dumps(data))
-        
+    @weioUnblock.unblock    
     def saveFile(self, rq):
         data = {}
         # echo given request
         data['requested'] = rq['request']
         
         f = rq['data']
-        weioFiles.saveRawContentToFile(f['path'], f['data'])
+        contents = f['data']
         
+        weioFiles.saveRawContentToFile(f['path'], f['data'])
+            
         data['status'] = rq['data']['name'] + " saved!"
         self.send(json.dumps(data))
-    
+
+
+    @weioUnblock.unblock    
     def createNewFile(self, rq): 
         
         # get configuration from file
@@ -136,7 +141,7 @@ class WeioEditorHandler(SockJSConnection):
         
         data['status'] = fileInfo['name'] + " has been created"
         self.send(json.dumps(data))
-    
+    @weioUnblock.unblock
     def deleteFile(self,rq):
         data = {}
         data['requested'] = rq['request']
@@ -148,7 +153,7 @@ class WeioEditorHandler(SockJSConnection):
         
         data['status'] = "file has been removed"
         self.send(json.dumps(data))
-
+    @weioUnblock.unblock
     def saveAll(self, rq) :
         #print "SAVE ALL FILES FROM ARRAY ", rq
         files = rq['data']
@@ -179,7 +184,7 @@ class WeioEditorHandler(SockJSConnection):
         self.send(json.dumps(data))
         #CONSOLE.send(json.dumps(data))
 
-
+    
     def iteratePacketRequests(self, rq) :
         
         requests = rq["packets"]
