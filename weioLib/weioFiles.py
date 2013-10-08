@@ -201,7 +201,7 @@ def saveRawContentToFile(path, data):
         os.remove(tmp)
         return -1
     
-    shutil.move(tmp, path)
+    move(tmp, path)
     return 0
 
     
