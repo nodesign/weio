@@ -45,6 +45,8 @@ import json
 from weioLib import weioIpAddress
 from weioLib import weioFiles
 
+from shutil import copyfile
+
 # For shared variables between handlers
 from weioLib.weioUserApi import *
 
@@ -411,6 +413,9 @@ class WeioDashBoardHandler(SockJSConnection):
         # ADD HERE SOME DEFAULT FILES
         # adding __init__.py
         weioFiles.saveRawContentToFile(config["user_projects_path"] + path + "/__init__.py", "")
+        
+        copyfile("www/libs/weio/boilerPlate/index.html", config["user_projects_path"] + path +"/index.html")
+        copyfile("www/libs/weio/boilerPlate/main.py", config["user_projects_path"] + path + "/main.py")
         
         data['status'] = "New project created"
         data['path'] = path
