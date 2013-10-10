@@ -44,6 +44,7 @@ import functools
 import json
 from weioLib import weioIpAddress
 from weioLib import weioFiles
+from weioLib import weioUnblock
 
 from shutil import copyfile
 
@@ -105,7 +106,8 @@ class WeioDashBoardHandler(SockJSConnection):
         data['status'] = config["dns_name"] + " on " + ip
         # Send connection information to the client
         self.send(json.dumps(data))
-        
+    
+    @weioUnblock.unblock    
     def sendLastProjectName(self,rq):
         
         # get configuration from file
@@ -363,6 +365,7 @@ class WeioDashBoardHandler(SockJSConnection):
         shared.editor(data)
         #CONSOLE.send(json.dumps(data))
 
+    @weioUnblock.unblock
     def getUserProjectsList(self, rq):
         
         # get configuration from file
@@ -372,7 +375,7 @@ class WeioDashBoardHandler(SockJSConnection):
         data['requested'] = rq['request']
         data['data'] = weioFiles.listOnlyFolders(config["user_projects_path"])
         self.send(json.dumps(data))
-        
+    
     def changeProject(self,rq):
         
         # get configuration from file
@@ -391,7 +394,7 @@ class WeioDashBoardHandler(SockJSConnection):
             rq['request'] = rqlist[i]
             callbacks[rq['request']](self, rq)
         
-                    
+    @weioUnblock.unblock
     def sendUserData(self,rq):
         data = {}
         # get configuration from file
