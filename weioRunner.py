@@ -129,6 +129,7 @@ class WeioHandler(SockJSConnection):
         bck = {}
         bck["serverPush"] = data[1] # this is callback for JS
         bck["data"] = value 
+        bck["pin"] = data[0]
         self.send(json.dumps(bck))
 
     def callPwmWrite(self, data) :
