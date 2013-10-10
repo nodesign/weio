@@ -41,20 +41,20 @@
 var _weio;
 
 
-//CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////x  
+//CALLBACKS//////////////////////////////////////////////////////////////////////////////////////////////////////// 
 /**
  * Define callbacks here and request keys
  * Each key is binded to coresponding function
  */
 var weioCallbacks = {};
-
+var _addr;
 
 $(document).ready(function() {
 
     /*
      * Identify server address and port to open websocket
      */
-    var _addr = location.host;
+    _addr = location.host;
     if (_addr.indexOf(":")!=-1) {
         var a = _addr.split(":");
         _addr = 'http://' + a[0] + ':8082/api';
