@@ -4,6 +4,9 @@ var adcs = {};
 
 $(document).ready(function () {
     
+    // add logo
+    $(".menu").append('<li class="logo"><img src="smallLogo.png" id="logo"></img></li>');
+    
     // create menu
     for (var i=0; i<nAdcs; i++) {
        $(".menu").append('<li class="txt">pin '+ String(i + pinStartNumber) + '</li>');

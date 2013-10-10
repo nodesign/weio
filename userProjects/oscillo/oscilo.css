@@ -56,6 +56,15 @@ body {
     color:#000;
 }
 
+.logo {
+    display:inline-block;
+    float:left;
+    margin-left:-7px;
+    margin-right:20px;
+    padding:4px 12px;
+    list-style:none;
+}
+
 .menu {
     position:relative;
     margin-left:-38px;
