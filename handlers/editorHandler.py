@@ -60,7 +60,7 @@ class WeioEditorHandler(SockJSConnection):
     # DEFINE CALLBACKS HERE
     # First, define callback that will be called from websocket
     
-    @weioUnblock.unblock
+    #@weioUnblock.unblock
     def getTreeInHTML(self,rq):
         
         # get configuration from file
@@ -99,7 +99,9 @@ class WeioEditorHandler(SockJSConnection):
             
             data['data'] = f
             
-            self.send(json.dumps(data))
+            if not(f['type'] is 'other'):
+                self.send(json.dumps(data))
+
     @weioUnblock.unblock    
     def saveFile(self, rq):
         data = {}
@@ -141,7 +143,7 @@ class WeioEditorHandler(SockJSConnection):
         
         data['status'] = fileInfo['name'] + " has been created"
         self.send(json.dumps(data))
-    @weioUnblock.unblock
+#@weioUnblock.unblock
     def deleteFile(self,rq):
         data = {}
         data['requested'] = rq['request']
