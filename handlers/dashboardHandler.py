@@ -174,7 +174,7 @@ class WeioDashBoardHandler(SockJSConnection):
             
             self.lastLaunched = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
-            consoleWelcome['data'] = 'WeIO user server launched ' + lastLaunched
+            consoleWelcome['data'] = 'WeIO user server launched ' + self.lastLaunched
             shared.editor(data)
             #CONSOLE.send(json.dumps(consoleWelcome))
         else : # FILE DON'T EXIST
