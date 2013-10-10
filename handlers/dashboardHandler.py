@@ -69,9 +69,6 @@ weioPipe = None
 # stdout from user program
 ioloopObj = None
 
-# Date and time string when process was launched last time
-lastLaunched = None
-
 
 # Wifi detection route handler  
 class WeioDashBoardHandler(SockJSConnection):
@@ -81,16 +78,13 @@ class WeioDashBoardHandler(SockJSConnection):
     global stdoutHandlerIsLive
     global stderrHandlerIsLive
     
-    global errObject
-    global errLine
-    global errReason
-    
-    errReason = ""
-    errLine = 0
-    errObject = []
     stdoutHandlerIsLive = None
     stderrHandlerIsLive = None
-
+    
+    def __init(self):
+        self.errObject = []
+        self.errReason = ""
+    
     # DEFINE CALLBACKS HERE
     # First, define callback that will be called from websocket
     def sendIp(self,rq):
@@ -177,8 +171,8 @@ class WeioDashBoardHandler(SockJSConnection):
             
             consoleWelcome = {}
             consoleWelcome['serverPush'] = "sysConsole"
-            global lastLaunched
-            lastLaunched = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            self.lastLaunched = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
             consoleWelcome['data'] = 'WeIO user server launched ' + lastLaunched
             shared.editor(data)
@@ -217,14 +211,13 @@ class WeioDashBoardHandler(SockJSConnection):
             data['status'] = "User program stopped!"
             self.send(json.dumps(data))
             
-            if lastLaunched is not None :
+            if self.lastLaunched is not None :
                 consoleWelcome = {}
                 consoleWelcome['serverPush'] = "sysConsole"
-                consoleWelcome['data'] = 'WeIO user program stoped. It was runnig since : ' + lastLaunched
+                consoleWelcome['data'] = 'WeIO user program stoped. It was runnig since : ' + self.lastLaunched
                 shared.editor(consoleWelcome)
                 
-                global lastLaunched
-                lastLaunched = None
+                self.lastLaunched = None
 
     def weioMainHandler(self, data, fd, events):
         """Stream stdout to browser"""
@@ -266,7 +259,7 @@ class WeioDashBoardHandler(SockJSConnection):
     def weioMainHandlerErr(self, data, fd, events):
         """Stream stderr to browser"""
         global weioPipe
-        global errLine
+        
         
         line = weioPipe.stderr.readline()
         if line :
@@ -286,12 +279,12 @@ class WeioDashBoardHandler(SockJSConnection):
             
             if 'Traceback (most recent call last):' in stderr :
                 print "traceback info is comming..."
-                errLine = 0
+                self.errLine = 0
             
-            print "ERR " +  str(errLine) + " : " + stderr
-            errLine+=1
+            print "ERR " +  str(self.errLine) + " : " + stderr
+            self.errLine+=1
             if 'File "' in stderr :
-                global errObject
+                
                 global errCoords
                 
                 errCoords = 1
@@ -313,10 +306,10 @@ class WeioDashBoardHandler(SockJSConnection):
                 #data['errLine'] = errInLine
                 
                 # add error object to array
-                errObject.append(oneError)
+                self.errObject.append(oneError)
             
                 
-            errReason = stderr
+            self.errReason = stderr
             
             # this is raw output, some basic parsing is needed in javascript \n etc...
             shared.editor(data)
@@ -326,21 +319,18 @@ class WeioDashBoardHandler(SockJSConnection):
             """ Child is terminated STDERR"""
             print "Child has terminated - removing handler STDERR"
             global stderrHandlerIsLive
-            global errObject
-            global errLine
-            global errReason
-            errLine = 0
+            
+            self.errLine = 0
             data = {}
             data['serverPush'] = 'errorObjects'
+            if (len(self.errObject)>0):
+                self.errObject[len(self.errObject)-1]['reason'] = self.errReason
             
-            if (len(errObject)>0):
-                errObject[len(errObject)-1]['reason'] = errReason
-            
-                data['data'] = errObject
-                errObject = []
+                data['data'] = self.errObject
+                self.errObject = []
                 shared.editor(data)
                 #CONSOLE.send(json.dumps(data))
-                print "ERR ",errObject
+                print "ERR ",self.errObject
             ioloop.IOLoop.instance().remove_handler(weioPipe.stderr.fileno())
             stderrHandlerIsLive = False
             
