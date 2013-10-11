@@ -234,19 +234,19 @@ class UPER:
         return(self.decodeSFP(self.UPER_IO(1, self.encodeSFP(10, [analogPinID])))[1][1])
 
     def pwm0_begin(self, period):
-        print "pwm0_begin period:", period
+        #print "pwm0_begin period:", period
         self.UPER_IO(0, self.encodeSFP(50, [period]))     
 
     def pwm1_begin(self, period):
-        print "pwm1_begin period:", period
+        #print "pwm1_begin period:", period
         self.UPER_IO(0, self.encodeSFP(60, [period])) 
 
     def pwm0_set(self, channel, high_time):
-        print "pwm0_set high_time:", high_time
+        #print "pwm0_set high_time:", high_time
         self.UPER_IO(0, self.encodeSFP(51, [channel, high_time]))
 
     def pwm1_set(self, channel, high_time):
-        print "pwm1_set high_time:", high_time
+        #print "pwm1_set high_time:", high_time
         self.UPER_IO(0, self.encodeSFP(61, [channel, high_time]))
 
     def pwm0_end(self):
