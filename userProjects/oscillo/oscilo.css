@@ -30,9 +30,10 @@ body {
     position: relative;
     font-family:Helvetica, Arial, Sans-Serif;
     font-size: 22px;
+    text-align:center;
     font-weight:bold;
     margin-top: -92px;
-    margin-left: 63px;
+    margin-left: 0px;
 }
 
 .pin {
@@ -40,7 +41,7 @@ body {
     font-family:Helvetica, Arial, Sans-Serif;
     font-size: 14px;
     margin-top: -24px;
-    margin-left: 68px;
+    margin-left: 70px;
     color:#888;
 }
 

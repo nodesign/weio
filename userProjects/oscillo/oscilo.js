@@ -54,11 +54,11 @@ function fromAdc(data) {
     var pieData = [
     {
         value: data.data,
-        color:"#888"
+        color: "#000000"
     },
     {
         value : 1023-data.data,
-        color : "red"
+        color : "#888"
     }
     ];
     
