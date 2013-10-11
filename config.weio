@@ -1,6 +1,6 @@
 {
-    "absolut_root_path": "/Users/arebook/Documents/weio_main", 
-    "debug_mode": "True", 
+    "absolut_root_path": "/Users/uros/workNow/nodesign/weIO/weio/weio", 
+    "debug_mode": "False", 
     "dependencies_path": "www/", 
     "dns_name": "weio.local", 
     "editor_html_path": "www/dashboard.html", 
@@ -11,10 +11,10 @@
         "index.html", 
         "weioMain.py"
     ], 
-    "last_opened_project": "WEB_example/", 
+    "last_opened_project": "oscillo/", 
     "port": 8081, 
     "user": "uros petrevski", 
     "user_projects_path": "userProjects/", 
     "weio_lib_path": "weioLib", 
-    "weio_version": "0.180"
+    "weio_version": "0.245"
 }
