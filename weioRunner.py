@@ -111,14 +111,19 @@ class WeioHandler(SockJSConnection):
         data['serverPush'] = instruction
         data['data'] = rq
         self.send(json.dumps(data))
-
+##########################################################################################################################################
     # WeIO API bindings from websocket to lower levels
     def callDigitalWrite(self, data) :
         #print "FROM JS ", data
-        shared.gpio.digitalWrite(data[0],data[1])
+        shared.gpio.digitalWrite(data[0], data[1])
 
     def callDigitalRead(self, data) :
-        shared.gpio.digitalRead(data[0])
+        value = shared.gpio.digitalRead(data[0])
+        bck = {}
+        bck["serverPush"] = data[1] # this is callback for JS
+        bck["data"] = value 
+        bck["pin"] = data[0]
+        self.send(json.dumps(bck))
 
     def callInputMode(self, data) :
         shared.gpio.inputMode(data[0],data[1])
@@ -133,7 +138,7 @@ class WeioHandler(SockJSConnection):
         self.send(json.dumps(bck))
 
     def callPwmWrite(self, data) :
-        shared.gpio.pwmWrite(self, data[0],data[1])
+        shared.gpio.pwmWrite(data[0], data[1])
 
     def callSetPwmPeriod(self, data) :
         shared.gpio.pwmPeriod(data[0])  
