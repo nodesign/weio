@@ -17,6 +17,6 @@ config wifi-iface
         option network  wifi
         option mode     sta
         option encryption psk
-        option ssid XXXXX
-        option key XXXXX
+        option ssid mySsid
+        option key mySecretPassword
 
