@@ -84,7 +84,7 @@ def weioWifiParseScan() :
                 s['connected'] = True
             else :
                 s['connected'] = False
-               
+
         # Placeholeder for client to fill
         s['passwd'] = None
 
@@ -102,14 +102,14 @@ class WeioWifiHandler(SockJSConnection):
 
     global wifi
     global callbacks
-    
+
     def scanCells(self, rq):
         if (platform.machine() == 'mips') :
             """We have obtained essid, psswd and encryption
             so we can try to connect"""
             data = {}
             data = weioWifiParseScan()
-            
+
             # Send response to the browser
             rsp={}
             rsp['requested'] = rq['request']
@@ -120,7 +120,7 @@ class WeioWifiHandler(SockJSConnection):
         else :
             # send test file for PC targets
             testString = {'02': {'opened': False, 'passwd': None, 'encryption': 'mixed WPA/WPA2 PSK (TKIP, CCMP)', 'mac': '00:05:59:1F:D2:F0', 'connected': False, 'mode': 'Master', 'quality': '28/70', 'essid': 'jetSpeed IAD 2 (PSTN)'}, '03': {'opened': False, 'passwd': None, 'encryption': 'mixed WPA/WPA2 PSK (TKIP, CCMP)', 'mac': 'F8:D1:11:A0:03:88', 'connected': False, 'mode': 'Master', 'quality': '24/70', 'essid': 'DeepNetPocket'}, '01': {'opened': False, 'passwd': None, 'encryption': 'WPA PSK (TKIP, CCMP)', 'mac': '94:0C:6D:FA:1B:EA', 'connected': True, 'mode': 'Master', 'quality': '70/70', 'essid': 'BECA'}, '06': {'opened': False, 'passwd': None, 'encryption': 'mixed WPA/WPA2 PSK (CCMP)', 'mac': '90:F6:52:24:CF:26', 'connected': False, 'mode': 'Master', 'quality': '19/70', 'essid': 'Pavlovici'}, '04': {'opened': False, 'passwd': None, 'encryption': 'mixed WPA/WPA2 PSK (TKIP)', 'mac': 'E8:39:DF:7B:BB:1C', 'connected': False, 'mode': 'Master', 'quality': '19/70', 'essid': 'KAPIS'}, '05': {'opened': False, 'passwd': None, 'encryption': 'mixed WPA/WPA2 PSK (TKIP, CCMP)', 'mac': '70:54:D2:46:98:53', 'connected': False, 'mode': 'Master', 'quality': '21/70', 'essid': 'petra'}}
-            
+
             # Send response to the browser
             rsp={}
             rsp['requested'] = rq['request']
@@ -128,14 +128,16 @@ class WeioWifiHandler(SockJSConnection):
 
             # Send connection information to the client
             self.send(json.dumps(rsp))
-    
+
     def goToApMode(self,rq):
         if (platform.machine() == 'mips') :
             wifi.essid =  rq['data']['essid']
             wifi.passwd =  rq['data']['passwd']
             wifi.setConnection("ap")
-            #exit() # restart server
-        
+            # See if command has been executed
+            wifi.checkConnection()
+            exit() # restart server
+
     def goToStaMode(self,rq):
         if (platform.machine() == 'mips') :
             wifi.essid = rq['data']['essid']
@@ -157,14 +159,14 @@ class WeioWifiHandler(SockJSConnection):
                     wifi.encryption = wifi.encryption + "+ccmp"
             elif ('CCMP' in wifi.rawEncryption):
                 wifi.encryption = wifi.encryption + "+ccmp"
-                
+
             wifi.setConnection("sta")
-            
+
             data = {}
             # Check if everything went well, or go to AP mode in case of error
             wifi.checkConnection()
             data['mode'] = wifi.mode
-            
+
             # Is there a sens of doing this? Connection will be dead
             # Send response to the browser
             rsp={}
@@ -173,9 +175,9 @@ class WeioWifiHandler(SockJSConnection):
 
             # Send connection information to the client
             self.send(json.dumps(rsp))
-            #exit() # restart server
-            
-        
+            exit() # restart server
+
+
 
     #########################################################################
     # DEFINE CALLBACKS IN DICTIONARY
@@ -185,7 +187,7 @@ class WeioWifiHandler(SockJSConnection):
         'scan' : scanCells,
         'goAp' : goToApMode,
         'goSta' : goToStaMode,
-    }   
+    }
 
     ###
     # This function has to call shell iwconfig procedires
@@ -197,23 +199,23 @@ class WeioWifiHandler(SockJSConnection):
     def on_open(self, info) :
         if (platform.machine() == 'mips'):
             wifi.checkConnection()
-        
+
         myMode = wifi.mode
         msg = {}
         msg['serverPush'] = 'mode'
         msg['mode'] = myMode
-        
+
         if (platform.machine() != 'mips'):
             myMode = "sta" # simulation
         print "MODE WIFI ", myMode
         if ("ap" in myMode):
             print "gotchaa"
             msg['APessid'] = wifi.getCurrentEssidName()
-        
-        
+
+
         self.send(json.dumps(msg))
 
-        
+
     ###
     # This function has to call WiFi scan procedures
     # via shell subprocesses. These are blocking calls and can block ioloop.
@@ -224,7 +226,7 @@ class WeioWifiHandler(SockJSConnection):
         """Parsing JSON data that is comming from browser into python object"""
         req = json.loads(data)
         self.serve(req)
-        
+
     def serve(self, rq):
         """Parsed input from browser ready to be served"""
         # Call callback by key directly from socket

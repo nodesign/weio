@@ -13,7 +13,7 @@ config wifi-device 'radio0'
 
 config wifi-iface
        option device 'radio0'
-       option network  wifi
+       option network  'wifi'
        option encryption 'none'
        option mode 'ap'
        option ssid 'WeIO rescue'

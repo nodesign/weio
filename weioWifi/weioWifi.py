@@ -56,6 +56,7 @@ class WeioWifi() :
         self.interface = interface
         self.mode = None
         self.passwd = ""
+        self.encryption = ""
 
     def checkConnection(self) :
         command = "iwconfig " + self.interface
@@ -87,7 +88,7 @@ class WeioWifi() :
             print "Trying to move to AP RESCUE mode..."
             weioSubprocess.shellBlocking("scripts/wifi_set_mode.sh rescue")
             # Give it some time before restart...
-            time.sleep(5)
+            time.sleep(1)
             # Restart Tornado (shell script bring it up whenever it exits)
             exit()
 
@@ -110,12 +111,15 @@ class WeioWifi() :
                 for line in f:
                     line = re.sub(r"option\s+ssid\s.*$", r"option ssid " +
                             "'" + self.essid + "'", line)
-                    if (self.passwd != ""):
+
+                    if (self.passwd == ""):
+                        line = re.sub(r'option\s+encryption\s.*$', r'option encryption '
+                               + "'none'", line)
+                    else:
                         line = re.sub(r"option\s+key\s.*$", r"option key " +
                                 "'" + self.passwd + "'", line)
-                    #if (self.encryption != "")
-                    #    line = re.sub(r'option\s+encryption\s.*$', r'option encryption '
-                    #           + self.encryption, line)
+                        line = re.sub(r'option\s+encryption\s.*$', r'option encryption '
+                               + "'psk2+tkip+ccmp'", line)
                     out.write(line)
                 out.close()
                 os.rename(out_fname, fname)
@@ -132,10 +136,16 @@ class WeioWifi() :
                 out_fname = fname + ".tmp"
                 out = open(out_fname, "w")
                 for line in f:
-                    line = re.sub(r'option\s+ssid\s.*$', r'option ssid ' + self.essid, line)
-                    line = re.sub(r'option\s+key\s.*$', r'option key ' + self.passwd, line)
-                    line = re.sub(r'option\s+encryption\s.*$', r'option encryption ' +
-                            self.encryption, line)
+                    line = re.sub(r'option\s+ssid\s.*$', r'option ssid ' + "'" + self.essid + "'", line)
+                    line = re.sub(r'option\s+key\s.*$', r'option key ' + "'" + self.passwd + "'", line)
+                    if (self.passwd == ""):
+                        line = re.sub(r'option\s+encryption\s.*$', r'option encryption '
+                               + "'none'", line)
+                    else:
+                        line = re.sub(r"option\s+key\s.*$", r"option key " +
+                                "'" + self.passwd + "'", line)
+                        line = re.sub(r'option\s+encryption\s.*$', r'option encryption ' +
+                                "'" + self.encryption + "'", line)
                     out.write(line)
                 out.close()
                 os.rename(out_fname, fname)
@@ -144,12 +154,12 @@ class WeioWifi() :
             cmd = "scripts/wifi_set_mode.sh sta"
             weioSubprocess.shellBlocking(cmd)
 
-    def getCurrentEssidName(self) :                
+    def getCurrentEssidName(self) :
         """Get current ESSID name from configuration file - wireless"""
         inputFile = open("/etc/config/wireless", 'r')
         rawData = inputFile.read()
         inputFile.close()
-        
+
         lines = rawData.splitlines()
         for l in lines :
             if ("option ssid" in l) :

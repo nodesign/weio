@@ -1,7 +1,7 @@
 config wifi-device  radio0
         option type     mac80211
         option channel  11
-        option macaddr C4:93:00:00:03:55
+        option macaddr C4:93:00:00:24:5A
         option hwmode   11ng
         option txpower  10
         option htmode   HT20
@@ -13,10 +13,10 @@ config wifi-device  radio0
         #option disabled 1
 
 config wifi-iface
-        option device   radio0
-        option network  wifi
-        option mode     sta
-        option encryption psk
-        option ssid mySsid
-        option key mySecretPassword
+        option device   'radio0'
+        option network  'wifi'
+        option mode     'sta'
+        option encryption 'psk2+tkip+ccmp'
+        option ssid 'mySsid'
+        option key 'mySecretPassword'
 

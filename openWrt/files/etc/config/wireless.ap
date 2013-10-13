@@ -2,7 +2,7 @@ config wifi-device 'radio0'
        option type 'mac80211'
        option channel '11'
        option hwmode '11ng'
-       option macaddr 'C4:93:00:00:18:0C'
+       option macaddr C4:93:00:00:24:5A
        option htmode 'HT20'
        list ht_capab 'SHORT-GI-20'
        list ht_capab 'SHORT-GI-40'
@@ -13,7 +13,8 @@ config wifi-device 'radio0'
 
 config wifi-iface
        option device 'radio0'
-       option network  wifi
-       option encryption 'none'
+       option network  'wifi'
        option mode 'ap'
-       option ssid ukicar
+       option encryption 'psk2+tkip+ccmp'
+       option ssid 'mySsid'
+       option key 'mySecretPassword'
