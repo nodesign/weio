@@ -117,10 +117,6 @@ $(document).ready(function() {
 
     wifiSocket.onclose = function() {
         console.log('Wifi Web socket is closed');
-                  
-        var lostContact = "Browser lost connexion with WeIO! Try to simply reload this page. If problem still remains push WeIO reset button."
-        setTestament(lostContact);
-        $('#imDead').modal('show');
 
     };
 
@@ -291,6 +287,9 @@ function goAp() {
 //        console.log(changeWifi);
         wifiSocket.send(JSON.stringify(changeWifi));
         $('#createWifi').modal('hide');
+        
+        var lostContact = "Browser lost connexion with WeIO! That's normal because WeIO goes to AP - Acess Point mode now. Please connect to " + essidAPuser + " wifi network and then reload this page";
+        setTestament(lostContact);
     }
     
 };
@@ -319,7 +318,10 @@ function goSta() {
             wifiSocket.send(JSON.stringify(changeWifi));
 
             selectedCell = -1; // reset selection
+            var lostContact = "Browser lost connexion with WeIO! That's normal because WeIO goes to STA mode now. Please connect to " + selectedCell.essid + " wifi network and then reload this page";
+            setTestament(lostContact);
             
+
         }
     } else {
         
@@ -330,6 +332,9 @@ function goSta() {
         wifiSocket.send(JSON.stringify(changeWifi));
         
         selectedCell = -1; // reset selection
+        var lostContact = "Browser lost connexion with WeIO! That's normal because WeIO goes to STA mode now. Please connect to " + selectedCell.essid + " wifi network and then reload this page";
+        setTestament(lostContact);
+
     }
     
     

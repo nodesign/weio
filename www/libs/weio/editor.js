@@ -343,7 +343,6 @@ $(document).ready(function () {
     editorSocket.onclose = function() {
         // turn on red light if disconnected
         console.log('Dashboard Web socket is closed');
-        
     };
                   
                   

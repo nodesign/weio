@@ -323,3 +323,6 @@ li.dropdown .dropdown-toggle {
 .btn-group.open .btn.dropdown-toggle {
   color: #555;
 }
+#updateProgressChart {
+  margin-left: 110px;
+}

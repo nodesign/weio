@@ -47,6 +47,8 @@ var updaterTimerInterval;
 
 var estimatedInstallTime = 0;
 
+var updaterChart;
+
 $(document).ready(function() {
     /**
      * Wifi SockJS object, Web socket for scaning and changing wifi parameters
@@ -92,6 +94,9 @@ $(document).ready(function() {
     updaterSocket.onclose = function() {
         console.log('Updater Web socket is closed');
     };
+                  
+    updaterChart = new Chart(document.getElementById("updateProgressChart").getContext("2d"));
+                  
 
                   
 });
@@ -115,7 +120,10 @@ function runUpdateProcedure() {
         $("#updateWeioProcedure").modal("show");
         var rq = { "request": "downloadUpdate"};
         updaterSocket.send(JSON.stringify(rq));
+        updateMode = true;
+        $("#reloadMeButton").hide(); 
     }
+    
 }
 
 function updateProgressBar(data) {
@@ -123,11 +131,7 @@ function updateProgressBar(data) {
     //$("#updateProgressBar").css("width", data.progress);
     estimatedInstallTime = data.estimatedInstallTime;
     
-    setInterval(function(){countTimeTillReload()},1000);
-//    
-//    if (data.progress=="81%") {
-//        updaterTimerInterval = setInterval(function(){countTimeTillReload()},2000);
-//    }
+    updaterTimerInterval = setInterval(function(){countTimeTillReload()},1000);
     
 }
 
@@ -136,17 +140,37 @@ function countTimeTillReload(data) {
     
     delayTime = 100.0/estimatedInstallTime;
     weioUpdaterTimeTillReload+=delayTime;
+    
+    var updateData = [
+                   // Chart
+                   {
+                   value: weioUpdaterTimeTillReload,
+                   color :"#0088cc"
+                   },
+                   {
+                   value : 100.0-weioUpdaterTimeTillReload,
+                   color:"#666"
+                   }
+                   ];
+
+    
+    updaterChart.Doughnut(updateData, defs);
+    
     if (Math.round(weioUpdaterTimeTillReload)<100) {
         $("#progressStatus").html("Installing WeIO " + String(Math.round(weioUpdaterTimeTillReload)) + "%");
     } else {
         $("#progressStatus").html("Finished, please reload this page");
         clearInterval(updaterTimerInterval);
-        var randomNumber = Math.random();
-        // prevent loading from cache
-        var url = "http://" + location.host + "/editor?"+randomNumber;
-        //location.reload();
-       // window.location.href = url;
+        $("#reloadMeButton").show();
     }
+}
+
+function reloadMe() {
+    var randomNumber = Math.random();
+    // prevent loading from cache
+    var url = "http://" + location.host + "/editor?"+randomNumber;
+    //location.reload();
+    window.location.href = url;
 }
 
 
@@ -193,4 +217,38 @@ function checkVersion(data) {
     }
     
 };
+
+var defs = {
+	//Boolean - Whether we should show a stroke on each segment
+	segmentShowStroke : true,
+	
+	//String - The colour of each segment stroke
+	segmentStrokeColor : "#fff",
+	
+	//Number - The width of each segment stroke
+	segmentStrokeWidth : 2,
+	
+	//The percentage of the chart that we cut out of the middle.
+	percentageInnerCutout : 70,
+	
+	//Boolean - Whether we should animate the chart	
+	animation : false,
+	
+	//Number - Amount of animation steps
+	animationSteps : 100,
+	
+	//String - Animation easing effect
+	animationEasing : "easeOutBounce",
+	
+	//Boolean - Whether we animate the rotation of the Doughnut
+	animateRotate : true,
+    
+	//Boolean - Whether we animate scaling the Doughnut from the centre
+	animateScale : false,
+	
+	//Function - Will fire on animation completion.
+	onAnimationComplete : null
+};
+
+
 

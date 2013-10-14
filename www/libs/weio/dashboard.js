@@ -39,6 +39,11 @@
  * SockJS object, Web socket
  */
 var dashboard;
+
+/*
+ * WeIO is updating or not
+ */
+var updateMode = false;
 /*
  * When all DOM elements are fully loaded
  */
@@ -134,6 +139,10 @@ $(document).ready(function () {
         console.log('Dashboard Web socket is closed');
         isEditorActive = false;
         $("#status").attr("class", "disconnected");
+        
+        var lostContact = "Browser lost connexion with WeIO! Try to simply reload this page. If problem still remains push WeIO reset button."
+        setTestament(lostContact);
+        
     };   
 
     
@@ -153,6 +162,13 @@ $(window).resize(function() {
 function updateIframeHeight() {
     var iframeHeight = $(window).height() - 60;
     $(".iframeContainer").css("height", iframeHeight + "px");
+}
+
+function setTestament(data) {
+    if (updateMode == false) {
+        $("#testament").html(data);
+        $("#imDead").modal("show");
+    }
 }
 
 /* 

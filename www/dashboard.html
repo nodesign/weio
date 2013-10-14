@@ -25,6 +25,9 @@
     <script src="libs/weio/wifi.js?n=1"> </script> 
     <script src="libs/weio/dashboard.js?n=1"> </script>
     <script src="libs/weio/updater.js?n=1"> </script>
+        
+    <script src="libs/chartJS/Chart.min.js"> </script>
+ 
     
 
   <!-- main javascript code is at the end of this file-->
@@ -229,15 +232,12 @@
                   
                   <h4 id="progressStatus"></h4>
                   
-                  <div class="progress progress-striped active">
-                    <div class="progress-bar progress-bar-success" style="width: 40%" id="updateProgressBar"></div>
-                  </div>
+                  <canvas id="updateProgressChart"></canvas>
                   <p>WeIO is updating now. Please don't touch anything. If program stucks after progress bar is done try to reload this page or to reset hardware</p>
                   
               </div>
               <div class="modal-footer">
-                  <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                  <button class="btn btn-primary" onclick="runUpdateProcedure()" id="updateButton">OK</button>
+                  <button class="btn btn-primary" onclick="reloadMe()" id="reloadMeButton">Reload</button>
               </div>
           </div>
           <!-- END Modal Updater process  -->
@@ -261,6 +261,24 @@
         </div>
     </div>
     <!-- END Modal Create New project -->
+    
+    <!-- Modal Something bad happened - deconnexion -->
+    <div id="imDead" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3>Oh! I lost connexion!</h3>
+        </div>
+        
+        <div class="modal-body" id="testament">
+            
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn btn-primary" onclick="location.reload()" data-dismiss="modal">Reload</button>
+        </div>
+    </div>
+    <!-- Modal Something bad happened - deconnexion -->
+
 
 
     <iframe class="iframeContainer" src="" id="weioIframe"></iframe>
