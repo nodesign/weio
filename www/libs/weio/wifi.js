@@ -117,6 +117,11 @@ $(document).ready(function() {
 
     wifiSocket.onclose = function() {
         console.log('Wifi Web socket is closed');
+                  
+        var lostContact = "Browser lost connexion with WeIO! Try to simply reload this page. If problem still remains push WeIO reset button."
+        setTestament(lostContact);
+        $('#imDead').modal('show');
+
     };
 
 
