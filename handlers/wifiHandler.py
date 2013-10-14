@@ -133,6 +133,7 @@ class WeioWifiHandler(SockJSConnection):
         if (platform.machine() == 'mips') :
             wifi.essid =  rq['data']['essid']
             wifi.passwd =  rq['data']['passwd']
+            print "ESSID ", wifi.essid, " PSWD ", wifi.passwd 
             wifi.setConnection("ap")
             # See if command has been executed
             wifi.checkConnection()
@@ -152,6 +153,8 @@ class WeioWifiHandler(SockJSConnection):
                     wifi.encryption = 'psk2'
             elif ('WPA' in wifi.rawEncryption):
                 wifi.encryption = 'psk'
+            elif ( 'WEP' in wifi.rawEncryption):
+                wifi.encryption = 'wep'
 
             if ('TKIP' in wifi.rawEncryption):
                 wifi.encryption = wifi.encryption + "+tkip"
