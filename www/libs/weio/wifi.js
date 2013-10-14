@@ -270,7 +270,7 @@ function goAp() {
 
 function goSta() {
     var changeWifi = 0;
-
+    // opened means no password
     if (selectedCell.opened == false) {
         var password = $("#wifiPasswordSimple").val();
         
@@ -288,6 +288,15 @@ function goSta() {
             selectedCell = -1; // reset selection
             
         }
+    } else {
+        
+        selectedCell.passwd = "";
+        
+        changeWifi = { "request": "goSta", "data" : selectedCell};
+        console.log("GoTo STA ", changeWifi);
+        wifiSocket.send(JSON.stringify(changeWifi));
+        
+        selectedCell = -1; // reset selection
     }
     
     
