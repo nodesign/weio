@@ -11,10 +11,10 @@
         "index.html", 
         "weioMain.py"
     ], 
-    "last_opened_project": "oscillo/", 
+    "last_opened_project": "simpleWeb/", 
     "port": 8081, 
     "user": "uros petrevski", 
     "user_projects_path": "userProjects/", 
     "weio_lib_path": "weioLib", 
-    "weio_version": "0.245"
+    "weio_version": "0.260"
 }
