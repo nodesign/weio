@@ -209,15 +209,15 @@ function pwmWrite(pin, value) {
 }
 
 function setPwmPeriod(period){
-    genericMessage("setPwmPeriod", [value]);
+    genericMessage("setPwmPeriod", [period]);
 }
 
 function setPwmPeriod0(period){
-    genericMessage("setPwmPeriod0", [value]);
+    genericMessage("setPwmPeriod0", [period]);
 }
 
 function setPwmPeriod1(period){
-    genericMessage("setPwmPeriod1", [value]);
+    genericMessage("setPwmPeriod1", [period]);
 }
 
 function setPwmLimit(limit){
