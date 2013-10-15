@@ -127,6 +127,20 @@ $(document).ready(function() {
 var HIGH = 1;
 var LOW = 0;
 
+var CHANGE = 2;
+var RISING = 3;
+var FALLING = 4;
+
+var INPUT_PULLUP = 4;
+var INPUT_PULLDOWN = 2;
+var INPUT_HIGHZ = 0;
+var ADC_INPUT = 5;
+var OUTPUT = 1;
+var PWM0_OUTPUT = 6;
+var PWM1_OUTPUT = 7;
+var PWM_OUTPUT = 8;
+
+
 /*
  * Unique UUID number of this session
  * Will be generated on oppening of websocket and will be sent with
@@ -160,10 +174,6 @@ function digitalWrite(pin, value) {
   genericMessage("digitalWrite", [pin,value]);
 };
 
-function pinMode(pin, mode) {
-  genericMessage("pinMode", [pin,mode]);
-};
-
 function analogRead(pin, callback) { 
     // create new callback call
     var fName = callback.name;
@@ -173,6 +183,45 @@ function analogRead(pin, callback) {
     //console.log("Callbacks", weioCallbacks);
 };
 
+function digitalRead(pin, callback) {
+    // create new callback call
+    var fName = callback.name;
+    //console.log("callback name:" + fName);
+    weioCallbacks[fName] = callback
+    genericMessage("digitalRead", [pin,fName]);
+}
+
+function inputMode(pin, mode) {
+    genericMessage("inputMode", [pin,mode]);
+}
+
+function pwmWrite(pin, value) {
+    genericMessage("pwmWrite", [pin,value]);
+}
+
+function setPwmPeriod(period){
+    genericMessage("setPwmPeriod", [value]);
+}
+
+function setPwmPeriod0(period){
+    genericMessage("setPwmPeriod0", [value]);
+}
+
+function setPwmPeriod1(period){
+    genericMessage("setPwmPeriod1", [value]);
+}
+
+function setPwmLimit(limit){
+    genericMessage("setPwmLimit", [limit]);
+}
+
+function setPwmLimit0(limit){
+    genericMessage("setPwmLimit0", [limit]);
+}
+
+function setPwmLimit1(limit){
+    genericMessage("setPwmLimit1", [limit]);
+}
 
 /*
  * Generic handler for sending messages to server
