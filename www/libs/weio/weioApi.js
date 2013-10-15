@@ -46,7 +46,9 @@ var _weio;
  * Define callbacks here and request keys
  * Each key is binded to coresponding function
  */
-var weioCallbacks = {};
+var weioCallbacks = {
+    "inbox":callInbox
+};
 var _addr;
 
 $(document).ready(function() {
@@ -88,9 +90,13 @@ $(document).ready(function() {
         // Say hello to server with some client data
         var rq = { "request": "_info", "data":data};
         _weio.send(JSON.stringify(rq));
+        
+        if(typeof onWeioReady == 'function'){
+          onWeioReady();
+        }
+
 
     };
-
 
     _weio.onmessage = function(e) {
         // JSON data is parsed into object
@@ -120,7 +126,6 @@ $(document).ready(function() {
 });
 
 
-
 /* 
  * GLOBALS
  */
@@ -146,7 +151,11 @@ var PWM_OUTPUT = 8;
  * Will be generated on oppening of websocket and will be sent with
  * every message to server 
  */
-var uuid;
+var uuid = null;
+
+function getMyUuid() {
+    return uuid;
+}
 
 /* 
  * Generate unique UUID number, uuid4 conforms to standard
@@ -222,6 +231,26 @@ function setPwmLimit0(limit){
 function setPwmLimit1(limit){
     genericMessage("setPwmLimit1", [limit]);
 }
+
+function getConnectedUsers(callback) {
+    // create new callback call
+    var fName = callback.name;
+    //console.log("callback name:" + fName);
+    weioCallbacks[fName] = callback
+    genericMessage("getConnectedUsers", [fName]);
+    //console.log("Callbacks", weioCallbacks);
+}
+
+function talkTo(uuid, data){
+    genericMessage("talkTo", [uuid, data]);
+}
+
+function callInbox(data) {
+    if(typeof onMyInbox == 'function'){
+        onMyInbox(data.data);
+    }
+}
+
 
 /*
  * Generic handler for sending messages to server

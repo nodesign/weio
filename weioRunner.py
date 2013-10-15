@@ -53,7 +53,10 @@ class WeioHandler(SockJSConnection):
             attach.event('setPwmLimit1', self.callSetPwmLimit1)
             attach.event('attachInterrupt', self.callAttachInterrupt)
             attach.event('detachInterrupt', self.callDetachInterrupt)
-             
+    
+        attach.event('getConnectedUsers', self.getConnectedUsers)
+        attach.event('talkTo', self.talkTo)
+    
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
         #self.req = json.loads(data)
@@ -111,6 +114,33 @@ class WeioHandler(SockJSConnection):
         data['serverPush'] = instruction
         data['data'] = rq
         self.send(json.dumps(data))
+
+    def getConnectedUsers(self, rq):
+        #print "USERS"
+        allClients = {}
+        allClients['serverPush'] = rq[0]
+        data = []
+        for client in shared.connectedClients :
+            data.append(client.info)
+        allClients['data'] = data
+        self.send(json.dumps(allClients))
+    
+    def talkTo(self, rq) :
+        print rq
+        data = {}
+        data['data'] = rq[1]
+        data['from'] = self.id
+        for client in shared.connectedClients :
+            #print client.info
+            mm = client.info
+            #print mm['uuid']
+            if (mm['uuid'] == rq[0]):
+                wsocket = client.connection
+                wsocket.emit("inbox", data)
+                break
+                
+
+
 ##########################################################################################################################################
     # WeIO API bindings from websocket to lower levels
     def callDigitalWrite(self, data) :
