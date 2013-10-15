@@ -246,8 +246,8 @@ function talkTo(uuid, data){
 }
 
 function callInbox(data) {
-    if(typeof onMyInbox == 'function'){
-        onMyInbox(data.data);
+    if(typeof onReceiveMessage == 'function'){
+        onReceiveMessage(data.data);
     }
 }
 
