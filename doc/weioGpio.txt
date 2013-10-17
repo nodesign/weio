@@ -74,7 +74,7 @@ def loop() :
         time.sleep(cadence)
 ```
 ***
-## pwmWrite(pin)
+## pwmWrite(pin, value)
 Pulse with modulation is available at 6 pins from 19-24 and has 16bits of precision. By default WeIO sets PWM frequency at 20000ms and 8bit precision or from 0-255. This setup is well situated for driving LED lighting. Precision and frequency can be changed separately by calling additional functions for other uses : setPwmPeriod and setPwmLimit. PWM can also drive two different frequencies on two separate banks of 3 pins. For this feature look functions : setPwmPeriod0, setPwmPeriod1, setPwmLimit0 and setPwmLimit1.
 ```python
 from weioLib.weioUserApi import shared, attach
