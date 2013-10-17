@@ -4,9 +4,7 @@ This is html boilerplate for WeIO. Minimal dependencies are jQuery, sockJS and w
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<script src="../../../libs/jquery/jquery-2.0.2.min.js"></script>
-<script src="../../../libs/sockJS/sockjs-0.3.min.js"></script>
-<script src="../../../libs/weio/weioApi.js"></script>
+<script data-main="../../../libs/weio" src="../../../libs/require.js"></script>
 
   <head >
     <title>My first Web app</title>
@@ -22,9 +20,7 @@ This is html boilerplate for WeIO. Minimal dependencies are jQuery, sockJS and w
 
 To test easily these examples create a new JS file (awesomeProject.js) and add line to html file just after other libraries :
 ```html
-<script src="../../../libs/jquery/jquery-2.0.2.min.js"></script>
-<script src="../../../libs/sockJS/sockjs-0.3.min.js"></script>
-<script src="../../../libs/weio/weioApi.js"></script>
+<script data-main="../../../libs/weio" src="../../../libs/require.js"></script>
 
 <script src="awesomeProject.js"></script>
 ```
@@ -88,14 +84,14 @@ function onWeioReady() {
     talkTo(myName, data);
 }
 
-function onMyInbox(data) {
+function onReceiveMessage(data) {
     console.log("Received from ", data.from);
     console.log("Contents ", data.data);
 }
 ```
 ***
-## onMyInbox(data)
-OnMyInbox is callback function that will be called when some client sends message to actual uuid. This function works in pair with talkTo. OnMyInbox is receiving callback and talkTo sender function. In this example message is sent to itself.
+## onReceiveMessage(data)
+onReceiveMessage is callback function that will be called when some client sends message to actual uuid. This function works in pair with talkTo. onReceiveMessage is receiving callback and talkTo sender function. In this example message is sent to itself.
 ```javascript
 function onWeioReady() {
     var myName = getMyUuid();
@@ -104,7 +100,7 @@ function onWeioReady() {
     talkTo(myName, data);
 }
 
-function onMyInbox(data) {
+function onReceiveMessage(data) {
     console.log("Received from ", data.from);
     console.log("Contents ", data.data);
 }
@@ -235,7 +231,7 @@ function onWeioReady() {
 
 function fader() {
     if (mode) {
-        if (count < 256) {
+        if (count < 255) {
             count++;
         } else {
             mode = !mode;
@@ -267,7 +263,7 @@ function onWeioReady() {
 
 function fader() {
     if (mode) {
-        if (count < 256) {
+        if (count < 255) {
             count++;
         } else {
             mode = !mode;
@@ -285,7 +281,7 @@ function fader() {
 ***
 ## setPwmLimit(limit)
 Overrides default limit of 8bits for PWM precision. This value sets PWM counting upper limit and it's expressed as decimal value. This limit will be applied to all 6 PWM pins.
-```python
+```javascript
 var count = 0;
 var mode = true; // fade in - true, fade out - false
 
@@ -299,7 +295,7 @@ function onWeioReady() {
 
 function fader() {
     if (mode) {
-        if (count < 513) {
+        if (count < 512) {
             count++;
         } else {
             mode = !mode;
