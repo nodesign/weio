@@ -42,11 +42,12 @@
             
             <!-- Bottom buttons start here -->
             <div class="bottomButtons">
-            <button id="addNewFile" class="open" href="#createNewFile" role="button" data-toggle="modal" onmouseover="$(this).tooltip()" data-placement="top" title="Create new file"> <i class="icon-plus-sign icon-2x"></i> </button>
+                <button id="addNewFile" class="open" href="#createNewFile" role="button" data-toggle="modal" onmouseover="$(this).tooltip()" data-placement="top" title="Create new file"> <i class="icon-plus-sign icon-2x"></i> </button>
                 
                 <input type="file" id="updateFiles" name="upload" style="visibility: hidden; width: 1px; height: 1px" multiple />
-                <button id="addNewFile" onmouseover="$(this).tooltip()" data-placement="top" title="Upload files" onclick="document.getElementById('updateFiles').click(); return false"><i class="icon-download icon-2x"></i></button>
-           
+                <button id="addNewFile" onmouseover="$(this).tooltip()" data-placement="top" title="Upload files" onclick="document.getElementById('updateFiles').click(); return false"><i class="icon-circle-arrow-down icon-2x"></i></button>
+               
+                
                 <!--<button class="btn" type="button"> <i class="icon-remove-sign icon-2x"></i></button>-->
             </div>
             
@@ -117,6 +118,21 @@
         
         
         <!-- END Modal DELETE PROJECT-->
+        
+        <!-- Modal PREVIEW IMAGE FILE-->
+        <div id="previewImage" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="previewImageTitle">Image viewer</h3>
+            </div>
+            <div class="modal-body">
+                <img id="imageToPreview"></img>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- Modal PREVIEW IMAGE FILE -->
         
         
         

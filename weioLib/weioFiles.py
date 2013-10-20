@@ -159,8 +159,8 @@ def getFileType(path):
         if (extension in types) :
             return types[extension]
         else :
-            if (extension in graphics) :
-                return "images"
+            if (extension in images) :
+                return "image"
             else:
                 return "other"
     else:

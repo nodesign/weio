@@ -251,11 +251,14 @@ $(document).ready(function () {
                        if (!doesExist){
                        
                        // asks server to retreive file that we are intested in
-                       
+                            // regular files
                         if ((path.indexOf(".css") != -1) || (path.indexOf(".py") != -1) || (path.indexOf(".js") != -1) ||
                             (path.indexOf(".html") != -1) || (path.indexOf(".txt") != -1) || (path.indexOf(".md") != -1) ||
                             (path.indexOf(".json") != -1) || (path.indexOf(".xml") != -1) || (path.indexOf(".less") != -1) ||
-                            (path.indexOf(".cofee") != -1) || (path.indexOf(".svg") != -1)) {
+                            (path.indexOf(".cofee") != -1) || (path.indexOf(".svg") != -1) || 
+                            // images
+                            (path.indexOf(".png") != -1) || (path.indexOf(".jpg") != -1) || (path.indexOf(".bmp") != -1) ||
+                            (path.indexOf(".gif") != -1)){
                        
                            var rq = { "request": "getFile", "data":path};
                            editorSocket.send(JSON.stringify(rq));
@@ -814,11 +817,22 @@ var callbacksEditor = {
     "stderr" : updateConsoleError,
     "sysConsole" : updateConsoleSys,
     "getFile": insertNewStrip,
+    "getImage": previewImage,
     "saveFile": fileSaved,
     "createNewFile": refreshFiles,
     "deleteFile": fileRemoved,
     "saveAll": allFilesSaved,
     "errorObjects": updateError
+}
+
+function previewImage(data) {
+    //console.log("IMAGE",data.data.name);
+    $("#previewImage").css("width", "364px");
+    $("#previewImageTitle").html(data.data.name);
+    $("#imageToPreview").attr("src", data.data.data);
+    $("#previewImage").modal("show");
+    
+    treeLock = false;
 }
 
 function allFilesSaved(data) {

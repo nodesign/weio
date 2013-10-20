@@ -77,7 +77,7 @@ class WeioEditorHandler(SockJSConnection):
         self.send(json.dumps(data))
     
 
-    @weioUnblock.unblock
+    # @weioUnblock.unblock
     def sendFileContent(self, rq):
         data = {}
         # echo given request
@@ -100,7 +100,24 @@ class WeioEditorHandler(SockJSConnection):
             data['data'] = f
             
             if not(f['type'] is 'other'):
-                self.send(json.dumps(data))
+                if (f['type'] is 'image'):
+                    print rq
+                    # only images
+                    data['requested'] = "getImage"
+                    filename = f['name']
+                    tag = {"jpg":"jpeg", "png":"png", "tif":"tiff", "bmp":"bmp"}
+                    prefix = ""
+                    ext = filename.split(".")[1]
+                    if (ext in tag):
+                        prefix = tag[ext]
+                    content = "data:image/"+prefix+";base64,"
+                    content += f['data'].encode("base64")
+                    f['data'] = content
+                    self.send(json.dumps(data))
+                else:
+                    # all regular editable files
+                    self.send(json.dumps(data))
+    
 
     @weioUnblock.unblock    
     def saveFile(self, rq):
