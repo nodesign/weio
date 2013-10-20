@@ -70,9 +70,11 @@ class WeioEditorHandler(SockJSConnection):
         data['requested'] = rq['request']
         up = config["user_projects_path"]
         lp = config["last_opened_project"]
-        
-        tree = weioFiles.getHtmlTree((up+lp))
-        data['data'] = tree
+        if (weioFiles.checkIfDirectoryExists(up+lp)):
+            tree = weioFiles.getHtmlTree((up+lp))
+            data['data'] = tree
+        else:
+            data['data'] = ""
         # Send connection information to the client
         self.send(json.dumps(data))
     

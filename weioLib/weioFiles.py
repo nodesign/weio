@@ -220,6 +220,12 @@ def checkIfFileExists(path):
         return True
     else :
         return False
+
+def checkIfDirectoryExists(path):
+    if (os.path.isdir(path)):
+        return True
+    else :
+        return False
         
 def checkIfPathIsInUserFolder(path):
     

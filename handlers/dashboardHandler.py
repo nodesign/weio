@@ -108,7 +108,11 @@ class WeioDashBoardHandler(SockJSConnection):
         data = {}
         data['requested'] = rq['request']
         lp = config["last_opened_project"].split("/")
-        data['data'] = lp[0]
+
+        if (weioFiles.checkIfDirectoryExists(config["user_projects_path"]+config["last_opened_project"])):
+            data['data'] = lp[0]
+        else :
+            data['data'] = "Select project here"
         # Send connection information to the client
         self.send(json.dumps(data))
         
