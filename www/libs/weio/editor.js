@@ -252,8 +252,10 @@ $(document).ready(function () {
                        
                        // asks server to retreive file that we are intested in
                        
-                        if ((path.indexOf(".css") != -1) || (path.indexOf(".py") != -1) || (path.indexOf(".js") != -1) || (path.indexOf(".html") != -1) || (path.indexOf(".txt") != -1) || (path.indexOf(".md") != -1) ||
-                            (path.indexOf(".json") != -1) || (path.indexOf(".xml") != -1) || (path.indexOf(".less") != -1) || (path.indexOf(".cofee") != -1)) {
+                        if ((path.indexOf(".css") != -1) || (path.indexOf(".py") != -1) || (path.indexOf(".js") != -1) ||
+                            (path.indexOf(".html") != -1) || (path.indexOf(".txt") != -1) || (path.indexOf(".md") != -1) ||
+                            (path.indexOf(".json") != -1) || (path.indexOf(".xml") != -1) || (path.indexOf(".less") != -1) ||
+                            (path.indexOf(".cofee") != -1) || (path.indexOf(".svg") != -1)) {
                        
                            var rq = { "request": "getFile", "data":path};
                            editorSocket.send(JSON.stringify(rq));
