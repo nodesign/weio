@@ -102,9 +102,9 @@ class WeioEditorHandler(SockJSConnection):
             if not(f['type'] is 'other'):
                 self.send(json.dumps(data))
 
-#@weioUnblock.unblock    
+    @weioUnblock.unblock    
     def saveFile(self, rq):
-        print "DATA ", rq
+        #print "DATA ", rq
         data = {}
         # echo given request
         data['requested'] = rq['request']
@@ -121,7 +121,7 @@ class WeioEditorHandler(SockJSConnection):
         self.send(json.dumps(data))
 
 
-            #@weioUnblock.unblock    
+    @weioUnblock.unblock    
     def createNewFile(self, rq): 
         data = {}
         # this function is similar to saveFile
