@@ -44,6 +44,17 @@ var dashboard;
  * WeIO is updating or not
  */
 var updateMode = false;
+
+/*
+ * Count till play percent of progress bar
+ */
+var readyToPlay = 0;
+
+/*
+ * Play counter interval event
+ */
+var playCounter;
+
 /*
  * When all DOM elements are fully loaded
  */
@@ -56,11 +67,13 @@ $(document).ready(function () {
     $(".iframeContainer").attr("src", "editor.html?" + randomNumber);
                   
    runEditor();
-                  
-   dashboard = new SockJS('http://' + location.host + '/dashboard');
-                  
+    
+    weioProgress = new Chart(document.getElementById("weioProgress").getContext("2d"));
+                        
+                                    
 //////////////////////////////////////////////////////////////// SOCK JS DASHBOARD        
-        
+                  
+    dashboard = new SockJS('http://' + location.host + '/dashboard');
 /*
  * On opening of wifi web socket ask server to scan wifi networks
  */
@@ -268,11 +281,81 @@ function play(){
     var rq = { "request": "play"};
     dashboard.send(JSON.stringify(rq));
     document.getElementById("weioIframe").contentWindow.clearConsole();
+    $( "#weioProgress" ).fadeTo( "fast", 100 );
+    playCounter = setInterval(function(){countTillPlay()},63);
 }
 
 function stop(){
     var rq = { "request": "stop"};
     dashboard.send(JSON.stringify(rq));
+    $( "#weioProgress" ).fadeTo( "slow", 0 );
+    clearInterval(playCounter);
+    readyToPlay = 0;
+
+}
+
+function countTillPlay() {
+    updateWeioProgressWheel(readyToPlay);
+    readyToPlay+=2;
+}
+
+function updateWeioProgressWheel(data) {
+    /*
+     * CHART JS prefs
+     */
+    var defs = {
+        //Boolean - Whether we should show a stroke on each segment
+        segmentShowStroke : false,
+        
+        //String - The colour of each segment stroke
+        segmentStrokeColor : "#000",
+        
+        //Number - The width of each segment stroke
+        segmentStrokeWidth : 0,
+        
+        //The percentage of the chart that we cut out of the middle.
+        percentageInnerCutout : 60,
+        
+        //Boolean - Whether we should animate the chart	
+        animation : false,
+        
+        //Number - Amount of animation steps
+        animationSteps : 100,
+        
+        //String - Animation easing effect
+        animationEasing : "easeOutBounce",
+        
+        //Boolean - Whether we animate the rotation of the Doughnut
+        animateRotate : true,
+        
+        //Boolean - Whether we animate scaling the Doughnut from the centre
+        animateScale : false,
+        
+        //Function - Will fire on animation completion.
+        onAnimationComplete : null
+    }
+    
+
+    
+    var wheel = [
+                   // CPU
+                   {
+                   value: data,
+                   color : "#3CDDF7"
+                   },
+                   {
+                   value : 100-data,
+                   color:"#444"
+                   }
+                   ];
+    
+    weioProgress.Doughnut(wheel, defs);
+    if (data==100) {
+        readyToPlay = false;
+        clearInterval(playCounter); 
+        // fade out wheel
+        $( "#weioProgress" ).fadeTo( "slow", 0 );
+    }
 }
 
 function changeProject(path) {
@@ -392,6 +475,7 @@ function reloadIFrame(data) {
 function isPlaying(data) {
     if (data.state!="error") {
         $("#playButton").attr("class", "top_tab active");
+        
     } else {
         $("#playButton").attr("class", "top_tab");
         
@@ -421,6 +505,5 @@ function newProjectIsCreated(data) {
     
     changeProject(data.path);
 }
-
 
 

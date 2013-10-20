@@ -138,7 +138,7 @@ function updateProgressBar(data) {
 function countTimeTillReload(data) {
     // normal update needs 35 secs to be done
     
-    delayTime = 1000.0/estimatedInstallTime;
+    delayTime = 100.0/estimatedInstallTime;
     weioUpdaterTimeTillReload+=delayTime;
     
     var updateData = [
@@ -148,7 +148,7 @@ function countTimeTillReload(data) {
                    color :"#0088cc"
                    },
                    {
-                   value : 1000.0-weioUpdaterTimeTillReload,
+                   value : 100.0-weioUpdaterTimeTillReload,
                    color:"#666"
                    }
                    ];
@@ -156,7 +156,7 @@ function countTimeTillReload(data) {
     
     updaterChart.Doughnut(updateData, defs);
     
-    if (Math.round(weioUpdaterTimeTillReload)<1000) {
+    if (Math.round(weioUpdaterTimeTillReload)<100) {
         $("#progressStatus").html("Installing WeIO " + String(Math.round(weioUpdaterTimeTillReload/100.0)) + "%");
     } else {
         $("#progressStatus").html("Finished, please reload this page");
