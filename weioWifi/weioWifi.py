@@ -50,6 +50,7 @@ logging.basicConfig()
 log = logging.getLogger("WeioWifi")
 log.setLevel(logging.DEBUG)
 
+
 class WeioWifi() :
     def __init__(self, interface):
         self.data = None
@@ -57,6 +58,7 @@ class WeioWifi() :
         self.mode = None
         self.passwd = ""
         self.encryption = ""
+        self.periodicCheck = None
 
     def checkConnection(self) :
         command = "iwconfig " + self.interface
@@ -87,10 +89,10 @@ class WeioWifi() :
             # Move to Master mode
             print "Trying to move to AP RESCUE mode..."
             weioSubprocess.shellBlocking("scripts/wifi_set_mode.sh rescue")
-            # Give it some time before restart...
-            time.sleep(1)
+
             # Restart Tornado (shell script bring it up whenever it exits)
-            exit()
+            cmd = "/etc/init.d/weio_run restart"
+            weioSubprocess.shellBlocking(cmd)
 
         # At this point connection has been maid, and all we have to do is check ESSID
         for word in status.split(" ") :
@@ -98,7 +100,11 @@ class WeioWifi() :
                 self.essid = word.split('\"')[1]
                 break
 
-    def setConnection(self, mode) :
+    def setConnection(self, mode):
+
+        # Stop checking WiFi periodically (we will reset)
+        self.periodicCheck.stop()
+
         """ First shut down the WiFi on Carambola """
         weioSubprocess.shellBlocking("wifi down")
 
@@ -153,6 +159,11 @@ class WeioWifi() :
 
             cmd = "scripts/wifi_set_mode.sh sta"
             weioSubprocess.shellBlocking(cmd)
+
+        # Restart Tornado (shell script bring it up whenever it exits)
+        cmd = "/etc/init.d/weio_run restart"
+        weioSubprocess.shellBlocking(cmd)
+
 
     def getCurrentEssidName(self) :
         """Get current ESSID name from configuration file - wireless"""

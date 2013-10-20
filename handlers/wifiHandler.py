@@ -134,10 +134,9 @@ class WeioWifiHandler(SockJSConnection):
             wifi.essid =  rq['data']['essid']
             wifi.passwd =  rq['data']['passwd']
             print "ESSID ", wifi.essid, " PSWD ", wifi.passwd 
+
             wifi.setConnection("ap")
-            # See if command has been executed
-            wifi.checkConnection()
-            exit() # restart server
+
 
     def goToStaMode(self,rq):
         if (platform.machine() == 'mips') :
@@ -164,21 +163,6 @@ class WeioWifiHandler(SockJSConnection):
                 wifi.encryption = wifi.encryption + "+ccmp"
 
             wifi.setConnection("sta")
-
-            data = {}
-            # Check if everything went well, or go to AP mode in case of error
-            wifi.checkConnection()
-            data['mode'] = wifi.mode
-
-            # Is there a sens of doing this? Connection will be dead
-            # Send response to the browser
-            rsp={}
-            rsp['requested'] = rq['request']
-            rsp['data'] = data
-
-            # Send connection information to the client
-            self.send(json.dumps(rsp))
-            exit() # restart server
 
 
 

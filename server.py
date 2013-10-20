@@ -148,6 +148,7 @@ if __name__ == '__main__':
     global confFile
     global firstTimeSwitch
     global wifiButtons
+    global wifiPeriodicCheck
     
     confFile = weio_config.getConfiguration()
 
@@ -228,9 +229,7 @@ if __name__ == '__main__':
     tornado.options.define("port", default=confFile['port'], type=int)
 
     # If we are on the WEIO machine, we have to assure connection before doing anything
-    if (platform.machine() == 'mips') :
-        wifiHandler.wifi.checkConnection()
-        shared.wifi = wifiHandler.wifi
+    #wifiHandler.wifi.checkConnection()
     
     http_server = tornado.httpserver.HTTPServer(app)
     http_server.listen(tornado.options.options.port, address=confFile['ip'])
@@ -254,6 +253,11 @@ if __name__ == '__main__':
     # Activate buttons only when hardware is ready
     #periodic = tornado.ioloop.PeriodicCallback(checkWifiButtons, 100)
     #periodic.start()
+
+    # Check WiFi connection every second
+    if (platform.machine() == 'mips'):
+        wifiHandler.wifi.periodicCheck = tornado.ioloop.PeriodicCallback(wifiHandler.wifi.checkConnection, 3000)
+        wifiHandler.wifi.periodicCheck.start()
 
 
     # STARTING SERVER
