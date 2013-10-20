@@ -102,27 +102,27 @@ class WeioEditorHandler(SockJSConnection):
             if not(f['type'] is 'other'):
                 self.send(json.dumps(data))
 
-    @weioUnblock.unblock    
+#@weioUnblock.unblock    
     def saveFile(self, rq):
+        print "DATA ", rq
         data = {}
         # echo given request
         data['requested'] = rq['request']
         
         f = rq['data']
         contents = f['data']
+        path = f['path']
+        name = rq['data']['name'] 
         
-        weioFiles.saveRawContentToFile(f['path'], f['data'])
-            
-        data['status'] = rq['data']['name'] + " saved!"
+        #print "NAME " + rq['data']['name']
+        weioFiles.saveRawContentToFile(path, contents)
+                   
+        data['status'] = name + " saved!"
         self.send(json.dumps(data))
 
 
-    @weioUnblock.unblock    
+            #@weioUnblock.unblock    
     def createNewFile(self, rq): 
-        
-        # get configuration from file
-        config = weio_config.getConfiguration()
-        
         data = {}
         # this function is similar to saveFile
         
@@ -130,20 +130,35 @@ class WeioEditorHandler(SockJSConnection):
         data['requested'] = rq['request']
         
         # don't echo given data to spare unnecessary communication, just return name
-        fileInfo = rq['data']
-        pathname = fileInfo['name']
+        f = rq['data']
+        name = f['name']
+        contents = f['data']
         
+        # get configuration from file
         confFile = weio_config.getConfiguration()
         pathCurrentProject = confFile["user_projects_path"] + confFile["last_opened_project"]
         
-        #print (pathCurrentProject+pathname)
-        # in new file there are no data, it will be an empty string
-        rawData = ""
-        weioFiles.saveRawContentToFile(pathCurrentProject+pathname, rawData)
         
-        data['status'] = fileInfo['name'] + " has been created"
+        if ((".html" in name) or (".py" in name) or (".json" in name) or
+            (".css" in name) or (".txt" in name) or (".js" in name) or
+            (".md" in name) or (".svg" in name) or (".xml" in name) or
+            (".less" in name) or (".coffee" in name)):
+            
+            weioFiles.saveRawContentToFile(pathCurrentProject+name, contents)
+        else :
+            
+            #decode from base64, file is binary
+            bin = contents
+            bin = bin.split(",")[1] # split header, for example: "data:image/jpeg;base64,"
+            weioFiles.saveRawContentToFile(pathCurrentProject+name, bin.decode("base64"))
+
+        #print (pathCurrentProject+pathname)
+                
+        data['status'] = name + " has been created"
         self.send(json.dumps(data))
-#@weioUnblock.unblock
+
+            
+    @weioUnblock.unblock
     def deleteFile(self,rq):
         data = {}
         data['requested'] = rq['request']
@@ -155,15 +170,20 @@ class WeioEditorHandler(SockJSConnection):
         
         data['status'] = "file has been removed"
         self.send(json.dumps(data))
-    @weioUnblock.unblock
+
+#   don't unblock saveAll beacuse each saveFile is unblocked already
     def saveAll(self, rq) :
         #print "SAVE ALL FILES FROM ARRAY ", rq
         files = rq['data']
         
         if len(files)>0 :
             for f in files:
-                weioFiles.saveRawContentToFile(f['path'], f['data'])
-        
+                #weioFiles.saveRawContentToFile(f['path'], f['data'])
+                saveData = {}
+                saveData["request"] = "saveFile"
+                saveData["data"] = f
+                self.saveFile(saveData)
+                              
             data = {}
             data['requested'] = rq['request']
             data['status'] = "Project has been saved"

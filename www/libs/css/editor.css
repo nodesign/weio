@@ -106,9 +106,16 @@ div {
   border: 0;
   font-size: 80%;
   opacity: 0.2;
+  z-index: 1000;
 }
 .columns .leftSideBar .bottomButtons button:hover {
   opacity: 1;
+}
+.columns .leftSideBar .bottomButtons #updateFiles {
+  position: fixed;
+  margin-left: -25px;
+  width: 18px;
+  opacity: 0;
 }
 .columns .editorContainer {
   background-color: #d8d8d8;

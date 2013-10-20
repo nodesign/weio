@@ -377,13 +377,55 @@ $(document).ready(function () {
 
       
     
-
+    ////////////////////// ADD FILES EVENT
+    
+    $('#updateFiles').change(function(evt){
+         handleFileSelect(evt);
+    });
 
 
    
 }); /* end of document on ready event */
 
-
+function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+    
+    // Loop through the FileList and render image files as thumbnails.
+    for (var i = 0, f; f = files[i]; i++) {
+        
+        /*
+        // Only process image files.
+        if (!f.type.match('image.*')) {
+            continue;
+        }
+        */
+        var reader = new FileReader();
+        
+        // Closure to capture the file information.
+        
+        reader.onload = (function(theFile) {
+                         return function(e) {
+                         //console.log("FILE ", theFile.name, " ", e.target.result);
+                         data = {}
+                         data.name = theFile.name;
+                         data.data = e.target.result;
+                         addNewFile(data);
+                         };
+                         })(f);
+        
+        // Read in the image file as a data URL (base64)
+        var fileName = f.name;
+        if ((fileName.indexOf(".html") != -1) || (fileName.indexOf(".py") != -1) || (fileName.indexOf(".json") != -1) ||
+            (fileName.indexOf(".css") != -1) || (fileName.indexOf(".txt") != -1) || (fileName.indexOf(".js") != -1) ||
+            (fileName.indexOf(".md") != -1) || (fileName.indexOf(".svg") != -1) || (fileName.indexOf(".xml") != -1) ||
+            (fileName.indexOf(".less") != -1) || (fileName.indexOf(".coffee") != -1)) {
+            reader.readAsText(f);
+        } else {
+            reader.readAsDataURL(f);
+        }
+        
+    }
+}
 
 function createEditor(){
     editor = ace.edit("codeEditorAce");
@@ -635,13 +677,21 @@ function createNewFile() {
         
         var data = {
             "name" : name + "." + newfileType,
-            "path" : "."
+            "path" : ".",
+            "data" : ""
             };
     
         var rq = { "request": "createNewFile", "data" : data};
         editorSocket.send(JSON.stringify(rq));
     }
     
+}
+/**
+ * This is same request as createNewFile but is not sourced from modal view
+ */
+function addNewFile(data){
+    var rq = { "request": "createNewFile", "data" : data};
+    editorSocket.send(JSON.stringify(rq));
 }
 
 

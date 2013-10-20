@@ -148,11 +148,21 @@ def getFileType(path):
         ".less":"less",
         ".coffee":"coffee"
         }
-         
+        
+        images = {
+        ".png" : "png",
+        ".jpg" : "jpg",
+        ".gif" : "gif",
+        ".bmp" : "bmp"
+        }
+    
         if (extension in types) :
             return types[extension]
         else :
-            return "other"
+            if (extension in graphics) :
+                return "images"
+            else:
+                return "other"
     else:
         return None
              
