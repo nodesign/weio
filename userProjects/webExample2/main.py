@@ -1,9 +1,10 @@
 from weioLib.weioUserApi import shared
+from weioLib.weioIO import *
 from weioLib import weio
 import colorsys
 
 def setup():
-    shared.gpio.setPwmPeriod(2000)
+    setPwmPeriod(2000)
 
 def buttonHandler(dataIn) :
     if dataIn is not None :
@@ -42,11 +43,9 @@ def buttonHandler(dataIn) :
 
       
 def setColor(r,g,b):
-    global gpio
-    
-    shared.gpio.pwmWrite(19,255-b)
-    shared.gpio.pwmWrite(20,255-r)
-    shared.gpio.pwmWrite(21,255-g)
+    pwmWrite(19,255-b)
+    pwmWrite(20,255-r)
+    pwmWrite(21,255-g)
 
 
 def proportion(value,istart,istop,ostart,ostop) :

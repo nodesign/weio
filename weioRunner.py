@@ -7,7 +7,7 @@ import json
 import threading
 
 from weioLib.weioUserApi import *
-from weioLib.weioGpio import WeioGpio
+from weioLib.weioIO import *
 import platform
 
 # add SD card path
@@ -145,10 +145,10 @@ class WeioHandler(SockJSConnection):
     # WeIO API bindings from websocket to lower levels
     def callDigitalWrite(self, data) :
         #print "FROM JS ", data
-        shared.gpio.digitalWrite(data[0], data[1])
+        digitalWrite(data[0], data[1])
 
     def callDigitalRead(self, data) :
-        value = shared.gpio.digitalRead(data[0])
+        value = digitalRead(data[0])
         bck = {}
         bck["serverPush"] = data[1] # this is callback for JS
         bck["data"] = value 
@@ -156,11 +156,11 @@ class WeioHandler(SockJSConnection):
         self.send(json.dumps(bck))
 
     def callInputMode(self, data) :
-        shared.gpio.inputMode(data[0],data[1])
+        inputMode(data[0],data[1])
 
     def callAnalogRead(self, data) :
         #print "From browser ", data
-        value = shared.gpio.analogRead(data[0]) # this is pin number
+        value = analogRead(data[0]) # this is pin number
         bck = {}
         bck["serverPush"] = data[1] # this is callback for JS
         bck["data"] = value 
@@ -168,31 +168,31 @@ class WeioHandler(SockJSConnection):
         self.send(json.dumps(bck))
 
     def callPwmWrite(self, data) :
-        shared.gpio.pwmWrite(data[0], data[1])
+        pwmWrite(data[0], data[1])
 
     def callSetPwmPeriod(self, data) :
-        shared.gpio.pwmPeriod(data[0])  
+        pwmPeriod(data[0])  
 
     def callSetPwmPeriod0(self, data) :
-        shared.gpio.pwmPeriod0(data[0])
+        pwmPeriod0(data[0])
 
     def callSetPwmPeriod1(self, data) :
-        shared.gpio.pwmPeriod1(data[0])
+        pwmPeriod1(data[0])
 
     def callSetPwmLimit(self, data) :
-        shared.gpio.pwmLimit(data[0])
+        pwmLimit(data[0])
 
     def callSetPwmLimit0(self, data) :
-        shared.gpio.pwmLimit0(data[0])
+        pwmLimit0(data[0])
 
     def callSetPwmLimit1(self, data) :
-        shared.gpio.pwmLimit1(data[0])
+        pwmLimit1(data[0])
 
     def callAttachInterrupt(self, data):
-        shared.gpio.attachInterrupt(data[0], data[1])
+        attachInterrupt(data[0], data[1])
 
     def callDetachInterrupt(self, data) :
-        shared.gpio.detachInterrupt(data[0])
+        detachInterrupt(data[0])
 
     def genericInterrupt(self, data):
         #type = data["type"]
@@ -208,12 +208,6 @@ if __name__ == '__main__':
     
     shared.websocketOpened = False
     shared.connectedClients = []
-    
-    # Shared gpio object over all classes inside project
-    # There cannot be two instances od WeioGpio
-    if (platform.machine()=="mips"):
-        shared.gpio = WeioGpio()
-    
     
     WeioRouter = SockJSRouter(WeioHandler, '/api')
     

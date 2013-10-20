@@ -11,7 +11,7 @@ def setup() :
 def blinky() :
     
     cadence = 0.1
-    gpio = shared.gpio
+    gpio = gpio
     while True:
         gpio.digitalWrite(20, HIGH)
         time.sleep(cadence)
@@ -29,7 +29,7 @@ def setup() :
     attach.process(loop)
     
 def loop() :
-    gpio = shared.gpio
+    gpio = gpio
     cadence = 0.1
     while True:
         val =  gpio.digitalRead(13)
@@ -48,7 +48,7 @@ def setup() :
     attach.process(loop)
     
 def loop() :
-    gpio = shared.gpio
+    gpio = gpio
     cadence = 0.1
     gpio.inputMode(13,INPUT_PULLDOWN)
     while True:
@@ -66,7 +66,7 @@ def setup() :
     attach.process(loop)
     
 def loop() :
-    gpio = shared.gpio
+    gpio = gpio
     cadence = 0.1
     while True:
         val = gpio.analogRead(30)
@@ -84,7 +84,7 @@ def setup() :
     attach.process(loop)
     
 def loop() :
-    gpio = shared.gpio
+    gpio = gpio
     while True:
         print "fade in"
         # count from 0 to 255 by 5
@@ -111,7 +111,7 @@ def setup() :
     attach.process(loop)
     
 def loop() :
-    gpio = shared.gpio
+    gpio = gpio
     gpio.setPwmPeriod(10000)
     while True:
         print "fade in"
@@ -139,7 +139,7 @@ def setup() :
     attach.process(loop)
     
 def loop() :
-    gpio = shared.gpio
+    gpio = gpio
     gpio.setPwmLimit(512)
     while True:
         print "fade in"
@@ -175,7 +175,7 @@ def setup() :
     attach.process(testInterruptions)
     
 def testInterruptions():
-    gpio = shared.gpio
+    gpio = gpio
     
     # attach interruption on pin 15, activate on Falling edge
     # attach interruption on pin 30, activate on Rising edge

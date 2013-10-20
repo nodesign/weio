@@ -1,4 +1,4 @@
-from weioLib.weioGpio import WeioGpio
+from weioLib.weioIO import *
 from weioLib.weioUserApi import attach, shared
 import time
 
@@ -8,6 +8,6 @@ def setup() :
 def loop() :
     cadence = 0.1
     while True:
-        val = shared.gpio.analogRead(25)
+        val = analogRead(25)
         print val
         time.sleep(cadence)

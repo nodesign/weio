@@ -1,4 +1,4 @@
-from weioLib.weioGpio import WeioGpio
+from weioLib.weioIO import *
 from weioLib.weioUserApi import attach, shared, FALLING, RISING, interruptType
 import time
 
@@ -6,20 +6,18 @@ def setup() :
     attach.process(testInterruptions)
     
 def testInterruptions():
-    weio = shared.gpio
-    
     # attach interruption on pin 15, activate on Falling edge
     # attach interruption on pin 30, activate on Rising edge
-    weio.attachInterrupt(15, FALLING, button0)
-    weio.attachInterrupt(30, RISING, button1)
+    attachInterrupt(15, FALLING, button0)
+    attachInterrupt(30, RISING, button1)
     
     # sleep 10 seconds and test during this time
     time.sleep(10)
     
     # detach interrupts
-    weio.detachInterrupt(15)
+    detachInterrupt(15)
     print ("interrupt on pin 15 detached")
-    weio.detachInterrupt(30)
+    detachInterrupt(30)
     print ("interrupt on pin 30 detached")
     
 # This is attached callback to interrupt
