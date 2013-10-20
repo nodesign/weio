@@ -1,6 +1,6 @@
 {
     "absolut_root_path": "/Users/uros/workNow/nodesign/weIO/weio/weio", 
-    "debug_mode": "False", 
+    "debug_mode": "True", 
     "dependencies_path": "www/", 
     "dns_name": "weio.local", 
     "editor_html_path": "www/dashboard.html", 
@@ -11,7 +11,7 @@
         "index.html", 
         "weioMain.py"
     ], 
-    "last_opened_project": "simpleWeb/", 
+    "last_opened_project": "webUploadFile/", 
     "port": 8081, 
     "user": "uros petrevski", 
     "user_projects_path": "userProjects/", 
