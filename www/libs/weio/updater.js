@@ -131,7 +131,7 @@ function updateProgressBar(data) {
     //$("#updateProgressBar").css("width", data.progress);
     estimatedInstallTime = data.estimatedInstallTime;
     
-    updaterTimerInterval = setInterval(function(){countTimeTillReload()},100);
+    updaterTimerInterval = setInterval(function(){countTimeTillReload()},1000);
     
 }
 
@@ -157,7 +157,7 @@ function countTimeTillReload(data) {
     updaterChart.Doughnut(updateData, defs);
     
     if (Math.round(weioUpdaterTimeTillReload)<100) {
-        $("#progressStatus").html("Installing WeIO " + String(Math.round(weioUpdaterTimeTillReload/100.0)) + "%");
+        $("#progressStatus").html("Installing WeIO " + String(Math.round(weioUpdaterTimeTillReload)) + "%");
     } else {
         $("#progressStatus").html("Finished, please reload this page");
         clearInterval(updaterTimerInterval);

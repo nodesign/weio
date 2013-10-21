@@ -392,6 +392,38 @@ $(document).ready(function () {
    
 }); /* end of document on ready event */
 
+
+function updateProgress(evt) {
+    // evt is an ProgressEvent.
+    if (evt.lengthComputable) {
+        var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
+        // Increase the progress bar length.
+        if (percentLoaded < 100) {
+            window.top.updateWeioProgressWheel(percentLoaded);
+            //console.log(percentLoaded + '%');
+        }
+    }
+}
+
+function transferEnded(evt) {
+   // console.log("end");
+    window.top.updateWeioProgressWheel(100);
+}
+
+function errorFile(evt) {
+    switch(evt.target.error.code) {
+        case evt.target.error.NOT_FOUND_ERR:
+            alert('File Not Found!');
+            break;
+        case evt.target.error.NOT_READABLE_ERR:
+            alert('File is not readable');
+            break;
+        case evt.target.error.ABORT_ERR:
+            break; // noop
+        default:
+            alert('An error occurred reading this file.');
+    };
+}
 function handleFileSelect(evt) {
     var files = evt.target.files; // FileList object
     
@@ -406,8 +438,13 @@ function handleFileSelect(evt) {
         */
         var reader = new FileReader();
         
+        reader.onprogress = updateProgress;
+        reader.onloadend = transferEnded;
+        reader.onerror = errorFile;
+
         // Closure to capture the file information.
         
+                
         reader.onload = (function(theFile) {
                          return function(e) {
                          //console.log("FILE ", theFile.name, " ", e.target.result);

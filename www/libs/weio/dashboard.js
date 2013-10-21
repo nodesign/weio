@@ -281,7 +281,6 @@ function play(){
     var rq = { "request": "play"};
     dashboard.send(JSON.stringify(rq));
     document.getElementById("weioIframe").contentWindow.clearConsole();
-    $( "#weioProgress" ).fadeTo( "fast", 100 );
     playCounter = setInterval(function(){countTillPlay()},63);
 }
 
@@ -300,6 +299,7 @@ function countTillPlay() {
 }
 
 function updateWeioProgressWheel(data) {
+    $( "#weioProgress" ).css( "opacity", "100%" );
     /*
      * CHART JS prefs
      */
