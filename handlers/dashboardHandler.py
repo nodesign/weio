@@ -169,7 +169,7 @@ class WeioDashBoardHandler(SockJSConnection):
             
             # Inform client the we run subprocess
             data['requested'] = rq['request']
-            data['status'] = "User program is running!"
+            data['status'] = "Warming the engine!"
             self.send(json.dumps(data))
             
             
@@ -184,7 +184,7 @@ class WeioDashBoardHandler(SockJSConnection):
         else : # FILE DON'T EXIST
             warning = {}
             warning['requested'] = rq['request']
-            warning['status'] = "weioUserServer.py don't exist!"
+            warning['status'] = "main.py don't exist!"
             warning['state'] = "error"
             self.send(json.dumps(warning))
 
