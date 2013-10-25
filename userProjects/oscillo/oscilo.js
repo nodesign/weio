@@ -2,7 +2,7 @@ var nAdcs = 8;
 var pinStartNumber = 25;
 var adcs = {};
 
-$(document).ready(function () {
+function onWeioReady() {
     
     // add logo
     $(".menu").append('<li class="logo"><img src="smallLogo.png" id="logo"></img></li>');
@@ -37,7 +37,7 @@ $(document).ready(function () {
    // ask server continousely for data
   setInterval(function(){askForADC()}, 100);
    
-});
+}
 
 function askForADC() {
     
