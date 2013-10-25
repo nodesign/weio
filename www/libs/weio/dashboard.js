@@ -106,6 +106,13 @@ $(document).ready(function () {
         //dashboard.send(JSON.stringify(rq));
         
         dashboardPacket.push(rq);
+                  
+                  
+        rq = { "request": "getPlayerStatus"};
+        //dashboard.send(JSON.stringify(rq));
+        
+        dashboardPacket.push(rq);
+    
         
         rq = { "request" : "packetRequests", "packets":dashboardPacket};
         console.log("sending dashboard packets together ", rq);
@@ -282,6 +289,8 @@ function play(){
     dashboard.send(JSON.stringify(rq));
     document.getElementById("weioIframe").contentWindow.clearConsole();
     playCounter = setInterval(function(){countTillPlay()},63);
+    $( "#weioProgress" ).fadeTo( "fast", 100 );
+
 }
 
 function stop(){
@@ -411,8 +420,18 @@ var callbacks = {
     "stderr" : updateConsoleError,
     "createNewProject" : newProjectIsCreated,
     "deleteProject" : projectDeleted,
-    "errorObjects": updateError
+    "errorObjects": updateError,
+    "getPlayerStatus": playerStatus
 }
+
+/**
+ * This is player status demanded at the beginings play or stop state on player
+ */
+function playerStatus(data) {
+    if (data.status!=false)
+        $("#playButton").attr("class", "top_tab active");
+}
+
 
 /**
  * After deletation of project reset project list and choose another to open

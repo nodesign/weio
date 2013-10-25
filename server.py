@@ -44,6 +44,8 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 
 import json, functools
 
+from weioPlayer import player
+
 # IMPORT EDITOR CLASSES, this connects editor webapp with tornado server
 from handlers import editorHandler #, WeioEditorStopHandler, WeioEditorPlayHandler 
 
@@ -260,5 +262,7 @@ if __name__ == '__main__':
         wifiHandler.wifi.periodicCheck.start()
 
 
+    # STARTING LAST USER PROGRAM
+    player.play()
     # STARTING SERVER
     tornado.ioloop.IOLoop.instance().start()
