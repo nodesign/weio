@@ -55,8 +55,14 @@ import json
 # Wifi detection and configuration module
 from weioWifi import weioWifi
 
+
+# For shared variables between handlers
+from weioLib.weioUserApi import shared
+
+
 # Global weioWifi object
 wifi = weioWifi.WeioWifi("wlan0")
+shared.wifi = wifi
 
 def weioWifiParseScan() :
     global wifi
