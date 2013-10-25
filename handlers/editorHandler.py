@@ -107,7 +107,7 @@ class WeioEditorHandler(SockJSConnection):
                     # only images
                     data['requested'] = "getImage"
                     filename = f['name']
-                    tag = {"jpg":"jpeg", "png":"png", "tif":"tiff", "bmp":"bmp"}
+                    tag = {"jpeg":"jpg","jpg":"jpeg", "png":"png", "tiff":"tif", "tif":"tiff", "bmp":"bmp"}
                     prefix = ""
                     ext = filename.split(".")[1]
                     if (ext in tag):
@@ -270,6 +270,10 @@ class WeioEditorHandler(SockJSConnection):
         # in the global variable that will be used
         # by the MainProgram thread
         CONSOLE = self
+        
+        # Handlers need to communicate between each other to avoid too complex client interaction
+        # Editor handler is exported to global shared object here, it will be used in
+        # dashboardHandler for transactions
         shared.editor = self.editorSender
         
 
