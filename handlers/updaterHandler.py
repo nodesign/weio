@@ -53,7 +53,7 @@ import hashlib
 import tarfile
 
 # For shared variables between handlers
-from weioLib.weioUserApi import *
+from weioLib.weioUserApi import shared
 
 # Wifi detection route handler  
 class WeioUpdaterHandler(SockJSConnection):
