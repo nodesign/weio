@@ -61,8 +61,8 @@ $(document).ready(function() {
         var a = _addr.split(":");
         _addr = 'http://' + a[0] + ':8082/api';
     } else {
-        //var a = 'http://' + _addr + ':8082/api';
-        var a = 'http://' + _addr + '/api';
+        var a = 'http://' + _addr + ':8082/api';
+        //var a = 'http://' + _addr + '/api';
         _addr = a;
     }
     console.log("WebSocket connecting to " + _addr);
