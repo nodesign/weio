@@ -3,7 +3,7 @@ import time
 # No dependencies needed just run pure Python here
 print "Hello World!"
 
-for a in range(0,10):
+for a in range(0,100):
     print a
-    time.sleep(0.1)
+    time.sleep(1)
     
