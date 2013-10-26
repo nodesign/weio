@@ -40,6 +40,7 @@ import functools
 
 import json
 from weioLib import weio_config
+from weioLib import weioFiles
 
 class WeioPlayer():
     
@@ -102,15 +103,17 @@ class WeioPlayer():
         data = {}
         up = config["user_projects_path"]
         lp = config["last_opened_project"]
-        lp = lp.split("/")[0] 
+
         processName = 'weioRunner.py'
         
         
-        # check if file exists before launching
+        # check if user project exists before launching
         
-        if (os.path.exists(processName)):
+        if (weioFiles.checkIfFileExists(up+lp+"main.py")):
             #launch process
             
+            lp = lp.split("/")[0]
+
             print("weioMain indipendent process launching...")
             
             
