@@ -38,8 +38,7 @@
 /*
  * WeIO websocket object
  */
-var _weio;
-
+var _weio = null;
 
 //CALLBACKS//////////////////////////////////////////////////////////////////////////////////////////////////////// 
 /**
@@ -70,60 +69,70 @@ $(document).ready(function() {
     /*
      * WebSocket openning
      */
-    _weio = new SockJS(_addr);
-
-    _weio.onopen = function() {
-        console.log('socket opened for weio API');
-        
-        // Client info will be sent to server
-        data = {};
-        data.appCodeName = navigator.appCodeName;
-        data.appName = navigator.appName;
-        data.appVersion = navigator.appVersion;
-        data.cookieEnabled = navigator.cookieEnabled;
-        data.onLine = navigator.onLine;
-        data.platform = navigator.platform;
-        data.userAgent = navigator.userAgent;
-        
-        uuid = _generateUUID()
-        data.uuid = uuid;
-        
-        // Say hello to server with some client data
-        var rq = { "request": "_info", "data":data};
-        _weio.send(JSON.stringify(rq));
-        
-        if(typeof onWeioReady == 'function'){
-          onWeioReady();
-        }
-
-
-    };
-
-    _weio.onmessage = function(e) {
-        // JSON data is parsed into object
-        data = JSON.parse(e.data);
-        console.log(data);
-        
-        if ("requested" in data) {
-            // this is instruction that was echoed from server + data as response
-            instruction = data.requested;  
-            if (instruction in weioCallbacks) 
-                weioCallbacks[instruction](data);
-        } else if ("serverPush" in data) {
-            // this is instruction that was echoed from server + data as response
+                  
+    (function() {
+      // Initialize the socket & handlers
+      var connectToServer = function() {
+        _weio = new SockJS(_addr);
+     
+        _weio.onopen = function() {
+          clearInterval(connectRetry);
+          console.log('socket opened for weio API');
             
-            instruction = data.serverPush;  
-            if (instruction in weioCallbacks) 
-                weioCallbacks[instruction](data);
+          // Client info will be sent to server
+          data = {};
+          data.appCodeName = navigator.appCodeName;
+          data.appName = navigator.appName;
+          data.appVersion = navigator.appVersion;
+          data.cookieEnabled = navigator.cookieEnabled;
+          data.onLine = navigator.onLine;
+          data.platform = navigator.platform;
+          data.userAgent = navigator.userAgent;
             
-        }
-
-    };
-
-    _weio.onclose = function() {
-      console.log('socket is closed for editor');
-    };
-
+          uuid = _generateUUID()
+          data.uuid = uuid;
+            
+          // Say hello to server with some client data
+          var rq = { "request": "_info", "data":data};
+          _weio.send(JSON.stringify(rq));
+            
+          if(typeof onWeioReady == 'function'){
+            onWeioReady();
+          }
+     
+        };
+     
+        _weio.onmessage = function(e) {
+            // JSON data is parsed into object
+            data = JSON.parse(e.data);
+            console.log(data);
+            
+            if ("requested" in data) {
+                // this is instruction that was echoed from server + data as response
+                instruction = data.requested;  
+                if (instruction in weioCallbacks) 
+                    weioCallbacks[instruction](data);
+            } else if ("serverPush" in data) {
+                // this is instruction that was echoed from server + data as response
+                
+                instruction = data.serverPush;  
+                if (instruction in weioCallbacks) 
+                    weioCallbacks[instruction](data);
+                
+            }
+        };
+     
+        _weio.onclose = function() {
+          clearInterval(connectRetry);
+          connectRetry = setInterval(connectToServer, 500);
+          console.log('socket is closed or not opened for weioApi');
+     
+        };
+     
+     };
+      var connectRetry = setInterval(connectToServer, 500);
+    })();
+               
 });
 
 
@@ -174,7 +183,10 @@ function _generateUUID(){
 
 
 function isWeioReady() {
-    return _weio.readyState;
+    if (_weio!=null)
+        return _weio.readyState;
+    else
+        return false;
 }
 
 /* 
