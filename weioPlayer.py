@@ -92,8 +92,6 @@ class WeioPlayer():
             so that Tornado can simply transfer subprocess's `stdout` and `stderr`
             to the client via WebSockets. """
         
-        self.playing = True
-        
         # get configuration from file
         config = weio_config.getConfiguration()
         
@@ -146,6 +144,8 @@ class WeioPlayer():
             
             consoleWelcome['data'] = 'WeIO user server launched ' + self.lastLaunched
             self.delegateToEditorHandler(data)
+            self.playing = True
+        
         #CONSOLE.send(json.dumps(consoleWelcome))
         else : # FILE DON'T EXIST
             warning = {}
@@ -301,5 +301,3 @@ class WeioPlayer():
 
 
 player = WeioPlayer()
-
-
