@@ -56,6 +56,11 @@ var readyToPlay = 0;
 var playCounter;
 
 /*
+ * Does weio player playing user scripts?
+ */
+var isPlaying = false;
+
+/*
  * When all DOM elements are fully loaded
  */
 $(document).ready(function () {
@@ -218,7 +223,8 @@ function runPreview() {
     if (isEditorActive)
         document.getElementById("weioIframe").contentWindow.saveAll();
     
-    play();
+    if (!isPlaying)
+        play();
     
     
     $.getJSON('config.json', function(data) {
@@ -410,7 +416,7 @@ var callbacks = {
     "getIp": showIpAddress,
     "getLastProjectName": showProjectName,
     "status" : updateStatus,
-    "play": isPlaying,
+    "play": setPlayerStatus,
     "stop": stopped,
     "getUserProjetsFolderList" : updateProjects,
     "changeProject":reloadIFrame,
@@ -491,11 +497,13 @@ function reloadIFrame(data) {
     document.getElementById('weioIframe').contentWindow.location.reload();
 }
 
-function isPlaying(data) {
+function setPlayerStatus(data) {
     if (data.state!="error") {
+        isPlaying = true;
         $("#playButton").attr("class", "top_tab active");
         
     } else {
+        isPlaying = false;
         $("#playButton").attr("class", "top_tab");
         
     }
@@ -503,6 +511,7 @@ function isPlaying(data) {
 }
 
 function stopped(data) {
+    isPlaying = false;
     $("#playButton").attr("class", "top_tab");
     updateStatus(data);
 }
