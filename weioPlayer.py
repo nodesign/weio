@@ -133,7 +133,7 @@ class WeioPlayer():
             
             # Inform client the we run subprocess
             data['requested'] = rq['request']
-            data['status'] = "Warming the engine!"
+            data['status'] = "Warming up the engines..."
             self.send(json.dumps(data))
             
             
