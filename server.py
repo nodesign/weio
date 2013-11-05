@@ -258,11 +258,12 @@ if __name__ == '__main__':
 
     # Check WiFi connection every second
     if (platform.machine() == 'mips'):
-        wifiHandler.wifi.periodicCheck = tornado.ioloop.PeriodicCallback(wifiHandler.wifi.checkConnection, 3000)
+        wifiHandler.wifi.periodicCheck = tornado.ioloop.PeriodicCallback(wifiHandler.wifi.checkConnection, 5000)
         wifiHandler.wifi.periodicCheck.start()
 
 
     # STARTING LAST USER PROGRAM
     player.play()
+
     # STARTING SERVER
     tornado.ioloop.IOLoop.instance().start()

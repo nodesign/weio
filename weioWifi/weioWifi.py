@@ -44,6 +44,7 @@ import sys, os, logging
 import iwInfo
 
 from weioLib import weioSubprocess
+from weioLib import weioIpAddress
 
 
 logging.basicConfig()
@@ -59,6 +60,12 @@ class WeioWifi() :
         self.passwd = ""
         self.encryption = ""
         self.periodicCheck = None
+        """ Counts the number of times we found deauthenticated state.
+        This mechanism protect us from network hick-ups - i.e. we will not
+        disconnect the same moment we lost our AP. wpa_supplicant will re-try authenticating,
+        and we will check connection periodically. After some nuber of spoted disconnection mode,
+        we will give up and go to AP mode. """
+        self.disconnectedCounter = 0
 
     def checkConnection(self) :
         command = "iwconfig " + self.interface
@@ -85,14 +92,27 @@ class WeioWifi() :
                 self.mode = "sta"
 
         # We can not serve anything if we are not in sta or ap mode
-        while (self.mode == None) :
+        print "CHECKING WIFI!"
+        if (self.mode != None):
+           print "self.mode = " + self.mode
+        print "weioIpAddress.getLocalIpAddress() = " + weioIpAddress.getLocalIpAddress()
+
+        if (self.mode == None):
+            self.disconnectedCounter = self.disconnectedCounter + 1
+        else:
+            self.disconnectedCounter = 0
+
+        if ( self.disconnectedCounter >= 2 or (self.mode == "sta" and weioIpAddress.getLocalIpAddress() == '') ):
             # Move to Master mode
             print "Trying to move to AP RESCUE mode..."
             weioSubprocess.shellBlocking("scripts/wifi_set_mode.sh rescue")
 
+            self.disconnectedCounter = 0
+
             # Restart Tornado (shell script bring it up whenever it exits)
-            cmd = "/etc/init.d/weio_run restart"
-            weioSubprocess.shellBlocking(cmd)
+            #cmd = "/etc/init.d/weio_run restart"
+            #weioSubprocess.shellBlocking(cmd)
+            os._exit(os.EX_OK)
 
         # At this point connection has been maid, and all we have to do is check ESSID
         for word in status.split(" ") :
@@ -160,9 +180,13 @@ class WeioWifi() :
             cmd = "scripts/wifi_set_mode.sh sta"
             weioSubprocess.shellBlocking(cmd)
 
+        # Reset disconnectedCounter
+        self.disconnectedCounter = 0
+
         # Restart Tornado (shell script bring it up whenever it exits)
-        cmd = "/etc/init.d/weio_run restart"
-        weioSubprocess.shellBlocking(cmd)
+        #cmd = "/etc/init.d/weio_run restart"
+        #weioSubprocess.shellBlocking(cmd)
+        os._exit(os.EX_OK)
 
 
     def getCurrentEssidName(self) :
