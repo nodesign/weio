@@ -2,27 +2,26 @@
 # Copyright (C) 2006 OpenWrt.org
 
 START=99
+
 start() {
     echo "Launching WeIO application"
     cd /
-    ./run_weio.sh
+    ./weio_run_forever.sh
 }
 
 stop() {
     echo "Stopping WeIO application"
-
-    if [ `ps | grep  "run_weio.sh" | wc -l` != "1" ]; then
-        RUN_WEIO_PID=`ps | grep  "run_weio.sh" | head -1 | awk '{print $1}'`
-        kill -9 $RUN_WEIO_PID
+    
+    # Trick for avoiding grep to show in ps command: 
+    # http://stackoverflow.com/questions/9375711/more-elegant-ps-aux-grep-v-grep
+    # http://www.perlmonks.org/bare/?node_id=203760
+    if [ -n "$(ps | grep "[w]eio_run_forever.sh")" ]; then
+    	echo "Stopping weio_run_forever.sh..."
+    	killall weio_run_forever.sh
     fi
-
-    if [ `ps | grep  "python -u weioRunner.py" | wc -l` != "1" ]; then
-        WEIO_RUNNER_PID=`ps | grep  "python -u weioRunner.py" | head -1 | awk '{print $1}'`
-        kill -9 $WEIO_RUNNER_PID
-    fi
-
-    if [ `ps | grep  "python server.py" | wc -l"` != "1" ]; then
-        WEIO_PID=`ps | grep  "python server.py" | head -1 | awk '{print $1}'`
-        kill -9 $WEIO_PID
+    
+    if [ -n "$(ps | grep  "[w]eioServer.py")" ]; then
+    	echo "Stopping python server.py..."
+    	killall weioServer.py
     fi
 }

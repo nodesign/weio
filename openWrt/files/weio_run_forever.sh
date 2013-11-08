@@ -7,7 +7,7 @@
 while true; 
 do
     cd /weio
-    python server.py;
+    ./weioServer.py;
         
     if grep -q '"kill_flag": "YES"' /weio/config.weio
     then

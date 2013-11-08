@@ -1,3 +1,4 @@
+#!/usr/bin/python
 ### 
 #
 # WEIO Web Of Things Platform

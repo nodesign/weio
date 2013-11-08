@@ -107,10 +107,10 @@ def doUpdate(data):
         p = Popen(["mv", pathToDecompressUpdate + "/weio", "/weio"], stdout=PIPE)
         p.wait()   
         
-        p = Popen(["cp", "/weio/scripts/run_weio.sh", "/run_weio.sh"], stdout=PIPE)
+        p = Popen(["cp", "/weio/scripts/weio_run_forever.sh", "/weio_run_forever.sh"], stdout=PIPE)
         p.wait()
         
-        print "Now you can go to / and launch ./run_weio.sh"
+        print "Now you can go to / and launch ./weio_run_forever.sh"
         
         # TODO make system reboot here
         sys.exit()

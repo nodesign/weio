@@ -11,7 +11,7 @@ Load average: 0.00 0.02 0.05 1/44 7713
     1     0 root     S     1524   2%   0% init
  1045     1 root     S     1520   2%   0% /usr/sbin/ntpd -n -p 0.openwrt.pool.n
   679     1 root     S     1520   2%   0% /sbin/watchdog -t 5 /dev/watchdog
- 7135  6476 root     S     1520   2%   0% {run_weio.sh} /bin/sh ./run_weio.sh
+ 7135  6476 root     S     1520   2%   0% {weio_run_foreve} /bin/sh ./weio_run_forever.sh
   575     1 root     S     1512   2%   0% /sbin/klogd
  5824     1 root     S     1420   2%   0% hostapd -P /var/run/wifi-phy0.pid -B
   993   583 root     S     1172   2%   0% /usr/sbin/dropbear -F -P /var/run/dro

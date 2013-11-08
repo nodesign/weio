@@ -1257,7 +1257,7 @@ root@WEIO:/# ./manualInstallWeio.py
 Update downloaded
 MD5 checksum OK
 Archive decompressed
-Now you can go to / and launch ./run_weio.sh
+Now you can go to / and launch ./weio_run_forever.sh
 root@WEIO:/# 
 --------------------------------------------
 Tar archive is first downloaded to RAM in /tmp then decompressed in RAM and finally copied to /weio. If you look carefully one new file is created in the root folder :
@@ -1265,14 +1265,14 @@ Tar archive is first downloaded to RAM in /tmp then decompressed in RAM and fina
 root@WEIO:/# ls
 bin                   lm75.pyc              rom                   tmp                   www
 dev                   manualInstallWeio.py  root                  updater
-etc                   mnt                   run_weio.sh           usr
+etc                   mnt                   weio_run_forever.sh   usr
 lib                   overlay               sbin                  var
 lm75.py               proc                  sys                   weio
 root@WEIO:/#
 -------------------------------------------------------------------------------------------
 Run_weio.sh is main script for running WeIO. Run WeIO program like this :
 --------------------------
-root@WEIO:/# ./run_weio.sh 
+root@WEIO:/# ./weio_run_forever.sh 
 --------------------------
 
 Preparing WeIO for image bundle
