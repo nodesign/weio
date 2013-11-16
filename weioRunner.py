@@ -1,3 +1,4 @@
+#!/usr/bin/python -u
 from tornado import web, ioloop, options
 from sockjs.tornado import SockJSRouter, SockJSConnection
 

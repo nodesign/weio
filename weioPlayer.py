@@ -102,7 +102,7 @@ class WeioPlayer():
         up = config["user_projects_path"]
         lp = config["last_opened_project"]
 
-        processName = 'weioRunner.py'
+        processName = './weioRunner.py'
         
         
         # check if user project exists before launching
@@ -115,7 +115,7 @@ class WeioPlayer():
             print("weioMain indipendent process launching...")
             
             
-            self.weioPipe = subprocess.Popen(['python', '-u', processName, lp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            self.weioPipe = subprocess.Popen([processName, lp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             
             self.ioloopObj = ioloop.IOLoop.instance()
             

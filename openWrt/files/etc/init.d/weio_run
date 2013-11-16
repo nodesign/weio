@@ -24,4 +24,10 @@ stop() {
     	echo "Stopping python server.py..."
     	killall weioServer.py
     fi
+    
+    if [ -n "$(ps | grep  "[w]eioRunner.py")" ]; then
+        echo "Stopping user program weioRunner.py..."
+        killall weioRunner.py
+    fi
+    
 }
