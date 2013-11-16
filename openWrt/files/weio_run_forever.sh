@@ -6,6 +6,13 @@
 # do the rest of moving files to good target
 while true; 
 do
+    # Check if there is any orphan (user program) and kill it before starting new server
+    
+    if [ -n "$(ps | grep  "[w]eioRunner.py")" ]; then
+           echo "Stopping user program weioRunner.py..."
+           killall weioRunner.py
+    fi
+       
     cd /weio
     ./weioServer.py;
         
