@@ -761,10 +761,32 @@ function deleteProject() {
 /*
  * These functions will be called from dashboard
  */
+var consoleLineCounter  = 0;
+var consoleLastPageBuffer = new Array();
 function updateConsoleOutput(data) {
     var stdout = data.data;
-    $('#consoleOutput').append(stdout + "<br>");
+    var phrase = stdout + "<br>";
+    
+    // Bufferize last page
+    if (consoleLastPageBuffer.length > 400) 
+        consoleLastPageBuffer.shift();
+    
+    consoleLastPageBuffer.push(phrase);
+    
+    // empty DOM element
+    if (consoleLineCounter > 800) {
+        $('#consoleOutput').empty();
+        var p = consoleLastPageBuffer.join("") + phrase;
+        phrase = p;
+        consoleLineCounter = consoleLastPageBuffer.length;
+        // destroy
+        consoleLastPageBuffer = new Array();
+    }
+    
+    $('#consoleOutput').append(phrase);
     scrollConsoleToBottom();
+    
+    consoleLineCounter++;
 }
 
 function updateConsoleError(data) {
