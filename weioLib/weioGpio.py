@@ -44,7 +44,12 @@ class WeioGpio():
     def __init__(self):
         # construct uper device, open serial port
         # send default values
-        self.uper = uper.UPER(self.mainInterrupt)
+        if (os.path.exists("/dev/ttyACM0")) :
+            self.uper = uper.UPER(self.mainInterrupt)
+        else :
+            print "*SYSOUT*Error! LPC coprocessor not present in system!"
+            self.uper = None
+            
         shared.declaredPins = []
         for i in range(0,len(pins)):
             shared.declaredPins.append(-1)
