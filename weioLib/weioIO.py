@@ -56,7 +56,7 @@ def attachInterrupt(pin, mode, callback):
     return gpio.attachInterrupt(pin, mode, callback)
 
 def detachInterrupt(pin):
-    return detachInterrupt(pin)
+    return gpio.detachInterrupt(pin)
 
 def getAvailableInterruptId():
     return gpio.getAvailableInterruptId()
