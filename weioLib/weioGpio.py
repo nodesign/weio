@@ -37,7 +37,7 @@
 from devices import uper
 from weioLib.weioUserApi import shared, pins, adcs, pwms, HIGH, LOW, INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP, OUTPUT, ADC_INPUT, PWM_OUTPUT, PWM0_OUTPUT, PWM1_OUTPUT
 from weioLib.weioUserApi import CHANGE, RISING, FALLING, HARD_INTERRUPTS
-
+import os
 
 class WeioGpio():
     
