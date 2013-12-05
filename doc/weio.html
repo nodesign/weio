@@ -2183,6 +2183,26 @@ smb passwd file = /etc/samba/smbpasswd</tt></pre>
 <div class="content">
 <pre><tt>$ chmod 777 weio</tt></pre>
 </div></div>
+<div class="paragraph"><p>Make sure that you can discover your Samba sharing via Bonjour. Add file smb.service inside /etc/avahi/services</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&lt;?xml version="1.0" standalone='no'?&gt;
+&lt;!DOCTYPE service-group SYSTEM "avahi-service.dtd"&gt;
+&lt;service-group&gt;
+        &lt;name replace-wildcards="yes"&gt;WeIO&lt;/name&gt;
+        &lt;service&gt;
+                &lt;type&gt;_smb._tcp&lt;/type&gt;
+                &lt;port&gt;139&lt;/port&gt;
+                &lt;port&gt;445&lt;/port&gt;
+        &lt;/service&gt;
+&lt;/service-group&gt;</tt></pre>
+</div></div>
+<div class="paragraph"><p>Restart avahi</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>$ avahi-daemon -k
+$ avahi-daemon -D</tt></pre>
+</div></div>
 <div class="paragraph"><p>Restart smb server</p></div>
 <div class="listingblock">
 <div class="content">
@@ -2194,7 +2214,7 @@ smb passwd file = /etc/samba/smbpasswd</tt></pre>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-12-06 00:06:33 CET
+Last updated 2013-12-06 00:11:07 CET
 </div>
 </div>
 </body>

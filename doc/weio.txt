@@ -1417,6 +1417,24 @@ Make that shared directory has right access permissions
 -------------------
 $ chmod 777 weio
 -------------------
+Make sure that you can discover your Samba sharing via Bonjour. Add file smb.service inside /etc/avahi/services
+----------------------------------------------------
+<?xml version="1.0" standalone='no'?>
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<service-group>
+	<name replace-wildcards="yes">WeIO</name>
+	<service>
+		<type>_smb._tcp</type>
+		<port>139</port>
+		<port>445</port>
+	</service>
+</service-group>
+----------------------------------------------------
+Restart avahi
+---------------------------
+$ avahi-daemon -k
+$ avahi-daemon -D
+---------------------------
 
 Restart smb server
 ---------------------------
