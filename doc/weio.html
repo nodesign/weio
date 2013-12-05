@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.6.7" />
+<meta name="generator" content="AsciiDoc 8.6.6" />
 <title>WEIO SW User Guide</title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
@@ -349,7 +349,7 @@ div.colist td img {
   margin-bottom: 0.1em;
 }
 
-div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
   margin-top: 0;
   margin-bottom: 0;
 }
@@ -407,8 +407,6 @@ span.underline { text-decoration: underline; }
 span.overline { text-decoration: overline; }
 span.line-through { text-decoration: line-through; }
 
-div.unbreakable { page-break-inside: avoid; }
-
 
 /*
  * xhtml11 specific
@@ -416,7 +414,7 @@ div.unbreakable { page-break-inside: avoid; }
  * */
 
 tt {
-  font-family: "Courier New", Courier, monospace;
+  font-family: monospace;
   font-size: inherit;
   color: navy;
 }
@@ -455,7 +453,7 @@ div.tableblock > table[frame="vsides"] {
  * */
 
 .monospaced {
-  font-family: "Courier New", Courier, monospace;
+  font-family: monospace;
   font-size: inherit;
   color: navy;
 }
@@ -583,7 +581,7 @@ toc: function (toclevels) {
 
   function tocEntries(el, toclevels) {
     var result = new Array;
-    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    var re = new RegExp('[hH]([2-'+(toclevels+1)+'])');
     // Function that scans the DOM tree for header elements (the DOM2
     // nodeIterator API would be a better technique but not supported by all
     // browsers).
@@ -612,7 +610,7 @@ toc: function (toclevels) {
   var i;
   for (i = 0; i < toc.childNodes.length; i++) {
     var entry = toc.childNodes[i];
-    if (entry.nodeName.toLowerCase() == 'div'
+    if (entry.nodeName == 'div'
      && entry.getAttribute("class")
      && entry.getAttribute("class").match(/^toclevel/))
       tocEntriesToRemove.push(entry);
@@ -658,7 +656,7 @@ footnotes: function () {
   var entriesToRemove = [];
   for (i = 0; i < noteholder.childNodes.length; i++) {
     var entry = noteholder.childNodes[i];
-    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+    if (entry.nodeName == 'div' && entry.getAttribute("class") == "footnote")
       entriesToRemove.push(entry);
   }
   for (i = 0; i < entriesToRemove.length; i++) {
@@ -731,7 +729,7 @@ install: function(toclevels) {
 }
 
 }
-asciidoc.install(2);
+asciidoc.install();
 /*]]>*/
 </script>
 </head>
@@ -740,10 +738,6 @@ asciidoc.install(2);
 <h1>WEIO SW User Guide</h1>
 <span id="author">Drasko DRASKOVIC</span><br />
 <span id="email"><tt>&lt;<a href="mailto:drasko.draskovic@gmail.com">drasko.draskovic@gmail.com</a>&gt;</tt></span><br />
-<div id="toc">
-  <div id="toctitle">Table of Contents</div>
-  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
-</div>
 </div>
 <div id="content">
 <div class="sect1">
@@ -2010,7 +2004,7 @@ uros:weio uros$</tt></pre>
 Update downloaded
 MD5 checksum OK
 Archive decompressed
-Now you can go to / and launch ./run_weio.sh
+Now you can go to / and launch ./weio_run_forever.sh
 root@WEIO:/#</tt></pre>
 </div></div>
 <div class="paragraph"><p>Tar archive is first downloaded to RAM in /tmp then decompressed in RAM and finally copied to /weio. If you look carefully one new file is created in the root folder :</p></div>
@@ -2019,7 +2013,7 @@ root@WEIO:/#</tt></pre>
 <pre><tt>root@WEIO:/# ls
 bin                   lm75.pyc              rom                   tmp                   www
 dev                   manualInstallWeio.py  root                  updater
-etc                   mnt                   run_weio.sh           usr
+etc                   mnt                   weio_run_forever.sh   usr
 lib                   overlay               sbin                  var
 lm75.py               proc                  sys                   weio
 root@WEIO:/#</tt></pre>
@@ -2027,7 +2021,7 @@ root@WEIO:/#</tt></pre>
 <div class="paragraph"><p>Run_weio.sh is main script for running WeIO. Run WeIO program like this :</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><tt>root@WEIO:/# ./run_weio.sh</tt></pre>
+<pre><tt>root@WEIO:/# ./weio_run_forever.sh</tt></pre>
 </div></div>
 </div>
 </div>
@@ -2085,11 +2079,122 @@ and codes that we didn&#8217;t write or change</p></div>
 </div></div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_activating_smb_fileshare">Activating SMB fileshare</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Install thru openWrt feeds samba36-server and activate it in make menuconfig</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>$ ./scripts/feeds install samba36-server</tt></pre>
+</div></div>
+<div class="paragraph"><p>These are settings for WeIO, they are inspired by original Fonera configurations.</p></div>
+<div class="paragraph"><p>/etc/samba/smb.conf</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>[global]
+        netbios name = WeIO
+        display charset = UTF-8
+        interfaces = 127.0.0.1/8 lo lo
+        server string = WeIO
+        unix charset = UTF-8
+        workgroup = WEIO
+        browseable = yes
+        deadtime = 30
+        domain master = yes
+        encrypt passwords = true
+        enable core files = no
+        guest account = nobody
+        guest ok = yes
+        invalid users = root
+        local master = yes
+        load printers = no
+        map to guest = Bad User
+        max protocol = SMB2
+        min receivefile size = 16384
+        null passwords = yes
+        obey pam restrictions = yes
+        os level = 20
+        passdb backend = smbpasswd
+        preferred master = yes
+        printable = no
+        security = user
+        smb encrypt = disabled
+        smb passwd file = /etc/samba/smbpasswd
+        socket options = TCP_NODELAY IPTOS_LOWDELAY
+        syslog = 2
+        use sendfile = yes
+        writeable = yes
+
+
+[WeIOroot]
+        path = /weio
+        read only = no
+        guest ok = no
+        create mask = 0700
+        directory mask = 0700</tt></pre>
+</div></div>
+<div class="paragraph"><p>/etc/config/samba</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>config 'samba' 'samba'
+        option 'name' 'WeIO'
+        option 'workgroup' 'WEIO'
+        option 'description' 'WeIO'
+        option 'homes' '0'
+        option 'enable' '1'
+        option 'wan' '0'
+        option 'allow_unauth' '1'
+
+config 'sambashare' 'sambashare'
+        option 'name' 'WeIOroot'
+        option 'path' '/weio'
+        option 'read_only' 'no'
+        option 'guest_ok' 'no'
+        option 'create_mask' '0700'
+        option 'dir_mask' '0700'</tt></pre>
+</div></div>
+<div class="paragraph"><p>Here is a tricky thing. You have to create a new user and add smb password so that smb share can be used. It&#8217;s not recommended to log as root into smb partitions&#8230;
+This is how passwd file looks like. weio user has been added inside
+/etc/passwd</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>root:x:0:0:root:/root:/bin/ash
+daemon:*:1:1:daemon:/var:/bin/false
+ftp:*:55:55:ftp:/home/ftp:/bin/false
+network:*:101:101:network:/var:/bin/false
+nobody:*:65534:65534:nobody:/var:/bin/false
+weio:*:1000:1000:weio:/weio:/bin/false</tt></pre>
+</div></div>
+<div class="paragraph"><p>Then create password with smbpasswd. Remark that in smb.conf file is specified</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>passdb backend = smbpasswd
+smb encrypt = disabled
+smb passwd file = /etc/samba/smbpasswd</tt></pre>
+</div></div>
+<div class="paragraph"><p>Use this command to add new user password :</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>$ smbpasswd -a weio</tt></pre>
+</div></div>
+<div class="paragraph"><p>Password promt will ask to type 2 times password.</p></div>
+<div class="paragraph"><p>Make that shared directory has right access permissions</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>$ chmod 777 weio</tt></pre>
+</div></div>
+<div class="paragraph"><p>Restart smb server</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>$ /etc/init.d/samba restart</tt></pre>
+</div></div>
+</div>
+</div>
 </div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-08-26 23:29:06 CEST
+Last updated 2013-12-06 00:06:33 CET
 </div>
 </div>
 </body>
