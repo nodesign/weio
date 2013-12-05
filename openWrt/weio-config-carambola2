@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # OpenWrt version: Barrier Breaker (r35770)
-# Sun Nov 17 16:48:39 2013
+# Thu Dec  5 22:35:08 2013
 #
 CONFIG_HAVE_DOT_CONFIG=y
 # CONFIG_TARGET_ppc40x is not set
@@ -1382,6 +1382,12 @@ CONFIG_PACKAGE_wireless-tools=y
 #
 
 #
+# BitTorrent
+#
+CONFIG_PACKAGE_ctorrent=m
+# CONFIG_PACKAGE_ctorrent-nossl is not set
+
+#
 # Firewall
 #
 # CONFIG_PACKAGE_arptables is not set
@@ -1500,7 +1506,7 @@ CONFIG_PACKAGE_pppdump=m
 CONFIG_PACKAGE_pppstats=m
 CONFIG_PACKAGE_rssileds=m
 CONFIG_PACKAGE_samba36-client=m
-CONFIG_PACKAGE_samba36-server=m
+CONFIG_PACKAGE_samba36-server=y
 CONFIG_PACKAGE_SAMBA_MAX_DEBUG_LEVEL=-1
 # CONFIG_PACKAGE_soloscli is not set
 CONFIG_PACKAGE_ss=m
@@ -1580,6 +1586,7 @@ CONFIG_PACKAGE_libevent2-openssl=m
 CONFIG_PACKAGE_libevent2-pthreads=m
 CONFIG_PACKAGE_libexpat=y
 CONFIG_PACKAGE_libffi=y
+CONFIG_PACKAGE_libgd=y
 CONFIG_PACKAGE_libgdbm=y
 CONFIG_PACKAGE_libiconv=m
 CONFIG_PACKAGE_libiconv-full=m
@@ -1587,6 +1594,7 @@ CONFIG_PACKAGE_libintl=m
 CONFIG_PACKAGE_libintl-full=m
 # CONFIG_PACKAGE_libiw is not set
 CONFIG_PACKAGE_libiwinfo=y
+CONFIG_PACKAGE_libjpeg=y
 CONFIG_PACKAGE_libjson=y
 CONFIG_PACKAGE_libltdl=m
 CONFIG_PACKAGE_liblua=y
@@ -1605,6 +1613,7 @@ CONFIG_PACKAGE_libpcap=y
 # Configuration
 #
 # CONFIG_PCAP_HAS_USB is not set
+CONFIG_PACKAGE_libpng=y
 CONFIG_PACKAGE_libpopt=m
 CONFIG_PACKAGE_libreadline=m
 CONFIG_PACKAGE_librpc=m
@@ -1797,7 +1806,7 @@ CONFIG_PACKAGE_kmod-i2c-gpio=y
 # Input modules
 #
 CONFIG_PACKAGE_kmod-hid=m
-CONFIG_PACKAGE_kmod-input-core=m
+CONFIG_PACKAGE_kmod-input-core=y
 CONFIG_PACKAGE_kmod-input-evdev=m
 # CONFIG_PACKAGE_kmod-input-gpio-buttons is not set
 CONFIG_PACKAGE_kmod-input-gpio-encoder=m
@@ -2127,9 +2136,9 @@ CONFIG_PACKAGE_kmod-usb2=y
 #
 # Video Support
 #
-CONFIG_PACKAGE_kmod-video-core=m
-CONFIG_PACKAGE_kmod-video-cpia2=m
-CONFIG_PACKAGE_kmod-video-gspca-core=m
+CONFIG_PACKAGE_kmod-video-core=y
+CONFIG_PACKAGE_kmod-video-cpia2=y
+CONFIG_PACKAGE_kmod-video-gspca-core=y
 CONFIG_PACKAGE_kmod-video-gspca-conex=m
 CONFIG_PACKAGE_kmod-video-gspca-etoms=m
 CONFIG_PACKAGE_kmod-video-gspca-finepix=m
@@ -2163,10 +2172,10 @@ CONFIG_PACKAGE_kmod-video-gspca-t613=m
 CONFIG_PACKAGE_kmod-video-gspca-tv8532=m
 CONFIG_PACKAGE_kmod-video-gspca-vc032x=m
 CONFIG_PACKAGE_kmod-video-gspca-zc3xx=m
-CONFIG_PACKAGE_kmod-video-pwc=m
-CONFIG_PACKAGE_kmod-video-sn9c102=m
-CONFIG_PACKAGE_kmod-video-uvc=m
-CONFIG_PACKAGE_kmod-video-videobuf2=m
+CONFIG_PACKAGE_kmod-video-pwc=y
+CONFIG_PACKAGE_kmod-video-sn9c102=y
+CONFIG_PACKAGE_kmod-video-uvc=y
+CONFIG_PACKAGE_kmod-video-videobuf2=y
 
 #
 # Virtualization Support
@@ -2263,6 +2272,13 @@ CONFIG_PACKAGE_ubus=y
 CONFIG_PACKAGE_ubusd=y
 
 #
+# Multimedia
+#
+CONFIG_PACKAGE_fswebcam=y
+CONFIG_PACKAGE_mjpg-streamer=y
+CONFIG_PACKAGE_motion=y
+
+#
 # Utilities
 #
 
@@ -2323,6 +2339,7 @@ CONFIG_PACKAGE_comgt=m
 CONFIG_PACKAGE_iconv=m
 # CONFIG_PACKAGE_iwcap is not set
 CONFIG_PACKAGE_iwinfo=y
+# CONFIG_PACKAGE_jpeg-tools is not set
 CONFIG_PACKAGE_jshn=y
 # CONFIG_PACKAGE_kexec-tools is not set
 # CONFIG_PACKAGE_ldconfig is not set
