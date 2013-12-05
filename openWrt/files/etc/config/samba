@@ -1,0 +1,18 @@
+
+config 'samba' 'samba'
+	option 'name' 'WeIO'
+	option 'workgroup' 'WEIO'
+	option 'description' 'WeIO'
+	option 'homes' '0'
+	option 'enable' '1'
+	option 'wan' '0'
+	option 'allow_unauth' '1'
+
+config 'sambashare' 'sambashare'
+	option 'name' 'WeIOroot'
+	option 'path' '/weio'
+	option 'read_only' 'no'
+	option 'guest_ok' 'no'
+	option 'create_mask' '0700'
+	option 'dir_mask' '0700'
+
