@@ -1318,10 +1318,6 @@ Remember: When testing WeIO it's good practice NOT to keep old conf files
 *************************************************************************
 Activating SMB fileshare
 ------------------------
-Install thru openWrt feeds samba36-server and activate it in make menuconfig
-----------------------------------------
-$ ./scripts/feeds install samba36-server
-----------------------------------------
 These are settings for WeIO, they are inspired by original Fonera configurations.
 
 /etc/samba/smb.conf
