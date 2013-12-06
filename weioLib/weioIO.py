@@ -1,5 +1,6 @@
 from weioLib.weioGpio import WeioGpio
 import platform
+import time
 
 ###
 # Global interface
@@ -61,3 +62,6 @@ def detachInterrupt(pin):
 def getAvailableInterruptId():
     return gpio.getAvailableInterruptId()
 
+def delay(period):
+    """Delay expressed in milliseconds. Delay will block current process. Delay can be evil"""
+    time.sleep(period/1000.0)
