@@ -32,6 +32,10 @@ def analogRead(pin) :
 def pwmWrite(pin, value) :
     return gpio.pwmWrite(pin, value)
 
+def analogWrite(pin, value):
+    """Defining idiom of pwmWrite to match arduino syntax"""
+    return gpio.pwmWrite(pin, value)
+
 def proportion(value, istart, istop, ostart, ostop):
     return gpio.proportion(value, istart, istop, ostart, ostop)
     
@@ -65,3 +69,4 @@ def getAvailableInterruptId():
 def delay(period):
     """Delay expressed in milliseconds. Delay will block current process. Delay can be evil"""
     time.sleep(period/1000.0)
+
