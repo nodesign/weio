@@ -228,7 +228,7 @@ class WeioGpio():
     
     def attachInterrupt(self, pin, mode, callback):
         myid = self.getAvailableInterruptId()
-        if myid is not None :
+        if not(myid is None) :
             inter = Interrupt(myid, pin, mode, callback)
             self.interrupts[myid] = inter
             self.uper.attachInterrupt(myid, pins[pin], mode)
