@@ -13,3 +13,4 @@
 ./scripts/feeds install motion
 ./scripts/feeds install mjpg-streamer
 ./scripts/feeds install fswebcam
+./scripts/feeds install libv4l
