@@ -264,7 +264,8 @@ if __name__ == '__main__':
 
 
     # STARTING LAST USER PROGRAM
-    player.play()
+    if (confFile['play_composition_on_server_boot'] == "YES"):
+        player.play()
 
     # STARTING SERVER
     tornado.ioloop.IOLoop.instance().start()

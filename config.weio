@@ -1,6 +1,6 @@
 {
-    "absolut_root_path": "/Users/uros/workNow/nodesign/weIO/weio/weio", 
-    "debug_mode": "True", 
+    "absolut_root_path": "/Users/uros/workNow/nodesign/weIO/weio/forTest/weio", 
+    "debug_mode": "False", 
     "dependencies_path": "www/", 
     "dns_name": "weio.local", 
     "editor_html_path": "www/dashboard.html", 
@@ -12,9 +12,10 @@
         "weioMain.py"
     ], 
     "last_opened_project": "helloWorld/", 
+    "play_composition_on_server_boot": "NO", 
     "port": 8081, 
     "user": "uros petrevski", 
     "user_projects_path": "userProjects/", 
     "weio_lib_path": "weioLib", 
-    "weio_version": "0.274"
+    "weio_version": "0.277"
 }
