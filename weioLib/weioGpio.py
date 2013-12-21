@@ -47,7 +47,7 @@ class WeioGpio():
         if (os.path.exists("/dev/ttyACM0")) :
             self.uper = uper.UPER(self.mainInterrupt)
         else :
-            print "*SYSOUT*Error! LPC coprocessor not present in system!"
+            print "*SYSOUT*Error! LPC coprocessor not present!"
             self.uper = None
             
         shared.declaredPins = []
