@@ -427,7 +427,17 @@ var callbacks = {
     "createNewProject" : newProjectIsCreated,
     "deleteProject" : projectDeleted,
     "errorObjects": updateError,
-    "getPlayerStatus": playerStatus
+    "getPlayerStatus": playerStatus,
+    "archiveProject": projectArchived
+}
+
+
+/**
+ * Notify user that project has been archived and refresh file tree
+ */
+function projectArchived(data) {
+    setStatus(1, data.status);
+    reloadIFrame(data);
 }
 
 /**
@@ -483,7 +493,8 @@ function updateProjects(data) {
     $("#userProjectsList").empty();
     $("#userProjectsList").append('<li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>');
     $("#userProjectsList").append('<li class="divider"></li>');
-    
+    $("#userProjectsList").append('<li><a tabindex="-1" href="#downloadProject" role="button" data-toggle="modal">Download active project</a></li>');
+    $("#userProjectsList").append('<li class="divider"></li>');
    
     
     for (var folder in data.data) {
@@ -491,6 +502,14 @@ function updateProjects(data) {
         $("#userProjectsList").append('<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + data.data[folder] + '</a></li>') 
     }
     
+}
+
+/**
+ * Make tar archive of active project
+ */
+function archiveProject() {
+    var rq = { "request": "archiveProject"};
+    dashboard.send(JSON.stringify(rq));
 }
 
 function reloadIFrame(data) {

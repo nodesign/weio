@@ -44,6 +44,7 @@ from os import listdir, sep
 from os.path import abspath, basename, isdir
 import uuid
 from shutil import move
+import tarfile
 
 #from sys import argv
 
@@ -267,5 +268,10 @@ def createDirectory(path):
     """Creates new directory at given path. Creates all subdirectories if needed"""
     if not os.path.isdir(path):
         os.makedirs(path)
+
+def createTarfile(output_filename, source_dir):
+    """Creates TAR archive for bundling projects"""
+    with tarfile.open(output_filename, "w:gz") as tar:
+        tar.add(source_dir, arcname=os.path.basename(source_dir))
        
 #print(scanFolders())

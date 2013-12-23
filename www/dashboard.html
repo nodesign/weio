@@ -263,6 +263,27 @@
     </div>
     <!-- END Modal Create New project -->
     
+    
+    <!-- Download project -->
+    <div id="downloadProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3>Download active project</h3>
+        </div>
+        
+        <div class="modal-body" id="wifiParameters">
+             <p>WeIO will archive your project and show it inside file tree. Then you can click to download it</p>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <button class="btn btn-primary" onclick="archiveProject()" data-dismiss="modal">Continue</button>
+        </div>
+    </div>
+    <!-- END Download project -->
+       
+       
+    
     <!-- Modal Something bad happened - deconnexion -->
     <div id="imDead" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header">

@@ -229,7 +229,25 @@ class WeioDashBoardHandler(SockJSConnection):
         data['status'] = player.playing
         
         self.send(json.dumps(data))
-                
+        
+    def createTarForProject(self, rq):
+        # TEST IF NAME IS OK FIRST
+        # get configuration from file
+        config = weio_config.getConfiguration()
+        data = {}
+        data['requested'] = rq['request']
+        
+        lp = config["last_opened_project"].split("/")[0]
+
+        if (weioFiles.checkIfDirectoryExists(config["user_projects_path"]+config["last_opened_project"])):
+            weioFiles.createTarfile(config["user_projects_path"]+config["last_opened_project"]+lp+".tar", config["user_projects_path"]+config["last_opened_project"])   
+            data['status'] = "Project archived"
+            print "project archived"
+        else :
+            data['status'] = "Error archiving project"
+            
+        self.send(json.dumps(data))
+        
     
 ##############################################################################################################################
     # DEFINE CALLBACKS IN DICTIONARY
@@ -251,7 +269,8 @@ class WeioDashBoardHandler(SockJSConnection):
         'createNewProject': newProject,
         'deleteProject' : deleteCurrentProject,
         'packetRequests': iteratePacketRequests,
-        'getPlayerStatus': sendPlayerStatus
+        'getPlayerStatus': sendPlayerStatus,
+        'archiveProject' : createTarForProject
         
     }
     
