@@ -345,6 +345,12 @@ function createNewProject() {
     dashboard.send(JSON.stringify(rq));
 }
 
+function duplicateProject() {
+    projectName = $("#duplicatedProjectName").val();
+    var rq = { "request": "duplicateProject", "path":projectName};
+    dashboard.send(JSON.stringify(rq));
+}
+
 /**
  * Sets coresponding icon and message inside statusBar in the middle of header. 
  * 
@@ -573,7 +579,8 @@ function updateProjects(data) {
     $("#userProjectsList").append('<li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>');
     $("#userProjectsList").append('<li><a tabindex="-1" id="activateProjectUpload">Import existing project</a></li>');
     $("#userProjectsList").append('<li class="divider"></li>');
-    $("#userProjectsList").append('<li><a tabindex="-1" href="#downloadProject" role="button" data-toggle="modal">Make archive of active project</a></li>');
+    $("#userProjectsList").append('<li><a tabindex="-1" href="#duplicateProject" role="button" data-toggle="modal">Duplicate active project</a></li>');
+    $("#userProjectsList").append('<li><a tabindex="-1" href="#downloadProject" role="button" data-toggle="modal">Archive active project</a></li>');
     $("#userProjectsList").append('<li class="divider"></li>');
    
     // IMPORT PROJECT

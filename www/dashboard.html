@@ -264,8 +264,26 @@
     </div>
     <!-- END Modal Create New project -->
     
+    <!-- Modal Duplicate active project -->
+    <div id="duplicateProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3>Give a name to duplicated project</h3>
+        </div>
+        <div class="modal-body" id="wifiParameters">
+            
+            <input type="text" class="input-small" placeholder="Name without spaces" id="duplicatedProjectName" style="width:200px">
+                
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <button class="btn btn-primary" onclick="duplicateProject()" data-dismiss="modal">Continue</button>
+        </div>
+    </div>
+    <!-- END Modal Duplicate active project -->
     
-    <!-- Download project -->
+    <!-- Archive project -->
     <div id="downloadProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -281,7 +299,7 @@
             <button class="btn btn-primary" onclick="archiveProject()" data-dismiss="modal">Continue</button>
         </div>
     </div>
-    <!-- END Download project -->
+    <!-- END Archive project -->
        
        
     

@@ -47,7 +47,7 @@ import json
 from weioLib import weioIpAddress
 from weioLib import weioFiles
 
-from shutil import copyfile
+from shutil import copyfile, copytree
 
 # For shared objects between handlers
 # Handlers need to communicate between each other to avoid too complex client interaction
@@ -189,6 +189,25 @@ class WeioDashBoardHandler(SockJSConnection):
         data['status'] = "New project created"
         data['path'] = path
         self.send(json.dumps(data))
+        
+    def duplicateProject(self, rq):
+        config = weio_config.getConfiguration()
+        
+        path = rq['path']
+        
+        copytree(config["user_projects_path"]+config["last_opened_project"],config["user_projects_path"]+path)
+        
+        data = {}
+        data['requested'] = "status"
+        data['status'] = "Project duplicated"
+        self.send(json.dumps(data))
+        
+        # now go to newely duplicated project
+    
+        data['request'] = "changeProject"
+        data['data'] = path
+        
+        self.changeProject(data)
 
     def deleteCurrentProject(self, rq):
         
@@ -284,7 +303,8 @@ class WeioDashBoardHandler(SockJSConnection):
             data['requested'] = 'status'
             data['status'] = "Error this projet already exists"
             self.send(json.dumps(data))
-        
+            
+   
 ##############################################################################################################################
     # DEFINE CALLBACKS IN DICTIONARY
     # Second, associate key with right function to be called
@@ -307,7 +327,8 @@ class WeioDashBoardHandler(SockJSConnection):
         'packetRequests': iteratePacketRequests,
         'getPlayerStatus': sendPlayerStatus,
         'archiveProject' : createTarForProject,
-        'addNewProjectFromArchive' : decompressNewProject
+        'addNewProjectFromArchive' : decompressNewProject,
+        'duplicateProject': duplicateProject
         
     }
     
