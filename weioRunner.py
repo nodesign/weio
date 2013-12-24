@@ -2,7 +2,7 @@
 from tornado import web, ioloop, options
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
-import sys
+import sys,os
 import json
 
 import threading
@@ -11,10 +11,9 @@ from weioLib.weioUserApi import *
 from weioLib.weioIO import *
 import platform
 
-# add SD card path
-sys.path.append('/sd')
-
 projectModule = "userProjects." + sys.argv[1] + ".main"
+# set python working directory
+os.chdir("userProjects/" + sys.argv[1])
 
 #import module from argument list
 #print projectModule
