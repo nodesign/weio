@@ -70,6 +70,9 @@ class WeioFirstTimeHandler(SockJSConnection):
         passwd2 = rq['password2']
         dnsName = rq['dnsName']
         
+        # This is two letters country code to be used to setup wifi region
+        countryCode = rq['countryCode']
+        
         passwd = ""
         if (passwd1==passwd2):
             passwd = passwd1 
@@ -88,7 +91,7 @@ class WeioFirstTimeHandler(SockJSConnection):
             try :
                 # ATTENTION, DON'T MESS WITH THIS STUFF ON YOUR LOCAL COMPUTER
                 # First protection is mips detection, second is your own OS
-                # who needs sudo to change passwd
+                # who hopefully needs sudo to change passwd on the local machine
                 if (platform.machine() == 'mips') : 
                     
                     print Popen(command, stdout=PIPE, shell=True).stdout.read()

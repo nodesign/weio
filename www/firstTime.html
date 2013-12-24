@@ -23,7 +23,7 @@
       }
 
       .form-signin {
-        max-width: 360px;
+        width: 360px;
         padding: 19px 29px 29px;
         margin: 0 auto 20px;
         background-color: #fff;
@@ -74,8 +74,15 @@
             <input id="password2" type="password" name="password2" placeholder="Re-type password"><br>
             <a>DNS name (http://<span id="dnsName1"></span>.local<span id="ip"></span>)</a><br>
             <input id="dnsName" type="text" placeholder=""><br>
-                
-               <button class="btn btn-large btn-primary" onclick="sendData();return false">Finish setup</button>
+            <a>Choose your country</a><br>
+            
+            <select id="countries">
+            </select>
+           
+            <br>
+            <br>
+            
+            <button class="btn btn-large btn-primary" onclick="sendData();return false">Finish setup</button>
         </form>
         
      

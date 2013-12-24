@@ -36,6 +36,22 @@
 **/
 
 
+$( document ).ready(function() {
+    
+    // Get country list
+    $.getJSON('countries.json', function(data) {
+            var confFile = data;
+            //console.log(confFile[0][1]);
+            
+            $("#countries").empty();
+            for (var i=0; i<confFile.length; i++) {
+                $("#countries").append('<option value="'+confFile[i][1]+'">'+confFile[i][0]+'</option>');
+            }
+            
+    });
+});
+
+
 /**
  * Wifi SockJS object, Web socket for scaning and changing wifi parameters
  */
@@ -47,7 +63,8 @@ function sendData() {
                "fullName":$("#fullName").val(),
                "password1":$("#password1").val(),
                "password2":$("#password2").val(),
-               "dnsName": $("#dnsName").val()
+               "dnsName": $("#dnsName").val(),
+               "countryCode": $("#countries").val()
     };
     fistTimeSocket.send(JSON.stringify(rq));
 }
@@ -93,6 +110,8 @@ fistTimeSocket.onopen = function() {
     console.log('FT Web socket is opened');
     var rq = { "request": "getBasicInfo"};
     fistTimeSocket.send(JSON.stringify(rq));
+    
+   
 };
 
 /*
