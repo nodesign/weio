@@ -271,7 +271,15 @@ def createDirectory(path):
 
 def createTarfile(output_filename, source_dir):
     """Creates TAR archive for bundling projects"""
-    with tarfile.open(output_filename, "w:gz") as tar:
-        tar.add(source_dir, arcname=os.path.basename(source_dir))
-       
+    tar = tarfile.open(output_filename, "w:gz")
+    tar.add(source_dir) # arcname=os.path.basename(source_dir)
+    tar.close()
+    
+def unTarFile(sourceFilePath):
+    """Decompresses Tar archive and create new project. Destroys archive file after"""
+    tar = tarfile.open(sourceFilePath)
+    tar.extractall(".")
+    tar.close()
+    removeFile(sourceFilePath)
+    
 #print(scanFolders())

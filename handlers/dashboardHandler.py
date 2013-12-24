@@ -235,6 +235,10 @@ class WeioDashBoardHandler(SockJSConnection):
         # get configuration from file
         config = weio_config.getConfiguration()
         data = {}
+        data['requested'] = "status"
+        data['status'] = "Making archive..."
+        self.send(json.dumps(data))
+        
         data['requested'] = rq['request']
         
         lp = config["last_opened_project"].split("/")[0]
@@ -248,7 +252,39 @@ class WeioDashBoardHandler(SockJSConnection):
             
         self.send(json.dumps(data))
         
-    
+    def decompressNewProject(self, rq):
+        print "decompress"
+        f = rq['data']
+        name = f['name']
+        contents = f['data']
+        #print contents
+        
+        # get configuration from file
+        confFile = weio_config.getConfiguration()
+        pathCurrentProject = confFile["user_projects_path"]
+        
+        projectName = name.split(".tar")[0]
+        data = {}
+        
+        if (weioFiles.checkIfDirectoryExists(pathCurrentProject+projectName) is False) :
+            #decode from base64, file is binary
+            bin = contents
+            bin = bin.split(",")[1] # split header, for example: "data:image/jpeg;base64,"
+            weioFiles.saveRawContentToFile(pathCurrentProject+name, bin.decode("base64"))
+            
+            weioFiles.unTarFile(pathCurrentProject+name)
+        
+            print (pathCurrentProject+name)
+        
+            data['request'] = "changeProject"
+            data['data'] = projectName
+        
+            self.changeProject(data)
+        else :
+            data['requested'] = 'status'
+            data['status'] = "Error this projet already exists"
+            self.send(json.dumps(data))
+        
 ##############################################################################################################################
     # DEFINE CALLBACKS IN DICTIONARY
     # Second, associate key with right function to be called
@@ -270,7 +306,8 @@ class WeioDashBoardHandler(SockJSConnection):
         'deleteProject' : deleteCurrentProject,
         'packetRequests': iteratePacketRequests,
         'getPlayerStatus': sendPlayerStatus,
-        'archiveProject' : createTarForProject
+        'archiveProject' : createTarForProject,
+        'addNewProjectFromArchive' : decompressNewProject
         
     }
     

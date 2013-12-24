@@ -169,9 +169,88 @@ $(document).ready(function () {
         setTestament(lostContact);
         
     };   
-
+    
+    
+   
     
 }); /* end of document on ready event */
+
+   function updateProgress(evt) {
+       // evt is an ProgressEvent.
+       if (evt.lengthComputable) {
+           var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
+           // Increase the progress bar length.
+           if (percentLoaded < 100) {
+               window.top.updateWeioProgressWheel(percentLoaded);
+               //console.log(percentLoaded + '%');
+           }
+       }
+   }
+
+   function transferEnded(evt) {
+      // console.log("end");
+       window.top.updateWeioProgressWheel(100);
+   }
+
+   function errorFile(evt) {
+       switch(evt.target.error.code) {
+           case evt.target.error.NOT_FOUND_ERR:
+               alert('File Not Found!');
+               break;
+           case evt.target.error.NOT_READABLE_ERR:
+               alert('File is not readable');
+               break;
+           case evt.target.error.ABORT_ERR:
+               break; // noop
+           default:
+               alert('An error occurred reading this file.');
+       };
+   }
+
+function handleFileSelect(evt) {
+   var files = evt.target.files; // FileList object
+    //console.log("FILE");
+   
+   
+   for (var i = 0, f; f = files[i]; i++) {
+
+       /*
+       // Only process image files.
+       if (!f.type.match('image.*')) {
+           continue;
+       }
+       */
+       var reader = new FileReader();
+
+       reader.onprogress = updateProgress;
+       reader.onloadend = transferEnded;
+       reader.onerror = errorFile;
+
+       // Closure to capture the file information.
+
+
+       reader.onload = (function(theFile) {
+                        return function(e) {
+                        //console.log("FILE ", theFile.name, " ", e.target.result);
+                        data = {}
+                        data.name = theFile.name;
+                        data.data = e.target.result;
+                        addNewProjectFromArchive(data);
+                        };
+                        })(f);
+
+        reader.readAsDataURL(f);
+  
+   }
+}
+
+/*
+ * Add new project from TAR archive
+ */ 
+function addNewProjectFromArchive(data){
+   var rq = { "request": "addNewProjectFromArchive", "data" : data};
+   dashboard.send(JSON.stringify(rq));
+}
 
 /*
  * isEditorActive
@@ -492,11 +571,22 @@ function updateProjects(data) {
     
     $("#userProjectsList").empty();
     $("#userProjectsList").append('<li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>');
+    $("#userProjectsList").append('<li><a tabindex="-1" id="activateProjectUpload">Import existing project</a></li>');
     $("#userProjectsList").append('<li class="divider"></li>');
-    $("#userProjectsList").append('<li><a tabindex="-1" href="#downloadProject" role="button" data-toggle="modal">Download active project</a></li>');
+    $("#userProjectsList").append('<li><a tabindex="-1" href="#downloadProject" role="button" data-toggle="modal">Make archive of active project</a></li>');
     $("#userProjectsList").append('<li class="divider"></li>');
    
-    
+    // IMPORT PROJECT
+   
+    $('#activateProjectUpload').click(function(){
+        $('#uploadProject').click();
+    });
+   
+    $('#uploadProject').change(function(evt){
+        handleFileSelect(evt);
+    });
+         
+     
     for (var folder in data.data) {
         var s = "'"+String(data.data[folder])+"'";    
         $("#userProjectsList").append('<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + data.data[folder] + '</a></li>') 

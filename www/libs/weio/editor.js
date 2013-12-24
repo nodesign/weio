@@ -424,6 +424,7 @@ function errorFile(evt) {
             alert('An error occurred reading this file.');
     };
 }
+
 function handleFileSelect(evt) {
     var files = evt.target.files; // FileList object
     
