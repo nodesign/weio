@@ -574,7 +574,7 @@ function updateStatus(data){
  * Get project names and put it into dropbox menu
  */
 function updateProjects(data) {
-    
+    /*
     $("#userProjectsList").empty();
     $("#userProjectsList").append('<li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>');
     $("#userProjectsList").append('<li><a tabindex="-1" id="activateProjectUpload">Import existing project</a></li>');
@@ -582,6 +582,7 @@ function updateProjects(data) {
     $("#userProjectsList").append('<li><a tabindex="-1" href="#duplicateProject" role="button" data-toggle="modal">Duplicate active project</a></li>');
     $("#userProjectsList").append('<li><a tabindex="-1" href="#downloadProject" role="button" data-toggle="modal">Archive active project</a></li>');
     $("#userProjectsList").append('<li class="divider"></li>');
+   */
    
     // IMPORT PROJECT
    
@@ -592,11 +593,10 @@ function updateProjects(data) {
     $('#uploadProject').change(function(evt){
         handleFileSelect(evt);
     });
-         
-     
+    
     for (var folder in data.data) {
         var s = "'"+String(data.data[folder])+"'";    
-        $("#userProjectsList").append('<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + data.data[folder] + '</a></li>') 
+        $("#examplesUserProjects").append('<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + data.data[folder] + '</a></li>') 
     }
     
 }

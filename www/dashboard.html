@@ -59,18 +59,50 @@
                     <ul class="nav">
                         
                         <li class="dropdown">
+                            
                             <a href="#" class="dropdown-toggle" id="projectTitle" data-toggle="dropdown" >loading...</a>
                             <input type="file" accept=".tar" id="uploadProject" name="upload" style="visibility: hidden; width: 1px; height: 1px" />
                             <ul class="dropdown-menu" id="userProjectsList">
                                 
-
-                                <!-- <li class="dropdown-submenu">
-                                                                    <a tabindex="-1" href="#">Examples</a>
-                                                                    <ul class="dropdown-menu">
-                                                                        <li><a tabindex="-1" href="#">iPhoneHelloWorld</a></li>
-                                                                        <li><a tabindex="-1" href="#">Oscilloscope</a></li>
-                                                                    </ul>
-                                                                </li> -->
+                                <li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>
+                                <li><a tabindex="-1" id="activateProjectUpload">Import existing project</a></li>
+                                <li class="divider"></li>
+                                <li><a tabindex="-1" href="#duplicateProject" role="button" data-toggle="modal">Duplicate active project</a></li>
+                                <li><a tabindex="-1" href="#downloadProject" role="button" data-toggle="modal">Archive active project</a></li>
+                                <li class="divider"></li>
+                                
+                                <li class="dropdown-submenu scroll-menu">
+                                    <a tabindex="-1" href="#">Examples</a>
+                                   <ul class="dropdown-menu">
+                                    
+                                        <ul class="dropdown-menu scroll-menu" id="examplesUserProjects">
+                                        <!-- add projects here 
+                                        <li><a tabindex="-1" href="#">iPhoneHelloWorld</a></li>
+                                        <li><a tabindex="-1" href="#">Oscilloscope</a></li>
+                                        -->
+                                        </ul>
+                                    
+                                    </ul>
+                                </li>
+                                
+                                <!--
+                                <li class="dropdown-submenu scroll-menu">
+                                    <a tabindex="-1" href="#">Flash storage</a>
+                                        <ul class="dropdown-menu scroll-menu" id="flashUserProjects">
+                                        <li><a tabindex="-1" href="#">iPhoneHelloWorld</a></li>
+                                        <li><a tabindex="-1" href="#">Oscilloscope</a></li>
+                                    </ul>
+                                </li>
+                                -->
+                                <!--
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">SD card storage</a>
+                                        <ul class="dropdown-menu" id="sdcardUserProjects">
+                                            <li><a tabindex="-1" href="#">iPhoneHelloWorld</a></li>
+                                            <li><a tabindex="-1" href="#">Oscilloscope</a></li>
+                                        </ul>
+                                </li> 
+                                -->
                                 
                             </ul>
                         </li>
