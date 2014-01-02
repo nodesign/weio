@@ -129,6 +129,7 @@ if (len(sys.argv)==3) :
     config["weio_version"] = sys.argv[1]
     config["port"] = 80
     config["debug_mode"] = "False"
+    config["extern_projects_path"] = "/weioUser/"
     
     inputFile = open("../config.weio", 'w')
     ret = inputFile.write(json.dumps(config, indent=4, sort_keys=True))
@@ -144,6 +145,8 @@ if (len(sys.argv)==3) :
     
     # Revert port in local conf file
     config["port"] = 8081
+    config["debug_mode"] = "True"
+    config["extern_projects_path"] = "/Users/uros/workNow/nodesign/weIO/weio/weioUser/"
     inputFile = open("../config.weio", 'w')
     ret = inputFile.write(json.dumps(config, indent=4, sort_keys=True))
     inputFile.close()
