@@ -307,22 +307,27 @@
         </div>
         
         <div class="modal-body" id="wifiParameters">
-            <div style="position:relative;">
-            		<a class='btn' href='javascript:;'>
-            			Choose WeIO project tar file...
-            			<input id="importProjectUploader" type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'>
-            		</a>
-            		&nbsp;
-            		<span class='label label-info' id="upload-file-info"></span>
-            	</div>
+            
                 <p>Import projet to :</p>
             	
              <div class="storageUnitChooser"></div>
+             
+             
+             <div style="position:relative;">
+             		<a class='btn' href='javascript:;'>
+             			Choose WeIO project tar file...
+             			<input id="importProjectUploader" type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'>
+             		</a>
+             		&nbsp;
+             		<span class='label label-info' id="upload-file-info"></span>
+             </div>
+             
+             
         </div>
         
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-            <button class="btn btn-primary" onclick="" data-dismiss="modal">Continue</button>
+            <button class="btn btn-primary" onclick="" data-dismiss="modal">Finish</button>
         </div>
     </div>
     <!-- END Archive project -->
