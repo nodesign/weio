@@ -61,52 +61,16 @@
                         <li class="dropdown">
                             
                             <a href="#" class="dropdown-toggle" id="projectTitle" data-toggle="dropdown" >loading...</a>
-                            <input type="file" accept=".tar" id="uploadProject" name="upload" style="visibility: hidden; width: 1px; height: 1px" />
+                            
                             <ul class="dropdown-menu" id="userProjectsList">
                                 
-                                <li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>
-                                <li><a tabindex="-1" id="activateProjectUpload">Import existing project</a></li>
-                                <li class="divider"></li>
-                                <li><a tabindex="-1" href="#duplicateProject" role="button" data-toggle="modal">Duplicate active project</a></li>
-                                <li><a tabindex="-1" href="#downloadProject" role="button" data-toggle="modal">Archive active project</a></li>
-                                <li class="divider"></li>
                                 
-                                <li class="dropdown-submenu scroll-menu">
-                                    <a tabindex="-1" href="#">Examples</a>
-                                   <ul class="dropdown-menu">
-                                    
-                                        <ul class="dropdown-menu scroll-menu" id="examplesUserProjects">
-                                        <!-- add projects here 
-                                        <li><a tabindex="-1" href="#">iPhoneHelloWorld</a></li>
-                                        <li><a tabindex="-1" href="#">Oscilloscope</a></li>
-                                        -->
-                                        </ul>
-                                    
-                                    </ul>
-                                </li>
-                                
-                                <!--
-                                <li class="dropdown-submenu scroll-menu">
-                                    <a tabindex="-1" href="#">Flash storage</a>
-                                        <ul class="dropdown-menu scroll-menu" id="flashUserProjects">
-                                        <li><a tabindex="-1" href="#">iPhoneHelloWorld</a></li>
-                                        <li><a tabindex="-1" href="#">Oscilloscope</a></li>
-                                    </ul>
-                                </li>
-                                -->
-                                <!--
-                                <li class="dropdown-submenu">
-                                    <a tabindex="-1" href="#">SD card storage</a>
-                                        <ul class="dropdown-menu" id="sdcardUserProjects">
-                                            <li><a tabindex="-1" href="#">iPhoneHelloWorld</a></li>
-                                            <li><a tabindex="-1" href="#">Oscilloscope</a></li>
-                                        </ul>
-                                </li> 
-                                -->
                                 
                             </ul>
                         </li>
-                       </ul>
+                        
+                        
+                      </ul>
                         
                         
                                          
@@ -286,7 +250,9 @@
         <div class="modal-body" id="wifiParameters">
             
             <input type="text" class="input-small" placeholder="Name without spaces" id="newProjectName" style="width:200px">
-                
+            
+            <div class="storageUnitChooser"></div>
+            
         </div>
         
         <div class="modal-footer">
@@ -305,7 +271,7 @@
         <div class="modal-body" id="wifiParameters">
             
             <input type="text" class="input-small" placeholder="Name without spaces" id="duplicatedProjectName" style="width:200px">
-                
+            <div class="storageUnitChooser"></div>
         </div>
         
         <div class="modal-footer">
@@ -329,6 +295,34 @@
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
             <button class="btn btn-primary" onclick="archiveProject()" data-dismiss="modal">Continue</button>
+        </div>
+    </div>
+    <!-- END Archive project -->
+    
+    <!-- Import existing project -->
+    <div id="importProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3>Import existing project</h3>
+        </div>
+        
+        <div class="modal-body" id="wifiParameters">
+            <div style="position:relative;">
+            		<a class='btn' href='javascript:;'>
+            			Choose WeIO project tar file...
+            			<input id="importProjectUploader" type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'>
+            		</a>
+            		&nbsp;
+            		<span class='label label-info' id="upload-file-info"></span>
+            	</div>
+                <p>Import projet to :</p>
+            	
+             <div class="storageUnitChooser"></div>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <button class="btn btn-primary" onclick="" data-dismiss="modal">Continue</button>
         </div>
     </div>
     <!-- END Archive project -->

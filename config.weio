@@ -1,9 +1,10 @@
 {
-    "absolut_root_path": "/Users/uros/workNow/nodesign/weIO/weio/forTest/weio", 
-    "debug_mode": "False", 
+    "absolut_root_path": "/Users/uros/workNow/nodesign/weIO/weio/weio", 
+    "debug_mode": "True", 
     "dependencies_path": "www/", 
     "dns_name": "weio.local", 
     "editor_html_path": "www/dashboard.html", 
+    "extern_projects_path": "/Users/uros/workNow/nodesign/weIO/weio/weioUser/", 
     "first_time_run": "NO", 
     "ip": "0.0.0.0", 
     "kill_flag": "YES", 
@@ -11,11 +12,11 @@
         "index.html", 
         "weioMain.py"
     ], 
-    "last_opened_project": "helloWorld/", 
+    "last_opened_project": "adcToWeb", 
     "play_composition_on_server_boot": "NO", 
     "port": 8081, 
-    "user": "uros petrevski", 
-    "user_projects_path": "userProjects/", 
+    "user": "uki car", 
+    "user_projects_path": "userFiles/", 
     "weio_lib_path": "weioLib", 
-    "weio_version": "0.277"
+    "weio_version": "0.279"
 }

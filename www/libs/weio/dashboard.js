@@ -60,6 +60,12 @@ var playCounter;
  */
 var isPlaying = false;
 
+
+/*
+ * This variable stores last selected storage unit
+ */
+var selectedStorageUnit = null;
+
 /*
  * When all DOM elements are fully loaded
  */
@@ -171,6 +177,11 @@ $(document).ready(function () {
     };   
     
     
+    $('#importProjectUploader').change(function(evt){
+            handleFileSelect(evt);
+     });
+    
+    
    
     
 }); /* end of document on ready event */
@@ -236,6 +247,7 @@ function handleFileSelect(evt) {
                         data.name = theFile.name;
                         data.data = e.target.result;
                         addNewProjectFromArchive(data);
+                        console.log("FILEEEEEEEEEEEEEEEEE");
                         };
                         })(f);
 
@@ -248,7 +260,7 @@ function handleFileSelect(evt) {
  * Add new project from TAR archive
  */ 
 function addNewProjectFromArchive(data){
-   var rq = { "request": "addNewProjectFromArchive", "data" : data};
+   var rq = { "request": "addNewProjectFromArchive", "data" : data, "storageUnit":selectedStorageUnit};
    dashboard.send(JSON.stringify(rq));
 }
 
@@ -311,7 +323,7 @@ function runPreview() {
               // generate random number to prevent loading page from cache
               var randomNumber = Math.random();
               
-              $(".iframeContainerIndex").attr("src", "userProjects/" + confFile.last_opened_project + "index.html?"+randomNumber);
+              $(".iframeContainerIndex").attr("src", confFile.user_projects_path + confFile.last_opened_project + "index.html?" + randomNumber);
               // console.log(confFile.weio_lib_path);
               $(".iframeContainerIndex").css("height", screen.height-60 + "px");
               $(".iframeContainerIndex").css("margin-top", screen.height+60 + "px");
@@ -341,13 +353,13 @@ function runSettings() {
 
 function createNewProject() {
     projectName = $("#newProjectName").val();
-    var rq = { "request": "createNewProject", "path":projectName};
+    var rq = { "request": "createNewProject", "path":projectName, "storageUnit":selectedStorageUnit};
     dashboard.send(JSON.stringify(rq));
 }
 
 function duplicateProject() {
     projectName = $("#duplicatedProjectName").val();
-    var rq = { "request": "duplicateProject", "path":projectName};
+    var rq = { "request": "duplicateProject", "path":projectName, "storageUnit":selectedStorageUnit};
     dashboard.send(JSON.stringify(rq));
 }
 
@@ -574,31 +586,78 @@ function updateStatus(data){
  * Get project names and put it into dropbox menu
  */
 function updateProjects(data) {
-    /*
-    $("#userProjectsList").empty();
-    $("#userProjectsList").append('<li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>');
-    $("#userProjectsList").append('<li><a tabindex="-1" id="activateProjectUpload">Import existing project</a></li>');
-    $("#userProjectsList").append('<li class="divider"></li>');
-    $("#userProjectsList").append('<li><a tabindex="-1" href="#duplicateProject" role="button" data-toggle="modal">Duplicate active project</a></li>');
-    $("#userProjectsList").append('<li><a tabindex="-1" href="#downloadProject" role="button" data-toggle="modal">Archive active project</a></li>');
-    $("#userProjectsList").append('<li class="divider"></li>');
-   */
    
-    // IMPORT PROJECT
+   var tag = "";
+   tag+='<li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>';
+   tag+='<li><a tabindex="-1" href="#importProject" role="button" data-toggle="modal">Import existing project</a></li>';
+   tag+='<li class="divider"></li>';
+   tag+='<li><a tabindex="-1" href="#duplicateProject" role="button" data-toggle="modal">Duplicate active project</a></li>';
+   tag+='<li><a tabindex="-1" href="#downloadProject" role="button" data-toggle="modal">Archive active project</a></li>';
+   tag+='<li class="divider"></li>';
    
-    $('#activateProjectUpload').click(function(){
-        $('#uploadProject').click();
-    });
-   
-    $('#uploadProject').change(function(evt){
-        handleFileSelect(evt);
-    });
-    
-    for (var folder in data.data) {
-        var s = "'"+String(data.data[folder])+"'";    
-        $("#examplesUserProjects").append('<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + data.data[folder] + '</a></li>') 
+   for (var i=0; i<data.data.length; i++) {
+           tag+='<li class="dropdown-submenu scroll-menu">\n';
+           tag+='<a tabindex="-1" href="#">'+data.data[i].storageName+'</a>\n';
+           tag+='<ul class="dropdown-menu">\n';
+           tag+='<ul class="dropdown-menu scroll-menu" id="'+data.data[i].storageName+'UserProjects">\n';
+           for (var j=0; j<data.data[i].projects.length;j++) {
+               var s = "'"+data.data[i].storageName+"/userProjects/"+String(data.data[i].projects[j])+"'\n";
+               tag+='<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + data.data[i].projects[j] + '</a></li>\n'; 
+           }
+           
+           tag+='</ul></ul></li>\n';
     }
+    //console.log(tag);
+    $("#userProjectsList").empty();
+    $("#userProjectsList").append(tag);
     
+    
+    tag = "";
+    
+    tag+='<ul class="nav nav-pills">';
+    for (var i=0; i<data.data.length; i++) {
+        if (i==0)
+            tag+='<li class="active" id="'+data.data[i].storageName+'StorageUnit'+'"><a href="#">'+data.data[i].storageName+'</a></li>';
+        else 
+            tag+='<li id="'+data.data[i].storageName+'StorageUnit'+'"><a href="#">'+data.data[i].storageName+'</a></li>';
+    }
+    tag+='</ul>';
+    
+    $(".storageUnitChooser").empty();
+    $(".storageUnitChooser").append(tag);
+    
+    if (selectedStorageUnit==null)
+        selectedStorageUnit = data.data[0].storageName;
+        
+    
+    
+    //$("#"+selectedStorageUnit+"StorageUnit").attr("class", "active");
+    
+    $(".storageUnitChooser").on('click', 'li', function(e) {
+       //alert($(this).attr("id"));
+       $( ".storageUnitChooser li" ).each(function() {
+           $( this ).attr( "class","notActive" );
+       });
+       $( this ).attr( "class", "active" );
+       
+       console.log($(this).attr("id").split("StorageUnit")[0]);
+       changeSelectedStorageUnit($(this).attr("id").split("StorageUnit")[0]);
+       
+    });
+    
+    /*
+    $( ".storageUnitChooser" ).click(function() {
+      $( ".storageUnitChooser li" ).each(function() {
+        $( this ).toggleClass( "active" );    
+        if ($(this).attr("class")=="active") changeSelectedStorageUnit($(this).attr("id"));
+      });
+    });
+    */
+
+}
+
+function changeSelectedStorageUnit(unit) {
+    selectedStorageUnit = unit;
 }
 
 /**

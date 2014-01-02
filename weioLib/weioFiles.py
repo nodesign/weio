@@ -103,7 +103,12 @@ def tree(dir, padding, print_files=True):
             # filer all osx crap DS_Store and all binary Python files
             if ((file != ".DS_Store") and (".pyc" not in file) and (file != "__init__.py")) :
                 fullpath =  "'" + dir + file + "'"
-                htmlTree+=padding + '<li class="file"><a class="fileTitle" id="'+ str(getStinoFromFile(dir+file)) +'" href="' + dir + file + '">' + file + '</a>'
+                if (".tar" in file):
+                    confFile = weio_config.getConfiguration()
+                    projectName = "userFiles/"+confFile['last_opened_project']
+                    htmlTree+=padding + '<li class="file"><a class="fileTitle" id="'+ str(getStinoFromFile(dir+file)) +'" href="' + projectName + file + '"  target="_blank">' + file + '</a>'
+                else :
+                    htmlTree+=padding + '<li class="file"><a class="fileTitle" id="'+ str(getStinoFromFile(dir+file)) +'" href="' + dir + file + '">' + file + '</a>'
                 #htmlTree+='<a href="javascript:prepareToDeleteFile('+ fullpath +');">'
                 #htmlTree+='<i class="icon-remove" id="deleteFileButton" role="button" data-toggle="modal" href="javascript:prepareToDeleteFile('+ fullpath +');"></i>'
                 htmlTree+='<a href="">'
@@ -200,7 +205,7 @@ def saveRawContentToFile(path, data):
      can explore the whole OS. Use checkIfPathIsInUserFolder(path) function to check if path is in user
      only folder."""
     
-    tmp = "./"+str(uuid.uuid1())
+    tmp = "./"+str(uuid.uuid1())+".tmp"
     
     try :
         inputFile = open(tmp, 'w')
@@ -272,14 +277,50 @@ def createDirectory(path):
 def createTarfile(output_filename, source_dir):
     """Creates TAR archive for bundling projects"""
     tar = tarfile.open(output_filename, "w:gz")
-    tar.add(source_dir) # arcname=os.path.basename(source_dir)
+    tar.add(source_dir, arcname=os.path.basename(source_dir)) # arcname=os.path.basename(source_dir)
     tar.close()
     
-def unTarFile(sourceFilePath):
+def unTarFile(sourceFilePath, destination):
     """Decompresses Tar archive and create new project. Destroys archive file after"""
     tar = tarfile.open(sourceFilePath)
-    tar.extractall(".")
+    tar.extractall(destination)
     tar.close()
     removeFile(sourceFilePath)
     
+def listUserDirectories(path):
+    """Looks inside path and find all directories that have userProjects as sub dir. 
+    Example : ['/weioUser/sd', '/weioUser/flash']"""
+    userDirs = []
+    for d in listOnlyFolders(path) :
+        for subD in listOnlyFolders(path+d):
+            if (subD == "userProjects"):
+                userDirs.append(path+d)
+    return userDirs
+    
+def recreateUserFiles():
+    """Destroys userFiles directory than recreates it with good symlinks and __init__.py file. 
+    UserFiles will be in the path that was defined inside config.weio file"""
+    confFile = weio_config.getConfiguration()
+    targetPath = confFile["user_projects_path"] 
+    if (checkIfDirectoryExists(targetPath)) :
+        shutil.rmtree(targetPath)
+    os.makedirs(targetPath)
+    
+    if not(checkIfFileExists(targetPath + "__init__.py" )):
+        f = open(targetPath+"__init__.py", 'w')
+        f.write("")
+        f.close()
+        
+    if (checkIfDirectoryExists(confFile["extern_projects_path"])):
+        links = listUserDirectories(confFile["extern_projects_path"])
+        for l in links:
+            os.symlink(l, targetPath+os.path.basename(l))
+        os.symlink(confFile["absolut_root_path"] + "/examples", targetPath+"examples")
+    
+
+#print listUserDirectories("/Users/uros/workNow/nodesign/weIO/weio/weioUser/")
+#recreateUserFiles()
+#print listUserDirectories("/weioUser/")
+#def makeSymLinksToUserDirs
+
 #print(scanFolders())

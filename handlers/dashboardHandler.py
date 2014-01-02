@@ -100,9 +100,12 @@ class WeioDashBoardHandler(SockJSConnection):
         data = {}
         data['requested'] = rq['request']
         lp = config["last_opened_project"].split("/")
+        
+        #print "USER PRJ NAME",lp
 
         if (weioFiles.checkIfDirectoryExists(config["user_projects_path"]+config["last_opened_project"])):
-            data['data'] = lp[0]
+            print "PROJ NAME", config["user_projects_path"]+config["last_opened_project"]
+            data['data'] = lp[2]
         else :
             data['data'] = "Select project here"
         # Send connection information to the client
@@ -134,19 +137,37 @@ class WeioDashBoardHandler(SockJSConnection):
     
     def getUserProjectsList(self, rq):
         
+        # scan for changes and make links if necessary
+        weioFiles.recreateUserFiles()
+        
         # get configuration from file
         config = weio_config.getConfiguration()
         
         data = {}
         data['requested'] = rq['request']
-        data['data'] = weioFiles.listOnlyFolders(config["user_projects_path"])
+        #data['data'] = weioFiles.listOnlyFolders(config["user_projects_path"]+"examples/userProjects")
+        
+        userDirs = weioFiles.listUserDirectories(config["user_projects_path"])
+        
+        #print "PROJECTS ", userDirs
+        allUserProjects = []
+        for d in userDirs:
+            prj = weioFiles.listOnlyFolders(d+"/userProjects")
+            a = {"projects": prj, "path":d, "storageName":os.path.basename(d)}
+            if (len(prj)>0):
+                allUserProjects.append(a)
+        
+        data['data'] = allUserProjects
+        
+        #TODO add listing for examples, flash & sd card storage
         self.send(json.dumps(data))
     
     def changeProject(self,rq):
-        
+        #print "CHANGE PROJECT", rq
         # get configuration from file
+        print "TO CHANGE ", rq
         config = weio_config.getConfiguration()
-        
+        # TODO add directories logic for examples, flash & sd card
         config["last_opened_project"] = rq['data']+"/"
         weio_config.saveConfiguration(config);
         
@@ -171,13 +192,12 @@ class WeioDashBoardHandler(SockJSConnection):
         self.send(json.dumps(data))
 
     def newProject(self, rq):
-        
         config = weio_config.getConfiguration()
-        
+        #print "NEW PROJECT", rq
         data = {}
         data['requested'] = rq['request']
-        path = rq['path']
-
+        path = rq['storageUnit'] + "/userProjects/" + rq['path']
+        
         weioFiles.createDirectory(config["user_projects_path"] + path)
         # ADD HERE SOME DEFAULT FILES
         # adding __init__.py
@@ -193,7 +213,7 @@ class WeioDashBoardHandler(SockJSConnection):
     def duplicateProject(self, rq):
         config = weio_config.getConfiguration()
         
-        path = rq['path']
+        path = rq['storageUnit'] + "/userProjects/" + rq['path']
         
         copytree(config["user_projects_path"]+config["last_opened_project"],config["user_projects_path"]+path)
         
@@ -217,18 +237,20 @@ class WeioDashBoardHandler(SockJSConnection):
         config = weio_config.getConfiguration()
         projectToKill = config["last_opened_project"]
         
+        print "PROJECT TO KILL ", projectToKill
+        
         weioFiles.removeDirectory(config["user_projects_path"]+projectToKill)
-        
-        folders = weioFiles.listOnlyFolders(config["user_projects_path"])
-        
+                
+        folders = weioFiles.listOnlyFolders(config["user_projects_path"]+ "examples/userProjects")
+
         if len(folders) > 0 :
-            config["last_opened_project"] = folders[0]
-            weio_config.saveConfiguration(config)
-        
-            data['data'] = "reload page"
+         config["last_opened_project"] = folders[0]
+         weio_config.saveConfiguration(config)
+
+         data['data'] = "reload page"
         else :
-            data['data'] = "ask to create new project"
-        
+         data['data'] = "ask to create new project"
+
         self.send(json.dumps(data))
 
     def iteratePacketRequests(self, rq) :
@@ -260,8 +282,10 @@ class WeioDashBoardHandler(SockJSConnection):
         
         data['requested'] = rq['request']
         
-        lp = config["last_opened_project"].split("/")[0]
-
+        splitted = config["last_opened_project"].split("/")
+        lp = splitted[2]
+        storage = splitted[0]
+        
         if (weioFiles.checkIfDirectoryExists(config["user_projects_path"]+config["last_opened_project"])):
             weioFiles.createTarfile(config["user_projects_path"]+config["last_opened_project"]+lp+".tar", config["user_projects_path"]+config["last_opened_project"])   
             data['status'] = "Project archived"
@@ -276,11 +300,12 @@ class WeioDashBoardHandler(SockJSConnection):
         f = rq['data']
         name = f['name']
         contents = f['data']
+        storageUnit = rq['storageUnit'] +"/"
         #print contents
         
         # get configuration from file
         confFile = weio_config.getConfiguration()
-        pathCurrentProject = confFile["user_projects_path"]
+        pathCurrentProject = confFile["user_projects_path"] + storageUnit
         
         projectName = name.split(".tar")[0]
         data = {}
@@ -290,13 +315,14 @@ class WeioDashBoardHandler(SockJSConnection):
             bin = contents
             bin = bin.split(",")[1] # split header, for example: "data:image/jpeg;base64,"
             weioFiles.saveRawContentToFile(pathCurrentProject+name, bin.decode("base64"))
+            #print "save to ", pathCurrentProject+name
+            weioFiles.createDirectory(pathCurrentProject+"userProjects/"+projectName)
+            #print "mkdir ", pathCurrentProject+"userProjects/"+projectName
+            weioFiles.unTarFile(pathCurrentProject+name, pathCurrentProject+"userProjects/"+projectName)
+            #print "untar ", pathCurrentProject+"userProjects/"+projectName
             
-            weioFiles.unTarFile(pathCurrentProject+name)
-        
-            print (pathCurrentProject+name)
-        
             data['request'] = "changeProject"
-            data['data'] = projectName
+            data['data'] = storageUnit+"userProjects/"+projectName
         
             self.changeProject(data)
         else :
