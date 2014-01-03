@@ -15,6 +15,9 @@ do
        
     sh /weio/userProjectsLinking.sh
     cd /weio
+    # killing tmp orphans
+    # tmp files are created when user is saving files. If sometimes this process fail then file becomes orphan and is never deleted
+    rm *.tmp
     ./weioServer.py;
         
     if grep -q '"kill_flag": "YES"' /weio/config.weio
