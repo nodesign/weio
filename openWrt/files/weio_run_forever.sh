@@ -13,6 +13,7 @@ do
            killall weioRunner.py
     fi
        
+    sh /weio/userProjectsLinking.sh
     cd /weio
     ./weioServer.py;
         
