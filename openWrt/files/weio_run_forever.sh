@@ -13,7 +13,7 @@ do
            killall weioRunner.py
     fi
        
-    sh /weio/userProjectsLinking.sh
+    sh /weio/scripts/userProjectsLinking.sh
     cd /weio
     # killing tmp orphans
     # tmp files are created when user is saving files. If sometimes this process fail then file becomes orphan and is never deleted

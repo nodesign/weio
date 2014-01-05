@@ -19,4 +19,5 @@ config = getConfiguration(sys.argv[1])
 config['first_time_run'] = "YES"
 config['port'] = 80
 config['debug_mode'] = "False"
+config['extern_projects_path'] = "/weioUser/"
 saveConfiguration(sys.argv[1], config)
