@@ -1,8 +1,7 @@
 <!DOCTYPE html> 
 <html lang="en"> 
-<script src="../../../libs/jquery/jquery-2.0.2.min.js"></script>
-<script src="../../../libs/sockJS/sockjs-0.3.min.js"></script>
-<script src="../../../libs/weio/weioApi.js"></script>
+<!--<script data-main="../../../../libs/weio" src="../../../../libs/require.js"></script>-->
+<script data-main="../../../../libs/weio" src="../../../../libs/require.js"></script>
 <script src="gyro.js"></script>
 
 <head> 
@@ -33,7 +32,7 @@
     
     <script>
 
-        gyro.frequency = 100;
+        gyro.frequency = 50;
         var beta_buff = 0;
     	gyro.startTracking(function(o) {
             var delta = Math.abs(beta_buff-o.beta);
@@ -42,8 +41,11 @@
             }
             beta_buff = o.beta;
     	});
-        
-        weioCallbacks.usrMsg = changeColorFromWeio;
+
+        function onWeioReady() {
+          weioCallbacks.usrMsg = changeColorFromWeio;
+        }
+
         function changeColorFromWeio(data) {
             rgb = "rgb("+ 
                   String(data.data.red) + "," + 

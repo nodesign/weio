@@ -13,9 +13,9 @@ import platform
 
 #print sys.argv[1].replace('/', '.')
 
-projectModule = sys.argv[1].replace('/', '.') + "main"
+projectModule = "userFiles."+sys.argv[1].replace('/', '.') + "main"
 # set python working directory
-os.chdir(sys.argv[1])
+os.chdir("userFiles/"+sys.argv[1])
 
 #import module from argument list
 #print projectModule

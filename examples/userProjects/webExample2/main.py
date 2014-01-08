@@ -7,7 +7,7 @@ import time
 
 def buttonHandler(dataIn) :
    if dataIn is not None :
-       print dataIn
+       #print dataIn
        #print "FROM BROWSER: ", dataIn["data"], " uuid: ", dataIn["uuid"]
        beta = float(dataIn)
 
@@ -21,19 +21,21 @@ def buttonHandler(dataIn) :
        hue = proportion(beta,-88.0,88.0, 0.0,1.0)
        # drive HUE color and transform to rgb for LED 
        rgb = colorsys.hsv_to_rgb(hue, 1.0, 1.0)
-
+      
+    
        # rgb output is 0.0-1.0 transform to 0-255
        red = int(rgb[0]*255.0)
        green = int(rgb[1]*255.0)
        blue = int(rgb[2]*255.0)
-
+        
+       print red, " ", green, " ", blue    
        # Export color to LED
        setColor(red,green,blue)
 
 def setColor(r,g,b):
-   pwmWrite(19,255-b)
-   pwmWrite(20,255-r)
-   pwmWrite(21,255-g)
+   pwmWrite(19,b)
+   pwmWrite(20,r)
+   pwmWrite(21,g)
 
    colorData = {}
    colorData["red"] = r
@@ -49,7 +51,7 @@ def potar() :
    while True:
        val = analogRead(25)
 
-       if (abs(val-val_p)>5):
+       if (abs(val-val_p)>10):
            hue = proportion(val,0,1023, 0.0,1.0)
            # drive HUE color and transform to rgb for LED 
            rgb = colorsys.hsv_to_rgb(hue, 1.0, 1.0)
@@ -62,7 +64,7 @@ def potar() :
            setColor(red,green,blue)
 
        val_p = val
-       time.sleep(0.1)
+       time.sleep(0.05)
 
 def proportion(value,istart,istop,ostart,ostop) :
        return float(ostart) + (float(ostop) - float(ostart)) * ((float(value) - float(istart)) / (float(istop) - float(istart)))
