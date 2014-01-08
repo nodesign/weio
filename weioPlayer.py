@@ -110,7 +110,7 @@ class WeioPlayer():
         if (weioFiles.checkIfFileExists(up+lp+"main.py")):
             #launch process
             
-            lp = lp.split("/")[0]
+            #lp = lp.split("/")[0]
 
             print("weioMain indipendent process launching...")
             
