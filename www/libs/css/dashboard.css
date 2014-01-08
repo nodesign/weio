@@ -333,6 +333,9 @@ body {
   display: inline;
   margin-left: -5px;
 }
+#wifiNetworks {
+  overflow-y: scroll;
+}
 /* IFRAME */
 .iframeContainer {
   position: relative;
