@@ -115,10 +115,18 @@ class WeioWifi() :
             os._exit(os.EX_OK)
 
         # At this point connection has been maid, and all we have to do is check ESSID
-        for word in status.split(" ") :
-            if word.startswith("ESSID") :
-                self.essid = word.split('\"')[1]
-                break
+        #print "WIFI ESSID : ", status
+        pat = r"(?<=ESSID:\")(.*\n?)(?=\")"
+        #print "RESULT", re.findall(pat, status)[0]
+        essidName = re.findall(pat, status)
+        if (len(essidName)>0):
+            self.essid = essidName[0]
+        
+        #print essid
+        #for word in status.split(" ") :
+        #    if word.startswith("ESSID") :
+        #        self.essid = word.split('\"')[1]
+        #        break
 
     def setConnection(self, mode):
 
