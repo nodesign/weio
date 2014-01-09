@@ -6,6 +6,6 @@ function onWeioReady() {
 }
 
 function refreshWebCam(data) {
-    $("#webCam").attr("src", data.data);
+    $("#webCam").attr("background", data.data);
     console.log(data.data);
 }

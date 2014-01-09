@@ -4,7 +4,7 @@ from subprocess import Popen, PIPE
 
 videoDevice = "/dev/video0"
 imageFile = "output.jpg"
-imagePath = "/weio/userProjects/webCam/"
+imagePath = "./"
 
 # easy with this, processor needs more time processing for better resolution
 resolution = "320x240"
