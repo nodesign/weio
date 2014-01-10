@@ -276,6 +276,13 @@ def createDirectory(path):
 
 def createTarfile(output_filename, source_dir):
     """Creates TAR archive for bundling projects"""
+    
+    # kill all .pyc files first
+    filelist = [ f for f in os.listdir(source_dir) if f.endswith(".pyc") ]
+    for f in filelist:
+        os.remove(source_dir+f)
+    
+    # compress    
     tar = tarfile.open(output_filename, "w:gz")
     tar.add(source_dir, arcname=os.path.basename(source_dir)) # arcname=os.path.basename(source_dir)
     tar.close()
