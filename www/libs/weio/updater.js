@@ -129,7 +129,7 @@ function runUpdateProcedure() {
 function updateProgressBar(data) {
     //$("#progressStatus").html(data.info + " " + data.progress);
     //$("#updateProgressBar").css("width", data.progress);
-    estimatedInstallTime = data.estimatedInstallTime;
+    //estimatedInstallTime = data.estimatedInstallTime;
     
     updaterTimerInterval = setInterval(function(){countTimeTillReload()},1000);
     
@@ -181,8 +181,7 @@ function reloadMe() {
  */
 var callbacksUpdater = {
     "checkVersion": checkVersion,
-    "updateProgress" : updateProgressBar,
-    
+    "updateProgress" : updateProgressBar
 };
 
 function checkVersion(data) { 
@@ -191,7 +190,10 @@ function checkVersion(data) {
     console.log("WeIO repository version is : " + data.distantVersion); 
     console.log("WeIO needs un update : " + data.needsUpdate);
     
+    
     if (data.needsUpdate=="YES") {
+        console.log("WeIO install duration in s will be : " + data.install_duration);
+        
         $("#needsUpdateStatus").html("Install new update");
         
         $("#updateButton").html("Update WeIO");
@@ -207,6 +209,7 @@ function checkVersion(data) {
         
         $("#updateWeioData").html(txt);
         weioNeedsUpdate = true;
+        estimatedInstallTime = data.install_duration;
         
     } else {
         

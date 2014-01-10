@@ -78,15 +78,15 @@ class WeioUpdaterHandler(SockJSConnection):
     def checkVersion(self, response):
         wifi = "ap"
         if (platform.machine() == 'mips') :
-            wifi = shared.wifi
-            print "WIFI MODE ", wifi.mode
+            wifi = shared.wifi.mode
+            print "WIFI MODE ", wifi
             #wifi.checkConnection()
         else :
-            wifi.mode = "sta"
+            wifi = "sta"
         
         rsp={}
-        
-        if (wifi.mode=="sta") : # check Internet
+    
+        if (wifi=="sta") : # check Internet
         
             global distantJsonUpdater
             global currentWeioConfigurator
@@ -94,8 +94,11 @@ class WeioUpdaterHandler(SockJSConnection):
             distantJsonUpdater = json.loads(str(response.body))
             currentWeioConfigurator = weio_config.getConfiguration()
 
-            print "My software version " + currentWeioConfigurator["weio_version"] + " Version on WeIO server " + distantJsonUpdater["version"]
-        
+            print "My software version " + \
+                currentWeioConfigurator["weio_version"] + \
+                " Version on WeIO server " + \
+                distantJsonUpdater["version"] + \
+                " Needs " + str(distantJsonUpdater['install_duration']) + " seconds to install"
         
             # Send response to the browser
             
@@ -110,12 +113,13 @@ class WeioUpdaterHandler(SockJSConnection):
                 rsp['needsUpdate'] = "YES"
                 rsp['description'] = distantJsonUpdater['description']
                 rsp['whatsnew'] = distantJsonUpdater['whatsnew']
+                rsp['install_duration'] = distantJsonUpdater['install_duration']
                 estimatedInstallTime = distantJsonUpdater['install_duration']
             else :
                 rsp['needsUpdate'] = "NO"
         
             
-        elif (wifi.mode=="ap") :
+        elif (wifi=="ap") :
             rsp['needsUpdate'] = "NO"
         
         # Send connection information to the client

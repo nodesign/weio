@@ -110,7 +110,7 @@ weio_update['url'] = 'http://www.we-io.net/downloads/weio' + weio_update['versio
 weio_update['md5'] = '995884813e29f06b71a940975b202398'
 
 
-if (len(sys.argv)==3) :
+if (len(sys.argv)>=3) :
     
     print
     checkVersionOnServer()
@@ -159,7 +159,10 @@ if (len(sys.argv)==3) :
         weio_update['md5'] = md5sum(packetFile)
         weio_update['whatsnew'] = open('releases.weio', 'r').read()
         weio_update['kill_flag'] = "NO"
-        weio_update['install_duration'] = 35
+        if (len(sys.argv)>2):
+            weio_update['install_duration'] = sys.argv[3]
+        else:
+            weio_update['install_duration'] = 35
         
         saveConfiguration(weio_update)
         try :
@@ -188,7 +191,7 @@ if (len(sys.argv)==3) :
     
 else :
     print 
-    print "WeIO update maker : [version] [description]"
+    print "WeIO update maker : [version] [description] [seconds needed for install]"
     print "Store release information in releases.txt file"
     print "example : ./updateMaker 0.12 'some bug fixes'"
     print
