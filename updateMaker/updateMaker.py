@@ -159,7 +159,8 @@ if (len(sys.argv)>=3) :
         weio_update['md5'] = md5sum(packetFile)
         weio_update['whatsnew'] = open('releases.weio', 'r').read()
         weio_update['kill_flag'] = "NO"
-        if (len(sys.argv)>2):
+        
+        if (len(sys.argv)>3):
             weio_update['install_duration'] = sys.argv[3]
         else:
             weio_update['install_duration'] = 35
