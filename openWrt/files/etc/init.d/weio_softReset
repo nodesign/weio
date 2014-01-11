@@ -1,0 +1,13 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006 OpenWrt.org
+
+START=98
+
+start() {
+    /weio/scripts/softReset.sh&
+}
+
+stop() {
+    echo "Killing softReset button interaction"    
+    killall softReset.sh 
+}
