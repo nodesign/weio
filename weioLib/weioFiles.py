@@ -57,8 +57,13 @@ global htmlTree
 # Tree function was originaly written by Doug Dahms
 # Code was modified by Uros Petrevski
 
-
 def tree(dir, padding, print_files=True):
+    # This function if full of ugliness, original solutions are needed and complete rewrite
+    #print "MY DIR ", dir
+    if (checkIfFileExists(dir+"weioLibs")):
+        removeFile(dir+"weioLibs")
+        
+    
     global htmlTree
     #print padding[:-1] + '<label for="folder">' + basename(abspath(dir)) + '/' + "</label><input type='checkbox' id='folder1' />" 
     htmlTree+=padding[:-1] + '<label for="folder">' + basename(abspath(dir)) + "</label>"
@@ -120,6 +125,8 @@ def tree(dir, padding, print_files=True):
     #print "</ol>"
     htmlTree+="</ol>"
     htmlTree+="\n"
+    
+    os.symlink("/weio/www/libs/", dir+"weioLibs")
 
 def getHtmlTree(path) :
     """Scans user folder and all folders inside that folder in search for files.

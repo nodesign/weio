@@ -14,8 +14,14 @@ import platform
 #print sys.argv[1].replace('/', '.')
 
 projectModule = "userFiles."+sys.argv[1].replace('/', '.') + "main"
+
+# set symlink to weioLibs
+if not(os.path.exists("userFiles/"+sys.argv[1]+"weioLibs")):
+    os.symlink("/weio/www/libs/", "userFiles/"+sys.argv[1]+"weioLibs")
+    
 # set python working directory
 os.chdir("userFiles/"+sys.argv[1])
+
 
 #import module from argument list
 #print projectModule
