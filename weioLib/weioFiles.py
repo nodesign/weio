@@ -61,7 +61,7 @@ def tree(dir, padding, print_files=True):
     # This function if full of ugliness, original solutions are needed and complete rewrite
     #print "MY DIR ", dir
     if (checkIfFileExists(dir+"weioLibs")):
-        removeFile(dir+"weioLibs")
+        os.unlink(dir+"weioLibs")
         
     
     global htmlTree
