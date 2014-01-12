@@ -1,5 +1,6 @@
 # This example is tested with SimpleDigitalFirmata sketch from Arduino. You can find this
 # sketch inside Arduino, File > examples > firmata > SimpleDigitalFirmata
+# It will blink Arduino's LED every second
 
 from weioLib.weioUserApi import attach
 import firmata

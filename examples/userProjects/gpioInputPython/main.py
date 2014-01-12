@@ -7,8 +7,9 @@ def setup() :
     
 def loop() :
     cadence = 0.1
-    inputMode(13,INPUT_PULLDOWN)
+    pin = 25
+    inputMode(pin,INPUT_PULLDOWN)
     while True:
-        val =  weio.digitalRead(13)
+        val =  digitalRead(pin)
         print (val)
         time.sleep(cadence)

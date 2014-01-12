@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-<script src="../../../libs/jquery/jquery-2.0.2.min.js"></script>
-<script src="../../../libs/sockJS/sockjs-0.3.min.js"></script>
-<script src="../../../libs/chartJS/Chart.min.js"></script>
-<script src="../../../libs/weio/weioApi.js"></script>
+
+<script data-main="weioLibs/weio" src="weioLibs/require.js"></script>
+<script src="weioLibs/chartJS/Chart.min.js"></script>
+
 
   <head >
     <title>My first Web app</title>
@@ -37,10 +37,11 @@
     var potar;
     var chartPotar;
     
-    $(document).ready(function () {
+    function onWeioReady() {
        potar = new Chart(document.getElementById("potar").getContext("2d"));
        setInterval(function(){analogRead(25, fromAdc)}, 100);
-    });
+    }
+
     
     function fromAdc(data) {
         //console.log("Hello from adc", data.data);
@@ -51,14 +52,13 @@
         pieData = [
         	{
         		value: data.data,
-        		color:"#F38630"
+        		color:"#888888"
         	},
         	{
         		value : 1023-data.data,
         		color : "#000000"
         	}
         ];
-                
         
         chartPotar = potar.Pie(pieData,potarDefs);
     }

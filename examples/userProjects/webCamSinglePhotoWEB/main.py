@@ -24,7 +24,7 @@ def takePicture():
         proc.communicate()
         print "Photo Taken"
         
-        # Tell to all connected clients that they can refresh image now
+        # Tell to all connected clients that they can refresh image in browsers now
         for client in shared.connectedClients :
            client.connection.emit("refreshImage",imageFile)
         
