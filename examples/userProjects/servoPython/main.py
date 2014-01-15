@@ -19,3 +19,4 @@ def loop() :
         s.setMinLimit(650)
         s.setMaxLimit(3000)
         s.write(servoPin, val)
+        delay(10)
