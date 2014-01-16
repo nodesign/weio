@@ -1,4 +1,4 @@
-from weioLib.weioIO import *
+from weioLib.weioIO import setPwmPeriod, pwmWrite, setPwmLimit, proportion
 
 class Servo:
     
@@ -12,11 +12,15 @@ class Servo:
         self.upLimit = self.downLimit*2 # 10% of 20000
         self.minAngle = 0
         self.maxAngle = 180
+        self.angle = None
+        self.readuS = None
 
     def write(self, pin, data):
         # Write to coresponding servo motor
         val = int(proportion(data, self.minAngle,self.maxAngle, self.downLimit, self.upLimit))
-        pwmWrite(pin, 19999-val)
+        self.readuS = val
+        self.angle = data
+        pwmWrite(pin, 19999-self.readuS)
         
     def setMinLimit(self, val):
         self.downLimit = val
@@ -30,3 +34,8 @@ class Servo:
     def setMaxAngle(self, val):
         self.maxAngle = val    
     
+    def read(self):
+        return self.angle
+        
+    def readuS(self):
+        return self.readuS
