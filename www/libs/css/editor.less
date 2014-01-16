@@ -637,6 +637,14 @@ li.file
     &:hover i {
         display:block;
     };
+    
+    .fileTitle {
+        max-width: 128px; 
+        white-space: nowrap; 
+        overflow: hidden; 
+        text-overflow:ellipsis;   
+    }
+    
 }
 
 li.file a[href *= '.pdf']   { background: url(../../img/document.png) 0 0 no-repeat; }
