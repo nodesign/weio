@@ -114,7 +114,7 @@ class Readers:
                 if n:
                     data = data + self.serial.read(n)    #and get as much as possible
                 if data:
-                    if data[3] == '\x09':
+                    if data[3] == '\x08':
                         interrupt = self.decodefun(data)
                         self.callback(interrupt)
                     else:
