@@ -16,8 +16,8 @@ import platform
 projectModule = "userFiles."+sys.argv[1].replace('/', '.') + "main"
 
 # set symlink to weioLibs
-if not(os.path.exists("userFiles/"+sys.argv[1]+"weioLibs")):
-    os.symlink("/weio/www/libs/", "userFiles/"+sys.argv[1]+"weioLibs")
+#if not(os.path.exists("userFiles/"+sys.argv[1]+"weioLibs")):
+#    os.symlink("/weio/www/libs/", "userFiles/"+sys.argv[1]+"weioLibs")
     
 # set python working directory
 os.chdir("userFiles/"+sys.argv[1])
@@ -61,6 +61,7 @@ class WeioHandler(SockJSConnection):
             attach.event('setPwmLimit1', self.callSetPwmLimit1)
             attach.event('attachInterrupt', self.callAttachInterrupt)
             attach.event('detachInterrupt', self.callDetachInterrupt)
+            attach.event('packetRequests', self.iteratePacketRequests)
     
         attach.event('getConnectedUsers', self.getConnectedUsers)
         attach.event('talkTo', self.talkTo)
@@ -76,6 +77,12 @@ class WeioHandler(SockJSConnection):
         for key in attach.events :
             if attach.events[key].event in data['request'] :
                 attach.events[key].handler(data['data'])
+                
+    def iteratePacketRequests(self, rq) :
+        #print rq
+        for uniqueRq in rq:
+            request = uniqueRq['request']
+            self.serve(uniqueRq)
 
     def on_close(self, data):
         shared.websocketOpened = False

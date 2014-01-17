@@ -60,9 +60,12 @@ global htmlTree
 def tree(dir, padding, print_files=True):
     # This function if full of ugliness, original solutions are needed and complete rewrite
     #print "MY DIR ", dir
-    if (checkIfFileExists(dir+"weioLibs")):
-        os.unlink(dir+"weioLibs")
-        
+   # try :
+        #if (checkIfFileExists(dir+"weioLibs")):
+    #    os.remove("www/libs/"+dir+"weioLibs")
+        #os.unlink("www/libs/"+dir+"weioLibs")
+    #except:
+     #   print "AAAAA"
     
     global htmlTree
     #print padding[:-1] + '<label for="folder">' + basename(abspath(dir)) + '/' + "</label><input type='checkbox' id='folder1' />" 
@@ -125,8 +128,7 @@ def tree(dir, padding, print_files=True):
     #print "</ol>"
     htmlTree+="</ol>"
     htmlTree+="\n"
-    
-    os.symlink("/weio/www/libs/", dir+"weioLibs")
+    #os.symlink("www/libs/", dir+"weioLibs")
 
 def getHtmlTree(path) :
     """Scans user folder and all folders inside that folder in search for files.
@@ -329,7 +331,18 @@ def recreateUserFiles():
         links = listUserDirectories(confFile["extern_projects_path"])
         for l in links:
             os.symlink(l, targetPath+os.path.basename(l))
+            
+            if not(checkIfFileExists(l+"/userProjects/require.js")):
+                shutil.copyfile(confFile["absolut_root_path"]+"/www/libs/require.js", l+"/userProjects/require.js")
+                
+            #if not(os.path.islink(l+"/userProjects/require.js")):
+            #    os.symlink(confFile["absolut_root_path"]+"/www/libs/require.js", l+"/userProjects/require.js")
+            
+        # for examples is manual treatement and symlink require.js
         os.symlink(confFile["absolut_root_path"] + "/examples", targetPath+"examples")
+        if not(os.path.islink(targetPath+"examples"+"/userProjects/require.js")):
+            os.symlink(confFile["absolut_root_path"]+"/www/libs/require.js", targetPath+"examples"+"/userProjects/require.js")
+    
     
 
 #print listUserDirectories("/Users/uros/workNow/nodesign/weIO/weio/weioUser/")
