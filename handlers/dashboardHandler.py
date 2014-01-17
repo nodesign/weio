@@ -35,6 +35,7 @@
 ###
 
 import os, signal, sys, platform, subprocess, datetime
+from os.path import isfile, join
 
 from tornado import web, ioloop, iostream, gen
 sys.path.append(r'./');
@@ -203,8 +204,11 @@ class WeioDashBoardHandler(SockJSConnection):
         # adding __init__.py
         weioFiles.saveRawContentToFile(config["user_projects_path"] + path + "/__init__.py", "")
         
-        copyfile("www/libs/weio/boilerPlate/index.html", config["user_projects_path"] + path +"/index.html")
-        copyfile("www/libs/weio/boilerPlate/main.py", config["user_projects_path"] + path + "/main.py")
+        # copy all files from directory boilerplate to destination
+        mypath = "www/libs/weio/boilerPlate/"
+        onlyfiles = [ f for f in os.listdir(mypath) if isfile(join(mypath,f)) ]
+        for f in onlyfiles:
+            copyfile(mypath+f, config["user_projects_path"] + path +"/"+f)
         
         data['status'] = "New project created"
         data['path'] = path
