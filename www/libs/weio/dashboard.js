@@ -467,6 +467,7 @@ function updateWeioProgressWheel(data) {
         clearInterval(playCounter); 
         // fade out wheel
         $( "#weioProgress" ).fadeTo( "slow", 0 );
+        updateWeioProgressWheel(0);
     }
 }
 
