@@ -30,7 +30,7 @@ else
 fi
 
 # Clean Carambola2 SDK
-make clean distclean
+#make clean distclean
 
 # Copy WeIO image files
 cp -r $WEIO/openWrt/files .
