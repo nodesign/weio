@@ -23,7 +23,7 @@ BUILD_DIR=$PWD
 if [ $# -eq 0 ]
   then
     # No local WeIO dir supplied, get WeIO from GitHub
-    git clone https://github.com/nodesign/weio.git
+    git clone --depth 1 https://github.com/nodesign/weio.git
     WEIO=weio
 else
     WEIO=$1
