@@ -311,7 +311,6 @@ CONFIG_EXTRA_OPTIMIZATION="-fno-caller-saves"
 # CONFIG_TARGET_OPTIONS is not set
 CONFIG_TARGET_OPTIMIZATION="-Os -pipe -mno-branch-likely -mips32r2 -mtune=34kc"
 CONFIG_SOFT_FLOAT=y
-CONFIG_USE_MIPS16=y
 # CONFIG_EXTERNAL_TOOLCHAIN is not set
 CONFIG_NEED_TOOLCHAIN=y
 CONFIG_TOOLCHAINOPTS=y
@@ -320,18 +319,18 @@ CONFIG_TOOLCHAINOPTS=y
 #
 # Binary tools
 #
-# CONFIG_BINUTILS_VERSION_2_22 is not set
+CONFIG_BINUTILS_VERSION_2_22=y
 # CONFIG_BINUTILS_VERSION_2_23_1 is not set
-CONFIG_BINUTILS_VERSION_LINARO=y
+# CONFIG_BINUTILS_VERSION_LINARO is not set
 CONFIG_EXTRA_BINUTILS_CONFIG_OPTIONS=""
-CONFIG_BINUTILS_VERSION="linaro"
+CONFIG_BINUTILS_VERSION="2.22"
 
 #
 # Compiler
 #
 # CONFIG_GCC_USE_VERSION_4_8_0 is not set
-# CONFIG_GCC_USE_VERSION_4_6_LINARO is not set
-CONFIG_GCC_USE_VERSION_4_8_LINARO=y
+CONFIG_GCC_USE_VERSION_4_6_LINARO=y
+# CONFIG_GCC_USE_VERSION_4_8_LINARO is not set
 # CONFIG_GCC_USE_GRAPHITE is not set
 CONFIG_EXTRA_GCC_CONFIG_OPTIONS=""
 # CONFIG_SSP_SUPPORT is not set
@@ -354,9 +353,9 @@ CONFIG_UCLIBC_USE_VERSION_0_9_33=y
 # CONFIG_GDB is not set
 # CONFIG_INSIGHT is not set
 CONFIG_USE_UCLIBC=y
-CONFIG_GCC_VERSION_4_8_LINARO=y
-CONFIG_GCC_VERSION="4.8-linaro"
-CONFIG_GCC_VERSION_4_8=y
+CONFIG_GCC_VERSION_4_6_LINARO=y
+CONFIG_GCC_VERSION="4.6-linaro"
+CONFIG_GCC_VERSION_4_6=y
 CONFIG_UCLIBC_VERSION="0.9.33.2"
 CONFIG_UCLIBC_VERSION_0_9_33=y
 CONFIG_LIBC="uClibc"
@@ -1897,13 +1896,13 @@ CONFIG_PACKAGE_lua=y
 # Python
 #
 CONFIG_PACKAGE_python=y
-CONFIG_PACKAGE_python-bzip2=y
+# CONFIG_PACKAGE_python-bzip2 is not set
 # CONFIG_PACKAGE_python-doc is not set
 CONFIG_PACKAGE_python-expat=y
 # CONFIG_PACKAGE_python-gdbm is not set
-CONFIG_PACKAGE_python-gzip=y
+# CONFIG_PACKAGE_python-gzip is not set
 CONFIG_PACKAGE_python-mini=y
-CONFIG_PACKAGE_python-ncurses=y
+# CONFIG_PACKAGE_python-ncurses is not set
 CONFIG_PACKAGE_python-openssl=y
 CONFIG_PACKAGE_python-shutil=y
 # CONFIG_PACKAGE_python-sqlite3 is not set
@@ -1947,16 +1946,16 @@ CONFIG_OPENSSL_WITH_EC=y
 # CONFIG_PACKAGE_libsqlite3 is not set
 # CONFIG_PACKAGE_argp-standalone is not set
 CONFIG_PACKAGE_libavahi=y
-# CONFIG_PACKAGE_libavahi-client is not set
-# CONFIG_PACKAGE_libavahi-dbus-support is not set
+CONFIG_PACKAGE_libavahi-client=y
+CONFIG_PACKAGE_libavahi-dbus-support=y
 # CONFIG_PACKAGE_libblkid is not set
 CONFIG_PACKAGE_libblobmsg-json=y
-CONFIG_PACKAGE_libbz2=y
+# CONFIG_PACKAGE_libbz2 is not set
 CONFIG_PACKAGE_libcap=y
 # CONFIG_PACKAGE_libcharset is not set
 # CONFIG_PACKAGE_libconfig is not set
 CONFIG_PACKAGE_libdaemon=y
-# CONFIG_PACKAGE_libdbus is not set
+CONFIG_PACKAGE_libdbus=y
 # CONFIG_PACKAGE_libelf1 is not set
 # CONFIG_PACKAGE_libevent2 is not set
 # CONFIG_PACKAGE_libevent2-core is not set
@@ -1965,15 +1964,15 @@ CONFIG_PACKAGE_libdaemon=y
 # CONFIG_PACKAGE_libevent2-pthreads is not set
 CONFIG_PACKAGE_libexpat=y
 CONFIG_PACKAGE_libffi=y
-CONFIG_PACKAGE_libgd=y
-# CONFIG_PACKAGE_libgdbm is not set
+# CONFIG_PACKAGE_libgd is not set
+CONFIG_PACKAGE_libgdbm=y
 # CONFIG_PACKAGE_libiconv is not set
 # CONFIG_PACKAGE_libiconv-full is not set
 # CONFIG_PACKAGE_libintl is not set
 # CONFIG_PACKAGE_libintl-full is not set
 # CONFIG_PACKAGE_libiw is not set
 CONFIG_PACKAGE_libiwinfo=y
-CONFIG_PACKAGE_libjpeg=y
+# CONFIG_PACKAGE_libjpeg is not set
 CONFIG_PACKAGE_libjson=y
 CONFIG_PACKAGE_libjson-c=y
 # CONFIG_PACKAGE_libltdl is not set
@@ -1988,7 +1987,7 @@ CONFIG_PACKAGE_libncurses=y
 # CONFIG_PACKAGE_libnl is not set
 CONFIG_PACKAGE_libnl-tiny=y
 # CONFIG_PACKAGE_libpcap is not set
-CONFIG_PACKAGE_libpng=y
+# CONFIG_PACKAGE_libpng is not set
 # CONFIG_PACKAGE_libpopt is not set
 # CONFIG_PACKAGE_libreadline is not set
 # CONFIG_PACKAGE_librpc is not set
@@ -2005,7 +2004,7 @@ CONFIG_PACKAGE_libuci-lua=y
 # CONFIG_PACKAGE_libustream-openssl is not set
 # CONFIG_PACKAGE_libustream-polarssl is not set
 # CONFIG_PACKAGE_libuuid is not set
-CONFIG_PACKAGE_libv4l=y
+# CONFIG_PACKAGE_libv4l is not set
 # CONFIG_PACKAGE_linux-atm is not set
 CONFIG_PACKAGE_terminfo=y
 # CONFIG_PACKAGE_uclibcxx is not set
@@ -2014,13 +2013,8 @@ CONFIG_PACKAGE_zlib=y
 #
 # Multimedia
 #
-CONFIG_PACKAGE_fswebcam=y
-CONFIG_PACKAGE_mjpg-streamer=y
-CONFIG_MJPG_STREAMER_INPUT_FILE=y
-CONFIG_MJPG_STREAMER_INPUT_UVC=y
-CONFIG_MJPG_STREAMER_OUTPUT_FILE=y
-CONFIG_MJPG_STREAMER_OUTPUT_HTTP=y
-CONFIG_MJPG_STREAMER_WWW=y
+# CONFIG_PACKAGE_fswebcam is not set
+# CONFIG_PACKAGE_mjpg-streamer is not set
 # CONFIG_PACKAGE_motion is not set
 
 #
@@ -2075,10 +2069,10 @@ CONFIG_PACKAGE_iptables=y
 #
 # IP Addresses and Names
 #
-# CONFIG_PACKAGE_avahi-autoipd is not set
+CONFIG_PACKAGE_avahi-autoipd=y
 CONFIG_PACKAGE_avahi-daemon=y
-# CONFIG_PACKAGE_avahi-dnsconfd is not set
-# CONFIG_PACKAGE_avahi-utils is not set
+CONFIG_PACKAGE_avahi-dnsconfd=y
+CONFIG_PACKAGE_avahi-utils=y
 
 #
 # Linux ATM tools
@@ -2306,8 +2300,9 @@ CONFIG_PACKAGE_wpad-mini=y
 # CONFIG_PACKAGE_wipefs is not set
 # CONFIG_PACKAGE_bzip2 is not set
 # CONFIG_PACKAGE_cal is not set
-# CONFIG_PACKAGE_dbus is not set
-# CONFIG_PACKAGE_dmesg is not set
+CONFIG_PACKAGE_dbus=y
+# CONFIG_PACKAGE_dbus-utils is not set
+CONFIG_PACKAGE_dmesg=y
 # CONFIG_PACKAGE_dropbearconvert is not set
 # CONFIG_PACKAGE_fconfig is not set
 # CONFIG_PACKAGE_flock is not set
