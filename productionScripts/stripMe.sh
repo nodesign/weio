@@ -59,6 +59,10 @@ rm -r weio/sandbox
 rm -r weio/updateMaker
 rm weio/README.md
 
+# exclude local dependant symlinks that will break
+rm -r weio/userFiles/examples
+rm -r weio/userFiles/flash
+
 # kill all .pyc files to leave native arch to build them
 find weio -name '*.pyc' -delete
 # kill all .less files because they are compiled to .css
