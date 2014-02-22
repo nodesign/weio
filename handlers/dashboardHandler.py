@@ -220,7 +220,7 @@ class WeioDashBoardHandler(SockJSConnection):
         path = rq['storageUnit'] + "/userProjects/" + rq['path']
         
         # destroy symlinks before
-        os.unlink(config["user_projects_path"]+config["last_opened_project"]+"weioLibs")
+        # os.unlink(config["user_projects_path"]+config["last_opened_project"]+"weioLibs")
         copytree(config["user_projects_path"]+config["last_opened_project"],config["user_projects_path"]+path)
         
         data = {}
