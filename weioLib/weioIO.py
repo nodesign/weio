@@ -71,5 +71,6 @@ def delay(period):
     time.sleep(period/1000.0)
     
 def stopWeio():
-    return gpio.stop()
+    if (platform.machine()=="mips"):
+        return gpio.stop()
 
