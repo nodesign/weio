@@ -2,7 +2,7 @@
 from tornado import web, ioloop, options
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
-import sys,os
+import sys,os,logging
 import json
 
 import threading
@@ -11,8 +11,10 @@ from weioLib.weioUserApi import *
 from weioLib.weioIO import *
 import platform
 
-#print sys.argv[1].replace('/', '.')
+import signal
 
+#print sys.argv[1].replace('/', '.')
+print "ARGUMENTS ", sys.argv[1]
 projectModule = "userFiles."+sys.argv[1].replace('/', '.') + "main"
 
 # set symlink to weioLibs
@@ -21,7 +23,6 @@ projectModule = "userFiles."+sys.argv[1].replace('/', '.') + "main"
     
 # set python working directory
 os.chdir("userFiles/"+sys.argv[1])
-
 
 #import module from argument list
 #print projectModule
@@ -216,11 +217,12 @@ class WeioHandler(SockJSConnection):
         #data["data"] = value 
         #self.send(json.dumps(data))
         pass
+    
+    
 
 if __name__ == '__main__':
-    #import logging
-    #logging.getLogger().setLevel(logging.DEBUG)
-    
+############################################################## RCV SIGNALS TO TERMINATE
+
     shared.websocketOpened = False
     shared.connectedClients = []
     
@@ -240,13 +242,28 @@ if __name__ == '__main__':
         main.setup()
     #else :
     #print "WARNNING : setup() function don't exist."
-
+    
+  
     for key in attach.procs :
         print key
         #thread.start_new_thread(attach.procs[key].procFnc, attach.procs[key].procArgs)
         t = threading.Thread(target=attach.procs[key].procFnc, args=attach.procs[key].procArgs)
         t.daemon = True
         t.start()
+    
+
+    def sig_handler(sig, frame):
+        logging.warning('Caught signal: %s', sig) 
+        logging.warning('Shutdown WeIO coprocessor')
+        stopWeio()
+        logging.warning('Shutdown WeIO user server')
+        ioloop.IOLoop.instance().stop()
+    
+    ########################################################## INIT SIGNAL HANDLERS
+    
+    signal.signal(signal.SIGTERM, sig_handler)
+    signal.signal(signal.SIGINT, sig_handler)
+    
 
     ioloop.IOLoop.instance().start()
 

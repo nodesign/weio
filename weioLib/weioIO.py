@@ -69,4 +69,7 @@ def getAvailableInterruptId():
 def delay(period):
     """Delay expressed in milliseconds. Delay will block current process. Delay can be evil"""
     time.sleep(period/1000.0)
+    
+def stopWeio():
+    return gpio.stop()
 

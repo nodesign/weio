@@ -169,7 +169,8 @@ class WeioPlayer():
                 self.stderrHandlerIsLive = False
             
             if self.weioPipe.poll() is None :
-                self.weioPipe.kill()
+                #self.weioPipe.kill()
+                self.weioPipe.terminate()
             
             self.weioPipe = None
             

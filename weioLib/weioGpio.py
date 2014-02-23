@@ -248,6 +248,9 @@ class WeioGpio():
                 return i
         print "*SYSOUT*Error! There is only " + str(HARD_INTERRUPTS) + " interrupts available" 
         return None
+        
+    def stop(self):
+        self.uper.stop()
 
 
 class Interrupt():
