@@ -1,3 +1,4 @@
+from weioLib.weioIO import *
 from weioLib.weioUserApi import attach
 from subprocess import Popen, PIPE
 import os, time
@@ -6,12 +7,8 @@ videoDevice = "/dev/video0"
    
 def setup():
     
-     # check if webcam is connected
+    # check if webcam is connected
     if (os.path.exists(videoDevice)) :
-        # if any mjpegstreamer is already running, kill it
-        proc = Popen(["killall", "mjpg_streamer"], stdout=PIPE, stderr=PIPE)
-        proc.communicate()
-        time.sleep(2)
         attach.process(startVideoStreaming)
     else :
         print "webcam is not connected or not recognized"
@@ -23,3 +20,9 @@ def startVideoStreaming():
     o = "'/usr/lib/output_http.so -w /www/webcam -p 8080'"
     proc = Popen(["mjpg_streamer", "-i", i, "-o", o], stdout=PIPE, stderr=PIPE)
     print proc.communicate()
+    
+def stop():
+    # at the end stop mjpeg server running
+    proc = Popen(["killall", "mjpg_streamer"], stdout=PIPE, stderr=PIPE)
+    proc.communicate()
+    

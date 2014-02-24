@@ -7,9 +7,9 @@ def setup() :
     attach.process(blinky)
 
 def blinky() :
-    cadence = 0.1
+    pause = 100
     while True:
         digitalWrite(20, HIGH)
-        time.sleep(cadence)
+        delay(pause)
         digitalWrite(20, LOW)
-        time.sleep(cadence)
+        delay(pause)
