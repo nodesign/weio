@@ -254,6 +254,10 @@ if __name__ == '__main__':
 
     def sig_handler(sig, frame):
         logging.warning('Caught signal: %s', sig) 
+        # CALLING STOP IF PRESENT
+        if "stop" in vars(main):
+            logging.warning('Calling user defined stop function')
+            main.stop()
         logging.warning('Shutdown WeIO coprocessor')
         stopWeio()
         logging.warning('Shutdown WeIO user server')
