@@ -1,6 +1,5 @@
 #!/usr/bin/python -u
 from tornado import web, ioloop, options
-from sockjs.tornado import SockJSRouter, SockJSConnection
 
 import sys,os,logging
 import json
@@ -9,6 +8,8 @@ import threading
 
 from weioLib.weioUserApi import *
 from weioLib.weioIO import *
+from tornado import websocket
+
 import platform
 
 import signal
@@ -34,7 +35,7 @@ os.chdir("userFiles/"+sys.argv[1])
 # WAY TO IMPORT FROM LOCAL
 main = __import__(projectModule, fromlist=[''])
 
-class WeioHandler(SockJSConnection):
+class WeioHandler(websocket.WebSocketHandler):
     
     connections = []
     
@@ -85,13 +86,10 @@ class WeioHandler(SockJSConnection):
             request = uniqueRq['request']
             self.serve(uniqueRq)
 
-    def on_close(self, data):
+    def on_close(self):
         shared.websocketOpened = False
-            # for client in shared.connectedClients :
-            #if self.id in client :
-            #   shared.connectedClients.remove(client)
-            #    print "client uuid : " + self.id + " closed"
-
+        print "Websocket closed"
+        
 
     def clientInfo(self,data) :
         
@@ -122,14 +120,14 @@ class WeioHandler(SockJSConnection):
         
         #print "*SYSOUT* ", pins
         data["data"] = shared.declaredPins 
-        self.send(json.dumps(data))
+        self.write_message(json.dumps(data))
         
         
     def emit(self, instruction, rq):
         data = {}
         data['serverPush'] = instruction
         data['data'] = rq
-        self.send(json.dumps(data))
+        self.write_message(json.dumps(data))
 
     def getConnectedUsers(self, rq):
         #print "USERS"
@@ -139,7 +137,7 @@ class WeioHandler(SockJSConnection):
         for client in shared.connectedClients :
             data.append(client.info)
         allClients['data'] = data
-        self.send(json.dumps(allClients))
+        self.write_message(json.dumps(allClients))
     
     def talkTo(self, rq) :
         print rq
@@ -169,7 +167,7 @@ class WeioHandler(SockJSConnection):
         bck["serverPush"] = data[1] # this is callback for JS
         bck["data"] = value 
         bck["pin"] = data[0]
-        self.send(json.dumps(bck))
+        self.write_message(json.dumps(bck))
 
     def callInputMode(self, data) :
         inputMode(data[0],data[1])
@@ -181,7 +179,7 @@ class WeioHandler(SockJSConnection):
         bck["serverPush"] = data[1] # this is callback for JS
         bck["data"] = value 
         bck["pin"] = data[0]
-        self.send(json.dumps(bck))
+        self.write_message(json.dumps(bck))
 
     def callPwmWrite(self, data) :
         pwmWrite(data[0], data[1])
@@ -215,7 +213,7 @@ class WeioHandler(SockJSConnection):
         #data = {}
         #data["requested"] = 'analogRead'
         #data["data"] = value 
-        #self.send(json.dumps(data))
+        #self.write_message(json.dumps(data))
         pass
     
     
@@ -226,11 +224,15 @@ if __name__ == '__main__':
     shared.websocketOpened = False
     shared.connectedClients = []
     
-    WeioRouter = SockJSRouter(WeioHandler, '/api')
+    #WeioRouter = SockJSRouter(WeioHandler, '/api')
     
     options.define("port", default=8082, type=int)
     
-    app = web.Application(WeioRouter.urls)
+    app = web.Application([
+    
+    (r'/api', WeioHandler)
+    
+    ])
     app.listen(options.options.port, "0.0.0.0")
     
     
