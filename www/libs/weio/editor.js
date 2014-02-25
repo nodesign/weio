@@ -106,38 +106,33 @@ $(document).ready(function () {
     $("#leftSideBarButton").click(function(){
 
         if ($(this).is(".opened")) {
-
-            $(".editorContainer").animate( { left: closedSideBarWidth }, { queue: false, duration: 100, step:function(){$('.ace_content').css('width','100%')}  });
-
-            $(".leftSideBar").animate( { width: closedSideBarWidth }, { queue: false, duration: 100 });
-            $("#leftSideBarButton").animate( { left: "-5px"}, { queue: false, duration: 100 });
+            $(".editorContainer").animate( {left: closedSideBarWidth},
+                { queue: false, duration: 100, step:function(){$('.ace_content').css('width','100%')} } );
+            $(".leftSideBar").animate({width: closedSideBarWidth}, {queue: false, duration: 100});
+            $("#leftSideBarButton").animate({left: "-5px"}, {queue: false, duration: 100});
             $("#leftSideBarButton").attr("class", "closed");
             $("#leftSideBarButton i").attr("class", "icon-chevron-right");
             $(".tree").hide();
             $(".bottomButtons").hide();
-            
         } else {
-
-            $(".editorContainer").animate( { left: leftSideBarWidth }, { queue: false, duration: 100, step:function(){$('.ace_content').css('width','100%')}  });
-
-            $(".leftSideBar").animate( { width: leftSideBarWidth }, { queue: false, duration: 100 });
-            $("#leftSideBarButton").animate( { left: "177px"}, { queue: false, duration: 100 });
+            $(".editorContainer").animate( {left: leftSideBarWidth},
+                { queue: false, duration: 100, step:function(){$('.ace_content').css('width','100%')} } );
+            $(".leftSideBar").animate({width: leftSideBarWidth}, {queue: false, duration: 100});
+            $("#leftSideBarButton").animate({left: "177px"}, {queue: false, duration: 100});
             $("#leftSideBarButton").attr("class", "opened");
             $("#leftSideBarButton i").attr("class", "icon-chevron-left");
             $(".tree").show();
             $(".bottomButtons").show();
         }
       scaleIt();
-      
-                                  
-        
     });
 
     $("#rightSideBarButton").click(function(){
 
         if ($(this).is(".opened")) {
 
-            $(".editorContainer").animate( { right: closedSideBarWidth }, { queue: false, duration: 100, step:function(){$('.ace_content').css('width','100%')}  });
+            $(".editorContainer").animate( { right: closedSideBarWidth },
+                { queue: false, duration: 100, step:function(){$('.ace_content').css('width','100%')}  });
 
             $(".rightSideBar").animate( { width: closedSideBarWidth }, { queue: false, duration: 100 });
             $("#rightSideBarButton").animate( { left: "-5px"}, { queue: false, duration: 100 });
@@ -158,18 +153,14 @@ $(document).ready(function () {
             $("#consoleTabs").show();
             
         }
-       scaleIt();
-                                   
-
+       scaleIt();                      
     });
                 
-  $("#rightSideBarButton").trigger("click");
-  window.setInterval("autoSave()",autoSaveInterval); 
+    $("#rightSideBarButton").trigger("click");
+    window.setInterval("autoSave()",autoSaveInterval); 
                    
                   
-  $('.accordion').click(function(e){
-        
-  
+    $('.accordion').click(function(e){
         // Remove strip                
         if ($(e.target).hasClass('icon-remove')){
             //console.log("fjdhsgjhfgsjkhfdgsjk");
@@ -198,60 +189,47 @@ $(document).ready(function () {
 			
 			// Remove DIV
             $(e.target).parents('.accordion-group').remove();
-                        
             scaleIt();
-        
-        }   
-   
-                        
+        }                     
     });
-                  
-                  
+    
                   
     // Events for tree
-      $('.tree').click(function(e){
+    $('.tree').click(function(e){
             e.preventDefault(); 
             console.log(treeLock);
             if (!treeLock) {
-                       //     console.log($(this).parents());                      
-                       // prepareToDeleteFile  
+                // console.log($(this).parents());                      
+                // prepareToDeleteFile    
+                // console.log("FILE ", $(e.target).is("#deleteFileButton"));
+                // console.log("FOLDER ", $(e.target).is("#deleteProjectButton"));
+                //if ($(e.target).hasClass('icon-remove')){
+                if ($(e.target).is("#deleteFileButton")) {
+                    // kill existing file
+                    //  console.log($(e.target).parents('li.file'));      
+                    var m = $(e.target).parents('li.file');
+                    var path = $(m).children('a.fileTitle').attr('href');
+
+                    prepareToDeleteFile(path);
                        
-                      // console.log("FILE ", $(e.target).is("#deleteFileButton"));
-                      // console.log("FOLDER ", $(e.target).is("#deleteProjectButton"));
-                   //if ($(e.target).hasClass('icon-remove')){
-                   if ($(e.target).is("#deleteFileButton")) {
-                       // kill existing file
-                         //  console.log($(e.target).parents('li.file'));
-                           
-                           var m = $(e.target).parents('li.file');
-                           var path = $(m).children('a.fileTitle').attr('href');
-                           
-                           prepareToDeleteFile(path);
+                } else if ($(e.target).is("#deleteProjectButton")) { 
+                    prepareToDeleteProject();       
+                } else if ($(e.target).hasClass('fileTitle')) {
+                    // Path extraction                        
+                    var path = $(e.target).attr('href');
+                    //console.log(path);   
+                    var doesExist = false;
+
+                    // Adding strip if don't exists already
+                    for (var i in editorsInStack) {
+                        if (editorsInStack[i].path == path) {
+                            doesExist = true;
+                        }
+                    }
                        
-                       } else if ($(e.target).is("#deleteProjectButton")) {
-                       
-                           prepareToDeleteProject();
-                       
-                       } else if ($(e.target).hasClass('fileTitle')) {
-                           
-                       // Path extraction                        
-                       var path = $(e.target).attr('href');
-                       //console.log(path);
-                       
-                       var doesExist = false;
-                       
-                       // Adding strip if don't exists already
-                       for (var i in editorsInStack) {
-                       
-                           if (editorsInStack[i].path == path) {
-                               doesExist = true;
-                           }
-                       }
-                       
-                       if (!doesExist){
-                       
-                       // asks server to retreive file that we are intested in
-                            // regular files
+                    if (!doesExist){
+                        // asks server to retreive file that we are intested in
+                        // regular files
                         if ((path.indexOf(".css") != -1) || (path.indexOf(".py") != -1) || (path.indexOf(".js") != -1) ||
                             (path.indexOf(".html") != -1) || (path.indexOf(".txt") != -1) || (path.indexOf(".md") != -1) ||
                             (path.indexOf(".json") != -1) || (path.indexOf(".xml") != -1) || (path.indexOf(".less") != -1) ||
@@ -270,21 +248,14 @@ $(document).ready(function () {
                        
                        // It's more sure to add to currentlyOpened array from
                        // websocket callback than here in case that server don't answer
-                       }
-                       
-                   }
-           }
-                       
-                       
-                       
-                          
-   });
+                       } // if (!doesExist) 
+                   } // if ($(e.target).hasClass('fileTitle'))
+           } // if (!treeLock)              
+    });
                   
 
-                  
-
-  // Ace editor creation
-  createEditor();
+    // Ace editor creation
+    createEditor();
   
                 
     //////////////////////////////////////////////////////////////// SOCK JS EDITOR        
@@ -340,59 +311,37 @@ $(document).ready(function () {
               instruction = data.serverPush;  
               if (instruction in callbacksEditor) 
                   callbacksEditor[instruction](data);
-              
        }
-                     
-       
     };
-
-
 
     editorSocket.onclose = function() {
         // turn on red light if disconnected
         console.log('Dashboard Web socket is closed');
-    };
+    };            
                   
-                  
-                  
-                  
-                  
-      //////////////// CONSOLE TABS
-              
-        $("#tabConsole").click(function(e) {
-                       
-            stopDataViz();
-                       
-        });          
-                  
-       $("#tabBoard").click(function(e) {
-                       
-            stopDataViz();
-            connectToBoard();
-                       
-        });
-                       
-       $("#tabStats").click(function(e) {
-                                    
-            startDataViz();
-      });
-                       
-       $("#tabDocumentation").click(function(e) {
-                       
-            stopDataViz();
-                       
-      });
+    //////////////// CONSOLE TABS          
+    $("#tabConsole").click(function(e) {                    
+        stopDataViz();               
+    });                        
 
-      
-    
-    ////////////////////// ADD FILES EVENT
-    
+    $("#tabBoard").click(function(e) {                   
+        stopDataViz();
+        connectToBoard();               
+    });
+                       
+    $("#tabStats").click(function(e) {                                
+        startDataViz();
+    });
+                       
+    $("#tabDocumentation").click(function(e) {                   
+        stopDataViz();                
+    });
+
+    ////////////////////// ADD FILES EVENT    
     $('#updateFiles').change(function(evt){
          handleFileSelect(evt);
     });
 
-
-   
 }); /* end of document on ready event */
 
 
@@ -533,14 +482,12 @@ function scaleIt(){
     
     // Resize
     $(editor).resize();
-    
 }
 
 
-
 $(window).resize(function() {
-                 scaleIt();
-   updateConsoleHeight();
+    scaleIt();
+    updateConsoleHeight();
 });
 
 
@@ -581,7 +528,6 @@ function getEditorObjectFromParsedId(prefix, accId) {
         }
     }
     return null;
-     
 }
 
 
@@ -645,28 +591,24 @@ function saveAll() {
         var rq = { "request": "saveAll", "data":editorsInStack};
         editorSocket.send(JSON.stringify(rq));
     }
-   
 }
 
 /**
  * Play mode
  */
 function play() {
-    
     if (editorsInStack.length>0) {
         playPushed = true;
         saveAll();
     } else {
         window.top.play();
     }
-    
 }
 
 /**
  * Auto save if there were changes
  */
 function autoSave() {
-    
     if (activeAutoSave) {
         
         saveAll();
@@ -685,7 +627,6 @@ function autoSave() {
         }
     }
     activeAutoSave = false;
-    
 }
 
 
@@ -730,7 +671,6 @@ function createNewFile() {
         var rq = { "request": "createNewFile", "data" : data};
         editorSocket.send(JSON.stringify(rq));
     }
-    
 }
 /**
  * This is same request as createNewFile but is not sourced from modal view
@@ -927,10 +867,6 @@ function updateFileTree(data) {
 
 
 function fixedCollapsing(showMe) {
-	
-	
-	
-	
     // Open new element and hide others
     
     // Collapse all
@@ -1020,10 +956,11 @@ function insertNewStrip(data) {
     
     var title = data.data.name;
     idEl = data.data.id;
-
     
     // Element
-    var el = $('<div />').html('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" id="att_'+ idEl+'" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a role="button" id="closeButton"><i class="icon-remove"></i></a></div></div><div id="acc_'+idEl+'" class="accordion-body collapse"><div class="accordion-inner"></div></div>').addClass('accordion-group').attr("id", "file_"+data.data.id);
+    var el = $('<div />').html('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" id="att_' + 
+            idEl + '" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a role="button" id="closeButton"><i class="icon-remove"></i></a></div></div><div id="acc_' 
+            + idEl + '" class="accordion-body collapse"><div class="accordion-inner"></div></div>').addClass('accordion-group').attr("id", "file_" + data.data.id);
     
     // Add new strip here
     $('#accordion2').append(el);
@@ -1111,8 +1048,6 @@ function fileRemoved(data) {
         //console.log($(e.target).parents('.accordion-group'), $(e.target).parent('.accordion-group'));
         
         $("#file_"+currentId).remove();
-        
-        
     }
 }
 
@@ -1121,7 +1056,6 @@ function fileRemoved(data) {
  */
 function isIndexExists() {
     console.log("DEBUG ", $("#tree").find("a"));
-    
     
     var files = $(".tree").find("a");
    
@@ -1132,10 +1066,7 @@ function isIndexExists() {
         } else {
             return false;
         }
-        
     }
-    
-    
 }
 
 /* 
@@ -1143,7 +1074,6 @@ function isIndexExists() {
  */
 
 function isMainExists() {
-    
     var files = $(".tree").find("a");
     
     for (var i=0; i<files.length; i++) {
@@ -1153,10 +1083,7 @@ function isMainExists() {
         } else {
             return false;
         }
-        
     }
-
-    
 }
 
 

@@ -54,27 +54,13 @@
                         </li>
                     </ul>
 
-                    
-                    
                     <ul class="nav">
-                        
                         <li class="dropdown">
-                            
                             <a href="#" class="dropdown-toggle" id="projectTitle" data-toggle="dropdown" >loading...</a>
-                            
-                            <ul class="dropdown-menu" id="userProjectsList">
-                                
-                                
-                                
-                            </ul>
+                            <ul class="dropdown-menu" id="userProjectsList"></ul>
                         </li>
+                    </ul>
                         
-                        
-                      </ul>
-                        
-                        
-                                         
-                    
                     <ul class="serverBT nav">
                         <li id="playButton" class="top_tab">
                             <a class="icn-btn" href="javascript:prepareToPlay();" onmouseover="$(this).tooltip()" data-placement="bottom">Play</a>
@@ -96,7 +82,6 @@
                     </div>
                        
                     <div class="user pull-right">
-                        
                             <div class="btn-group pull-right">
                                 <a class="btn dropdown-toggle" data-toggle="dropdown" id="user" onclick="updateCheck()"></a>
                                 <ul class="dropdown-menu">
@@ -138,6 +123,7 @@
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             <h3 id="myModalChangeWifiLabel">Connect manually to another network</h3>
         </div>
+        
         <div class="modal-body" id="wifiParameters">
 
             <input type="text" class="input-small" placeholder="SSID" id="wifiSSID">
@@ -145,9 +131,11 @@
             <input type="text" class="input-small" placeholder="Encryption" id="encryption">
             
 
-            <p>You are up to change wifi network. If you continue, connection with Weio will be lost. Remember that you have to switch to the same network with your computer to gain again access to Weio.</p>
-
+            <p>You are up to change wifi network. If you continue, connection with Weio will be lost.
+                Remember that you have to switch to the same network with
+                your computer to gain again access to Weio.</p>
         </div>
+
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
             <button class="btn btn-primary" onclick="changeWifiNetwork()" data-dismiss="modal">Continue</button>
@@ -162,16 +150,16 @@
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             <h3 id="myModalSimpleChangeWifiLabel"></h3>
         </div>
+
         <div class="modal-body" id="wifiParameters">
-
-            
             <input type="password" class="input-small" placeholder="Password" id="wifiPasswordSimple">
-          
-            
 
-            <p>You are up to change wifi network. If you continue, connection with Weio will be lost. Remember that you have to switch to the same network with your computer to gain again access to Weio.</p>
+            <p>You are up to change wifi network. If you continue, connection with Weio will be lost.
+                Remember that you have to switch to the same network with your computer to
+                gain again access to Weio.</p>
 
         </div>
+
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
             <button class="btn btn-primary" onclick="goSta()">Continue</button>
@@ -192,7 +180,9 @@
             <input type="text" class="input-small" placeholder="SSID" id="wifiSSIDAP">
             <input type="password" class="input-small" placeholder="Password" id="wifiPasswordAP">
 
-            <p>You are up to change wifi network. If you continue, connection with Weio will be lost. Remember that you have to switch to the same network with your computer to gain again access to Weio.</p>
+            <p>You are up to change wifi network. If you continue, connection with Weio will be lost.
+                Remember that you have to switch to the same network with your
+                computer to gain again access to Weio.</p>
 
         </div>
         <div class="modal-footer">
@@ -231,7 +221,8 @@
                   <h4 id="progressStatus"></h4>
                   
                   <canvas id="updateProgressChart"></canvas>
-                  <p>WeIO is updating now. Please don't touch anything. If program stucks after progress bar is done try to reload this page or to reset hardware</p>
+                  <p>WeIO is updating now. Please don't touch anything. If program stucks after progress
+                        bar is done try to reload this page or to reset hardware</p>
                   
               </div>
               <div class="modal-footer">
@@ -316,13 +307,13 @@
              <div style="position:relative;">
              		<a class='btn' href='javascript:;'>
              			Choose WeIO project tar file...
-             			<input id="importProjectUploader" type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;' name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'>
-             		</a>
+             			<input id="importProjectUploader" type="file"
+                         style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:
+                         "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;'
+                         name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'></a>
              		&nbsp;
              		<span class='label label-info' id="upload-file-info"></span>
              </div>
-             
-             
         </div>
         
         <div class="modal-footer">

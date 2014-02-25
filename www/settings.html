@@ -12,15 +12,16 @@
         <title>WeIO Settings</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
             
-            <link href="libs/css/settings.css" rel="stylesheet" />
-            <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+        <link href="libs/css/settings.css" rel="stylesheet" />    
+        <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
             
-            <script src="libs/jquery/jquery-2.0.2.min.js"> </script>
-            <script src="libs/bootstrap/js/bootstrap.min.js"> </script>
-            <script src="libs/sockJS/sockjs-0.3.min.js"> </script>
+        <script src="libs/jquery/jquery-2.0.2.min.js"> </script>
+        <script src="libs/bootstrap/js/bootstrap.min.js"> </script>
+        <script src="libs/sockJS/sockjs-0.3.min.js"> </script>
             
             
-            </head>
+    </head>
+
     <body>
         
         
@@ -31,6 +32,7 @@
                         <li class="active"><a href="#">General</a></li>
                         <li class><a href="#">Network</a></li>
                         <li class><a href="#">Security</a></li>
+                        <li class><a href="#">Python</a></li>
                     </ul>
                 </div>
             </div>
@@ -49,7 +51,9 @@
                                 <input type="password" placeholder="Password" style="width:120px">
                                 <input type="password" placeholder="Re-type password" style="width:120px">
                             </form>
-                                <span class="help-block" style="width:500px">Username and password are used to acces and modify source codes. For example they are granting acces via http on address http://weio.local/editor or via ssh on root@weio.local</span>
+                                <span class="help-block" style="width:500px">Username and password are used
+                                    to acces and modify source codes. For example they are granting acces via
+                                    http on address http://weio.local/editor or via ssh on root@weio.local</span>
                             <legend></legend>
                             <label>Name to acces WeIO board via network (DNS name)</label>
                             
@@ -77,7 +81,9 @@
                                 <input type="text" placeholder="root" disabled style="width:120px">
                                 <label>IP address</label>
                                 <input type="text" placeholder="192.168.1.0" style="width:120px">
-                                <span class="help-block" style="width:500px">This is your local ip address, however you can force another address here. If something goes wrong push AP button on WeIO board to gain acces if you are in STA mode.</span>    
+                                <span class="help-block" style="width:500px">This is your local ip address,
+                                    however you can force another address here. If something goes wrong push AP
+                                    button on WeIO board to gain acces if you are in STA mode.</span>    
                                 <br>
                                 <label>Name to acces WeIO board via network (DNS name)</label>
                                 <input type="text" placeholder="weio" style="width:120px">
@@ -114,8 +120,6 @@
                                 </fieldset>
                         <button type="submit" class="btn btn-primary">Submit network settings</button>
                                 </form>
-                            
-                            
                                                     
                     </div> <!-- network settings-->
 

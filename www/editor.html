@@ -42,10 +42,12 @@
             
             <!-- Bottom buttons start here -->
             <div class="bottomButtons">
-                <button id="addNewFile" class="open" href="#createNewFile" role="button" data-toggle="modal" onmouseover="$(this).tooltip()" data-placement="top" title="Create new file"> <i class="icon-plus-sign icon-2x"></i> </button>
+                <button id="addNewFile" class="open" href="#createNewFile" role="button" data-toggle="modal"
+                    onmouseover="$(this).tooltip()" data-placement="top" title="Create new file"> <i class="icon-plus-sign icon-2x"></i> </button>
                 
                 <input type="file" id="updateFiles" name="upload" style="visibility: hidden; width: 1px; height: 1px" multiple />
-                <button id="addNewFile" onmouseover="$(this).tooltip()" data-placement="top" title="Upload files" onclick="document.getElementById('updateFiles').click(); return false"><i class="icon-circle-arrow-up icon-2x"></i></button>
+                <button id="addNewFile" onmouseover="$(this).tooltip()" data-placement="top" title="Upload files"
+                    onclick="document.getElementById('updateFiles').click(); return false"><i class="icon-circle-arrow-up icon-2x"></i></button>
                
                 
                 <!--<button class="btn" type="button"> <i class="icon-remove-sign icon-2x"></i></button>-->
@@ -66,12 +68,23 @@
                 <div class="input-append" >
                     <input type="text" value="myFile" id="newFileName"/>
                     <div class="btn-group" data-toggle="buttons-radio">
-                        <button type="button" class="btn active" onclick="setFileType('html')" onmouseover="$(this).tooltip()" data-placement="bottom" title="Hypertext Markup Language">.html</button>
-                        <button type="button" class="btn" onclick="setFileType('css')" onmouseover="$(this).tooltip()" data-placement="bottom" title="Cascading Style Sheets">.css</button>
-                        <button type="button" class="btn" onclick="setFileType('js')" onmouseover="$(this).tooltip()" data-placement="bottom" title="Javascript">.js</button>
-                        <button type="button" class="btn" onclick="setFileType('py')" onmouseover="$(this).tooltip()" data-placement="bottom" title="Python">.py</button>
-                        <button type="button" class="btn" onclick="setFileType('txt')" onmouseover="$(this).tooltip()" data-placement="bottom" title="Text file">.txt</button>
-                        <button type="button" class="btn" onclick="setFileType('json')" onmouseover="$(this).tooltip()" data-placement="bottom" title="Javascript object notation">.json</button>
+                        <button type="button" class="btn active" onclick="setFileType('html')" onmouseover="$(this).tooltip()"
+                            data-placement="bottom" title="Hypertext Markup Language">.html</button>
+
+                        <button type="button" class="btn" onclick="setFileType('css')" onmouseover="$(this).tooltip()"
+                            data-placement="bottom" title="Cascading Style Sheets">.css</button>
+
+                        <button type="button" class="btn" onclick="setFileType('js')" onmouseover="$(this).tooltip()"
+                            data-placement="bottom" title="Javascript">.js</button>
+
+                        <button type="button" class="btn" onclick="setFileType('py')" onmouseover="$(this).tooltip()"
+                            data-placement="bottom" title="Python">.py</button>
+
+                        <button type="button" class="btn" onclick="setFileType('txt')" onmouseover="$(this).tooltip()"
+                            data-placement="bottom" title="Text file">.txt</button>
+
+                        <button type="button" class="btn" onclick="setFileType('json')" onmouseover="$(this).tooltip()"
+                            data-placement="bottom" title="Javascript object notation">.json</button>
                     </div>
                 </div>
             </div>
@@ -226,8 +239,6 @@
             <div id="stats-pane" class="tab-pane">
                 <div class="row-fluid">
                     <div class="span12">
-                        
-                        
                         <div class="row-fluid">
                             <div class="span9 statMainTitle">Cpu</div>
                         </div>
@@ -289,12 +300,10 @@
                         <!-- ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
                         
                         <div class="row-fluid">
-                            
                             <div class="span9 statMainTitle">Flash</div>
                         </div>
                         
                         <div class="row-fluid">
-                            
                             <div class="span3">
                                 <canvas id="flashViz" class="statChartViz"></canvas>
                             </div>
@@ -306,9 +315,7 @@
                                 <li id ="flashFree" class="statBigNumbers statBlue">0Mb</li>
                                 <li class="statTitle">free</li>
                             </div>
-                            <div class="span3">
-                           
-                            </div>
+                            <div class="span3"></div>
                             
                         </div>
                         <hr>

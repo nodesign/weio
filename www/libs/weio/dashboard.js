@@ -74,14 +74,13 @@ $(document).ready(function () {
 
     // generate random number to prevent loading page from cache
     var randomNumber = Math.random();
-      
     $(".iframeContainer").attr("src", "editor.html?" + randomNumber);
                   
-   runEditor();
+    runEditor();
     
     weioProgress = new Chart(document.getElementById("weioProgress").getContext("2d"));
                         
-                                    
+                                
 //////////////////////////////////////////////////////////////// SOCK JS DASHBOARD        
                   
     dashboard = new SockJS('http://' + location.host + '/dashboard');
@@ -159,7 +158,6 @@ $(document).ready(function () {
                  instruction = data.serverPush;  
                  if (instruction in callbacks) 
                      callbacks[instruction](data);
-
           }
         
         
@@ -171,7 +169,8 @@ $(document).ready(function () {
         isEditorActive = false;
         $("#status").attr("class", "disconnected");
         
-        var lostContact = "Browser lost connexion with WeIO! Try to simply reload this page. If problem still remains push WeIO reset button."
+        var lostContact = "Browser lost connexion with WeIO! Try to simply reload this page.a" +
+            "If problem still remains push WeIO reset button."
         setTestament(lostContact);
         
     };   
@@ -238,8 +237,6 @@ function handleFileSelect(evt) {
        reader.onerror = errorFile;
 
        // Closure to capture the file information.
-
-
        reader.onload = (function(theFile) {
                         return function(e) {
                         //console.log("FILE ", theFile.name, " ", e.target.result);
@@ -271,8 +268,8 @@ var isEditorActive = null;
 
 
 $(window).resize(function() {
-   updateIframeHeight();
-   $('#weioIframe').find('#tree').empty();
+    updateIframeHeight();
+    $('#weioIframe').find('#tree').empty();
 });
 
 function updateIframeHeight() {
@@ -292,10 +289,10 @@ function setTestament(data) {
  */ 
 
 function runEditor() {
-    
     //$(".iframeContainer").show();
     $(".iframeContainer").animate( { "margin-top": "60px" }, { queue: false, duration: 500 });
-    $(".iframeContainerIndex").animate( { "margin-top": screen.height+60+"px" }, { queue: false, duration: 500 });
+    $(".iframeContainerIndex").animate( { "margin-top": screen.height+60+"px" },
+            { queue: false, duration: 500 });
     
     //$(".iframeContainerIndex").hide();
 
@@ -323,7 +320,8 @@ function runPreview() {
               // generate random number to prevent loading page from cache
               var randomNumber = Math.random();
               
-              $(".iframeContainerIndex").attr("src", confFile.user_projects_path + confFile.last_opened_project + "index.html?" + randomNumber);
+              $(".iframeContainerIndex").attr("src", confFile.user_projects_path +
+                  confFile.last_opened_project + "index.html?" + randomNumber);
               // console.log(confFile.weio_lib_path);
               $(".iframeContainerIndex").css("height", screen.height-60 + "px");
               $(".iframeContainerIndex").css("margin-top", screen.height+60 + "px");
@@ -346,7 +344,14 @@ function runPreview() {
  */
 
 function runSettings() {
-    $(".iframeContainer").attr("src", "settings.html");
+    console.log("=========>> runSettings() CALLED")
+    updateIframeHeight();
+    //$(".iframeContainer").animate( { "margin-top": screen.height+60+"px" }, { queue: false, duration: 500 });
+
+    // generate random number to prevent loading page from cache
+    var randomNumber = Math.random();
+    $(".iframeContainer").attr("src", "settings.html?" + randomNumber);
+
     $("#editorButtonHeader").attr("class", "top_tab");
     $("#previewButtonHeader").attr("class", "top_tab");
 }
