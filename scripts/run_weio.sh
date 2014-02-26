@@ -92,7 +92,7 @@ do
     avahi-daemon -D
     
     # And start WeIO
-    python weioServer.py;
+    ./weioServer.py;
         
     if grep -q '"kill_flag": "YES"' /weio/config.weio
     then
