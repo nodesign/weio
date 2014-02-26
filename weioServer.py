@@ -85,26 +85,6 @@ from weioLib import weioFiles
 from weioLib.weioUserApi import *
 
 
-# This is user project index.html
-class WeioIndexHandler(tornado.web.RequestHandler):
-    
-    def get(self):
-        global firstTimeSwitch
-        confFile = weio_config.getConfiguration()
-        firstTimeSwitch = confFile['first_time_run']
-        #print firstTimeSwitch
-        
-        if (firstTimeSwitch=="YES") :
-            path = "www/firstTime.html"
-        else :
-            if (weioFiles.checkIfFileExists(confFile['user_projects_path'] + confFile['last_opened_project'] + "index.html")):
-                path = "www/userIndex.html"
-            else :
-                path = "www/error404.html"
-                    
-        self.render(path, error="")
-
-        
 # Editor web app route handler      
 class WeioEditorWebHandler(loginHandlers.BaseHandler):
     #@tornado.web.authenticated
@@ -120,15 +100,6 @@ class WeioEditorWebHandler(loginHandlers.BaseHandler):
             path = confFile['editor_html_path']
         
         self.render(path, error="")
-        
-
-# pure websocket implementation
-class WeioCloseConnection(SockJSConnection):
-    def on_open(self, info):
-        self.close()
-
-    def on_message(self, msg):
-        pass
 
 # Periodic callback that checks button state for AP and STA
 # if AP+STA over 3 seconds than reset
@@ -184,12 +155,6 @@ if __name__ == '__main__':
     
     # STATS ROUTER
     WeioStatsRouter = SockJSRouter(statsHandler.WeioStatsHandler, '/editor/stats')
-
-    
-    #GENERAL ROUTES
-    CloseRouter = SockJSRouter(WeioCloseConnection, '/close')
-    
-    
     
 
     secret = loginHandlers.generateCookieSecret()
@@ -207,8 +172,8 @@ if __name__ == '__main__':
         debugMode = True
 
     app = tornado.web.Application(list(WeioEditorRouter.urls) +
-                            list(CloseRouter.urls) +
-                                  #list(WeioAPIBridgeRouter.urls) +
+                            
+                            #list(WeioAPIBridgeRouter.urls) +
                             list(WeioDashboardRouter.urls) +
                             list(WeioWifiRouter.urls) +
                             list(WeioUpdaterRouter.urls) +
@@ -220,11 +185,9 @@ if __name__ == '__main__':
                             # pure websocket implementation
                             #[(r"/editor/baseFiles", Editor.WeioEditorHandler)] +
                             #[(r"/close", WeioCloseConnection)] +
-                            [(r"/editor", WeioEditorWebHandler)] +
-                            [(r"/login", loginHandlers.WeioLoginHandler)] +
-                            [(r"/", WeioIndexHandler),
-                                (r"/(.*)", tornado.web.StaticFileHandler,
-                                {"path": confFile["dependencies_path"]})], 
+                            [(r"/editor", WeioEditorWebHandler), 
+                            (r"/(.*)", tornado.web.StaticFileHandler,{"path": confFile["dependencies_path"]})] +
+                            [(r"/login", loginHandlers.WeioLoginHandler)],
                             debug=debugMode, **settings
                           )
                           # DEBUG WILL DECREASE SPEED!!! HOW TO AVOID THIS??? see Watchers section down here

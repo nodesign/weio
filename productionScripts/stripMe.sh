@@ -78,6 +78,9 @@ tar -zcvf weio.tar.gz weio/
 if [ "$1" == "no_compression" ]; then
     echo "WeIO stripped no compression is executed"
 else
+    echo "Patching WeIO project for production"
+    patch weio/www/libs/weio/weioApi.js < 01_portChange.patch
+    
     echo "WeIO stripped and compressed"
     tar -zcvf weio.tar.gz weio/
     # kill weio folder

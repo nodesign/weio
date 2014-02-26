@@ -1,5 +1,5 @@
 {
-    "absolut_root_path": "/Users/uros/workNow/nodesign/weIO/weio/weio", 
+    "absolut_root_path": "/Users/uros/workNow/nodesign/WeIO/weio/weio", 
     "debug_mode": "True", 
     "dependencies_path": "www/", 
     "dns_name": "weio.local", 
@@ -12,11 +12,13 @@
         "index.html", 
         "weioMain.py"
     ], 
-    "last_opened_project": "adcToWeb", 
+    "last_opened_project": "examples/userProjects/helloWorld/", 
     "play_composition_on_server_boot": "NO", 
-    "port": 8081, 
+    "port": 8080, 
     "user": "uki car", 
+    "userAppPort": 8082, 
+    "userApp_debug_mode": "True", 
     "user_projects_path": "userFiles/", 
     "weio_lib_path": "weioLib", 
-    "weio_version": "0.279"
+    "weio_version": "0.298"
 }

@@ -127,7 +127,8 @@ if (len(sys.argv)>=3) :
     
     # Overwrite local configuration file
     config["weio_version"] = sys.argv[1]
-    config["port"] = 80
+    config["port"] = 8080
+    config["userAppPort"] = 80
     config["debug_mode"] = "False"
     config["extern_projects_path"] = "/weioUser/"
     
@@ -144,7 +145,8 @@ if (len(sys.argv)>=3) :
     
     
     # Revert port in local conf file
-    config["port"] = 8081
+    config["port"] = 8080
+    config["userAppPort"] = 8082
     config["debug_mode"] = "True"
     config["extern_projects_path"] = "/Users/uros/workNow/nodesign/weIO/weio/weioUser/"
     inputFile = open("../config.weio", 'w')

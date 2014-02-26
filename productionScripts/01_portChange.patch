@@ -1,0 +1,14 @@
+--- weioApi.js	2014-02-26 12:13:00.000000000 +0100
++++ weioApiProduction.js	2014-02-26 20:34:02.000000000 +0100
+@@ -58,9 +58,9 @@
+     _addr = location.host;
+     if (_addr.indexOf(":")!=-1) {
+         var a = _addr.split(":");
+-        _addr = 'ws://' + a[0] + ':8082/api';
++        _addr = 'ws://' + a[0] + '/api';
+     } else {
+-        var a = 'ws://' + _addr + ':8082/api';
++        var a = 'ws://' + _addr + '/api';
+         //var a = 'http://' + _addr + '/api';
+         _addr = a;
+     }
