@@ -139,7 +139,7 @@ if __name__ == '__main__':
     #WeioAPIBridgeRouter = SockJSRouter(weioAPIbridgeHandler.WeioAPIBridgeHandler, '/api')
 
     # EDITOR ROUTES
-    WeioEditorRouter = SockJSRouter(editorHandler.WeioEditorHandler, '/editor/editorSocket')    
+    WeioEditorRouter = SockJSRouter(editorHandler.WeioEditorHandler, '/editorSocket')    
   
     # DASHBOARD ROUTE websocket
     WeioDashboardRouter = SockJSRouter(dashboardHandler.WeioDashBoardHandler, '/dashboard')
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     WeioFirstTimeRouter = SockJSRouter(firstTimeHandler.WeioFirstTimeHandler, '/firstTime')
     
     # STATS ROUTER
-    WeioStatsRouter = SockJSRouter(statsHandler.WeioStatsHandler, '/editor/stats')
+    WeioStatsRouter = SockJSRouter(statsHandler.WeioStatsHandler, '/stats')
     
 
     secret = loginHandlers.generateCookieSecret()
@@ -185,7 +185,7 @@ if __name__ == '__main__':
                             # pure websocket implementation
                             #[(r"/editor/baseFiles", Editor.WeioEditorHandler)] +
                             #[(r"/close", WeioCloseConnection)] +
-                            [(r"/editor", WeioEditorWebHandler), 
+                            [(r"/", WeioEditorWebHandler), 
                             (r"/(.*)", tornado.web.StaticFileHandler,{"path": confFile["dependencies_path"]})] +
                             [(r"/login", loginHandlers.WeioLoginHandler)],
                             debug=debugMode, **settings

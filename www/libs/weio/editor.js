@@ -263,7 +263,7 @@ $(document).ready(function () {
     /*
      * SockJS object, Web socket
      */
-    editorSocket = new SockJS('http://' + location.host + '/editor/editorSocket');
+    editorSocket = new SockJS('http://' + location.host + '/editorSocket');
     /*
      * On opening of wifi web socket ask server to scan wifi networks
      */

@@ -86,7 +86,7 @@ $(document).ready(function () {
      /*
      * SockJS object, Web socket
      */
-    statSocket = new SockJS('http://' + location.host + '/editor/stats');
+    statSocket = new SockJS('http://' + location.host + '/stats');
                   
     //////////////////////////////////////////////////////////////// SOCK JS STATS        
    

@@ -560,7 +560,7 @@ function projectDeleted(data) {
     
     if (data.data == "reload page") {
         randomNumber = Math.random();
-        var url = 'http://' + location.host + '/editor?'+ randomNumber; 
+        var url = 'http://' + location.host + '/?'+ randomNumber; 
         window.location = url;
     }
 }
