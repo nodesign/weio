@@ -8,7 +8,7 @@ connections = []
 class WeioHandler(websocket.WebSocketHandler):
 
     def open(self):
-
+        global connections
         if self not in connections:
             connections.append(self)
 
@@ -59,6 +59,7 @@ class WeioHandler(websocket.WebSocketHandler):
             self.serve(uniqueRq)
 
     def on_close(self):
+        global connections
         if self in connections:
             connections.remove(self)
             print "*SYSOUT* " + self.userAgent + " with IP address : " + self.ip + " disconnected from server!"
