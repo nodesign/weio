@@ -47,7 +47,7 @@ from weioLib import weioFiles
 from weioLib import weioUnblock
 
 # For shared variables between handlers
-from weioLib.weioUserApi import *
+from weioLib.weioUserApi import shared
 
 
 # IMPORT BASIC CONFIGURATION FILE 
