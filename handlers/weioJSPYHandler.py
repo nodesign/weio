@@ -16,9 +16,14 @@ class WeioHandler(websocket.WebSocketHandler):
 
         # collect client ip address and user machine info
         # print self.request to see all available info on user connection
+        self.userAgent = None
         self.ip = self.request.remote_ip
-        self.userAgent = self.request.headers["User-Agent"]
-        print "*SYSOUT* " + self.userAgent + " with IP address : " + self.ip + " connected to server!"
+        if ("User-Agent" in self.request.headers):
+            self.userAgent = self.request.headers["User-Agent"]
+            print "*SYSOUT* " + self.userAgent + " with IP address : " + self.ip + " connected to server!"
+        else :
+            print "*SYSOUT* Client with IP address : " + self.ip + " connected to server!"
+        #print self.request.headers
         self.connection_closed = False
 
     def on_message(self, data):
@@ -49,5 +54,8 @@ class WeioHandler(websocket.WebSocketHandler):
         global connections
         if self in connections:
             connections.remove(self)
-            print "*SYSOUT* " + self.userAgent + " with IP address : " + self.ip + " disconnected from server!"
+            if not(self.userAgent is None):
+                print "*SYSOUT* " + self.userAgent + " with IP address : " + self.ip + " disconnected from server!"
+            else:
+                print "*SYSOUT* Client with IP address : " + self.ip + " disconnected from server!"
         #print "Websocket closed"
