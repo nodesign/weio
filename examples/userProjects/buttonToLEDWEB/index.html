@@ -65,8 +65,13 @@
             digitalWrite(19, HIGH);
             digitalWrite(20, HIGH);
             digitalWrite(21, HIGH);
+            analogRead(25, readA);
             light = !light;
         }
+    }
+    
+    function readA(data){
+        console.log("laaaaa", data);
     }
     </script>
   </head>
