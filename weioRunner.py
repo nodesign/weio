@@ -40,13 +40,13 @@ class WeioIndexHandler(web.RequestHandler):
 if __name__ == '__main__':
 
     confFile = weio_config.getConfiguration()
-    
+
     # Get the last name of project and run it
     projectModule = "userFiles."+confFile["last_opened_project"].replace('/', '.') + "main"
-    
+
     # 2.6+ WAY TO IMPORT FROM LOCAL
     main = __import__(projectModule, fromlist=[''])
-    
+
     # set python working directory
     #os.chdir("userFiles/"+sys.argv[1])
     myPort = confFile["userAppPort"]
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     app = web.Application([
     (r'/api', WeioHandler),
     ('/', WeioIndexHandler),
-    (r"/(.*)", web.StaticFileHandler, {"path": "www/"}),
+    (r"/(.*)", web.StaticFileHandler, {"path": "www/"})
     ])
     app.listen(options.options.port, "0.0.0.0")
 
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     # CALLING SETUP IF PRESENT
     if "setup" in vars(main):
         main.setup()
-    
+
     # Launching threads
     for key in attach.procs :
         print key
@@ -74,7 +74,7 @@ if __name__ == '__main__':
         t = threading.Thread(target=attach.procs[key].procFnc, args=attach.procs[key].procArgs)
         t.daemon = True
         t.start()
-        
+
     ########################################################## SIGNAL HANDLER
     def sig_handler(sig, frame):
         logging.warning('Caught signal: %s', sig)

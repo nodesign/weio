@@ -1,6 +1,6 @@
 from __future__ import print_function
 from threading import Lock, RLock
-import sys
+import sys, os
 
 #################################
 # WeIO Pin and Global definitions

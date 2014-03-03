@@ -56,9 +56,9 @@ function connectToBoard() {
         var _addr = location.host;
         if (_addr.indexOf(":")!=-1) {
             var a = _addr.split(":");
-            _addr = 'http://' + a[0] + ':8082/api';
+            _addr = 'ws://' + a[0] + ':8082/api';
         } else {
-            var a = 'http://' + _addr + ':8082/api';
+            var a = 'ws://' + _addr + ':8082/api';
             _addr = a;
         }
         console.log("WebSocket connecting to board on " + _addr);
@@ -67,7 +67,7 @@ function connectToBoard() {
          * WebSocket openning
          */
         
-        boardSocket = new SockJS(_addr);
+        boardSocket = new WebSocket(_addr);
         
 
         //////////////////////////////////////////////////////////////// BOARD JS STATS        

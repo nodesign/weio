@@ -193,15 +193,16 @@ function isWeioReady() {
  * Low level electronics instructions from JS
  */
 function digitalWrite(pin, value) {
-  genericMessage("digitalWrite", [pin,value]);
+  genericMessage("digitalWrite", [pin,value], null);
 };
 
 function analogRead(pin, callback) { 
     // create new callback call
     var fName = callback.name;
     //console.log("callback name:" + fName);
+    // add callback function to be called when data arrives
     weioCallbacks[fName] = callback
-    genericMessage("analogRead", [pin,fName]);
+    genericMessage("analogRead", [pin], fName);
     //console.log("Callbacks", weioCallbacks);
 };
 
@@ -210,39 +211,39 @@ function digitalRead(pin, callback) {
     var fName = callback.name;
     //console.log("callback name:" + fName);
     weioCallbacks[fName] = callback
-    genericMessage("digitalRead", [pin,fName]);
+    genericMessage("digitalRead", [pin],fName);
 }
 
 function inputMode(pin, mode) {
-    genericMessage("inputMode", [pin,mode]);
+    genericMessage("inputMode", [pin,mode], null);
 }
 
 function pwmWrite(pin, value) {
-    genericMessage("pwmWrite", [pin,value]);
+    genericMessage("pwmWrite", [pin,value], null);
 }
 
 function setPwmPeriod(period){
-    genericMessage("setPwmPeriod", [period]);
+    genericMessage("setPwmPeriod", [period], null);
 }
 
 function setPwmPeriod0(period){
-    genericMessage("setPwmPeriod0", [period]);
+    genericMessage("setPwmPeriod0", [period], null);
 }
 
 function setPwmPeriod1(period){
-    genericMessage("setPwmPeriod1", [period]);
+    genericMessage("setPwmPeriod1", [period], null);
 }
 
 function setPwmLimit(limit){
-    genericMessage("setPwmLimit", [limit]);
+    genericMessage("setPwmLimit", [limit], null);
 }
 
 function setPwmLimit0(limit){
-    genericMessage("setPwmLimit0", [limit]);
+    genericMessage("setPwmLimit0", [limit], null);
 }
 
 function setPwmLimit1(limit){
-    genericMessage("setPwmLimit1", [limit]);
+    genericMessage("setPwmLimit1", [limit], null);
 }
 
 function getConnectedUsers(callback) {
@@ -250,12 +251,12 @@ function getConnectedUsers(callback) {
     var fName = callback.name;
     //console.log("callback name:" + fName);
     weioCallbacks[fName] = callback
-    genericMessage("getConnectedUsers", [fName]);
+    genericMessage("getConnectedUsers", null, fName);
     //console.log("Callbacks", weioCallbacks);
 }
 
 function talkTo(uuid, data){
-    genericMessage("talkTo", [uuid, data]);
+    genericMessage("talkTo", [uuid, data], null);
 }
 
 function callInbox(data) {
@@ -268,10 +269,16 @@ function callInbox(data) {
 /*
  * Generic handler for sending messages to server
  */
-function genericMessage(instruction, data) {
+function genericMessage(instruction, data, clbck) {
     // avoid sending messages to websocket that is not yet opened
     if (isWeioReady() != 0) {
-        var askWeio = { "request": instruction, "data" : data, "uuid" : uuid };
+        var askWeio;
+        
+        if (clbck == null)
+             askWeio = { "request": instruction, "data" : data }; //, "uuid" : uuid };
+         else 
+             askWeio = { "request": instruction, "data" : data, "callback": clbck }; //, "uuid" : uuid };
+         
         _weio.send(JSON.stringify(askWeio));
     } else {
         console.log("Warning, message tried to be sent when websocket was not completely opened");
