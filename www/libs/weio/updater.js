@@ -168,7 +168,7 @@ function countTimeTillReload(data) {
 function reloadMe() {
     var randomNumber = Math.random();
     // prevent loading from cache
-    var url = "http://" + location.host + "/editor?"+randomNumber;
+    var url = "http://" + location.host + "/?"+randomNumber;
     //location.reload();
     window.location.href = url;
 }
