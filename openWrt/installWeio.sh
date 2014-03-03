@@ -49,7 +49,7 @@ cp $WEIO/openWrt/pkg_install.sh .
 ./pkg_install.sh
 
 # Copy Carambola configuration file
-cp $WEIO/openWrt/weio-config-carambola2 .config
+cp $WEIO/openWrt/weio-config-openwrt .config
 
 # Build
 echo ""
