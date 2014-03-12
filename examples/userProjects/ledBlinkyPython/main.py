@@ -7,6 +7,7 @@ def setup() :
     attach.process(blinky)
 
 def blinky() :
+    print "Hello world!"
     pause = 100
     while True:
         digitalWrite(20, HIGH)

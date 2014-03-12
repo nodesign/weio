@@ -4,11 +4,11 @@
      _addr = location.host;
      if (_addr.indexOf(":")!=-1) {
          var a = _addr.split(":");
--        _addr = 'ws://' + a[0] + ':8082/api';
-+        _addr = 'ws://' + a[0] + '/api';
+-        _addr = 'http://' + a[0] + ':8082/api';
++        _addr = 'http://' + a[0] + '/api';
      } else {
--        var a = 'ws://' + _addr + ':8082/api';
-+        var a = 'ws://' + _addr + '/api';
+-        var a = 'http://' + _addr + ':8082/api';
++        var a = 'http://' + _addr + '/api';
          //var a = 'http://' + _addr + '/api';
          _addr = a;
      }

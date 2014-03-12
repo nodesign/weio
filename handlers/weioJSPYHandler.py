@@ -1,30 +1,40 @@
 from weioLib.weioIO import *
 from weioLib.weioUserApi import shared
-from tornado import websocket
 import json
+
+from sockjs.tornado import SockJSConnection
 
 from weioLib.weioParser import weioSpells
 
 connections = []
 
-class WeioHandler(websocket.WebSocketHandler):
+class WeioHandler(SockJSConnection):
 
-    def open(self):
-        global connections
-        if self not in connections:
-            connections.append(self)
+    connections = set()
+
+    def on_open(self, data):
+
+        # Add client to the clients list
+        self.connections.add(self)
 
         # collect client ip address and user machine info
         # print self.request to see all available info on user connection
         self.userAgent = None
-        self.ip = self.request.remote_ip
-        if ("User-Agent" in self.request.headers):
-            self.userAgent = self.request.headers["User-Agent"]
-            print "*SYSOUT* " + self.userAgent + " with IP address : " + self.ip + " connected to server!"
-        else :
-            print "*SYSOUT* Client with IP address : " + self.ip + " connected to server!"
+        self.ip = data.ip
+        
+        print "*SYSOUT* Client with IP address : " + self.ip + " connected to server!"
+        
+        # list all members of object
+        #members = [attr for attr in dir(data) if not callable(attr) and not attr.startswith("__")]
+        
+        #if ("User-Agent" in self.request.headers):
+        #    self.userAgent = self.request.headers["User-Agent"]
+        #    print "*SYSOUT* " + self.userAgent + " with IP address : " + self.ip + " connected to server!"
+        #else :
+        #    print "*SYSOUT* Client with IP address : " + self.ip + " connected to server!"
         #print self.request.headers
         self.connection_closed = False
+
 
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
@@ -32,7 +42,7 @@ class WeioHandler(websocket.WebSocketHandler):
 
     def serve(self, data) :
         command = data["request"]
-        # print data
+        #print data
         # treat requests using dictionaries
         # talks to hardware directly
         if command in weioSpells:
@@ -51,11 +61,14 @@ class WeioHandler(websocket.WebSocketHandler):
 
     def on_close(self):
         self.connection_closed = True
-        global connections
-        if self in connections:
-            connections.remove(self)
-            if not(self.userAgent is None):
-                print "*SYSOUT* " + self.userAgent + " with IP address : " + self.ip + " disconnected from server!"
-            else:
-                print "*SYSOUT* Client with IP address : " + self.ip + " disconnected from server!"
+        print "*SYSOUT* Client with IP address : " + self.ip + " disconnected from server!"
+        # Remove client from the clients list and broadcast leave message
+        self.connections.remove(self)
+
+#        if self in connections:
+#            connections.remove(self)
+#            if not(self.userAgent is None):
+#                print "*SYSOUT* " + self.userAgent + " with IP address : " + self.ip + " disconnected from server!"
+#            else:
+#                print "*SYSOUT* Client with IP address : " + self.ip + " disconnected from server!"
         #print "Websocket closed"

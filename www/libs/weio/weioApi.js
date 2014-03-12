@@ -58,9 +58,9 @@ $(document).ready(function() {
     _addr = location.host;
     if (_addr.indexOf(":")!=-1) {
         var a = _addr.split(":");
-        _addr = 'ws://' + a[0] + ':8082/api';
+        _addr = 'http://' + a[0] + ':8082/api';
     } else {
-        var a = 'ws://' + _addr + ':8082/api';
+        var a = 'http://' + _addr + ':8082/api';
         //var a = 'http://' + _addr + '/api';
         _addr = a;
     }
@@ -73,7 +73,7 @@ $(document).ready(function() {
     (function() {
       // Initialize the socket & handlers
       var connectToServer = function() {
-        _weio = new WebSocket(_addr);
+        _weio = new SockJS(_addr);
      
         _weio.onopen = function() {
           clearInterval(connectRetry);

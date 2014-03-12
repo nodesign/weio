@@ -19,6 +19,8 @@ from weioLib import weio_config
 # IMPORT WEIO FILE SUPPORT
 from weioLib import weioFiles
 
+from sockjs.tornado import SockJSRouter
+
 ################################################################ HTTP SERVER HANDLER
 # This is user project index.html
 class WeioIndexHandler(web.RequestHandler):
@@ -51,10 +53,11 @@ if __name__ == '__main__':
     #os.chdir("userFiles/"+sys.argv[1])
     myPort = confFile["userAppPort"]
     options.define("port", default=myPort, type=int)
+    
+    apiRouter = SockJSRouter(WeioHandler, '/api')
 
     # Instantiate all handlers for user Tornado
-    app = web.Application([
-    (r'/api', WeioHandler),
+    app = web.Application(apiRouter.urls + [
     ('/', WeioIndexHandler),
     (r"/(.*)", web.StaticFileHandler, {"path": "www/"})
     ])
