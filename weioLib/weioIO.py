@@ -6,9 +6,8 @@ import time
 # Global interface
 ###
 # Shared gpio object over all classes inside project
-# There cannot be two instances od WeioGpio
-if (platform.machine()=="mips"):
-    gpio = WeioGpio()
+# There cannot be two instances of WeioGpio
+gpio = WeioGpio()
 
 ###
 # User API functions for GPIO
