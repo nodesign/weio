@@ -1,10 +1,10 @@
 {
-    "absolut_root_path": "/home/drasko/nodesign/weio", 
+    "absolut_root_path": "/Users/uros/workNow/nodesign/WeIO/weio/weio", 
     "debug_mode": "True", 
     "dependencies_path": "www/", 
     "dns_name": "weio.local", 
     "editor_html_path": "www/dashboard.html", 
-    "extern_projects_path": "examples/userProjects/", 
+    "extern_projects_path": "/Users/uros/workNow/nodesign/weIO/weio/weioUser/", 
     "first_time_run": "NO", 
     "ip": "0.0.0.0", 
     "kill_flag": "YES", 
@@ -12,7 +12,7 @@
         "index.html", 
         "weioMain.py"
     ], 
-    "last_opened_project": "examples/userProjects/helloWorld/", 
+    "last_opened_project": "examples/userProjects/testUPERMAC/", 
     "play_composition_on_server_boot": "NO", 
     "port": 8080, 
     "user": "Drasko DRASKOVIC", 
@@ -20,5 +20,5 @@
     "userApp_debug_mode": "True", 
     "user_projects_path": "userFiles/", 
     "weio_lib_path": "weioLib", 
-    "weio_version": "0.298"
+    "weio_version": "0.303"
 }
