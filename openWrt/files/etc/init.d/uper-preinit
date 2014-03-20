@@ -3,11 +3,11 @@
 START=09
 
 start() {
-	echo "*** GPIO22=1" > /dev/kmsg
-	echo 22 > /sys/class/gpio/export
-	echo out > /sys/class/gpio/gpio22/direction
-	echo 1 > /sys/class/gpio/gpio22/value
-	echo 22 > /sys/class/gpio/unexport
+	echo "*** GPIO17=1" > /dev/kmsg
+	echo 17 > /sys/class/gpio/export
+	echo out > /sys/class/gpio/gpio17/direction
+	echo 1 > /sys/class/gpio/gpio17/value
+	echo 17 > /sys/class/gpio/unexport
 }
 
 stop() {
