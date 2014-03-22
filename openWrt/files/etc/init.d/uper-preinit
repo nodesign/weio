@@ -2,12 +2,18 @@
 
 START=09
 
+# Carambola 2
+#UPER_PIN=22
+
+# WeIO
+UPER_PIN=17
+
 start() {
-	echo "*** GPIO17=1" > /dev/kmsg
-	echo 17 > /sys/class/gpio/export
-	echo out > /sys/class/gpio/gpio17/direction
-	echo 1 > /sys/class/gpio/gpio17/value
-	echo 17 > /sys/class/gpio/unexport
+	echo "*** GPIO$UPER_PIN=1" > /dev/kmsg
+	echo $UPER_PIN > /sys/class/gpio/export
+	echo out > /sys/class/gpio/gpio$UPER_PIN/direction
+	echo 1 > /sys/class/gpio/gpio$UPER_PIN/value
+	echo $UPER_PIN > /sys/class/gpio/unexport
 }
 
 stop() {
