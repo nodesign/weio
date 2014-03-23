@@ -12,7 +12,7 @@ check_wifi()
 {
     DELAY=5
     COUNTER=0
-
+        
     # Wait for WiFi interface to appear
     while [ ! -e /sys/class/net/wlan0/operstate ]; do
         # WiFi is still down. Wait a bit.
@@ -52,27 +52,9 @@ check_wifi()
 while true; 
 do
     cd /weio
-    # export AP and STA LEDs
-    if [ -f "/sys/class/gpio/gpio23/value" ]
-    then
-        echo "gpio 23 declared"
-    else
-        echo 23 > /sys/class/gpio/export
-    fi
-
-    if [ -f "/sys/class/gpio/gpio22/value" ]
-    then
-        echo "gpio 22 declared"
-    else
-        echo 22 > /sys/class/gpio/export
-    fi
-
-    echo in > /sys/class/gpio/gpio23/direction
-    echo in > /sys/class/gpio/gpio22/direction
-
+    
     # First check if WiFi is UP
     check_wifi
-
    
     while [ $WIFI_READY -ne 1 ]; do
         echo "WiFi network is not ready. Switching to RESCUE mode."
@@ -84,15 +66,28 @@ do
         # Re-check WiFi
         check_wifi
     done
-
+   
+    # Light up the correct LED
+    /etc/init.d/led_blink stop 
+    MODE=`iwconfig wlan0 | grep Mode | awk '{print $1}' | sed 's/Mode://'`
+    if [ $MODE == Managed ]; then
+    	echo 1 > /sys/class/leds/weio:green:sta/brightness
+    else
+    	echo 1 > /sys/class/leds/weio:green:ap/brightness
+    fi
+    
     # Then you can restart avahi
     # First kill it
     avahi-daemon -k
     # The daemonize it
     avahi-daemon -D
     
+    echo "===> STARTING THE SERVER"
+    
     # And start WeIO
     ./weioServer.py;
+    
+    echo "===> EXITED SERVER"
         
     if grep -q '"kill_flag": "YES"' /weio/config.weio
     then

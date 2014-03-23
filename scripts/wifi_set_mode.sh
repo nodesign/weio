@@ -5,6 +5,9 @@ if [ $# -eq 0 ]
     exit
 fi
 
+# Start blinking the LEDs
+/etc/init.d/led_blink restart
+
 if [ $1 == "ap" ]; then
     # Down the WiFi before reconfiguration
     wifi down
