@@ -1,0 +1,17 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2014 Drasko DRASKOVIC
+
+START=01
+
+start() {
+    echo "Blinking the LEDs"
+    /weio/scripts/ledBlink.py 0.5 &
+}
+
+
+stop() {
+	if [ -n "$(ps | grep  "[l]edBlink.py")" ]; then
+        echo "Stopping ledBlink.py..."
+        killall ledBlink.py
+	fi
+}
