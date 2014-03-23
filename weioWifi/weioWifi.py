@@ -69,9 +69,6 @@ class WeioWifi() :
 
     def checkConnection(self) :
         command = "iwconfig " + self.interface
-
-        print "CHECK CONNECTION"
-
         status = weioSubprocess.shellBlocking(command)
 
         print(str(status))
@@ -105,13 +102,14 @@ class WeioWifi() :
         if ( self.disconnectedCounter >= 2 or (self.mode == "sta" and weioIpAddress.getLocalIpAddress() == '') ):
             # Move to Master mode
             print "Trying to move to AP RESCUE mode..."
-            weioSubprocess.shellBlocking("scripts/wifi_set_mode.sh rescue")
+            subprocess.call("scripts/wifi_set_mode.sh rescue", shell=True)
 
             self.disconnectedCounter = 0
 
             # Restart Tornado (shell script bring it up whenever it exits)
             #cmd = "/etc/init.d/weio_run restart"
             #weioSubprocess.shellBlocking(cmd)
+            print "************* EXITING ****************"
             os._exit(os.EX_OK)
 
         # At this point connection has been maid, and all we have to do is check ESSID
@@ -132,6 +130,8 @@ class WeioWifi() :
 
         # Stop checking WiFi periodically (we will reset)
         self.periodicCheck.stop()
+        
+        print "SETTING THE CONNECTION " + mode
 
         """ First shut down the WiFi on Carambola """
         weioSubprocess.shellBlocking("wifi down")
@@ -160,12 +160,11 @@ class WeioWifi() :
                 shutil.copy(fname, "/etc/config/wireless")
 
             cmd = "scripts/wifi_set_mode.sh ap"
-            weioSubprocess.shellBlocking(cmd)
+            subprocess.call(cmd, shell=True)
 
         elif (mode is 'sta') :
             """ Change the /etc/config/wireless.sta : replace the params """
             fname = "/etc/config/wireless.sta"
-
             with open(fname) as f:
                 out_fname = fname + ".tmp"
                 out = open(out_fname, "w")
@@ -184,9 +183,9 @@ class WeioWifi() :
                 out.close()
                 os.rename(out_fname, fname)
                 shutil.copy(fname, "/etc/config/wireless")
-
+	
             cmd = "scripts/wifi_set_mode.sh sta"
-            weioSubprocess.shellBlocking(cmd)
+            subprocess.call(cmd, shell=True)
 
         # Reset disconnectedCounter
         self.disconnectedCounter = 0
@@ -194,6 +193,7 @@ class WeioWifi() :
         # Restart Tornado (shell script bring it up whenever it exits)
         #cmd = "/etc/init.d/weio_run restart"
         #weioSubprocess.shellBlocking(cmd)
+        print "======== EXIT TO GO TO SET CONNECTION ==============="
         os._exit(os.EX_OK)
 
 
@@ -213,4 +213,5 @@ class WeioWifi() :
 
     def scan(self) :
         iwi = iwInfo.IWInfo(self.interface)
+
         return iwi.getData()
