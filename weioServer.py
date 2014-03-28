@@ -35,7 +35,7 @@
 #
 ###
 
-import os, sys, platform, subprocess
+import os, sys, platform, signal
 
 import tornado
 import tornado.options
@@ -229,6 +229,18 @@ if __name__ == '__main__':
     # STARTING LAST USER PROGRAM
     if (confFile['play_composition_on_server_boot'] == "YES"):
         player.play()
+
+    ########################################################## SIGNAL HANDLER
+    def sig_handler(sig, frame):
+        logging.warning('Caught signal: %s', sig)
+        print "Exiting Tornado"
+        tornado.ioloop.IOLoop.instance().stop()
+
+    ########################################################## INIT SIGNAL HANDLERS
+
+    signal.signal(signal.SIGTERM, sig_handler)
+    signal.signal(signal.SIGINT, sig_handler)
+
 
     # STARTING SERVER
     tornado.ioloop.IOLoop.instance().start()
