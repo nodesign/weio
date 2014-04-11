@@ -6,16 +6,14 @@ from sockjs.tornado import SockJSConnection
 
 from weioLib.weioParser import weioSpells
 
-connections = []
+connections = set()
 
 class WeioHandler(SockJSConnection):
 
-    connections = set()
-
     def on_open(self, data):
-
+        global connections
         # Add client to the clients list
-        self.connections.add(self)
+        connections.add(self)
 
         # collect client ip address and user machine info
         # print self.request to see all available info on user connection
@@ -33,14 +31,20 @@ class WeioHandler(SockJSConnection):
         #else :
         #    print "*SYSOUT* Client with IP address : " + self.ip + " connected to server!"
         #print self.request.headers
-        self.connection_closed = False
+        connection_closed = False
 
+    def emit(self, instruction, rq):
+        data = {}
+        data['serverPush'] = instruction
+        data['data'] = rq
+        self.send(json.dumps(data))
 
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
         self.serve(json.loads(data))
 
     def serve(self, data) :
+        global connections
         command = data["request"]
         #print data
         # treat requests using dictionaries
@@ -55,15 +59,16 @@ class WeioHandler(SockJSConnection):
                     else:
                         result["serverPush"] = command # this is callback for JS, traceback of called command
                     try:
-                        self.write_message(json.dumps(result))
+                        self.send(json.dumps(result))
                     except:
-                        self.connection_closed = True
+                        connection_closed = True
 
     def on_close(self):
-        self.connection_closed = True
+        global connections
+        connection_closed = True
         print "*SYSOUT* Client with IP address : " + self.ip + " disconnected from server!"
         # Remove client from the clients list and broadcast leave message
-        self.connections.remove(self)
+        connections.remove(self)
 
 #        if self in connections:
 #            connections.remove(self)
