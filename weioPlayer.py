@@ -43,7 +43,6 @@ from weioLib import weio_config
 from weioLib import weioFiles
 
 class WeioPlayer():
-
     def __init__(self):
         self.errLine = 0
         self.errObject = []
@@ -205,7 +204,7 @@ class WeioPlayer():
 
             # this is raw output, some basic parsing is needed in javascript \n etc...
             self.delegateToEditorHandler(data)
-        #   CONSOLE.send(json.dumps(data))
+            #CONSOLE.send(json.dumps(data))
 
         if self.weioPipe.poll() is not None :
             """ Child is terminated STDOUT"""
@@ -270,7 +269,7 @@ class WeioPlayer():
 
             # this is raw output, some basic parsing is needed in javascript \n etc...
             self.delegateToEditorHandler(data)
-        #CONSOLE.send(json.dumps(data))
+            #CONSOLE.send(json.dumps(data))
 
         if self.weioPipe.poll() is not None :
             """ Child is terminated STDERR"""

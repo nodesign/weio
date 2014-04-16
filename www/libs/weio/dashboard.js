@@ -392,21 +392,25 @@ function prepareToPlay() {
     }
 }
 
+/////////////
+// PLAY and STOP are redirected to User Tornado
+/////////////
+player = new SockJS('http://' + location.hostname + ':8082/control');
 function play(){
     var rq = { "request": "play"};
-    dashboard.send(JSON.stringify(rq));
+    player.send(JSON.stringify(rq));
     document.getElementById("weioIframe").contentWindow.clearConsole();
-    playCounter = setInterval(function(){countTillPlay()},63);
-    $( "#weioProgress" ).fadeTo( "fast", 100 );
+    //playCounter = setInterval(function(){countTillPlay()},63);
+    //$( "#weioProgress" ).fadeTo( "fast", 100 );
 
 }
 
 function stop(){
     var rq = { "request": "stop"};
-    dashboard.send(JSON.stringify(rq));
-    $( "#weioProgress" ).fadeTo( "slow", 0 );
-    clearInterval(playCounter);
-    readyToPlay = 0;
+    player.send(JSON.stringify(rq));
+    //$( "#weioProgress" ).fadeTo( "slow", 0 );
+    //clearInterval(playCounter);
+    //readyToPlay = 0;
 
 }
 

@@ -230,6 +230,8 @@ if __name__ == '__main__':
     if (confFile['play_composition_on_server_boot'] == "YES"):
         player.play()
 
+    player.play()
+
     ########################################################## SIGNAL HANDLER
     def sig_handler(sig, frame):
         logging.warning('Caught signal: %s', sig)
