@@ -186,7 +186,6 @@ class WeioAttach():
         slef.ints[pin] = intr
 
 class WeioClient():
-    
     def __init__(self, info, connection):
         self.info = info
         self.connection = connection

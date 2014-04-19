@@ -4,6 +4,7 @@ from tornado import web, ioloop, options, websocket
 import sys,os,logging, platform, json, signal, datetime
 
 import multiprocessing
+import functools
 
 from weioLib.weioUserApi import *
 from weioLib.weioIO import *
@@ -60,6 +61,9 @@ class UserControl():
         # Ask this variable is player is playing at this moment
         self.playing = False
 
+        # User Project main module (main.py)
+        self.userMain = self.loadUserProjectMain()
+
     def setConnectionObject(self, connection):
         # captures only the last connection
         self.connection = connection
@@ -71,6 +75,7 @@ class UserControl():
 
     def start(self, rq={'request':'play'}):
         print "STARTING USER PROCESSES"
+
         # Launching threads
         for key in attach.procs :
             print key
@@ -88,6 +93,11 @@ class UserControl():
             p.join()
             userProcessList.remove(p)
 
+        # Reset user attached elements
+        attach.procs = {}
+        attach.events = {}
+        attach.ins = {}
+
         # Finally stop UPER
         #logging.warning('Shutdown WeIO coprocessor')
         stopWeio()
@@ -99,43 +109,42 @@ class UserControl():
         print "Received: " + cmd
 
         if (cmd == "*START*"):
+            # Re-load user main (in case it changed)
+            self.userMain = self.loadUserProjectMain()
+
+            # Calling user setup() if present
+            if "setup" in vars(self.userMain):
+                self.userMain.setup()
+
+            # Then start processes from it
             self.start()
         elif (cmd == "*STOP*"):
             self.stop()
 
+    def loadUserProjectMain(self):
+        confFile = weio_config.getConfiguration()
+        
+        # Get the last name of project and run it
+        projectModule = "userFiles."+confFile["last_opened_project"].replace('/', '.') + "main"
+        
+        # Import userMain from local module
+        userMain = __import__(projectModule, fromlist=[''])
+
+        return userMain
 
 
-class WeioUserControlHandler(SockJSConnection):
-    def on_open(self, data):
-        userControl.setConnectionObject(self)
-
-    def on_message(self, data):
-        global userControl
-        """Parsing JSON data that is comming from browser into python object"""
-        message = json.loads(data)
-        if (message["request"] == "play"):
-            userControl.start()
-        elif (message["request"] == "stop"):
-            userControl.stop()
-
-    
-
-
-    def on_close(self):
-        pass
-###
+# User Tornado signal handler
+def signalHandler(userControl, sig, frame):
+        #logging.warning('Caught signal: %s', sig)
+        # CALLING STOP IF PRESENT
+        if "stop" in vars(userControl.userMain):
+            #logging.warning('Calling user defined stop function')
+            userControl.userMain.stop()
+        exit()
 
 
 if __name__ == '__main__':
-
     confFile = weio_config.getConfiguration()
-
-    # Get the last name of project and run it
-    projectModule = "userFiles."+confFile["last_opened_project"].replace('/', '.') + "main"
-
-    # 2.6+ WAY TO IMPORT FROM LOCAL
-    main = __import__(projectModule, fromlist=[''])
-
     # set python working directory
     #os.chdir("userFiles/"+sys.argv[1])
     myPort = confFile["userAppPort"]
@@ -153,27 +162,18 @@ if __name__ == '__main__':
     logging.info(" [*] Listening on 0.0.0.0:" + str(options.options.port))
     print "*SYSOUT* User API Websocket is created at localhost:" + str(options.options.port) + "/api"
 
-    # CALLING SETUP IF PRESENT
-    if "setup" in vars(main):
-        main.setup()
-
-    ########################################################## SIGNAL HANDLER
-    def sig_handler(sig, frame):
-        #logging.warning('Caught signal: %s', sig)
-        # CALLING STOP IF PRESENT
-        if "stop" in vars(main):
-            #logging.warning('Calling user defined stop function')
-            main.stop()
-        exit()
-    ########################################################## INIT SIGNAL HANDLERS
-
-    signal.signal(signal.SIGTERM, sig_handler)
-    signal.signal(signal.SIGINT, sig_handler)
-
-    ioloop = ioloop.IOLoop.instance()
-
     # Create a userControl object
     userControl = UserControl()
+
+    # Install signal handlers
+    signalCallback = functools.partial(signalHandler, userControl)
+    signal.signal(signal.SIGTERM, signalCallback)
+    signal.signal(signal.SIGINT, signalCallback)
+
+    # Create ioloop
+    ioloop = ioloop.IOLoop.instance()
+
+    # Add user control via stdin pipe
     ioloop.add_handler(sys.stdin.fileno(), userControl.userPlayer, ioloop.READ)
 
     ioloop.start()
