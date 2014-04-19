@@ -225,12 +225,12 @@ if __name__ == '__main__':
         wifiHandler.wifi.periodicCheck = tornado.ioloop.PeriodicCallback(wifiHandler.wifi.checkConnection, 5000)
         wifiHandler.wifi.periodicCheck.start()
 
+    # Start User Tornado
+    player.startUserTornado()
 
-    # STARTING LAST USER PROGRAM
+    # Starting the last user program
     if (confFile['play_composition_on_server_boot'] == "YES"):
         player.play()
-
-    player.play()
 
     ########################################################## SIGNAL HANDLER
     def sig_handler(sig, frame):

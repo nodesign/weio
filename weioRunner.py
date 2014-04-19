@@ -92,7 +92,17 @@ class UserControl():
         #logging.warning('Shutdown WeIO coprocessor')
         stopWeio()
 
-userControl = UserControl()
+    def userPlayer(self, fd, events):
+        print "Inside userControl()"
+
+        cmd = os.read(fd,128)
+        print "Received: " + cmd
+
+        if (cmd == "*START*"):
+            self.start()
+        elif (cmd == "*STOP*"):
+            self.stop()
+
 
 
 class WeioUserControlHandler(SockJSConnection):
@@ -132,10 +142,9 @@ if __name__ == '__main__':
     options.define("port", default=myPort, type=int)
 
     apiRouter = SockJSRouter(WeioHandler, '/api')
-    controlRouter = SockJSRouter(WeioUserControlHandler, '/control')
 
     # Instantiate all handlers for user Tornado
-    app = web.Application(apiRouter.urls + controlRouter.urls + [
+    app = web.Application(apiRouter.urls + [
     ('/', WeioIndexHandler),
     (r"/(.*)", web.StaticFileHandler, {"path": "www/"})
     ])
@@ -143,7 +152,6 @@ if __name__ == '__main__':
 
     logging.info(" [*] Listening on 0.0.0.0:" + str(options.options.port))
     print "*SYSOUT* User API Websocket is created at localhost:" + str(options.options.port) + "/api"
-    print "*SYSOUT* User Control Websocket is created at localhost:" + str(options.options.port) + "/control"
 
     # CALLING SETUP IF PRESENT
     if "setup" in vars(main):
@@ -162,4 +170,10 @@ if __name__ == '__main__':
     signal.signal(signal.SIGTERM, sig_handler)
     signal.signal(signal.SIGINT, sig_handler)
 
-    ioloop.IOLoop.instance().start()
+    ioloop = ioloop.IOLoop.instance()
+
+    # Create a userControl object
+    userControl = UserControl()
+    ioloop.add_handler(sys.stdin.fileno(), userControl.userPlayer, ioloop.READ)
+
+    ioloop.start()
