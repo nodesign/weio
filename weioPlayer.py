@@ -69,6 +69,8 @@ class WeioPlayer():
         # Ask this variable is player is plaing at this moment
         self.playing = False
 
+        self.lastLaunched = None
+
     def setConnectionObject(self, connection):
         # captures only the last connection
         self.connection = connection
@@ -82,6 +84,29 @@ class WeioPlayer():
         # if no connection object (editor is not opened) than data for editor is lost
         if not(self.connection is None):
             self.connection.delegateToEditorHandler(data)
+
+    def startUserTornado(self):
+        data = {}
+
+        processName = './weioRunner.py'
+
+        print("weioMain indipendent process launching...")
+
+        self.weioPipe = subprocess.Popen([processName], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        self.ioloopObj = ioloop.IOLoop.instance()
+
+        # Callback for STDOUT
+        #callback = functools.partial(self.socket_connection_ready, sock)
+        callback = functools.partial(self.weioMainHandler, data)
+        #ioloopObj.add_handler(sock.fileno(), callback, ioloopObj.READ)
+        self.ioloopObj.add_handler(self.weioPipe.stdout.fileno(), callback, self.ioloopObj.READ)
+        self.stdoutHandlerIsLive = True;
+
+        # Callback for STDERR
+        callbackErr = functools.partial(self.weioMainHandlerErr, data)
+        self.ioloopObj.add_handler(self.weioPipe.stderr.fileno(), callbackErr, self.ioloopObj.READ)
+        self.stderrHandlerIsLive = True;
+
 
     def play(self, rq={'request':'play'}):
         """ This is where all the magic happens.
@@ -108,21 +133,6 @@ class WeioPlayer():
         if (weioFiles.checkIfFileExists(up+lp+"main.py")):
             print("weioMain indipendent process launching...")
 
-            self.weioPipe = subprocess.Popen([processName], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            self.ioloopObj = ioloop.IOLoop.instance()
-
-            # Callback for STDOUT
-            #callback = functools.partial(self.socket_connection_ready, sock)
-            callback = functools.partial(self.weioMainHandler, data)
-            #ioloopObj.add_handler(sock.fileno(), callback, ioloopObj.READ)
-            self.ioloopObj.add_handler(self.weioPipe.stdout.fileno(), callback, self.ioloopObj.READ)
-            self.stdoutHandlerIsLive = True;
-
-            # Callback for STDERR
-            callbackErr = functools.partial(self.weioMainHandlerErr, data)
-            self.ioloopObj.add_handler(self.weioPipe.stderr.fileno(), callbackErr, self.ioloopObj.READ)
-            self.stderrHandlerIsLive = True;
-
             # Inform client the we run subprocess
             data['requested'] = rq['request']
             data['status'] = "Warming up the engines..."
@@ -137,6 +147,10 @@ class WeioPlayer():
             self.delegateToEditorHandler(data)
             self.playing = True
 
+            # send *start* command to user tornado
+            self.weioPipe.stdin.write("*START*")
+            
+
         #CONSOLE.send(json.dumps(consoleWelcome))
         else : # FILE DON'T EXIST
             warning = {}
@@ -145,38 +159,27 @@ class WeioPlayer():
             warning['state'] = "error"
             self.send(json.dumps(warning))
 
+
     def stop(self, rq={'request':'stop'}):
         """Stop running application"""
 
         self.playing = False
-        #print "STDOUT ", self.stdoutHandlerIsLive, " STDERR ", self.stderrHandlerIsLive
-        if not(self.weioPipe is None) :
-            #print "POLL PIPE ", weioPipe.poll()
-            if self.stdoutHandlerIsLive is True:
-                self.ioloopObj.remove_handler(self.weioPipe.stdout.fileno())
-                self.stdoutHandlerIsLive = False
-            if self.stderrHandlerIsLive is True:
-                self.ioloopObj.remove_handler(self.weioPipe.stderr.fileno())
-                self.stderrHandlerIsLive = False
 
-            if self.weioPipe.poll() is None :
-                #self.weioPipe.kill()
-                self.weioPipe.terminate()
+        data = {}
+        data['requested'] = rq['request']
+        data['status'] = "User program stopped!"
+        self.send(json.dumps(data))
 
-            self.weioPipe = None
+        # Send *STOP* command to User Tornado
+        self.weioPipe.stdin.write("*STOP*")
 
-            data = {}
-            data['requested'] = rq['request']
-            data['status'] = "User program stopped!"
-            self.send(json.dumps(data))
+        if self.lastLaunched is not None :
+            consoleWelcome = {}
+            consoleWelcome['serverPush'] = "sysConsole"
+            consoleWelcome['data'] = 'WeIO user program stoped. It was runnig since : ' + self.lastLaunched
+            self.delegateToEditorHandler(consoleWelcome)
 
-            if self.lastLaunched is not None :
-                consoleWelcome = {}
-                consoleWelcome['serverPush'] = "sysConsole"
-                consoleWelcome['data'] = 'WeIO user program stoped. It was runnig since : ' + self.lastLaunched
-                self.delegateToEditorHandler(consoleWelcome)
-
-                self.lastLaunched = None
+            self.lastLaunched = None
 
     def weioMainHandler(self, data, fd, events):
         """Stream stdout to browser"""
