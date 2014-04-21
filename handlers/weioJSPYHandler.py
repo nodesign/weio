@@ -32,7 +32,7 @@ class WeioHandler(SockJSConnection):
         #else :
         #    print "*SYSOUT* Client with IP address : " + self.ip + " connected to server!"
         #print self.request.headers
-        connection_closed = False
+        self.connection_closed = False
 
     def emit(self, instruction, rq):
         data = {}
@@ -61,10 +61,10 @@ class WeioHandler(SockJSConnection):
                     try:
                         self.send(json.dumps(result))
                     except:
-                        connection_closed = True
+                        self.connection_closed = True
 
     def on_close(self):
-        connection_closed = True
+        self.connection_closed = True
         print "*SYSOUT* Client with IP address : " + self.ip + " disconnected from server!"
         # Remove client from the clients list and broadcast leave message
         self.connections.remove(self)
