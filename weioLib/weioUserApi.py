@@ -190,11 +190,16 @@ class WeioClient():
         self.info = info
         self.connection = connection
 
-
 ###
 # Global instances
 ###
-attach = WeioAttach()
-shared = WeioSharedVar()
-console = WeioPrint()
+attach = None
+shared = None
+console = None
+
+#attach = WeioAttach()
+#shared = WeioSharedVar()
+#console = WeioPrint()
+
+gpio = None
 

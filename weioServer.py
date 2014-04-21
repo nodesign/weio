@@ -45,8 +45,6 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 
 import json, functools
 
-from weioPlayer import player
-
 # IMPORT EDITOR CLASSES, this connects editor webapp with tornado server
 from handlers import editorHandler #, WeioEditorStopHandler, WeioEditorPlayHandler 
 
@@ -81,9 +79,14 @@ from weioLib import weioWifiButtons
 # IMPORT WEIO FILE SUPPORT
 from weioLib import weioFiles
 
-# SHARED OBJECTS
-from weioLib.weioUserApi import *
+# Import Wifi class for initializing the WIFI object
+from weioWifi import weioWifi
 
+# Import WeioPlayer class
+from weioPlayer import WeioPlayer
+
+# Import global variables for main Tornado
+from weioLib import weioIdeGlobals
 
 # Editor web app route handler      
 class WeioEditorWebHandler(loginHandlers.BaseHandler):
@@ -172,15 +175,11 @@ if __name__ == '__main__':
         debugMode = True
 
     app = tornado.web.Application(list(WeioEditorRouter.urls) +
-                            
-                            #list(WeioAPIBridgeRouter.urls) +
                             list(WeioDashboardRouter.urls) +
                             list(WeioWifiRouter.urls) +
                             list(WeioUpdaterRouter.urls) +
                             list(WeioFirstTimeRouter.urls) +
                             list(WeioStatsRouter.urls)+
-                            #list(WeioHeaderRouter.urls) +
-                            #list(WeioAPIBridgeRouter.urls) +
                           
                             # pure websocket implementation
                             #[(r"/editor/baseFiles", Editor.WeioEditorHandler)] +
@@ -220,17 +219,22 @@ if __name__ == '__main__':
     #periodic = tornado.ioloop.PeriodicCallback(checkWifiButtons, 100)
     #periodic.start()
 
+    # Initialize the main Tornado global objects before running all the machiery
+    weioIdeGlobals.WIFI = weioWifi.WeioWifi("wlan0")
+    
     # Check WiFi connection every second
     if (platform.machine() == 'mips'):
-        wifiHandler.wifi.periodicCheck = tornado.ioloop.PeriodicCallback(wifiHandler.wifi.checkConnection, 5000)
-        wifiHandler.wifi.periodicCheck.start()
+    	weioIdeGlobals.WIFI.periodicCheck = tornado.ioloop.PeriodicCallback(weioIdeGlobals.WIFI.checkConnection, 5000)
+        weioIdeGlobals.WIFI.periodicCheck.start()
+                       
+    weioIdeGlobals.PLAYER = WeioPlayer()
 
     # Start User Tornado
-    player.startUserTornado()
+    weioIdeGlobals.PLAYER.startUserTornado()
 
     # Starting the last user program
     if (confFile['play_composition_on_server_boot'] == "YES"):
-        player.play()
+        weioIdeGlobals.PLAYER.play()
 
     ########################################################## SIGNAL HANDLER
     def sig_handler(sig, frame):

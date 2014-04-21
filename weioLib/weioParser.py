@@ -35,7 +35,7 @@
 ###
 
 from weioLib.weioIO import *
-from weioLib.weioUserApi import shared
+from weioLib import weioRunnerGlobals
 import platform
 
 def platformTest():
@@ -130,7 +130,8 @@ def pinsInfo(self, data) :
     bck = {}
     if (embedded is True):
         #print "*SYSOUT* ", pins
-        bck["data"] = shared.declaredPins
+        bck["data"] = weioRunnerGlobals.DECLARED_PINS
+        pass
     else:
         print "pinsInfo ON PC", data
         bck["data"] = None # fake data here

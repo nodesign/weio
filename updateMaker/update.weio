@@ -1,9 +1,9 @@
 {
-    "description": "Wifi shared", 
+    "description": "Manny corrections", 
     "install_duration": 35, 
     "kill_flag": "NO", 
-    "md5": "e51c86a64765f5111f27d1a727dfdbb8", 
+    "md5": "d55b716d0b8377963c15dd1c5e7f8581", 
     "url": "http://www.we-io.net/downloads/weio.tar.gz", 
-    "version": "0.178", 
+    "version": "309", 
     "whatsnew": "<h3>WeIO Releases :</h3>\n<br>\n0.12 Bug fixes in architecture and design<br>\n<br>\n0.11 Bug fixes in architecture and design<br>\n"
 }

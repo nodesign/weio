@@ -38,3 +38,5 @@ nosetests.xml
 #config.weio
 
 config.weio
+
+*.tar.gz

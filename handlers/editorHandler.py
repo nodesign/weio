@@ -46,10 +46,6 @@ from weioLib import weioIpAddress
 from weioLib import weioFiles
 from weioLib import weioUnblock
 
-# For shared variables between handlers
-from weioLib.weioUserApi import shared
-
-
 # IMPORT BASIC CONFIGURATION FILE 
 from weioLib import weio_config
 
@@ -271,16 +267,6 @@ class WeioEditorHandler(SockJSConnection):
         # by the MainProgram thread
         CONSOLE = self
         
-        # Handlers need to communicate between each other to avoid too complex client interaction
-        # Editor handler is exported to global shared object here, it will be used in
-        # dashboardHandler for transactions
-        shared.editor = self.editorSender
-        
-
-    def editorSender(self, data):
-        self.send(json.dumps(data))
-    
-    
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
         req = json.loads(data)

@@ -42,6 +42,9 @@ import json
 from weioLib import weio_config
 from weioLib import weioFiles
 
+# Import globals for main Tornado
+from weioLib import weioIdeGlobals
+
 class WeioPlayer():
     def __init__(self):
         self.errLine = 0
@@ -51,10 +54,6 @@ class WeioPlayer():
         # Variable to store SockJSConnection calss instance
         # in order to call it's send() method from MainProgram thread
         self.weioPipe = None
-
-        # Variable to store SockJSConnection calss instance
-        # in order to call it's send() method from MainProgram thread
-        CONSOLE = None
 
         # Object to store ioloop handlers that drive sterr &
         # stdout from user program
@@ -79,11 +78,6 @@ class WeioPlayer():
         # if no connection object (editor is not opened) than data for editor is lost
         if not(self.connection is None):
             self.connection.send(data)
-
-    def delegateToEditorHandler(self,data):
-        # if no connection object (editor is not opened) than data for editor is lost
-        if not(self.connection is None):
-            self.connection.delegateToEditorHandler(data)
 
     def startUserTornado(self):
         data = {}
@@ -144,14 +138,15 @@ class WeioPlayer():
             self.lastLaunched = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             consoleWelcome['data'] = 'WeIO user server launched ' + self.lastLaunched
-            self.delegateToEditorHandler(data)
+            if (weioIdeGlobals.CONSOLE != None):
+                weioIdeGlobals.CONSOLE.send(json.dumps(data))
             self.playing = True
 
             # send *start* command to user tornado
             self.weioPipe.stdin.write("*START*")
             
 
-        #CONSOLE.send(json.dumps(consoleWelcome))
+        #weioIdeGlobals.CONSOLE.send(json.dumps(consoleWelcome))
         else : # FILE DON'T EXIST
             warning = {}
             warning['requested'] = rq['request']
@@ -162,7 +157,6 @@ class WeioPlayer():
 
     def stop(self, rq={'request':'stop'}):
         """Stop running application"""
-
         self.playing = False
 
         data = {}
@@ -177,13 +171,13 @@ class WeioPlayer():
             consoleWelcome = {}
             consoleWelcome['serverPush'] = "sysConsole"
             consoleWelcome['data'] = 'WeIO user program stoped. It was runnig since : ' + self.lastLaunched
-            self.delegateToEditorHandler(consoleWelcome)
+            if (weioIdeGlobals.CONSOLE != None):
+                weioIdeGlobals.CONSOLE.send(json.dumps(consoleWelcome))
 
             self.lastLaunched = None
 
     def weioMainHandler(self, data, fd, events):
         """Stream stdout to browser"""
-
         line = self.weioPipe.stdout.readline()
         print "STDOUT ", line
         if line :
@@ -206,8 +200,8 @@ class WeioPlayer():
             data['status'] = "Check output console"
 
             # this is raw output, some basic parsing is needed in javascript \n etc...
-            self.delegateToEditorHandler(data)
-            #CONSOLE.send(json.dumps(data))
+            if (weioIdeGlobals.CONSOLE != None):
+                weioIdeGlobals.CONSOLE.send(json.dumps(data))
 
         if self.weioPipe.poll() is not None :
             """ Child is terminated STDOUT"""
@@ -220,7 +214,6 @@ class WeioPlayer():
 
     def weioMainHandlerErr(self, data, fd, events):
         """Stream stderr to browser"""
-
         self.playing = False
         line = self.weioPipe.stderr.readline()
         if line :
@@ -271,8 +264,8 @@ class WeioPlayer():
             self.errReason = stderr
 
             # this is raw output, some basic parsing is needed in javascript \n etc...
-            self.delegateToEditorHandler(data)
-            #CONSOLE.send(json.dumps(data))
+            if (weioIdeGlobals.CONSOLE != None):
+                weioIdeGlobals.CONSOLE.send(json.dumps(data))
 
         if self.weioPipe.poll() is not None :
             """ Child is terminated STDERR"""
@@ -286,13 +279,10 @@ class WeioPlayer():
 
                 data['data'] = self.errObject
                 self.errObject = []
-                self.delegateToEditorHandler(data)
-                #CONSOLE.send(json.dumps(data))
+                if (weioIdeGlobals.CONSOLE != None):
+                    weioIdeGlobals.CONSOLE.send(json.dumps(data))
                 print "ERR ",self.errObject
             ioloop.IOLoop.instance().remove_handler(self.weioPipe.stderr.fileno())
             self.stderrHandlerIsLive = False
 
             return
-
-
-player = WeioPlayer()

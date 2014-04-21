@@ -48,25 +48,14 @@ from weioLib import weioFiles
 from weioLib import weio_config
 from weioLib import weioUnblock
 
+# Import globals for main Tornado
+from weioLib import weioIdeGlobals
+
 import functools
 
 import json
 
-# Wifi detection and configuration module
-from weioWifi import weioWifi
-
-
-# For shared variables between handlers
-from weioLib.weioUserApi import shared
-
-
-# Global weioWifi object
-wifi = weioWifi.WeioWifi("wlan0")
-shared.wifi = wifi
-
-def weioWifiParseScan() :
-    global wifi
-
+def weioWifiParseScan(wifi) :
     scaninfo = wifi.scan()
 
     data = {}
@@ -102,19 +91,26 @@ def weioWifiParseScan() :
 # Non-blocking WiFi route handler
 ###
 class WeioWifiHandler(SockJSConnection):
-    """ Wifi detection route handler.
-    It's on_message() function runs in a separate thread not to block ioloop.
-    """
+    def __init__(self, *args, **kwargs):
+        SockJSConnection.__init__(self, *args, **kwargs)
+        self.wifi = weioIdeGlobals.WIFI
 
-    global wifi
-    global callbacks
+        #########################################################################
+        # DEFINE CALLBACKS IN DICTIONARY
+        # Second, associate key with right function to be called
+        # key is comming from socket and call associated function
+        self.callbacks = {
+            'scan' : self.scanCells,
+            'goAp' : self.goToApMode,
+            'goSta' : self.goToStaMode,
+        }
 
     def scanCells(self, rq):
         if (platform.machine() == 'mips') :
             """We have obtained essid, psswd and encryption
             so we can try to connect"""
             data = {}
-            data = weioWifiParseScan()
+            data = weioWifiParseScan(self.wifi)
 
             # Send response to the browser
             rsp={}
@@ -137,50 +133,38 @@ class WeioWifiHandler(SockJSConnection):
 
     def goToApMode(self,rq):
         if (platform.machine() == 'mips') :
-            wifi.essid =  rq['data']['essid']
-            wifi.passwd =  rq['data']['passwd']
-            print "ESSID ", wifi.essid, " PSWD ", wifi.passwd 
+            slef.wifi.essid =  rq['data']['essid']
+            self.wifi.passwd =  rq['data']['passwd']
+            print "ESSID ", self.wifi.essid, " PSWD ", self.wifi.passwd 
 
-            wifi.setConnection("ap")
+            self.wifi.setConnection("ap")
 
 
     def goToStaMode(self,rq):
         if (platform.machine() == 'mips') :
-            wifi.essid = rq['data']['essid']
-            wifi.passwd = rq['data']['passwd']
-            wifi.rawEncryption = rq['data']['encryption']
+            self.wifi.essid = rq['data']['essid']
+            self.wifi.passwd = rq['data']['passwd']
+            self.wifi.rawEncryption = rq['data']['encryption']
 
             # Parse rawEncryption (iwinfo format) to OpenWRT format
-            if ('WPA2' in wifi.rawEncryption):
-                if ('mixed' in wifi.rawEncryption):
-                    wifi.encryption = 'mixed-psk'
+            if ('WPA2' in self.wifi.rawEncryption):
+                if ('mixed' in self.wifi.rawEncryption):
+                    self.wifi.encryption = 'mixed-psk'
                 else:
-                    wifi.encryption = 'psk2'
-            elif ('WPA' in wifi.rawEncryption):
-                wifi.encryption = 'psk'
-            elif ( 'WEP' in wifi.rawEncryption):
-                wifi.encryption = 'wep'
+                    self.wifi.encryption = 'psk2'
+            elif ('WPA' in self.wifi.rawEncryption):
+                self.wifi.encryption = 'psk'
+            elif ( 'WEP' in self.wifi.rawEncryption):
+                self.wifi.encryption = 'wep'
 
-            if ('TKIP' in wifi.rawEncryption):
-                wifi.encryption = wifi.encryption + "+tkip"
-                if ('CCMP' in wifi.rawEncryption):
-                    wifi.encryption = wifi.encryption + "+ccmp"
-            elif ('CCMP' in wifi.rawEncryption):
-                wifi.encryption = wifi.encryption + "+ccmp"
+            if ('TKIP' in self.wifi.rawEncryption):
+                self.wifi.encryption = self.wifi.encryption + "+tkip"
+                if ('CCMP' in self.wifi.rawEncryption):
+                    self.wifi.encryption = self.wifi.encryption + "+ccmp"
+            elif ('CCMP' in self.wifi.rawEncryption):
+                self.wifi.encryption = self.wifi.encryption + "+ccmp"
 
-            wifi.setConnection("sta")
-
-
-
-    #########################################################################
-    # DEFINE CALLBACKS IN DICTIONARY
-    # Second, associate key with right function to be called
-    # key is comming from socket and call associated function
-    callbacks = {
-        'scan' : scanCells,
-        'goAp' : goToApMode,
-        'goSta' : goToStaMode,
-    }
+            self.wifi.setConnection("sta")
 
     ###
     # This function has to call shell iwconfig procedires
@@ -191,9 +175,9 @@ class WeioWifiHandler(SockJSConnection):
     @weioUnblock.unblock
     def on_open(self, info) :
         if (platform.machine() == 'mips'):
-            wifi.checkConnection()
+            self.wifi.checkConnection()
 
-        myMode = wifi.mode
+        myMode = self.wifi.mode
         msg = {}
         msg['serverPush'] = 'mode'
         msg['mode'] = myMode
@@ -203,7 +187,7 @@ class WeioWifiHandler(SockJSConnection):
         print "MODE WIFI ", myMode
         if ("ap" in myMode):
             print "gotchaa"
-            msg['APessid'] = wifi.getCurrentEssidName()
+            msg['APessid'] = self.wifi.getCurrentEssidName()
 
 
         self.send(json.dumps(msg))
@@ -223,10 +207,9 @@ class WeioWifiHandler(SockJSConnection):
     def serve(self, rq):
         """Parsed input from browser ready to be served"""
         # Call callback by key directly from socket
-        global callbacks
         request = rq['request']
 
-        if request in callbacks :
-            callbacks[request](self, rq)
+        if request in slef.callbacks :
+            self.callbacks[request](self, rq)
         else :
             print "unrecognised request"

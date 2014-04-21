@@ -52,18 +52,21 @@ import json
 import hashlib
 import tarfile
 
-# For shared variables between handlers
-from weioLib.weioUserApi import shared
-
 # Wifi detection route handler  
 class WeioUpdaterHandler(SockJSConnection):
-    global callbacks
-    global distantJsonUpdater
-    global downloadTries
-    global estimatedInstallTime
-    
-    donwloadTries = 0
-    estimatedInstallTime = 35
+    def __init__(self, *args, **kwargs):
+        SockJSConnection.__init__(self, *args, **kwargs)
+        #########################################################################
+        # DEFINE CALLBACKS IN DICTIONARY
+        # Second, associate key with right function to be called
+        # key is comming from socket and call associated function
+        self.callbacks = {
+            'checkVersion' : self.checkForUpdates,
+            'downloadUpdate' : self.downloadUpdate,
+        }
+        
+        self.downloadTries = 0
+        self.estimatedInstallTime = 35
     
     # checkForUpdates is entering point for updater
     # First it will download only update.weio to check if there is need for an update
@@ -76,62 +79,57 @@ class WeioUpdaterHandler(SockJSConnection):
 
     # checking version
     def checkVersion(self, response):
-        wifi = "ap"
+        global WIFI
+        wifiMode = "ap"
         if (platform.machine() == 'mips') :
-            wifi = shared.wifi.mode
-            print "WIFI MODE ", wifi
-            #wifi.checkConnection()
+            wifiMode = WIFI.mode
+            print "WIFI MODE ", wifiMode
         else :
-            wifi = "sta"
+            wifiMode = "sta"
         
         rsp={}
     
-        if (wifi=="sta") : # check Internet
-        
-            global distantJsonUpdater
+        if (wifiMode=="sta") : # check Internet
             global currentWeioConfigurator
             
-            distantJsonUpdater = json.loads(str(response.body))
+            self.distantJsonUpdater = json.loads(str(response.body))
             currentWeioConfigurator = weio_config.getConfiguration()
 
             print "My software version " + \
                 currentWeioConfigurator["weio_version"] + \
                 " Version on WeIO server " + \
-                distantJsonUpdater["version"] + \
-                " Needs " + str(distantJsonUpdater['install_duration']) + " seconds to install"
+                self.distantJsonUpdater["version"] + \
+                " Needs " + str(self.distantJsonUpdater['install_duration']) + " seconds to install"
         
             # Send response to the browser
             
             rsp['requested'] = "checkVersion"
             rsp['localVersion'] = currentWeioConfigurator["weio_version"]
-            rsp['distantVersion'] = distantJsonUpdater["version"]
+            rsp['distantVersion'] = self.distantJsonUpdater["version"]
         
-            distantVersion = float(distantJsonUpdater["version"])
+            distantVersion = float(self.distantJsonUpdater["version"])
             localVersion = float(currentWeioConfigurator["weio_version"])
             if (distantVersion > localVersion) :
-                global estimatedInstallTime
                 rsp['needsUpdate'] = "YES"
-                rsp['description'] = distantJsonUpdater['description']
-                rsp['whatsnew'] = distantJsonUpdater['whatsnew']
-                rsp['install_duration'] = distantJsonUpdater['install_duration']
-                estimatedInstallTime = distantJsonUpdater['install_duration']
+                rsp['description'] = self.distantJsonUpdater['description']
+                rsp['whatsnew'] = self.distantJsonUpdater['whatsnew']
+                rsp['install_duration'] = self.distantJsonUpdater['install_duration']
+                self.estimatedInstallTime = self.distantJsonUpdater['install_duration']
             else :
                 rsp['needsUpdate'] = "NO"
         
             
-        elif (wifi=="ap") :
+        elif (wifiMode=="ap") :
             rsp['needsUpdate'] = "NO"
         
         # Send connection information to the client
         self.send(json.dumps(rsp))
         
     def downloadUpdate(self, rq):
-        global distantJsonUpdater
-      
-        #self.progressInfo("5%", "Downloading WeIO Bundle " + distantJsonUpdater["version"])
+        #self.progressInfo("5%", "Downloading WeIO Bundle " + self.distantJsonUpdater["version"])
       
         http_client = httpclient.AsyncHTTPClient()
-        http_client.fetch(distantJsonUpdater["url"], callback=self.downloadComplete)
+        http_client.fetch(self.distantJsonUpdater["url"], callback=self.downloadComplete)
         
     def downloadComplete(self, binary):
         # ok now save binary in /tmp (folder in RAM)
@@ -148,7 +146,7 @@ class WeioUpdaterHandler(SockJSConnection):
         # check file integrity with MD5 checksum
         md5local = self.getMd5sum(fileToStoreUpdate)
         
-        if (md5local == distantJsonUpdater["md5"]) :
+        if (md5local == self.distantJsonUpdater["md5"]) :
             print "MD5 checksum OK"
             self.progressInfo("50%", "MD5 checksum OK")
             print "Bundle decompressing"
@@ -171,27 +169,23 @@ class WeioUpdaterHandler(SockJSConnection):
             exit()
             
         else :
-            
-            global donwloadTries
-            
             print "MD5 checksum is not OK, retrying..."
-            if (donwloadTries<2):
+            if (slef.downloadTries<2):
                 self.progressInfo("5%", "Downloading Bundle again, MD5 checkum was not correct")
                 self.downloadUpdate(None)
             else:
                 print "Something went wrong. Check Internet connection and try again later"
                 self.progressInfo("0%", "Something went wrong. Check Internet connection and try again later")
             
-            donwloadTries+=1
+            slef.downloadTries+=1
     
     # Automatic status sender
     def progressInfo(self, progress, info):
-        global estimatedInstallTime
         data = {}
         data['serverPush'] = "updateProgress"
         data['progress'] = progress # 5%, 10%,... in string format "10%"
         data['info'] = info
-        data['estimatedInstallTime'] = estimatedInstallTime
+        data['estimatedInstallTime'] = slef.estimatedInstallTime
         self.send(json.dumps(data))
         
     # Get MD5 checksum from file    
@@ -201,15 +195,6 @@ class WeioUpdaterHandler(SockJSConnection):
             for chunk in iter(lambda: f.read(128*md5.block_size), b''): 
                  md5.update(chunk)
         return md5.hexdigest()
-    
-    #########################################################################
-    # DEFINE CALLBACKS IN DICTIONARY
-    # Second, associate key with right function to be called
-    # key is comming from socket and call associated function
-    callbacks = {
-        'checkVersion' : checkForUpdates,
-        'downloadUpdate' : downloadUpdate,
-    }   
 
     def on_open(self, info) :
         pass

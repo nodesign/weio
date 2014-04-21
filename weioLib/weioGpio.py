@@ -35,12 +35,11 @@
 ###
 
 from devices import uper
-from weioLib.weioUserApi import shared, pins, adcs, pwms, HIGH, LOW, INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP, OUTPUT, ADC_INPUT, PWM_OUTPUT, PWM0_OUTPUT, PWM1_OUTPUT
+from weioLib.weioUserApi import pins, adcs, pwms, HIGH, LOW, INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP, OUTPUT, ADC_INPUT, PWM_OUTPUT, PWM0_OUTPUT, PWM1_OUTPUT
 from weioLib.weioUserApi import CHANGE, RISING, FALLING, HARD_INTERRUPTS
 import os
 
 class WeioGpio():
-    
     def __init__(self):
         # construct uper device, open serial port
         # send default values
@@ -50,9 +49,9 @@ class WeioGpio():
             print "*SYSOUT*Error! LPC coprocessor not present!"
             self.uper = None
             
-        shared.declaredPins = []
+        self.declaredPins = []
         for i in range(0,len(pins)):
-            shared.declaredPins.append(-1)
+            self.declaredPins.append(-1)
         
         self.pwm0PortPeriod = 1000
         self.pwm1PortPeriod = 1000
@@ -82,32 +81,32 @@ class WeioGpio():
         """Sets input mode for digitalRead purpose. Available modes are : INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP"""
         self.uper.setPrimary(pins[pin])
         self.uper.pinMode(pins[pin], mode)
-        shared.declaredPins[pin] = mode
+        self.declaredPins[pin] = mode
     
     def digitalWrite(self,pin, state) :
         """Sets voltage to +3.3V or Ground on corresponding pin. This function takes two parameters : pin number and it's state that can be HIGH = +3.3V or LOW = Ground"""
-        if shared.declaredPins[pin] != OUTPUT:
+        if self.declaredPins[pin] != OUTPUT:
             self.uper.setPrimary(pins[pin])
             self.uper.pinMode(pins[pin], OUTPUT)
-            shared.declaredPins[pin] = OUTPUT
+            self.declaredPins[pin] = OUTPUT
         
         self.uper.digitalWrite(pins[pin], state)
     
     def digitalRead(self,pin) :
         """Reads actual voltage on corresponding pin. There are two possible answers : 0 if pin is connected to the Ground or 1 if positive voltage is detected"""
-        if (shared.declaredPins[pin] != INPUT_HIGHZ) and (shared.declaredPins[pin] != INPUT_PULLUP) and (shared.declaredPins[pin] != INPUT_PULLDOWN) :
+        if (self.declaredPins[pin] != INPUT_HIGHZ) and (shared.declaredPins[pin] != INPUT_PULLUP) and (shared.declaredPins[pin] != INPUT_PULLDOWN) :
             self.uper.setPrimary(pins[pin])
             self.uper.pinMode(pins[pin], INPUT_HIGHZ)
-            shared.declaredPins[pin] = INPUT_HIGHZ
+            self.declaredPins[pin] = INPUT_HIGHZ
         
         return self.uper.digitalRead(pins[pin])
     
     def analogRead(self, pin) :
         """Reads input on specified Analog to Digital Convertor. ADC is available on pins from 25 to 32 Output is 10bits resolution or from 0-1023"""
         if ((pin >= adcs[0]) and (pin <= adcs[-1])):
-            if shared.declaredPins[pin] != ADC_INPUT:
+            if self.declaredPins[pin] != ADC_INPUT:
                 self.uper.setSecondary(pins[pin])
-                shared.declaredPins[pin] = ADC_INPUT
+                self.declaredPins[pin] = ADC_INPUT
             
             adcPin = adcs.index(pin)
             return self.uper.analogRead(adcPin)
@@ -119,14 +118,14 @@ class WeioGpio():
         """Pulse with modulation is available at 6 pins from 19-24 and has 16bits of precision. By default WeIO sets PWM frequency at 20000ms and 8bit precision or from 0-255. This setup is well situated for driving LED lighting. Precision and frequency can be changed separately by calling additional functions for other uses : setPwmPeriod and setPwmLimit. PWM can also drive two different frequencies on two separate banks of 3 pins. For this feature look functions : setPwmPeriod0, setPwmPeriod1, setPwmLimit0 and setPwmLimit1."""
         if ((pin >= pwms[0]) and (pin <= pwms[2])):
             #port0
-            if shared.declaredPins[pin] != PWM0_OUTPUT:
+            if self.declaredPins[pin] != PWM0_OUTPUT:
                 self.uper.setSecondary(pins[pin])
                 #print "DECLARED pin ", pin, " called ", pins[pin]
                 if self.pwm0BeginCalled is False:
                     self.uper.pwm0_begin(self.pwm0PortPeriod)
                     self.pwm0BeginCalled = True
                 
-                shared.declaredPins[pin] = PWM0_OUTPUT
+                self.declaredPins[pin] = PWM0_OUTPUT
             
             pwmPin = pwms.index(pin)
             
@@ -142,13 +141,13 @@ class WeioGpio():
         
         elif ((pin >= pwms[3]) and (pin <= pwms[-1])):
             #port1
-            if shared.declaredPins[pin] != PWM1_OUTPUT:
+            if self.declaredPins[pin] != PWM1_OUTPUT:
                 self.uper.setSecondary(pins[pin])
                 if self.pwm1BeginCalled is False:
                     self.uper.pwm1_begin(self.pwm1PortPeriod)
                     self.pwm1BeginCalled = True
                 
-                shared.declaredPins[pin] = PWM1_OUTPUT
+                self.declaredPins[pin] = PWM1_OUTPUT
             #print "PWM index ", pwms.index(pin)
             pwmPin = abs(3-pwms.index(pin))
             

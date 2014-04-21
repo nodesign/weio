@@ -1,4 +1,3 @@
-from weioLib.weioGpio import WeioGpio
 import platform
 import time
 
@@ -7,7 +6,7 @@ import time
 ###
 # Shared gpio object over all classes inside project
 # There cannot be two instances of WeioGpio
-gpio = WeioGpio()
+gpio = None
 
 ###
 # User API functions for GPIO

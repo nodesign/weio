@@ -4,10 +4,11 @@ from tornado import web, ioloop, options, websocket
 import sys,os,logging, platform, json, signal, datetime
 
 import multiprocessing
+
 import functools
 
-from weioLib.weioUserApi import *
-from weioLib.weioIO import *
+from weioLib import weioUserApi
+from weioLib import weioIO
 
 # JS to PYTHON handler
 from handlers.weioJSPYHandler import WeioHandler
@@ -22,10 +23,21 @@ from weioLib import weioFiles
 
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
+# Import globals for user Tornado
+from weioLib import weioRunnerGlobals
+
 # Global list of user processes
 userProcessList = []
 
-################################################################ HTTP SERVER HANDLER
+from devices import uper
+from weioLib import weioGpio
+from weioLib import weioIO
+
+import time
+
+###
+# HTTP SERVER HANDLER
+###
 # This is user project index.html
 class WeioIndexHandler(web.RequestHandler):
     def get(self):
@@ -63,6 +75,9 @@ class UserControl():
 
         # User Project main module (main.py)
         self.userMain = self.loadUserProjectMain()
+        
+        # List of user processes
+        self.userProcessList = []
 
     def setConnectionObject(self, connection):
         # captures only the last connection
@@ -77,36 +92,40 @@ class UserControl():
         print "STARTING USER PROCESSES"
 
         # Launching threads
-        for key in attach.procs :
+        for key in weioUserApi.attach.procs :
             print key
-            p = multiprocessing.Process(target=attach.procs[key].procFnc, args=attach.procs[key].procArgs)
+            p = multiprocessing.Process(target=weioUserApi.attach.procs[key].procFnc, args=weioUserApi.attach.procs[key].procArgs)
             p.daemon = True
             # Add it to the global list of user processes
-            userProcessList.append(p)
+            self.userProcessList.append(p)
             # Start it
             p.start()
 
     def stop(self):
         print "STOPPING USER PROCESSES"
-        for p in userProcessList:
+        for p in self.userProcessList:
+            print p 
             p.terminate()
             p.join()
-            userProcessList.remove(p)
+            self.userProcessList.remove(p)
 
         # Reset user attached elements
-        attach.procs = {}
-        attach.events = {}
-        attach.ins = {}
+        weioUserApi.attach.procs = {}
+        weioUserApi.attach.events = {}
+        weioUserApi.attach.ins = {}
 
         # Finally stop UPER
         #logging.warning('Shutdown WeIO coprocessor')
-        stopWeio()
+        #weioIO.stopWeio()
 
     def userPlayer(self, fd, events):
         print "Inside userControl()"
 
-        cmd = os.read(fd,128)
-        print "Received: " + cmd
+	if (fd is not None):
+            cmd = os.read(fd,128)
+            print "Received: " + cmd
+        else:
+            return
 
         if (cmd == "*START*"):
             # Re-load user main (in case it changed)
@@ -125,7 +144,8 @@ class UserControl():
         confFile = weio_config.getConfiguration()
         
         # Get the last name of project and run it
-        projectModule = "userFiles."+confFile["last_opened_project"].replace('/', '.') + "main"
+        projectModule = confFile["last_opened_project"].replace('/', '.') + "main"
+        print projectModule
         
         # Import userMain from local module
         userMain = __import__(projectModule, fromlist=[''])
@@ -136,14 +156,21 @@ class UserControl():
 # User Tornado signal handler
 def signalHandler(userControl, sig, frame):
         #logging.warning('Caught signal: %s', sig)
-        # CALLING STOP IF PRESENT
+        print "CALLING STOP IF PRESENT"
         if "stop" in vars(userControl.userMain):
-            #logging.warning('Calling user defined stop function')
+            logging.warning('Calling user defined stop function')
             userControl.userMain.stop()
-        exit()
+        sys.exit(0)
 
 
 if __name__ == '__main__':
+    ###
+    # Initialize global USER API instances
+    ###
+    weioUserApi.attach =  weioUserApi.WeioAttach()
+    weioUserApi.shared =  weioUserApi.WeioSharedVar()
+    weioUserApi.console =  weioUserApi.WeioPrint()
+
     confFile = weio_config.getConfiguration()
     # set python working directory
     #os.chdir("userFiles/"+sys.argv[1])
@@ -161,6 +188,18 @@ if __name__ == '__main__':
 
     logging.info(" [*] Listening on 0.0.0.0:" + str(options.options.port))
     print "*SYSOUT* User API Websocket is created at localhost:" + str(options.options.port) + "/api"
+
+    ###
+    # Construct global gpio object
+    # Must be constructed here and nowhere else, because it creates UNIQUE UPER object
+    ###
+    weioIO.gpio = weioGpio.WeioGpio()
+    #weioIO.digitalWrite(20, weioUserApi.LOW)
+    #time.sleep(1)
+    #weioIO.digitalWrite(20, weioUserApi.HIGH)
+
+    # Initialize globals for the user Tornado
+    weioRunnerGlobals.DECLARED_PINS = weioIO.gpio.declaredPins
 
     # Create a userControl object
     userControl = UserControl()

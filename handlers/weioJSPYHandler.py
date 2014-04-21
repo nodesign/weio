@@ -1,5 +1,4 @@
 from weioLib.weioIO import *
-from weioLib.weioUserApi import shared
 import json
 
 from sockjs.tornado import SockJSConnection

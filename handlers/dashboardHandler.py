@@ -41,8 +41,6 @@ from tornado import web, ioloop, iostream, gen
 sys.path.append(r'./');
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
-from weioPlayer import player
-
 import functools
 import json
 from weioLib import weioIpAddress
@@ -50,14 +48,11 @@ from weioLib import weioFiles
 
 from shutil import copyfile, copytree
 
-# For shared objects between handlers
-# Handlers need to communicate between each other to avoid too complex client interaction
-# Editor handler send funtction is exported to global shared object shared.editor,
-# it will be used in dashboardHandler for transactions
-from weioLib.weioUserApi import *
-
 # IMPORT BASIC CONFIGURATION FILE 
 from weioLib import weio_config
+
+# Import globals for main Tornado
+from weioLib import weioIdeGlobals
 
 
 # Wifi detection route handler  
@@ -70,14 +65,15 @@ class WeioDashBoardHandler(SockJSConnection):
     
     stdoutHandlerIsLive = None
     stderrHandlerIsLive = None
-    
-    def __init(self):
+
+    def __init__(self, *args, **kwargs):
+        SockJSConnection.__init__(self, *args, **kwargs)
         self.errObject = []
         self.errReason = ""
     
-    def delegateToEditorHandler(self,rq):
-        shared.editor(rq)
-    
+    def setEditor(editor):
+        self.editor = editor
+
     # DEFINE CALLBACKS HERE
     # First, define callback that will be called from websocket
     def sendIp(self,rq):
@@ -113,14 +109,13 @@ class WeioDashBoardHandler(SockJSConnection):
         self.send(json.dumps(data))
         
     def play(self, rq):
-        player.play(rq)
+        weioIdeGlobals.PLAYER.play(rq)
 
     def stop(self, rq):
         """Stop running application"""
-        player.stop(rq)
+        weioIdeGlobals.PLAYER.stop(rq)
        
     def sendPlatformDetails(self, rq):
-        
         # get configuration from file
         config = weio_config.getConfiguration()
         
@@ -133,8 +128,7 @@ class WeioDashBoardHandler(SockJSConnection):
         
         data['serverPush'] = 'sysConsole'
         data['data'] = platformS
-        self.delegateToEditorHandler(data)
-        #CONSOLE.send(json.dumps(data))
+        weioIdeGlobals.CONSOLE.send(json.dumps(data))
     
     def getUserProjectsList(self, rq):
         
@@ -273,7 +267,7 @@ class WeioDashBoardHandler(SockJSConnection):
     def sendPlayerStatus(self, rq):
         data = {}
         data['requested'] = rq['request']
-        data['status'] = player.playing
+        data['status'] = weioIdeGlobals.PLAYER.playing
         
         self.send(json.dumps(data))
         
@@ -365,14 +359,12 @@ class WeioDashBoardHandler(SockJSConnection):
     }
     
     def on_open(self, info) :
-        
-        global CONSOLE
         # Store instance of the ConsoleConnection class
         # in the global variable that will be used
         # by the MainProgram thread
-        CONSOLE = self
+        weioIdeGlobals.CONSOLE = self
         # connect interfaces to player object
-        player.setConnectionObject(self)
+        weioIdeGlobals.PLAYER.setConnectionObject(self)
    
 
     def on_message(self, data):
