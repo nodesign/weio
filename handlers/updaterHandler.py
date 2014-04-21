@@ -46,6 +46,7 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 
 from weioLib import weioFiles
 from weioLib import weio_config
+from weioLib import weioIdeGlobals
 
 import functools
 import json
@@ -79,10 +80,9 @@ class WeioUpdaterHandler(SockJSConnection):
 
     # checking version
     def checkVersion(self, response):
-        global WIFI
         wifiMode = "ap"
         if (platform.machine() == 'mips') :
-            wifiMode = WIFI.mode
+            wifiMode = weioIdeGlobals.WIFI.mode
             print "WIFI MODE ", wifiMode
         else :
             wifiMode = "sta"
@@ -170,14 +170,14 @@ class WeioUpdaterHandler(SockJSConnection):
             
         else :
             print "MD5 checksum is not OK, retrying..."
-            if (slef.downloadTries<2):
+            if (self.downloadTries<2):
                 self.progressInfo("5%", "Downloading Bundle again, MD5 checkum was not correct")
                 self.downloadUpdate(None)
             else:
                 print "Something went wrong. Check Internet connection and try again later"
                 self.progressInfo("0%", "Something went wrong. Check Internet connection and try again later")
             
-            slef.downloadTries+=1
+            self.downloadTries+=1
     
     # Automatic status sender
     def progressInfo(self, progress, info):
@@ -185,7 +185,7 @@ class WeioUpdaterHandler(SockJSConnection):
         data['serverPush'] = "updateProgress"
         data['progress'] = progress # 5%, 10%,... in string format "10%"
         data['info'] = info
-        data['estimatedInstallTime'] = slef.estimatedInstallTime
+        data['estimatedInstallTime'] = self.estimatedInstallTime
         self.send(json.dumps(data))
         
     # Get MD5 checksum from file    
@@ -208,10 +208,9 @@ class WeioUpdaterHandler(SockJSConnection):
     def serve(self, rq):
         """Parsed input from browser ready to be served"""
         # Call callback by key directly from socket
-        global callbacks
         request = rq['request']
 
-        if request in callbacks :
-            callbacks[request](self, rq)
+        if request in self.callbacks :
+            self.callbacks[request](rq)
         else :
             print "unrecognised request"

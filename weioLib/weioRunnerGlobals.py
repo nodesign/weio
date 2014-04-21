@@ -34,4 +34,8 @@
 #
 ###
 
+# Pins declared by the user program
 DECLARED_PINS = None
+
+# Connected clients
+weioConnections = set()

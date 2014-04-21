@@ -183,7 +183,7 @@ class WeioAttach():
 
     def interrupt(self, pin, edge, event):
         intr = WeioApiInterrupt(pin, edge, event)
-        slef.ints[pin] = intr
+        self.ints[pin] = intr
 
 class WeioClient():
     

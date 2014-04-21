@@ -12,8 +12,6 @@ from weioLib import weioIO
 
 # JS to PYTHON handler
 from handlers.weioJSPYHandler import WeioHandler
-# Connected clients
-from handlers.weioJSPYHandler import connections
 
 # IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
 from weioLib import weio_config
