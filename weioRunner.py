@@ -142,7 +142,7 @@ class UserControl():
         confFile = weio_config.getConfiguration()
         
         # Get the last name of project and run it
-        projectModule = confFile["last_opened_project"].replace('/', '.') + "main"
+        projectModule = confFile["user_projects_path"].replace('/', '.') + confFile["last_opened_project"].replace('/', '.') + "main"
         print projectModule
         
         # Import userMain from local module
