@@ -1,0 +1,13 @@
+#!/bin/sh
+logger $BUTTON
+logger $ACTION
+
+[ "$BUTTON" = "BTN_0" ] && [ "$ACTION" = "pressed" ] && {
+	/etc/init.d/weio_run stop
+	/weio/scripts/wifi_set_mode.sh rescue
+	/etc/init.d/weio_run start
+}
+
+[ "$BUTTON" = "BTN_1" ] && [ "$ACTION" = "pressed" ] && {
+	/etc/init.d/weio_run restart
+}
