@@ -6,8 +6,8 @@ START=99
 start() {
     echo "Launching WeIO application"
     cd /
-    cp /weio/scripts/run_weio.sh ./weio_run_forever.sh
-    ./weio_run_forever.sh
+    cp /weio/scripts/run_weio.sh /weio_run_forever.sh
+    /weio_run_forever.sh&
 }
 
 stop() {
@@ -30,4 +30,9 @@ stop() {
         echo "Stopping user program weioRunner.py..."
         killall weioRunner.py
     fi
+}
+
+restart() {
+    stop
+    start
 }

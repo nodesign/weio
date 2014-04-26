@@ -47,63 +47,65 @@ check_wifi()
 
 
 ###
-# Loop forever - restart WeIO if it exits
+# Start WeIO and always restart WeIO if it exits
 ###
-while true; 
-do
-    cd /weio
-    
-    # First check if WiFi is UP
+cd /weio
+
+# First check if WiFi is UP
+check_wifi
+
+while [ $WIFI_READY -ne 1 ]; do
+    echo "WiFi network is not ready. Switching to RESCUE mode."
+
+    # We did not connect even after whole delay expired
+    # Something went wrong - got to RESCUE
+    /weio/scripts/wifi_set_mode.sh rescue
+
+    # Re-check WiFi
     check_wifi
-   
-    while [ $WIFI_READY -ne 1 ]; do
-        echo "WiFi network is not ready. Switching to RESCUE mode."
-
-        # We did not connect even after whole delay expired
-        # Something went wrong - got to RESCUE
-        /weio/scripts/wifi_set_mode.sh rescue
-
-        # Re-check WiFi
-        check_wifi
-    done
-   
-    # Light up the correct LED
-    /etc/init.d/led_blink stop 
-    MODE=`iwconfig wlan0 | grep Mode | awk '{print $1}' | sed 's/Mode://'`
-    if [ $MODE == Managed ]; then
-    	echo 1 > /sys/class/leds/weio:green:sta/brightness
-    else
-    	echo 1 > /sys/class/leds/weio:green:ap/brightness
-    fi
-    
-    # Then you can restart avahi
-    # First kill it
-    avahi-daemon -k
-    # The daemonize it
-    avahi-daemon -D
-    
-    echo "===> STARTING THE SERVER"
-    
-    # And start WeIO
-    ./weioServer.py;
-    
-    echo "===> EXITED SERVER"
-        
-    if grep -q '"kill_flag": "YES"' /weio/config.weio
-    then
-        echo "Found kill flag"
-    
-        if [ -d "/tmp/weio" ]; then
-          echo "Running pre install procedure"
-          sh /tmp/weio/scripts/pre_install.sh
-          echo "Deleting old WeIO"
-          rm -r /weio
-          echo "Moving from RAM to target place new WeIO"
-          mv /tmp/weio /weio
-          echo "Running post install procedure"
-          sh /weio/scripts/post_install.sh
-          echo "Installation done!"
-        fi
-    fi
 done
+
+# Light up the correct LED
+/etc/init.d/led_blink stop 
+MODE=`iwconfig wlan0 | grep Mode | awk '{print $1}' | sed 's/Mode://'`
+if [ $MODE == Managed ]; then
+	echo 1 > /sys/class/leds/weio:green:sta/brightness
+else
+	echo 1 > /sys/class/leds/weio:green:ap/brightness
+fi
+
+# Then you can restart avahi
+# First kill it
+avahi-daemon -k
+# The daemonize it
+avahi-daemon -D
+
+echo "===> STARTING THE SERVER"
+
+# And start WeIO
+./weioServer.py > /dev/null;
+
+### WE HAVE EXITED SERVER - CHECK OUT WHY ###
+echo "===> EXITED SERVER"
+    
+if grep -q '"kill_flag": "YES"' /weio/config.weio
+then
+    echo "Found kill flag"
+
+    if [ -d "/tmp/weio" ]; then
+      echo "Running pre install procedure"
+      sh /tmp/weio/scripts/pre_install.sh
+      echo "Deleting old WeIO"
+      rm -r /weio
+      echo "Moving from RAM to target place new WeIO"
+      mv /tmp/weio /weio
+      echo "Running post install procedure"
+      sh /weio/scripts/post_install.sh
+      echo "Installation done!"
+    fi
+fi
+
+# And here we go again!
+/etc/init.d/weio_run restart
+
     
