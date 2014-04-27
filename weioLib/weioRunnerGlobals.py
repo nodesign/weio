@@ -37,5 +37,9 @@
 # Pins declared by the user program
 DECLARED_PINS = None
 
+# If serial connection is opened for coprocessor
+WEIO_SERIAL_LINKED = False
+
 # Connected clients
 weioConnections = set()
+

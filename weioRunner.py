@@ -89,15 +89,19 @@ class UserControl():
     def start(self, rq={'request':'play'}):
         print "STARTING USER PROCESSES"
 
-        # Launching threads
-        for key in weioUserApi.attach.procs :
-            print key
-            p = multiprocessing.Process(target=weioUserApi.attach.procs[key].procFnc, args=weioUserApi.attach.procs[key].procArgs)
-            p.daemon = True
-            # Add it to the global list of user processes
-            self.userProcessList.append(p)
-            # Start it
-            p.start()
+        if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
+            weioIO.gpio.init()
+
+
+            # Launching threads
+            for key in weioUserApi.attach.procs :
+                print key
+                p = multiprocessing.Process(target=weioUserApi.attach.procs[key].procFnc, args=weioUserApi.attach.procs[key].procArgs)
+                p.daemon = True
+                # Add it to the global list of user processes
+                self.userProcessList.append(p)
+                # Start it
+                p.start()
 
     def stop(self):
         print "STOPPING USER PROCESSES"
@@ -111,6 +115,8 @@ class UserControl():
         weioUserApi.attach.procs = {}
         weioUserApi.attach.events = {}
         weioUserApi.attach.ins = {}
+        if (weioRunnerGlobals.WEIO_SERIAL_LINKED == True):
+            weioIO.gpio.reset()
 
         # Finally stop UPER
         #logging.warning('Shutdown WeIO coprocessor')

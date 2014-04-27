@@ -34,227 +34,87 @@
 #
 ###
 
-from devices import uper
-from weioLib.weioUserApi import pins, adcs, pwms, HIGH, LOW, INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP, OUTPUT, ADC_INPUT, PWM_OUTPUT, PWM0_OUTPUT, PWM1_OUTPUT
-from weioLib.weioUserApi import CHANGE, RISING, FALLING, HARD_INTERRUPTS
+from IoTPy.pyuper.ioboard import IoBoard
+from IoTPy.pyuper.gpio import GPIO
+from IoTPy.pyuper.adc import ADC
+from IoTPy.pyuper.pwm import PWM
+from IoTPy.pyuper.interrupt import Interrupt
+from IoTPy.pyuper.utils import IoTPy_APIError, die
+from weioLib import weioRunnerGlobals
+
 import os
 
 class WeioGpio():
     def __init__(self):
-        # construct uper device, open serial port
-        # send default values
-        if (os.path.exists("/dev/ttyACM0")) :
-            self.uper = uper.UPER(self.mainInterrupt)
-        else :
-            print "*SYSOUT*Error! LPC coprocessor not present!"
-            self.uper = None
-            
+        weioRunnerGlobals.WEIO_SERIAL_LINKED = False
+        self.init()
+
+    def init(self):
         self.declaredPins = []
-        for i in range(0,len(pins)):
-            self.declaredPins.append(-1)
-        
-        self.pwm0PortPeriod = 1000
-        self.pwm1PortPeriod = 1000
-        
-        self.pwm0Limit = 255
-        self.pwm1Limit = 255
-        
-        self.pwm0BeginCalled = False
-        self.pwm1BeginCalled = False
-        
-        
-        self.interrupts = []
-        for i in range(0,HARD_INTERRUPTS):
-            # 1 is available
-            self.interrupts.append(None)
-    
-    #print "Hello from GPIO"
-    
-    def mainInterrupt(self, data):
-        myid = data[1][0]
-        for inter in self.interrupts:
-            if inter.myid == myid:
-                inter.callback(data[1][1])
-                break
-    
+        self.pwmPrecision = 255
+
+        try:
+            self.u = IoBoard()
+            weioRunnerGlobals.WEIO_SERIAL_LINKED = True
+            print "opened port"
+        except UPER_APIError, e: # seems can't establish connection with the UPER board
+            details = e.args[0]
+            die(details)
+
     def inputMode(self, pin, mode) :
         """Sets input mode for digitalRead purpose. Available modes are : INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP"""
-        self.uper.setPrimary(pins[pin])
-        self.uper.pinMode(pins[pin], mode)
-        self.declaredPins[pin] = mode
-    
-    def digitalWrite(self,pin, state) :
+        gpio = self.u.get_pin(GPIO, pin)
+        gpio.mode(mode)
+
+    def digitalWrite(self, pin, state) :
         """Sets voltage to +3.3V or Ground on corresponding pin. This function takes two parameters : pin number and it's state that can be HIGH = +3.3V or LOW = Ground"""
-        if self.declaredPins[pin] != OUTPUT:
-            self.uper.setPrimary(pins[pin])
-            self.uper.pinMode(pins[pin], OUTPUT)
-            self.declaredPins[pin] = OUTPUT
-        
-        self.uper.digitalWrite(pins[pin], state)
-    
+        gpio = self.u.get_pin(GPIO, pin)
+        gpio.write(state)
+
     def digitalRead(self,pin) :
         """Reads actual voltage on corresponding pin. There are two possible answers : 0 if pin is connected to the Ground or 1 if positive voltage is detected"""
-        if (self.declaredPins[pin] != INPUT_HIGHZ) and (shared.declaredPins[pin] != INPUT_PULLUP) and (shared.declaredPins[pin] != INPUT_PULLDOWN) :
-            self.uper.setPrimary(pins[pin])
-            self.uper.pinMode(pins[pin], INPUT_HIGHZ)
-            self.declaredPins[pin] = INPUT_HIGHZ
-        
-        return self.uper.digitalRead(pins[pin])
-    
+        gpio = self.u.get_pin(GPIO, pin)
+        return gpio.read()
+
     def analogRead(self, pin) :
         """Reads input on specified Analog to Digital Convertor. ADC is available on pins from 25 to 32 Output is 10bits resolution or from 0-1023"""
-        if ((pin >= adcs[0]) and (pin <= adcs[-1])):
-            if self.declaredPins[pin] != ADC_INPUT:
-                self.uper.setSecondary(pins[pin])
-                self.declaredPins[pin] = ADC_INPUT
-            
-            adcPin = adcs.index(pin)
-            return self.uper.analogRead(adcPin)
-        else :
-            print "*SYSOUT*Error! Pin " + str(pin) + " is not ADC pin, ADCs are on pins 25-32!"
-            return -1           
-    
+        adc = self.u.get_pin(ADC, pin)
+        return adc.read()
+
     def pwmWrite(self, pin, value) :
         """Pulse with modulation is available at 6 pins from 19-24 and has 16bits of precision. By default WeIO sets PWM frequency at 20000ms and 8bit precision or from 0-255. This setup is well situated for driving LED lighting. Precision and frequency can be changed separately by calling additional functions for other uses : setPwmPeriod and setPwmLimit. PWM can also drive two different frequencies on two separate banks of 3 pins. For this feature look functions : setPwmPeriod0, setPwmPeriod1, setPwmLimit0 and setPwmLimit1."""
-        if ((pin >= pwms[0]) and (pin <= pwms[2])):
-            #port0
-            if self.declaredPins[pin] != PWM0_OUTPUT:
-                self.uper.setSecondary(pins[pin])
-                #print "DECLARED pin ", pin, " called ", pins[pin]
-                if self.pwm0BeginCalled is False:
-                    self.uper.pwm0_begin(self.pwm0PortPeriod)
-                    self.pwm0BeginCalled = True
-                
-                self.declaredPins[pin] = PWM0_OUTPUT
-            
-            pwmPin = pwms.index(pin)
-            
-            # Security limiters
-            if (value < 0) :
-                value = self.pwm0Limit
-            if (value > self.pwm0Limit):
-                value = 0
-            
-            out = self.proportion(value, 0, self.pwm0Limit, self.pwm0PortPeriod, 0)
-            self.uper.pwm0_set(pwmPin, int(out))
-        #print "PWM on ", pwmPin, " value ", out
-        
-        elif ((pin >= pwms[3]) and (pin <= pwms[-1])):
-            #port1
-            if self.declaredPins[pin] != PWM1_OUTPUT:
-                self.uper.setSecondary(pins[pin])
-                if self.pwm1BeginCalled is False:
-                    self.uper.pwm1_begin(self.pwm1PortPeriod)
-                    self.pwm1BeginCalled = True
-                
-                self.declaredPins[pin] = PWM1_OUTPUT
-            #print "PWM index ", pwms.index(pin)
-            pwmPin = abs(3-pwms.index(pin))
-            
-            # Security limiters
-            if (value < 0) :
-                value = self.pwm0Limit
-            if (value > self.pwm0Limit):
-                value = 0
-            
-            out = self.proportion(value, 0, self.pwm1Limit, self.pwm1PortPeriod, 0)
-            self.uper.pwm1_set(pwmPin, int(out))
-        #print "PWM on ", pwmPin, " value ", out
-        
-        else :
-            print "*SYSOUT*Error! Pin " + str(pin) + " is not PWM pin, PWMs are on pins 19-24!"
-    
+        pwm = self.u.get_pin(PWM, pin)
+        value = 1.0/self.pwmPrecision*value
+        pwm.write(value)
+
+    def setPwmPeriod(self, pin, period):
+        pwm = self.u.get_pin(PWM, pin)
+        pwm.width_us(period)
+
+    def analogWrite(self, pin,value):
+        self.pwmWrite(pin,value)
+
+    def analogWriteResolution(self, res):
+        if (res==8):
+            self.pwmPrecision = 255.0
+        elif (res==16):
+            self.pwmPrecision = 65535.0
+        else:
+            print "Only 8bit or 16bit precisions are allowed"
+
     def proportion(self, value,istart,istop,ostart,ostop) :
         return float(ostart) + (float(ostop) - float(ostart)) * ((float(value) - float(istart)) / (float(istop) - float(istart)))
-    
-    def setPwm0PortPeriod(self, period):
-        
-        if ((period >= 0) and (period <= 65535)): 
-            self.pwm0PortPeriod = period
-            if self.pwm0BeginCalled is False:
-                self.uper.pwm0_begin(self.pwm0PortPeriod)
-                self.pwm0BeginCalled = True
-        else :
-            print "*SYSOUT*Error! PWM period can be only between 0-65535"
-    
-    def setPwm1PortPeriod(self, period):
-        if ((period >= 0) and (period <= 65535)): 
-            self.pwm1PortPeriod = period
-            if self.pwm1BeginCalled is False:
-                self.uper.pwm1_begin(self.pwm1PortPeriod)
-                self.pwm1BeginCalled = True
-        else :
-            print "*SYSOUT*Error! PWM period can be only between 0-65535"
-    
-    def setPwmPeriod(self, period):
-        """Overrides default value of 20000ms to set new period value for whole 6 PWM pins. Period value must be superior than 0 and inferior than 65535."""
-        if ((period >= 0) and (period <= 65535)): 
-            self.pwm0PortPeriod = period
-            self.pwm1PortPeriod = period
-            
-            if self.pwm0BeginCalled is False:
-                self.uper.pwm0_begin(self.pwm0PortPeriod)
-                self.pwm0BeginCalled = True
-            
-            if self.pwm1BeginCalled is False:
-                self.uper.pwm1_begin(self.pwm1PortPeriod)
-                self.pwm1BeginCalled = True
-        
-        else :
-            print "*SYSOUT*Error! PWM period can be only between 0-65535"
-    
-    def setPwm0Limit(self, limit):
-        if ((limit > 0) and (limit <= self.pwm0PortPeriod)):
-            self.pwm0Limit = limit
-        else:
-            print "*SYSOUT*Error! PWM limit can't be superior than " + self.pwm0PortPeriod + " , 0 or inferior than 0"
-    
-    def setPwm1Limit(self, limit):
-        if ((limit > 0) and (limit <= self.pwm1PortPeriod)):
-            self.pwm1Limit = limit
-        else:
-            print "*SYSOUT*Error! PWM limit can't be superior than " + self.pwm1PortPeriod + " , 0 or inferior than 0"
-    
-    
-    def setPwmLimit(self, limit):
-        """Overrides default limit of 8bits for PWM precision. This value sets PWM counting upper limit and it's expressed as decimal value. This limit will be applied to all 6 PWM pins.
-            """
-        if ((limit > 0) and (limit <= self.pwm0PortPeriod) and (limit <= self.pwm1PortPeriod)):
-            self.pwm0Limit = limit
-            self.pwm1Limit = limit
-        else:
-            print "*SYSOUT*Error! PWM limit can't be superior than " + min(self.pwm0PortPeriod, self.pwm1PortPeriod)  + " , 0 or inferior than 0"
-    
+
     def attachInterrupt(self, pin, mode, callback):
-        myid = self.getAvailableInterruptId()
-        if not(myid is None) :
-            inter = Interrupt(myid, pin, mode, callback)
-            self.interrupts[myid] = inter
-            self.uper.attachInterrupt(myid, pins[pin], mode)
-    
+        interrupt = self.u.get_pin(Interrupt, pin)
+        interrupt.attach(mode, callback)
+
     def detachInterrupt(self, pin):
-        
-        for m in self.interrupts:
-            if not(m is None):
-                if (m.pin==pin):
-                    #print "pin to be detached ", m.pin
-                    self.uper.detachInterrupt(m.myid)
-    
-    
-    def getAvailableInterruptId(self) :
-        for i in range(0,HARD_INTERRUPTS):
-            if self.interrupts[i] == None:
-                return i
-        print "*SYSOUT*Error! There is only " + str(HARD_INTERRUPTS) + " interrupts available" 
-        return None
-        
+        pass
+
+    def reset(self):
+        weioRunnerGlobals.WEIO_SERIAL_LINKED = False
+        self.u.reset()
+
     def stop(self):
-        self.uper.stop()
-
-
-class Interrupt():
-    def __init__(self, myid, pin, mode, callback):
-        self.myid = myid
-        self.pin = pin
-        self.mode = mode
-        self.callback = callback
+        self.u.stop()

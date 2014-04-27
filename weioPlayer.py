@@ -115,7 +115,7 @@ class WeioPlayer():
         config = weio_config.getConfiguration()
 
         # stop if process is already running
-        self.stop()
+        #self.stop()
 
         data = {}
         up = config["user_projects_path"]
