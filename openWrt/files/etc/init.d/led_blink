@@ -11,15 +11,17 @@ start() {
 
 stop() {
 	if [ -n "$(ps | grep  "[l]edBlink.py")" ]; then
-        echo "Stopping ledBlink.py..."
-        killall ledBlink.py
-       
-        # Light up the correct LED 
-        MODE=`iwconfig wlan0 | grep Mode | awk '{print $1}' | sed 's/Mode://'`
-        if [ $MODE == Managed ]; then
-       	    echo 1 > /sys/class/leds/weio:green:sta/brightness
-        else
-       	    echo 1 > /sys/class/leds/weio:green:ap/brightness
-       fi
+            echo "Stopping ledBlink.py..."
+            killall ledBlink.py
+        	
+            if [ -e /sys/class/net/wlan0/operstate ] && [ `cat /sys/class/net/wlan0/operstate` == "up" ]; then
+                # Light up the correct LED 
+                MODE=`iwconfig wlan0 | grep Mode | awk '{print $1}' | sed 's/Mode://'`
+                if [ $MODE == Managed ]; then
+        	    echo 1 > /sys/class/leds/weio:green:sta/brightness
+                else
+        	    echo 1 > /sys/class/leds/weio:green:ap/brightness
+                fi
+            fi
 	fi
 }
