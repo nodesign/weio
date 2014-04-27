@@ -6,6 +6,7 @@ import sys,os,logging, platform, json, signal, datetime
 import multiprocessing
 
 import functools
+import subprocess
 
 from weioLib import weioUserApi
 from weioLib import weioIO
@@ -218,5 +219,10 @@ if __name__ == '__main__':
 
     # Add user control via stdin pipe
     ioloop.add_handler(sys.stdin.fileno(), userControl.userPlayer, ioloop.READ)
+
+    # Before starting ioloop, stop led blinking,
+    # which will light up correct LED and give information to the user
+    # that all is ready
+    subprocess.call(["/etc/init.d/led_blink", "stop"])
 
     ioloop.start()

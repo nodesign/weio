@@ -3,11 +3,23 @@ logger $BUTTON
 logger $ACTION
 
 [ "$BUTTON" = "BTN_0" ] && [ "$ACTION" = "pressed" ] && {
+	# Shut down the leds (give an info to the user,
+	# because ledBlik.py has significant python lag)
+	echo 0 > /sys/class/leds/weio:green:sta/brightness
+	echo 0 > /sys/class/leds/weio:green:ap/brightness
+
+	# Restart Tornados
+	/etc/init.d/weio_run restart
+}
+
+
+[ "$BUTTON" = "BTN_1" ] && [ "$ACTION" = "pressed" ] && {
+	# Shut down the leds
+	echo 0 > /sys/class/leds/weio:green:sta/brightness
+	echo 0 > /sys/class/leds/weio:green:ap/brightness
+	
+	# Go to rescue mode
 	/etc/init.d/weio_run stop
 	/weio/scripts/wifi_set_mode.sh rescue
 	/etc/init.d/weio_run start
-}
-
-[ "$BUTTON" = "BTN_1" ] && [ "$ACTION" = "pressed" ] && {
-	/etc/init.d/weio_run restart
 }

@@ -47,9 +47,15 @@ check_wifi()
 
 
 ###
-# Start WeIO and always restart WeIO if it exits
+# Loop forever - restart WeIO if it exits
 ###
 cd /weio
+
+# If led_blink is not running - start it
+if [ -z "$(ps | grep  "[l]edBlink.py")" ]; then
+    echo "Starting ledBlink.py..."
+    /etc/init.d/led_blink start
+fi
 
 # First check if WiFi is UP
 check_wifi
@@ -65,16 +71,7 @@ while [ $WIFI_READY -ne 1 ]; do
     check_wifi
 done
 
-# Light up the correct LED
-/etc/init.d/led_blink stop 
-MODE=`iwconfig wlan0 | grep Mode | awk '{print $1}' | sed 's/Mode://'`
-if [ $MODE == Managed ]; then
-	echo 1 > /sys/class/leds/weio:green:sta/brightness
-else
-	echo 1 > /sys/class/leds/weio:green:ap/brightness
-fi
-
-# Then you can restart avahi
+# Restart avahi
 # First kill it
 avahi-daemon -k
 # The daemonize it
@@ -83,7 +80,7 @@ avahi-daemon -D
 echo "===> STARTING THE SERVER"
 
 # And start WeIO
-./weioServer.py > /dev/null;
+./weioServer.py > /dev/null
 
 ### WE HAVE EXITED SERVER - CHECK OUT WHY ###
 echo "===> EXITED SERVER"
@@ -107,5 +104,3 @@ fi
 
 # And here we go again!
 /etc/init.d/weio_run restart
-
-    
