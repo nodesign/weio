@@ -396,7 +396,7 @@ function play(){
     var rq = { "request": "play"};
     dashboard.send(JSON.stringify(rq));
     document.getElementById("weioIframe").contentWindow.clearConsole();
-    playCounter = setInterval(function(){countTillPlay()},63);
+    playCounter = setInterval(function(){countTillPlay()},4);
     $( "#weioProgress" ).fadeTo( "fast", 100 );
 
 }
