@@ -28,7 +28,6 @@ from weioLib import weioRunnerGlobals
 # Global list of user processes
 userProcessList = []
 
-from devices import uper
 from weioLib import weioGpio
 from weioLib import weioIO
 
@@ -223,6 +222,7 @@ if __name__ == '__main__':
     # Before starting ioloop, stop led blinking,
     # which will light up correct LED and give information to the user
     # that all is ready
-    subprocess.call(["/etc/init.d/led_blink", "stop"])
+    if (platform.machine() == 'mips'):
+        subprocess.call(["/etc/init.d/led_blink", "stop"])
 
     ioloop.start()
