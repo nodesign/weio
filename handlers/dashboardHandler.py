@@ -1,18 +1,18 @@
-### 
+###
 #
 # WEIO Web Of Things Platform
 # Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
 # All rights reserved
 #
-#               ##      ## ######## ####  #######  
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ######    ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
+#               ##      ## ######## ####  #######
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ######    ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
 #                ###  ###  ######## ####  #######
 #
-#                    Web Of Things Platform 
+#                    Web Of Things Platform
 #
 # This file is part of WEIO
 # WEIO is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Authors : 
+# Authors :
 # Uros PETREVSKI <uros@nodesign.net>
 # Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 #
@@ -48,21 +48,21 @@ from weioLib import weioFiles
 
 from shutil import copyfile, copytree
 
-# IMPORT BASIC CONFIGURATION FILE 
+# IMPORT BASIC CONFIGURATION FILE
 from weioLib import weio_config
 
 # Import globals for main Tornado
 from weioLib import weioIdeGlobals
 
 
-# Wifi detection route handler  
+# Wifi detection route handler
 class WeioDashBoardHandler(SockJSConnection):
     global callbacks
 
     # Handler sanity, True alive, False dead
     global stdoutHandlerIsLive
     global stderrHandlerIsLive
-    
+
     stdoutHandlerIsLive = None
     stderrHandlerIsLive = None
 
@@ -70,17 +70,17 @@ class WeioDashBoardHandler(SockJSConnection):
         SockJSConnection.__init__(self, *args, **kwargs)
         self.errObject = []
         self.errReason = ""
-    
+
     def setEditor(editor):
         self.editor = editor
 
     # DEFINE CALLBACKS HERE
     # First, define callback that will be called from websocket
     def sendIp(self,rq):
-        
+
         # get configuration from file
         config = weio_config.getConfiguration()
-        
+
         data = {}
         ip = weioIpAddress.getLocalIpAddress()
         #publicIp = weioIpAddress.getPublicIpAddress()
@@ -88,16 +88,16 @@ class WeioDashBoardHandler(SockJSConnection):
         data['status'] = config["dns_name"] + " on " + ip
         # Send connection information to the client
         self.send(json.dumps(data))
-    
+
     def sendLastProjectName(self,rq):
-        
+
         # get configuration from file
         config = weio_config.getConfiguration()
-        
+
         data = {}
         data['requested'] = rq['request']
         lp = config["last_opened_project"].split("/")
-        
+
         #print "USER PRJ NAME",lp
 
         if (weioFiles.checkIfDirectoryExists(config["user_projects_path"]+config["last_opened_project"])):
@@ -107,43 +107,40 @@ class WeioDashBoardHandler(SockJSConnection):
             data['data'] = "Select project here"
         # Send connection information to the client
         self.send(json.dumps(data))
-        
+
     def play(self, rq):
         weioIdeGlobals.PLAYER.play(rq)
 
     def stop(self, rq):
         """Stop running application"""
         weioIdeGlobals.PLAYER.stop(rq)
-       
+
     def sendPlatformDetails(self, rq):
         # get configuration from file
         config = weio_config.getConfiguration()
-        
+
         data = {}
-        
+
         platformS = ""
-        
+
         platformS += "WeIO version " + config["weio_version"] + " with Python " + platform.python_version() + " on " + platform.system() + "<br>"
         platformS += "GPL 3, Nodesign.net 2013 Uros Petrevski & Drasko Draskovic <br>"
-        
+
         data['serverPush'] = 'sysConsole'
         data['data'] = platformS
         weioIdeGlobals.CONSOLE.send(json.dumps(data))
-    
+
     def getUserProjectsList(self, rq):
-        
-        # scan for changes and make links if necessary
-        weioFiles.recreateUserFiles()
-        
+
         # get configuration from file
         config = weio_config.getConfiguration()
-        
+
         data = {}
         data['requested'] = rq['request']
         #data['data'] = weioFiles.listOnlyFolders(config["user_projects_path"]+"examples/userProjects")
-        
+
         userDirs = weioFiles.listUserDirectories(config["user_projects_path"])
-        
+
         #print "PROJECTS ", userDirs
         allUserProjects = []
         for d in userDirs:
@@ -151,12 +148,12 @@ class WeioDashBoardHandler(SockJSConnection):
             a = {"projects": prj, "path":d, "storageName":os.path.basename(d)}
             if (len(prj)>0):
                 allUserProjects.append(a)
-        
+
         data['data'] = allUserProjects
-        
+
         #TODO add listing for examples, flash & sd card storage
         self.send(json.dumps(data))
-    
+
     def changeProject(self,rq):
         #print "CHANGE PROJECT", rq
         # get configuration from file
@@ -165,24 +162,24 @@ class WeioDashBoardHandler(SockJSConnection):
         # TODO add directories logic for examples, flash & sd card
         config["last_opened_project"] = rq['data']+"/"
         weio_config.saveConfiguration(config);
-        
+
         data = {}
         data['requested'] = rq['request']
         self.send(json.dumps(data))
-        
+
         rqlist = ["stop", "getLastProjectName", "getUserProjetsFolderList"]
-        
+
         for i in range(0,len(rqlist)):
             rq['request'] = rqlist[i]
             callbacks[rq['request']](self, rq)
-        
-    
+
+
     def sendUserData(self,rq):
         data = {}
         # get configuration from file
         config = weio_config.getConfiguration()
         data['requested'] = rq['request']
-        
+
         data['name'] = config["user"]
         self.send(json.dumps(data))
 
@@ -192,55 +189,55 @@ class WeioDashBoardHandler(SockJSConnection):
         data = {}
         data['requested'] = rq['request']
         path = rq['storageUnit'] + "/userProjects/" + rq['path']
-        
+
         weioFiles.createDirectory(config["user_projects_path"] + path)
         # ADD HERE SOME DEFAULT FILES
         # adding __init__.py
         weioFiles.saveRawContentToFile(config["user_projects_path"] + path + "/__init__.py", "")
-        
+
         # copy all files from directory boilerplate to destination
         mypath = "www/libs/weio/boilerPlate/"
         onlyfiles = [ f for f in os.listdir(mypath) if isfile(join(mypath,f)) ]
         for f in onlyfiles:
             copyfile(mypath+f, config["user_projects_path"] + path +"/"+f)
-        
+
         data['status'] = "New project created"
         data['path'] = path
         self.send(json.dumps(data))
-        
+
     def duplicateProject(self, rq):
         config = weio_config.getConfiguration()
-        
+
         path = rq['storageUnit'] + "/userProjects/" + rq['path']
-        
+
         # destroy symlinks before
         # os.unlink(config["user_projects_path"]+config["last_opened_project"]+"weioLibs")
         copytree(config["user_projects_path"]+config["last_opened_project"],config["user_projects_path"]+path)
-        
+
         data = {}
         data['requested'] = "status"
         data['status'] = "Project duplicated"
         self.send(json.dumps(data))
-        
+
         # now go to newely duplicated project
-    
+
         data['request'] = "changeProject"
         data['data'] = path
-        
+
         self.changeProject(data)
 
     def deleteCurrentProject(self, rq):
-        
+
         data = {}
         data['requested'] = rq['request']
 
         config = weio_config.getConfiguration()
         projectToKill = config["last_opened_project"]
-        
+
         print "PROJECT TO KILL ", projectToKill
-        
+
         weioFiles.removeDirectory(config["user_projects_path"]+projectToKill)
-                
+
         folders = weioFiles.listOnlyFolders(config["user_projects_path"]+ "examples/userProjects")
 
         if len(folders) > 0 :
@@ -254,7 +251,7 @@ class WeioDashBoardHandler(SockJSConnection):
         self.send(json.dumps(data))
 
     def iteratePacketRequests(self, rq) :
-        
+
         requests = rq["packets"]
 
         for uniqueRq in requests:
@@ -268,9 +265,9 @@ class WeioDashBoardHandler(SockJSConnection):
         data = {}
         data['requested'] = rq['request']
         data['status'] = weioIdeGlobals.PLAYER.playing
-        
+
         self.send(json.dumps(data))
-        
+
     def createTarForProject(self, rq):
         # TEST IF NAME IS OK FIRST
         # get configuration from file
@@ -279,22 +276,22 @@ class WeioDashBoardHandler(SockJSConnection):
         data['requested'] = "status"
         data['status'] = "Making archive..."
         self.send(json.dumps(data))
-        
+
         data['requested'] = rq['request']
-        
+
         splitted = config["last_opened_project"].split("/")
         lp = splitted[2]
         storage = splitted[0]
-        
+
         if (weioFiles.checkIfDirectoryExists(config["user_projects_path"]+config["last_opened_project"])):
-            weioFiles.createTarfile(config["user_projects_path"]+config["last_opened_project"]+lp+".tar", config["user_projects_path"]+config["last_opened_project"])   
+            weioFiles.createTarfile(config["user_projects_path"]+config["last_opened_project"]+lp+".tar", config["user_projects_path"]+config["last_opened_project"])
             data['status'] = "Project archived"
             print "project archived"
         else :
             data['status'] = "Error archiving project"
-            
+
         self.send(json.dumps(data))
-        
+
     def decompressNewProject(self, rq):
         print "decompress"
         f = rq['data']
@@ -302,14 +299,14 @@ class WeioDashBoardHandler(SockJSConnection):
         contents = f['data']
         storageUnit = rq['storageUnit'] +"/"
         #print contents
-        
+
         # get configuration from file
         confFile = weio_config.getConfiguration()
         pathCurrentProject = confFile["user_projects_path"] + storageUnit
-        
+
         projectName = name.split(".tar")[0]
         data = {}
-        
+
         if (weioFiles.checkIfDirectoryExists(pathCurrentProject+projectName) is False) :
             #decode from base64, file is binary
             bin = contents
@@ -320,17 +317,17 @@ class WeioDashBoardHandler(SockJSConnection):
             #print "mkdir ", pathCurrentProject+"userProjects/"+projectName
             weioFiles.unTarFile(pathCurrentProject+name, pathCurrentProject+"userProjects/"+projectName)
             #print "untar ", pathCurrentProject+"userProjects/"+projectName
-            
+
             data['request'] = "changeProject"
             data['data'] = storageUnit+"userProjects/"+projectName
-        
+
             self.changeProject(data)
         else :
             data['requested'] = 'status'
             data['status'] = "Error this projet already exists"
             self.send(json.dumps(data))
-            
-   
+
+
 ##############################################################################################################################
     # DEFINE CALLBACKS IN DICTIONARY
     # Second, associate key with right function to be called
@@ -355,9 +352,9 @@ class WeioDashBoardHandler(SockJSConnection):
         'archiveProject' : createTarForProject,
         'addNewProjectFromArchive' : decompressNewProject,
         'duplicateProject': duplicateProject
-        
+
     }
-    
+
     def on_open(self, info) :
         # Store instance of the ConsoleConnection class
         # in the global variable that will be used
@@ -365,19 +362,19 @@ class WeioDashBoardHandler(SockJSConnection):
         weioIdeGlobals.CONSOLE = self
         # connect interfaces to player object
         weioIdeGlobals.PLAYER.setConnectionObject(self)
-   
+
 
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
         req = json.loads(data)
         self.serve(req)
-        
+
     def serve(self, rq):
         """Parsed input from browser ready to be served"""
         # Call callback by key directly from socket
         global callbacks
         request = rq['request']
-        
+
         if request in callbacks :
             callbacks[request](self, rq)
         else :
