@@ -70,15 +70,15 @@ uper1_pinout = {
 weio_pinout = {
 0 : [CAP_GPIO,             [20],    "PIO1_13"],
 1 : [CAP_GPIO,             [19],    "PIO0_14"],
-2 : [CAP_GPIO,             [13],    "PIO0_9"],
-3 : [CAP_GPIO,             [12],    "PIO0_8"],
-4 : [CAP_GPIO,             [14],    "PIO0_10"],
+2 : [CAP_GPIO | CAP_SPI,   [13],    "PIO0_9"], # SPI0 MOSI
+3 : [CAP_GPIO | CAP_SPI,   [12],    "PIO0_8"], # SPI0 MISO
+4 : [CAP_GPIO | CAP_SPI,   [14],    "PIO0_10"], #SPI0 SCK
 5 : [CAP_GPIO,             [1],     "PIO0_2"],
 6 : [CAP_GPIO,             [8],     "PIO0_7"],
 7 : [CAP_GPIO,             [21],    "PIO1_14"],
-8 : [CAP_GPIO,             [5],     "PIO0_21"],
-9 : [CAP_GPIO,             [11],    "PIO1_21"],
-10: [CAP_GPIO,             [4],     "PIO1_20"],
+8 : [CAP_GPIO | CAP_SPI,   [5],     "PIO0_21"], #SPI1 MOSI
+9 : [CAP_GPIO | CAP_SPI,   [11],    "PIO1_21"], #SPI1 MISO
+10: [CAP_GPIO | CAP_SPI,   [4],     "PIO1_20"], #SPI1 SCK
 11: [CAP_GPIO,             [0],     "PIO0_20"],
 12: [CAP_GPIO,             [18],    "PIO0_13"],
 13: [CAP_GPIO,             [16],    "PIO0_11"],
