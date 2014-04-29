@@ -13,22 +13,46 @@ gpio = None
 ###
 
 def mainInterrupt(data):
-    return gpio.mainInterrupt(data)
+    try:
+        return gpio.mainInterrupt(data)
+    except:
+        print data
+        return -1
 
 def inputMode(pin, mode):
-    return gpio.inputMode(pin, mode)
-            
+    try:
+        return gpio.inputMode(pin, mode)
+    except:
+        print "inputMode(", pin,",", mode,")"
+        return -1
+
 def digitalWrite(pin, state):
-    return gpio.digitalWrite(pin, state)
-    
+    try:
+        return gpio.digitalWrite(pin, state)
+    except:
+        print "digitalWrite(", pin,",", state,")"
+        return -1
+
 def digitalRead(pin) :
-    return gpio.digitalRead(pin) 
-    
+    try:
+        return gpio.digitalRead(pin)
+    except:
+        print "digitalRead(", pin,")"
+        return -1
+
 def analogRead(pin) :
-    return gpio.analogRead(pin)         
-    
+    try:
+        return gpio.analogRead(pin)
+    except:
+        print "analogRead(", pin,")"
+        return -1
+
 def pwmWrite(pin, value) :
-    return gpio.pwmWrite(pin, value)
+    try:
+        return gpio.pwmWrite(pin, value)
+    except:
+        print "pwmWrite(", pin,",",value,")"
+        return -1
 
 def analogWrite(pin, value):
     """Defining idiom of pwmWrite to match arduino syntax"""
@@ -36,39 +60,21 @@ def analogWrite(pin, value):
 
 def proportion(value, istart, istop, ostart, ostop):
     return gpio.proportion(value, istart, istop, ostart, ostop)
-    
-def setPwm0PortPeriod(period):
-    return gpio.setPwm0PortPeriod(period)
-
-def setPwm1PortPeriod(period):
-    return gpio.setPwm1PortPeriod(period)
-
-def setPwmPeriod(period):
-    return gpio.setPwmPeriod(period)
-
-def setPwm0Limit(limit):
-    return gpio.setPwm0Limit(limit)
-
-def setPwm1Limit(limit):
-    return gpio.setPwm1Limit(limit)
-
-def setPwmLimit(limit):
-    return gpio.setPwmLimit(limit)
 
 def attachInterrupt(pin, mode, callback):
-    return gpio.attachInterrupt(pin, mode, callback)
-
+    try:
+        return gpio.attachInterrupt(pin, mode, callback)
+    except:
+        print "attachInterrupt(", pin,",",mode,",",callback,")"
+        return -1
+    
 def detachInterrupt(pin):
-    return gpio.detachInterrupt(pin)
-
-def getAvailableInterruptId():
-    return gpio.getAvailableInterruptId()
+    try:
+        return gpio.detachInterrupt(pin)
+    except:
+        print "detachInterrupt(", pin,")"
+        return -1
 
 def delay(period):
     """Delay expressed in milliseconds. Delay will block current process. Delay can be evil"""
     time.sleep(period/1000.0)
-    
-def stopWeio():
-    if (platform.machine()=="mips"):
-        return gpio.stop()
-
