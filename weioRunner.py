@@ -90,7 +90,8 @@ class UserControl():
         print "STARTING USER PROCESSES"
 
         if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
-            weioIO.gpio.init()
+            if (weioIO.gpio != None):
+                weioIO.gpio.init()
 
 
             # Launching threads
@@ -116,7 +117,8 @@ class UserControl():
         weioUserApi.attach.events = {}
         weioUserApi.attach.ins = {}
         if (weioRunnerGlobals.WEIO_SERIAL_LINKED == True):
-            weioIO.gpio.reset()
+            if (weioIO.gpio != None):
+                weioIO.gpio.reset()
 
         # Finally stop UPER
         #logging.warning('Shutdown WeIO coprocessor')
@@ -197,13 +199,15 @@ if __name__ == '__main__':
     # Construct global gpio object
     # Must be constructed here and nowhere else, because it creates UNIQUE UPER object
     ###
-    weioIO.gpio = weioGpio.WeioGpio()
-    #weioIO.digitalWrite(20, weioUserApi.LOW)
-    #time.sleep(1)
-    #weioIO.digitalWrite(20, weioUserApi.HIGH)
 
-    # Initialize globals for the user Tornado
-    weioRunnerGlobals.DECLARED_PINS = weioIO.gpio.declaredPins
+    try :
+        weioIO.gpio = weioGpio.WeioGpio()
+
+        # Initialize globals for the user Tornado
+        weioRunnerGlobals.DECLARED_PINS = weioIO.gpio.declaredPins
+    except :
+        print "LPC coprocessor is not present"
+        weioIO.gpio = None
 
     # Create a userControl object
     userControl = UserControl()
