@@ -135,7 +135,10 @@ class UserControl():
 
         if (cmd == "*START*"):
             # Re-load user main (in case it changed)
-            self.userMain = self.loadUserProjectMain()
+            if (self.userMain == None):
+                self.userMain = self.loadUserProjectMain()
+            else :
+                reload(self.userMain)
 
             # Calling user setup() if present
             if "setup" in vars(self.userMain):
@@ -154,10 +157,12 @@ class UserControl():
         print projectModule
         
         # Import userMain from local module
-        userMain = __import__(projectModule, fromlist=[''])
-
-        return userMain
-
+        try :
+            userMain = __import__(projectModule, fromlist=[''])
+            return userMain
+        except :
+            print "MODULE CAN'T BE LOADED"
+            return None
 
 # User Tornado signal handler
 def signalHandler(userControl, sig, frame):
