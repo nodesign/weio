@@ -61,6 +61,7 @@ class UserControl():
         self.errLine = 0
         self.errObject = []
         self.errReason = ""
+        self.lastCalledProjectPath = None
 
         # Variable to store SockJSConnection calss instance
         # in order to call it's send() method from MainProgram thread
@@ -142,10 +143,7 @@ class UserControl():
 
         if (cmd == "*START*"):
             # Re-load user main (in case it changed)
-            if (self.userMain == None):
-                self.userMain = self.loadUserProjectMain()
-            else :
-                reload(self.userMain)
+            self.userMain = self.loadUserProjectMain()
 
             # Calling user setup() if present
             if "setup" in vars(self.userMain):
@@ -158,18 +156,23 @@ class UserControl():
 
     def loadUserProjectMain(self):
         confFile = weio_config.getConfiguration()
-
+        
         # Get the last name of project and run it
         projectModule = confFile["user_projects_path"].replace('/', '.') + confFile["last_opened_project"].replace('/', '.') + "main"
-        print projectModule
+        
+        if (self.lastCalledProjectPath == projectModule):
+            reload(self.userMain)
+        else :
+            # Import userMain from local module
+            try :
+                userMain = __import__(projectModule, fromlist=[''])
+                return userMain
+            except :
+                print "MODULE CAN'T BE LOADED"
+                return None
 
-        # Import userMain from local module
-        try :
-            userMain = __import__(projectModule, fromlist=[''])
-            return userMain
-        except :
-            print "MODULE CAN'T BE LOADED"
-            return None
+        print projectModule
+        self.lastCalledProjectPath = projectModule
 
 # User Tornado signal handler
 def signalHandler(userControl, sig, frame):
