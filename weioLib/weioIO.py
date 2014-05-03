@@ -19,7 +19,7 @@ def mainInterrupt(data):
         print data
         return -1
 
-def inputMode(pin, mode):
+def pinMode(pin, mode):
     try:
         return gpio.inputMode(pin, mode)
     except:
