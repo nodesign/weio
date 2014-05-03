@@ -1,12 +1,20 @@
 import platform
 import time
-
+from IoTPy.pyuper.gpio import GPIO
 ###
 # Global interface
 ###
 # Shared gpio object over all classes inside project
 # There cannot be two instances of WeioGpio
 gpio = None
+
+PULL_UP = GPIO.PULL_UP 
+PULL_DOWN = GPIO.PULL_DOWN
+HIGH_Z = GPIO.HIGH_Z
+INPUT = GPIO.INPUT
+OUTPUT = GPIO.OUTPUT
+HIGH = 1
+LOW = 0
 
 ###
 # User API functions for GPIO
