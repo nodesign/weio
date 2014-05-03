@@ -109,9 +109,13 @@ class UserControl():
 
         for p in self.userProcessList:
             print "KILLING PROCESS PID", p.pid
-            #p.terminate()
-            #p.join()
-            os.kill(p.pid, 9) # very violent
+            p.terminate()
+            p.join(0.5)
+            try :
+                # If job is not properly done than kill it with bazooka
+                os.kill(p.pid, 9) # very violent
+            except:
+                pass
             self.userProcessList.remove(p)
 
         # Reset user attached elements
