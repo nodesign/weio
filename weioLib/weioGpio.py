@@ -58,7 +58,7 @@ class WeioGpio():
                 self.u = IoBoard()
                 print "opened port"
                 closed = False
-            except UPER_APIError, e: # seems can't establish connection with the UPER board
+            except IoTPy_APIError, e: # seems can't establish connection with the UPER board
                 #details = e.args[0]
                 closed = True
                 #die(details)
