@@ -73,7 +73,7 @@ class UserControl():
 
         # User Project main module (main.py)
         self.userMain = self.loadUserProjectMain()
-        
+
         # List of user processes
         self.userProcessList = []
 
@@ -102,13 +102,16 @@ class UserControl():
                 self.userProcessList.append(p)
                 # Start it
                 p.start()
+                print "STARTING PROCESS PID", p.pid
 
     def stop(self):
         print "STOPPING USER PROCESSES"
+
         for p in self.userProcessList:
-            print p 
-            p.terminate()
-            p.join()
+            print "KILLING PROCESS PID", p.pid
+            #p.terminate()
+            #p.join()
+            os.kill(p.pid, 9) # very violent
             self.userProcessList.remove(p)
 
         # Reset user attached elements
@@ -151,11 +154,11 @@ class UserControl():
 
     def loadUserProjectMain(self):
         confFile = weio_config.getConfiguration()
-        
+
         # Get the last name of project and run it
         projectModule = confFile["user_projects_path"].replace('/', '.') + confFile["last_opened_project"].replace('/', '.') + "main"
         print projectModule
-        
+
         # Import userMain from local module
         try :
             userMain = __import__(projectModule, fromlist=[''])
