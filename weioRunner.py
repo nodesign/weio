@@ -89,10 +89,9 @@ class UserControl():
     def start(self, rq={'request':'play'}):
         print "STARTING USER PROCESSES"
 
-        if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
-            if (weioIO.gpio != None):
+        if (weioIO.gpio != None):
+            if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
                 weioIO.gpio.init()
-
 
             # Launching threads
             for key in weioUserApi.attach.procs :
@@ -116,8 +115,9 @@ class UserControl():
         weioUserApi.attach.procs = {}
         weioUserApi.attach.events = {}
         weioUserApi.attach.ins = {}
-        if (weioRunnerGlobals.WEIO_SERIAL_LINKED == True):
-            if (weioIO.gpio != None):
+
+        if (weioIO.gpio != None):
+            if (weioRunnerGlobals.WEIO_SERIAL_LINKED == True):
                 weioIO.gpio.reset()
 
         # Finally stop UPER
@@ -127,7 +127,7 @@ class UserControl():
     def userPlayer(self, fd, events):
         print "Inside userControl()"
 
-	if (fd is not None):
+        if (fd is not None):
             cmd = os.read(fd,128)
             print "Received: " + cmd
         else:

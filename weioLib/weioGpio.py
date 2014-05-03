@@ -46,7 +46,6 @@ import os
 
 class WeioGpio():
     def __init__(self):
-        weioRunnerGlobals.WEIO_SERIAL_LINKED = False
         self.init()
 
     def init(self):
