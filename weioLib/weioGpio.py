@@ -1,18 +1,18 @@
-### 
+###
 #
 # WEIO Web Of Things Platform
 # Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
 # All rights reserved
 #
-#               ##      ## ######## ####  #######  
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ######    ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
+#               ##      ## ######## ####  #######
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ######    ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
 #                ###  ###  ######## ####  #######
 #
-#                    Web Of Things Platform 
+#                    Web Of Things Platform
 #
 # This file is part of WEIO
 # WEIO is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Authors : 
+# Authors :
 # Uros PETREVSKI <uros@nodesign.net>
 # Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 #
@@ -52,13 +52,18 @@ class WeioGpio():
         self.declaredPins = []
         self.pwmPrecision = 255
 
-        try:
-            self.u = IoBoard()
-            weioRunnerGlobals.WEIO_SERIAL_LINKED = True
-            print "opened port"
-        except UPER_APIError, e: # seems can't establish connection with the UPER board
-            details = e.args[0]
-            die(details)
+        closed = True
+        while closed:
+            try:
+                self.u = IoBoard()
+                print "opened port"
+                closed = False
+            except UPER_APIError, e: # seems can't establish connection with the UPER board
+                #details = e.args[0]
+                closed = True
+                #die(details)
+
+        weioRunnerGlobals.WEIO_SERIAL_LINKED = True
 
     def inputMode(self, pin, mode) :
         """Sets input mode for digitalRead purpose. Available modes are : INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP"""

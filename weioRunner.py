@@ -89,6 +89,9 @@ class UserControl():
     def start(self, rq={'request':'play'}):
         print "STARTING USER PROCESSES"
 
+        if (len(self.userProcessList)!=0):
+            self.stop()
+
         if (weioIO.gpio != None):
             if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
                 weioIO.gpio.init()
@@ -106,30 +109,27 @@ class UserControl():
 
     def stop(self):
         print "STOPPING USER PROCESSES"
+        
+        if (len(self.userProcessList)!=0):
+            for p in self.userProcessList:
+                print "KILLING PROCESS PID", p.pid
+                p.terminate()
+                p.join(0.5)
+                try :
+                    # If job is not properly done than kill it with bazooka
+                    os.kill(p.pid, 9) # very violent
+                except:
+                    pass
+                self.userProcessList.remove(p)
 
-        for p in self.userProcessList:
-            print "KILLING PROCESS PID", p.pid
-            p.terminate()
-            p.join(0.5)
-            try :
-                # If job is not properly done than kill it with bazooka
-                os.kill(p.pid, 9) # very violent
-            except:
-                pass
-            self.userProcessList.remove(p)
+            if (weioIO.gpio != None):
+                if (weioRunnerGlobals.WEIO_SERIAL_LINKED == True):
+                    weioIO.gpio.reset()
 
-        # Reset user attached elements
-        weioUserApi.attach.procs = {}
-        weioUserApi.attach.events = {}
-        weioUserApi.attach.ins = {}
-
-        if (weioIO.gpio != None):
-            if (weioRunnerGlobals.WEIO_SERIAL_LINKED == True):
-                weioIO.gpio.reset()
-
-        # Finally stop UPER
-        #logging.warning('Shutdown WeIO coprocessor')
-        #weioIO.stopWeio()
+            # Reset user attached elements
+            weioUserApi.attach.procs = {}
+            weioUserApi.attach.events = {}
+            weioUserApi.attach.ins = {}
 
     def userPlayer(self, fd, events):
         print "Inside userControl()"
