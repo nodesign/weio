@@ -155,24 +155,29 @@ class UserControl():
 
     def loadUserProjectMain(self):
         confFile = weio_config.getConfiguration()
-        
+
         # Get the last name of project and run it
         projectModule = confFile["user_projects_path"].replace('/', '.') + confFile["last_opened_project"].replace('/', '.') + "main"
+        print projectModule
+        
+        result = None
         
         if (self.lastCalledProjectPath == projectModule):
-            reload(self.userMain)
+            print "RELOADING"
+            result = reload(self.userMain)
         else :
+            print "NEW IMPORT"
             # Import userMain from local module
             try :
                 userMain = __import__(projectModule, fromlist=[''])
-                return userMain
+                result = userMain
             except :
                 print "MODULE CAN'T BE LOADED"
-                return None
-
-        print projectModule
+                result = None
+                
         self.lastCalledProjectPath = projectModule
-
+        return result
+        
 # User Tornado signal handler
 def signalHandler(userControl, sig, frame):
         #logging.warning('Caught signal: %s', sig)
