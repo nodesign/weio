@@ -95,7 +95,14 @@ class UserControl():
 
         if (weioIO.gpio != None):
             if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
-                weioIO.gpio.init()
+                try :
+                    weioIO.gpio = weioGpio.WeioGpio()
+
+                    # Initialize globals for the user Tornado
+                    weioRunnerGlobals.DECLARED_PINS = weioIO.gpio.declaredPins
+                except :
+                    print "LPC coprocessor is not present"
+                    weioIO.gpio = None
 
             # Launching threads
             for key in weioUserApi.attach.procs :

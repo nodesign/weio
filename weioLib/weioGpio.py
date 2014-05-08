@@ -46,9 +46,6 @@ import os
 
 class WeioGpio():
     def __init__(self):
-        self.init()
-
-    def init(self):
         self.declaredPins = []
         self.pwmPrecision = 255
 
