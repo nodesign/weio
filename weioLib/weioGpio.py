@@ -55,12 +55,12 @@ class WeioGpio():
                 self.u = IoBoard()
                 print "opened port"
                 closed = False
+                weioRunnerGlobals.WEIO_SERIAL_LINKED = True
             except IoTPy_APIError, e: # seems can't establish connection with the UPER board
                 #details = e.args[0]
                 closed = True
+                weioRunnerGlobals.WEIO_SERIAL_LINKED = False
                 #die(details)
-
-        weioRunnerGlobals.WEIO_SERIAL_LINKED = True
 
     def inputMode(self, pin, mode) :
         """Sets input mode for digitalRead purpose. Available modes are : INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP"""
@@ -118,6 +118,7 @@ class WeioGpio():
         self.u.reset()
 
     def stop(self):
+        weioRunnerGlobals.WEIO_SERIAL_LINKED = False
         self.u.stop()
 
     def stopReader(self):
