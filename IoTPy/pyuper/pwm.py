@@ -28,6 +28,7 @@ class PWM:
             if PWM_PORT_RUNNING[self.pwm_port][1] != period:
                 self.board.uper_io(0, self.board.encode_sfp(self.PWM_PORT_FUNCTIONS[self.pwm_port][0], [period]))
                 PWM_PORT_RUNNING[self.pwm_port][1] = period
+                self.PWM_PERIOD = period
         else:
             errmsg("UPER API: PWM period for port %d can be only between 0-%d" % (self.pwm_port, self.PWM_PORT_MAX[self.pwm_port]))
             raise IoTPy_APIError("PWM period is out of range.")
