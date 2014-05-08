@@ -124,6 +124,7 @@ class UserControl():
 
         if (weioIO.gpio != None):
             if (weioRunnerGlobals.WEIO_SERIAL_LINKED == True):
+                weioIO.gpio.stopReader()
                 weioIO.gpio.reset()
 
         # Reset user attached elements

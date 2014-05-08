@@ -122,3 +122,6 @@ class WeioGpio():
 
     def stop(self):
         self.u.stop()
+
+    def stopReader(self):
+        self.u.reader.stop()
