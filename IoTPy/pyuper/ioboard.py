@@ -4,8 +4,6 @@
 __version__ = "0.01"
 
 import struct
-import threading
-import Queue
 import types
 import platform
 import glob
@@ -15,7 +13,6 @@ from multiprocessing import Process, Queue
 import serial
 
 from IoTPy.pyuper.utils import errmsg, IoTPy_APIError
-
 
 """ Pin capabilities """
 CAP_RESERVED = 0x0
