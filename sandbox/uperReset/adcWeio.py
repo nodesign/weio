@@ -8,11 +8,11 @@ for i in range(0,3):
     weioIO.gpio = w
     for a in range(0,10):
         digitalWrite(19,1)
-        val = analogRead(24)
+        val = digitalRead(24)
         print val
-        delay(90)
+        delay(10)
         digitalWrite(19,0)
-        delay(90)
+        delay(10)
     w.stopReader()
     w.reset()
 

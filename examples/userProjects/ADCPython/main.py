@@ -1,12 +1,17 @@
 from weioLib.weioIO import *
-from weioLib.weioUserApi import attach, shared
+from weioLib.weioUserApi import attach
 
-
+import time
+   
 def setup() :
-    attach.process(loop)
-    
-def loop() :
+    attach.process(loopG)
+
+def loopG() :
+    print "hello"
     while True:
-        val = analogRead(25)
-        print val
-        delay(20)
+        digitalWrite(19,1)
+        val = analogRead(24)
+        print "value",val
+        time.sleep(0.01)
+        digitalWrite(19,0)
+        time.sleep(0.01)

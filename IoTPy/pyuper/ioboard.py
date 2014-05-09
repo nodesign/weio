@@ -10,6 +10,8 @@ import types
 import platform
 import glob
 
+from multiprocessing import Process, Queue
+
 import serial
 
 from IoTPy.pyuper.utils import errmsg, IoTPy_APIError
@@ -152,7 +154,8 @@ class IoBoard:
 
         self.ser = ser
         self.ser.flush()
-        self.outq = Queue.Queue()
+        #self.outq = Queue.Queue()
+        self.outq = Queue()
         self.reader = Reader(self.ser, self.outq, self.internalCallBack, self.decode_sfp)
 
         self.interrupts = [None] * 8
@@ -295,39 +298,45 @@ class IoBoard:
     def __exit__(self, exc_type, exc_value, traceback):
         self.stop()
 
-
 class Reader:
     def __init__(self, serial, outq, callback, decodefun):
         self.serial = serial
         self.outq = outq
         self.callback = callback
         self.alive = True
-        self.thread_read = threading.Thread(target=self.reader)
-        self.thread_read.setDaemon(1)
-        self.thread_read.start()
+        #self.thread_read = threading.Thread(target=self.reader)
+        #self.thread_read.setDaemon(1)
+        #self.thread_read.start()
+        self.process_read = Process(target=self.reader, args=(self.alive, self.outq, self.serial, self.callback))
+        self.process_read.start()
         self.decodefun = decodefun
 
-    def reader(self):
-        while self.alive:
+    def reader(self, alive, q, serial, callback):
+        while alive:
             try:
-                data = self.serial.read(1)            #read one, blocking
-                n = self.serial.inWaiting()           #look if there is more
+                data = serial.read(1)            #read one, blocking
+                n = serial.inWaiting()           #look if there is more
                 if n:
-                    data = data + self.serial.read(n)    #and get as much as possible
+                    data = data + serial.read(n)    #and get as much as possible
                 if data:
                     if data[3] == '\x08':
                         interrupt = self.decodefun(data)
-                        callbackthread = threading.Thread(target=self.callback, args=[interrupt[1]])
-                        callbackthread.start()
+                        callback_process = Process(target=callback, args=[interrupt[1]])
+                        callback_process.start()
+                        #callbackthread = threading.Thread(target=self.callback, args=[interrupt[1]])
+                        #callbackthread.start()
                     else:
-                        self.outq.put(data)
+                        q.put(data)
+                        #self.outq.put(data)
             except:
                 errmsg("UPER API: serial port reading error.")
                 #raise APIError("Serial port reading error.")
+                alive = False
                 break
-        self.alive = False
 
     def stop(self):
         if self.alive:
             self.alive = False
-            self.thread_read.join()
+            self.process_read.terminate()
+            self.process_read.join(0.1)
+            #self.thread_read.join()
