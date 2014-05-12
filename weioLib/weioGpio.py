@@ -49,7 +49,8 @@ class WeioGpio():
     def __init__(self):
         self.declaredPins = []
         self.pwmPrecision = 255
-
+        numberOfTries = 1000
+        cnt = 0
         closed = True
         while closed:
             try:
@@ -61,8 +62,11 @@ class WeioGpio():
                 #details = e.args[0]
                 closed = True
                 weioRunnerGlobals.WEIO_SERIAL_LINKED = False
+                cnt = cnt+1
+                if (cnt>numberOfTries):
+                    closed = False
+                    print "uper not present"
                 #die(details)
-
     def inputMode(self, pin, mode) :
         """Sets input mode for digitalRead purpose. Available modes are : INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP"""
         gpio = self.u.get_pin(GPIO, pin)

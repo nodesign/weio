@@ -98,7 +98,7 @@ def notone(pin):
     try:
         return gpio.notone(pin)
     except:
-        print "tone(", pin")"
+        print "tone(", pin, ")"
         return -1
 def constrain(self, x, a, b):
     try:
