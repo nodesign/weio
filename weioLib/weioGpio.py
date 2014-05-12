@@ -33,7 +33,7 @@
 # Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 #
 ###
-
+from time import sleep
 from IoTPy.pyuper.ioboard import IoBoard
 from IoTPy.pyuper.gpio import GPIO
 from IoTPy.pyuper.adc import ADC
@@ -41,6 +41,7 @@ from IoTPy.pyuper.pwm import PWM
 from IoTPy.pyuper.interrupt import Interrupt
 from IoTPy.pyuper.utils import IoTPy_APIError, die
 from weioLib import weioRunnerGlobals
+import signal, time
 
 import os
 
@@ -123,3 +124,33 @@ class WeioGpio():
 
     def stopReader(self):
         self.u.reader.stop()
+        
+    def tone(self, pin, frequency, duration = 0):
+        pwm = self.u.get_pin(PWM, pin)
+        if(frequency == 0):
+            frequency=1
+        val = (1.0/frequency)*1000000.0
+        pwm.period(int(val))
+        pwm.write(0.5)
+        if(duration > 0):
+            sleep(duration*0.001)
+            pwm.period(10000)
+            pwm.write(0)
+    def notone(self, pin):
+        pwm = self.u.get_pin(PWM, pin)
+        pwm.period(10000)
+        pwm.write(0)
+        
+    def constrain(self, x, a, b):
+        if(x > a):
+            if(x < b):
+                return a
+        if(x < a):
+            return a
+        if(x > b):
+            return b
+            
+    def millis(self,):
+        a = 1000*time.time()
+        return a
+        

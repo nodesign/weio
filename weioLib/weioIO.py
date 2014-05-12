@@ -86,3 +86,31 @@ def detachInterrupt(pin):
 def delay(period):
     """Delay expressed in milliseconds. Delay will block current process. Delay can be evil"""
     time.sleep(period/1000.0)
+
+def tone(pin, frequency, duration = 0):
+    try:
+        return gpio.tone(pin,frequency,duration)
+    except:
+        print "tone(", pin,",",frequency,",",duration,")"
+        return -1
+        
+def notone(pin):
+    try:
+        return gpio.notone(pin)
+    except:
+        print "tone(", pin")"
+        return -1
+def constrain(self, x, a, b):
+    try:
+        return gpio.constrain(x,a,b)
+    except:
+        print "constrain(", x,",",a,",",b,")"
+        return -1
+        
+def millis():
+    try:
+        return gpio.millis()
+    except:
+        print "millis()"
+        return -1
+
