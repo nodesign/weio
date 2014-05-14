@@ -55,6 +55,13 @@ def analogRead(pin) :
         print "analogRead(", pin,")"
         return -1
 
+def setPwmPeriod(pin, period):
+    try:
+        return gpio.setPwmPeriod(pin, period)
+    except:
+        print "setPwmPeriod(", pin,",",period,")"
+        return -1
+
 def pwmWrite(pin, value) :
     try:
         return gpio.pwmWrite(pin, value)
