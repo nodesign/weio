@@ -4,6 +4,7 @@ from tornado import web, ioloop, options, websocket
 import sys,os,logging, platform, json, signal, datetime
 
 import multiprocessing
+import threading
 
 import functools
 import subprocess
@@ -33,6 +34,9 @@ from weioLib import weioIO
 
 import time
 
+
+WEIO_SHARED = None
+
 ###
 # HTTP SERVER HANDLER
 ###
@@ -53,11 +57,24 @@ class WeioIndexHandler(web.RequestHandler):
         self.render(path, error="")
 
 
+
+class WeioShared():
+    def __init__(self, qin, qout, value, array):
+        # Create parent-child message queues
+        self.qin = qout
+        self.qout = qin
+        self.value = value
+        self.array = array
+        self.i = 10
+        self.s = "OSCON"
+
+
 ###
 # WeIO User Even Handler
 ###
 class UserControl():
-    def __init__(self):
+    def __init__(self, weioShared):
+        self.weioShared = weioShared
         self.errLine = 0
         self.errObject = []
         self.errReason = ""
@@ -73,7 +90,7 @@ class UserControl():
         self.playing = False
 
         # User Project main module (main.py)
-        self.userMain = self.loadUserProjectMain()
+        self.userMain = None
 
         # List of user processes
         self.userProcessList = []
@@ -107,7 +124,7 @@ class UserControl():
             # Launching threads
             for key in weioUserApi.attach.procs :
                 print key
-                p = multiprocessing.Process(target=weioUserApi.attach.procs[key].procFnc, args=weioUserApi.attach.procs[key].procArgs)
+                p = multiprocessing.Process(target=weioUserApi.attach.procs[key].procFnc, args=(self.weioShared,))
                 p.daemon = True
                 # Add it to the global list of user processes
                 self.userProcessList.append(p)
@@ -165,26 +182,22 @@ class UserControl():
         confFile = weio_config.getConfiguration()
 
         # Get the last name of project and run it
-        projectModule = confFile["user_projects_path"].replace('/', '.') + confFile["last_opened_project"].replace('/', '.') + "main"
+        projectModule = confFile["user_projects_path"].replace('/', '.') + \
+                            confFile["last_opened_project"].replace('/', '.') + "main"
         print projectModule
-        
-        result = None
         
         if (self.lastCalledProjectPath == projectModule):
             print "RELOADING"
-            result = reload(self.userMain)
+            self.userMain = reload(self.userMain)
         else :
             print "NEW IMPORT"
             # Import userMain from local module
             try :
-                userMain = __import__(projectModule, fromlist=[''])
-                result = userMain
+                self.userMain = __import__(projectModule, fromlist=[''])
             except :
                 print "MODULE CAN'T BE LOADED"
-                result = None
                 
         self.lastCalledProjectPath = projectModule
-        return result
         
 # User Tornado signal handler
 def signalHandler(userControl, sig, frame):
@@ -196,7 +209,21 @@ def signalHandler(userControl, sig, frame):
         sys.exit(0)
 
 
+def userListener(qin):
+    """thread worker function"""
+    print "*************** USER LISTENER STARTED"
+    while True:
+        print "UL: Try to get message"
+        msg = qin.get()
+        print "UL: Got message"
+        WEIO_SHARED.value.value = 10
+        print msg
+    return
+
+
+
 if __name__ == '__main__':
+    global WEIO_SHARED
     ###
     # Initialize global USER API instances
     ###
@@ -236,8 +263,25 @@ if __name__ == '__main__':
         print "LPC coprocessor is not present"
         weioIO.gpio = None
 
+    # Create parent-child message queues
+    qin = multiprocessing.Queue()
+    qout = multiprocessing.Queue()
+
+    # Create shared variable and array
+    val = multiprocessing.Value('d', 15)
+    arr = multiprocessing.Array('i', range(16))
+
+    # Create a weioShared object
+    weioShared = WeioShared(qin, qout, val, arr)
+    WEIO_SHARED = weioShared
+
+    # Fire up a message listener thread
+    t = threading.Thread(target=userListener, args=(qin, ))
+    t.setDaemon(True)
+    t.start()
+
     # Create a userControl object
-    userControl = UserControl()
+    userControl = UserControl(weioShared)
 
     # Install signal handlers
     signalCallback = functools.partial(signalHandler, userControl)
@@ -249,6 +293,12 @@ if __name__ == '__main__':
 
     # Add user control via stdin pipe
     ioloop.add_handler(sys.stdin.fileno(), userControl.userPlayer, ioloop.READ)
+
+    userMain = userControl.loadUserProjectMain()
+    userControl.userMain.setup()
+    userControl.start()
+
+
 
     # Before starting ioloop, stop led blinking,
     # which will light up correct LED and give information to the user
