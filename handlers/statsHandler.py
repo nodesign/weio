@@ -46,6 +46,7 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 
 from weioLib import weioTopStats
 from weioLib import weioUnblock
+from weioLib import weioIO
 
 
 import functools
@@ -94,6 +95,8 @@ class WeioStatsHandler(SockJSConnection):
             cpuSystem = int(cpuData[0][3].split("%")[0])
             cpuIdle = int(cpuData[0][7].split("%")[0])
             
+            temperature = int(weioIO.getTemperature())
+            
             # test only ...
             dd = random.randint(1, 99)
             rr = 100-dd
@@ -103,16 +106,16 @@ class WeioStatsHandler(SockJSConnection):
             flash = { "free" : dd, "used":rr }
             
             data['requested'] = rq
-            data['data'] = {"cpu" : cpu, "ram" : ram, "flash" : flash}
+            data['data'] = {"cpu" : cpu, "ram" : ram, "flash" : flash, "temperature": temperature}
         
         else :
             
             cpuRamData = weioTopStats.getTop()
             flashData = weioTopStats.getSpaceUsage("/")
-            
+            temperature = int(weioIO.getTemperature())
             
             data['requested'] = rq
-            data['data'] = {"cpu" : cpuRamData["cpu"], "ram" : cpuRamData["mem"], "flash" : flashData}
+            data['data'] = {"cpu" : cpuRamData["cpu"], "ram" : cpuRamData["mem"], "flash" : flashData, "temperature": temperature}
         
         self.send(json.dumps(data))
 

@@ -40,6 +40,7 @@ var statSocket;
 var cpuViz;
 var ramViz;
 var flashViz;
+var tempViz;
 
 var serverProcessRunning = false;
 
@@ -82,6 +83,7 @@ $(document).ready(function () {
 	cpuViz = new Chart(document.getElementById("cpuViz").getContext("2d"));
     ramViz = new Chart(document.getElementById("ramViz").getContext("2d"));
     flashViz = new Chart(document.getElementById("flashViz").getContext("2d"));
+    tempViz = new Chart(document.getElementById("tempViz").getContext("2d"));
                   
      /*
      * SockJS object, Web socket
@@ -135,11 +137,13 @@ function updateDataViz(data) {
     var cpu = data.data.cpu;
     var ram = data.data.ram;
     var flash = data.data.flash;
+    var temperature = data.data.temperature;
     //console.log(cpu, " " , ram, " ", flash);
     
     var cpuData = getCpu(cpu);
     var ramData = getRam(ram);
     var flashData = getFlash(flash);
+    var tempData = getTemperature(temperature)
 
 
     $("#cpuUser").html(cpu.user + "%");
@@ -152,6 +156,8 @@ function updateDataViz(data) {
     $("#flashUsed").html(flash.used + "Mb");
     $("#flashFree").html(flash.free + "Mb");
     
+    $("#temperature").html(temperature + "°C");
+    
    
     cpuViz.Doughnut(cpuData, defs);
     // Call this only one in previous objet otherwise it will create 3 separate calls on server
@@ -159,7 +165,7 @@ function updateDataViz(data) {
     
     ramViz.Doughnut(ramData, defs);
     flashViz.Doughnut(flashData, defs);
-    
+    tempViz.Doughnut(tempData, defs);
 }
 
 
@@ -213,6 +219,24 @@ function getFlash(flash) {
     ];
     return flashData;
 }
+
+function getTemperature(t) {
+    
+    var temp = [
+    // CPU
+    {
+    value: t,
+    color : "#f85c32"
+    },
+    {
+    value : 60-t,
+    color : "#383838"
+    }
+    ];
+
+    return temp;
+}
+
 
 
 function animateDataViz(data) {
