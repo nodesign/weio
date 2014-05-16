@@ -34,9 +34,6 @@ from weioLib import weioIO
 
 import time
 
-
-WEIO_SHARED = None
-
 ###
 # HTTP SERVER HANDLER
 ###
@@ -57,24 +54,11 @@ class WeioIndexHandler(web.RequestHandler):
         self.render(path, error="")
 
 
-
-class WeioShared():
-    def __init__(self, qin, qout, value, array):
-        # Create parent-child message queues
-        self.qin = qout
-        self.qout = qin
-        self.value = value
-        self.array = array
-        self.i = 10
-        self.s = "OSCON"
-
-
 ###
 # WeIO User Even Handler
 ###
 class UserControl():
-    def __init__(self, weioShared):
-        self.weioShared = weioShared
+    def __init__(self):
         self.errLine = 0
         self.errObject = []
         self.errReason = ""
@@ -124,7 +108,8 @@ class UserControl():
             # Launching threads
             for key in weioUserApi.attach.procs :
                 print key
-                p = multiprocessing.Process(target=weioUserApi.attach.procs[key].procFnc, args=(self.weioShared,))
+                p = multiprocessing.Process(target=weioUserApi.attach.procs[key].procFnc,
+                            args=(weioRunnerGlobals.WEIO_SHARED,))
                 p.daemon = True
                 # Add it to the global list of user processes
                 self.userProcessList.append(p)
@@ -182,8 +167,11 @@ class UserControl():
         confFile = weio_config.getConfiguration()
 
         # Get the last name of project and run it
-        projectModule = confFile["user_projects_path"].replace('/', '.') + \
-                            confFile["last_opened_project"].replace('/', '.') + "main"
+        #projectModule = confFile["user_projects_path"].replace('/', '.') + \
+        #                    confFile["last_opened_project"].replace('/', '.') + "main"
+
+
+        projectModule = confFile["last_opened_project"].replace('/', '.') + "main"
         print projectModule
         
         if (self.lastCalledProjectPath == projectModule):
@@ -209,21 +197,49 @@ def signalHandler(userControl, sig, frame):
         sys.exit(0)
 
 
-def userListener(qin):
+
+###
+# Shared variables between all the processes
+###
+class WeioShared():
+    def __init__(self):
+        # Create parent-child message queues
+        self.qin = multiprocessing.Queue()
+        self.qout = multiprocessing.Queue()
+
+        # Create shared variable and array
+        self.val = multiprocessing.Value('d', 15)
+        self.arr = multiprocessing.Array('i', 256)
+
+        # Arrays of UIDs for connections
+        self.uids = multiprocessing.Array('I', 256)
+        self.uidNb = multiprocessing.Value('I', 0)
+
+    def addClient(self, uid):
+        """ N.B.
+            This function is to be called by the weioRunner ONLY
+            i.e. NOT from the user processes """
+        self.uids[self.uidNb.value] = uid
+        self.uidNb.value = self.uidNb.value + 1
+
+
+def userListener():
     """thread worker function"""
     print "*************** USER LISTENER STARTED"
+    qin = weioRunnerGlobals.WEIO_SHARED.qout
     while True:
         print "UL: Try to get message"
         msg = qin.get()
         print "UL: Got message"
-        WEIO_SHARED.value.value = 10
+        print "UID = " + str(msg.uid)
+        print "MESSAGE = " + msg.msg
+        weioRunnerGlobals.WEIO_SHARED.val.value = 10
         print msg
     return
 
 
 
 if __name__ == '__main__':
-    global WEIO_SHARED
     ###
     # Initialize global USER API instances
     ###
@@ -263,25 +279,16 @@ if __name__ == '__main__':
         print "LPC coprocessor is not present"
         weioIO.gpio = None
 
-    # Create parent-child message queues
-    qin = multiprocessing.Queue()
-    qout = multiprocessing.Queue()
-
-    # Create shared variable and array
-    val = multiprocessing.Value('d', 15)
-    arr = multiprocessing.Array('i', range(16))
-
     # Create a weioShared object
-    weioShared = WeioShared(qin, qout, val, arr)
-    WEIO_SHARED = weioShared
+    weioRunnerGlobals.WEIO_SHARED = WeioShared()
 
     # Fire up a message listener thread
-    t = threading.Thread(target=userListener, args=(qin, ))
+    t = threading.Thread(target=userListener)
     t.setDaemon(True)
     t.start()
 
     # Create a userControl object
-    userControl = UserControl(weioShared)
+    userControl = UserControl()
 
     # Install signal handlers
     signalCallback = functools.partial(signalHandler, userControl)

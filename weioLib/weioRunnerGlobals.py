@@ -40,6 +40,11 @@ DECLARED_PINS = None
 # If serial connection is opened for coprocessor
 WEIO_SERIAL_LINKED = False
 
-# Connected clients
-weioConnections = set()
+# Connected clients: dictionary {uid, connection}
+WEIO_CONNECTIONS = {}
+
+
+# Shared object between all the processes.
+# Holds only multiprocessing shared types
+WEIO_SHARED = None
 

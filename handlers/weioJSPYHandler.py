@@ -10,11 +10,11 @@ from weioLib import weioRunnerGlobals
 class WeioHandler(SockJSConnection):
     def __init__(self, *args, **kwargs):
         SockJSConnection.__init__(self, *args, **kwargs)
-        self.connections = weioRunnerGlobals.weioConnections
+        self.connections = weioRunnerGlobals.WEIO_CONNECTIONS
 
     def on_open(self, data):
         # Add client to the clients list
-        self.connections.add(self)
+        #self.connections.add(self)
 
         # collect client ip address and user machine info
         # print self.request to see all available info on user connection
@@ -62,6 +62,15 @@ class WeioHandler(SockJSConnection):
                         self.send(json.dumps(result))
                     except:
                         self.connection_closed = True
+        elif (command == "weioStoreUID"):
+            # Client is announcing iit's UID - store it's connection
+            uid = data["data"]
+            self.connections[uid] = self
+
+            # Update shared UIDs array to be visible in all processes
+            weioRunnerGlobals.WEIO_SHARED.addClient(uid)
+
+
 
     def on_close(self):
         self.connection_closed = True
