@@ -41,6 +41,42 @@ import platform
 # WeIO API bindings from websocket to lower levels
 # Each data argument is array of data
 # Return value is dictionary
+
+def callMillis(data) :
+    bck = {}
+    value = millis() 
+    print "millis =",value
+    bck["data"] = value
+    return bck
+    
+def callConstrain(data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        constrain(data[0], data[1], data[2],)
+        bck["data"] = value
+    else :
+        print "contrain ON PC", data
+        bck["data"] = 1 # faked value
+    bck["pin"] = data[0] # pin
+    return bck
+
+def callNotone(data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        notone(data[0])
+    else :
+        print "notone ON PC", data
+    return None
+
+def callTone(data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        print "TONE VALS", len(data)
+        if (len(data)==2):
+            tone(data[0], data[1])
+        elif (len(data)==3):
+            tone(data[0], data[1], data[2])
+    else :
+        print "tone ON PC", data
+    return None
+    
 def callDigitalWrite(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         digitalWrite(data[0], data[1])
@@ -113,6 +149,13 @@ def callDetachInterrupt(data) :
         print "detachInterrupt ON PC", data
     return None
 
+def callGetTemperature(data):
+    bck = {}
+    value = lm75.getTemperature() # this is pin number
+    print "temperature =",value
+    bck["data"] = value
+    return bck
+
 def genericInterrupt(data):
     #type = data["type"]
     #data = {}
@@ -142,5 +185,11 @@ weioSpells = {
     "setPwmLimit":callSetPwmLimit,
     "attachInterrupt":callAttachInterrupt,
     "detachInterrupt":callDetachInterrupt,
-    "pinsInfo": pinsInfo
+    "pinsInfo": pinsInfo,
+    "getTemperature": callGetTemperature,
+    "tone": callTone,
+    "notone": callNotone,
+    "constrain":callConstrain,
+    "millis":callMillis
+    
 }

@@ -58,9 +58,9 @@ $(document).ready(function() {
     _addr = location.host;
     if (_addr.indexOf(":")!=-1) {
         var a = _addr.split(":");
-        _addr = 'http://' + a[0] + ':8082/api';
+        _addr = 'http://' + a[0] + '/api';
     } else {
-        var a = 'http://' + _addr + ':8082/api';
+        var a = 'http://' + _addr + '/api';
         //var a = 'http://' + _addr + '/api';
         _addr = a;
     }
@@ -192,8 +192,39 @@ function isWeioReady() {
 /* 
  * Low level electronics instructions from JS
  */
+function millis(callback) {
+    console.log("millis");
+ 	var fName = callback.name;
+	weioCallbacks[fName] = callback
+	genericMessage("millis", fName);
+};
+
+function constrain(x, a, b, callback) {
+    // create new callback call
+    var fName = callback.name;
+    //console.log("callback name:" + fName);
+    // add callback function to be called when data arrives
+    weioCallbacks[fName] = callback
+  
+	genericMessage("constrain", [x,a,b], fName);
+};
+
+function tone(pin, frequency, duration) {
+    if(typeof duration !== "undefined"){
+    	genericMessage("tone", [pin,frequency,duration], null);
+    }
+	else{
+		genericMessage("tone", [pin,frequency], null);
+	}
+};
+
+
+function notone(pin) {
+	genericMessage("notone", [pin], null);
+};
+
 function digitalWrite(pin, value) {
-  genericMessage("digitalWrite", [pin,value], null);
+	genericMessage("digitalWrite", [pin,value], null);
 };
 
 function analogRead(pin, callback) { 
@@ -212,6 +243,15 @@ function digitalRead(pin, callback) {
     //console.log("callback name:" + fName);
     weioCallbacks[fName] = callback
     genericMessage("digitalRead", [pin],fName);
+}
+
+function getTemperature(callback) {
+     console.log("temperature");
+	 var fName = callback.name;
+	 weioCallbacks[fName] = callback
+	 genericMessage("getTemperature", fName);
+		
+	
 }
 
 function inputMode(pin, mode) {
