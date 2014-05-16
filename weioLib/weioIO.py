@@ -1,5 +1,6 @@
 import platform
 import time
+from weioLib.weioLm75 import WeioLm75
 from IoTPy.pyuper.gpio import GPIO
 ###
 # Global interface
@@ -7,6 +8,7 @@ from IoTPy.pyuper.gpio import GPIO
 # Shared gpio object over all classes inside project
 # There cannot be two instances of WeioGpio
 gpio = None
+lm75 = WeioLm75()
 
 PULL_UP = GPIO.PULL_UP 
 PULL_DOWN = GPIO.PULL_DOWN
@@ -115,9 +117,7 @@ def constrain(self, x, a, b):
         return -1
         
 def millis():
-    try:
-        return gpio.millis()
-    except:
-        print "millis()"
-        return -1
+    return gpio.millis()
 
+def getTemperature():
+    return lm75.getTemperature()
