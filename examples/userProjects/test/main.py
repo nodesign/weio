@@ -1,29 +1,24 @@
 from weioLib.weioIO import *
-from weioLib.weioUserApi import attach
+from weioLib.weioUserApi import attach, weioShared, clientSend
 
-class ClientMessage():
-    def __init__(self):
-        self.uid = None
-        self.msg = ""
+
 
 def setup() :
     attach.process(loop)
     
-def loop(weioShared) :
+def loop() :
     print "HELLO!!!"
     #print weioShared.i
     #print weioShared.s
 
-    print "USER: " + str(weioShared.val.value)
+    weioShared.setVal(0, 22)
+    print "USER: " + str(weioShared.getVal(0))
 
-    msg = ClientMessage()
-    msg.uid = 100
-    msg.msg = "HELLO THERE"
-    weioShared.qout.put(msg)
+    clientSend(100, "HOHOHOHOHOHO")
 
     time.sleep(1)
 
-    print "USER: " + str(weioShared.val.value)
+    print "USER: " + str(weioShared.getVal(0))
 
     #weioShared.qout.put("SET VALUE TO 2")
     #print "USER: " + str(weioShared.value.value)

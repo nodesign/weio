@@ -108,8 +108,7 @@ class UserControl():
             # Launching threads
             for key in weioUserApi.attach.procs :
                 print key
-                p = multiprocessing.Process(target=weioUserApi.attach.procs[key].procFnc,
-                            args=(weioRunnerGlobals.WEIO_SHARED,))
+                p = multiprocessing.Process(target=weioUserApi.attach.procs[key].procFnc)
                 p.daemon = True
                 # Add it to the global list of user processes
                 self.userProcessList.append(p)
@@ -177,7 +176,7 @@ class UserControl():
         if (self.lastCalledProjectPath == projectModule):
             print "RELOADING"
             self.userMain = reload(self.userMain)
-        else :
+        else:
             print "NEW IMPORT"
             # Import userMain from local module
             try :
@@ -215,6 +214,12 @@ class WeioShared():
         self.uids = multiprocessing.Array('I', 256)
         self.uidNb = multiprocessing.Value('I', 0)
 
+    def setVal(self, idx, val):
+        self.arr[idx] = val
+
+    def getVal(self, idx):
+        return self.arr[idx]
+
     def addClient(self, uid):
         """ N.B.
             This function is to be called by the weioRunner ONLY
@@ -233,20 +238,13 @@ def userListener():
         print "UL: Got message"
         print "UID = " + str(msg.uid)
         print "MESSAGE = " + msg.msg
-        weioRunnerGlobals.WEIO_SHARED.val.value = 10
+        weioRunnerGlobals.WEIO_SHARED.setVal(0, 10)
         print msg
     return
 
 
 
 if __name__ == '__main__':
-    ###
-    # Initialize global USER API instances
-    ###
-    weioUserApi.attach =  weioUserApi.WeioAttach()
-    weioUserApi.shared =  weioUserApi.WeioSharedVar()
-    weioUserApi.console =  weioUserApi.WeioPrint()
-
     confFile = weio_config.getConfiguration()
     # set python working directory
     #os.chdir("userFiles/"+sys.argv[1])
@@ -300,6 +298,14 @@ if __name__ == '__main__':
 
     # Add user control via stdin pipe
     ioloop.add_handler(sys.stdin.fileno(), userControl.userPlayer, ioloop.READ)
+
+    ###
+    # Initialize global USER API instances
+    ###
+    weioUserApi.attach =  weioUserApi.WeioAttach()
+    weioUserApi.console =  weioUserApi.WeioPrint()
+    weioUserApi.weioShared = weioRunnerGlobals.WEIO_SHARED
+    ###
 
     userMain = userControl.loadUserProjectMain()
     userControl.userMain.setup()

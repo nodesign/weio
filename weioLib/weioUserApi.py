@@ -146,10 +146,6 @@ class WeioPrint():
         else:
             sys.stdout.flush()
 
-
-class WeioSharedVar(object):
-    pass
-
 class WeioApiProcess():
     def __init__ (self, procFnc, procArgs) :
         self.procFnc = procFnc
@@ -191,15 +187,35 @@ class WeioClient():
         self.connection = connection
 
 ###
-# Global instances
+# Msg object that will be put to msg queue and sent to User Tornado
+###
+class WeioClientMessage():
+    def __init__(self):
+        self.uid = None
+        self.msg = ""
+
+###
+# Global instances inherited from User Tornado (have to be intialized by User Tornado)
 ###
 attach = None
-shared = None
 console = None
+weioShared = None
 
-#attach = WeioAttach()
-#shared = WeioSharedVar()
-#console = WeioPrint()
+###
+# Global instances for this process only (do not have to be initialized by User Tornado)
+###
+clientMsg = WeioClientMessage()
 
-gpio = None
+###
+# Global functions that use these instances
+###
+def clientSend(uid, msg):
+    if (weioShared != None and clientMsg != None):
+        clientMsg.uid = uid
+        clientMsg.msg = msg
+        weioShared.qout.put(clientMsg)
+    else:
+        print("Can not send message to the client")
+
+
 
