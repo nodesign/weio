@@ -47,7 +47,7 @@ from subprocess import Popen, PIPE
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
 from weioLib import weioFiles
-from weioLib import weio_config
+from weioLib import weioConfig
 from weioLib import weioAvahi
 from weioLib import weioIpAddress
 
@@ -79,10 +79,10 @@ class WeioFirstTimeHandler(SockJSConnection):
         
         data = {}
         if (fullName!="" and passwd!="" and dnsName!=""):
-            confFile = weio_config.getConfiguration()
+            confFile = weioConfig.getConfiguration()
             # OK now is time to setup username and password
             confFile['user'] = fullName
-            weio_config.saveConfiguration(confFile)
+            weioConfig.saveConfiguration(confFile)
             
             output = "OK PASSWD"
             #echo -e "weio\nweio" | passwd
@@ -100,12 +100,12 @@ class WeioFirstTimeHandler(SockJSConnection):
                     
                     firstTimeSwitch = "NO"
                     confFile['first_time_run']=firstTimeSwitch
-                    weio_config.saveConfiguration(confFile)
+                    weioConfig.saveConfiguration(confFile)
                 else :
                     print command
                     firstTimeSwitch = "NO"
                     confFile['first_time_run']=firstTimeSwitch
-                    weio_config.saveConfiguration(confFile)
+                    weioConfig.saveConfiguration(confFile)
             except :
                 print("Comand ERROR : " + str(output) + " " + command)
                 output = "ERR_CMD"

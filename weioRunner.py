@@ -15,7 +15,7 @@ from weioLib import weioIO
 from handlers.weioJSPYHandler import WeioHandler
 
 # IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
-from weioLib import weio_config
+from weioLib import weioConfig
 
 # IMPORT WEIO FILE SUPPORT
 from weioLib import weioFiles
@@ -162,7 +162,7 @@ class UserControl():
             self.stop()
 
     def loadUserProjectMain(self):
-        confFile = weio_config.getConfiguration()
+        confFile = weioConfig.getConfiguration()
 
         # Get the last name of project and run it
         projectModule = confFile["user_projects_path"].replace('/', '.') + confFile["last_opened_project"].replace('/', '.') + "main"
@@ -204,7 +204,7 @@ if __name__ == '__main__':
     weioUserApi.shared =  weioUserApi.WeioSharedVar()
     weioUserApi.console =  weioUserApi.WeioPrint()
 
-    confFile = weio_config.getConfiguration()
+    confFile = weioConfig.getConfiguration()
     # set python working directory
     #os.chdir("userFiles/"+sys.argv[1])
     myPort = confFile["userAppPort"]

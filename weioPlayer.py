@@ -39,7 +39,7 @@ import os, signal, sys, platform, subprocess, datetime
 import functools
 
 import json
-from weioLib import weio_config
+from weioLib import weioConfig
 from weioLib import weioFiles
 
 # Import globals for main Tornado
@@ -112,7 +112,7 @@ class WeioPlayer():
             to the client via WebSockets. """
 
         # get configuration from file
-        config = weio_config.getConfiguration()
+        config = weioConfig.getConfiguration()
 
         # stop if process is already running
         self.stop()

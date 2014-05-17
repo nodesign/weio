@@ -52,7 +52,7 @@ from handlers import editorHandler #, WeioEditorStopHandler, WeioEditorPlayHandl
 #from weioLib import weioAPIbridgeHandler
 
 # IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
-from weioLib import weio_config
+from weioLib import weioConfig
 
 #IMPORT DASHBOARD HANDLER
 from handlers import dashboardHandler
@@ -94,7 +94,7 @@ class WeioEditorWebHandler(loginHandlers.BaseHandler):
     def get(self):
         global confFile
         global firstTimeSwitch
-        confFile = weio_config.getConfiguration()
+        confFile = weioConfig.getConfiguration()
         firstTimeSwitch = confFile['first_time_run']
 
         if (firstTimeSwitch=="YES") :
@@ -127,11 +127,11 @@ if __name__ == '__main__':
     global wifiButtons
     global wifiPeriodicCheck
 
-    confFile = weio_config.getConfiguration()
+    confFile = weioConfig.getConfiguration()
 
     # put absolut path in conf, needed for local testing on PC
     confFile['absolut_root_path'] = os.path.abspath(".")
-    weio_config.saveConfiguration(confFile)
+    weioConfig.saveConfiguration(confFile)
     firstTimeSwitch = confFile['first_time_run']
 
     # scan for changes and make links if necessary

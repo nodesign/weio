@@ -49,7 +49,7 @@ from weioLib import weioFiles
 from shutil import copyfile, copytree
 
 # IMPORT BASIC CONFIGURATION FILE
-from weioLib import weio_config
+from weioLib import weioConfig
 
 # Import globals for main Tornado
 from weioLib import weioIdeGlobals
@@ -79,7 +79,7 @@ class WeioDashBoardHandler(SockJSConnection):
     def sendIp(self,rq):
 
         # get configuration from file
-        config = weio_config.getConfiguration()
+        config = weioConfig.getConfiguration()
 
         data = {}
         ip = weioIpAddress.getLocalIpAddress()
@@ -92,7 +92,7 @@ class WeioDashBoardHandler(SockJSConnection):
     def sendLastProjectName(self,rq):
 
         # get configuration from file
-        config = weio_config.getConfiguration()
+        config = weioConfig.getConfiguration()
 
         data = {}
         data['requested'] = rq['request']
@@ -117,7 +117,7 @@ class WeioDashBoardHandler(SockJSConnection):
 
     def sendPlatformDetails(self, rq):
         # get configuration from file
-        config = weio_config.getConfiguration()
+        config = weioConfig.getConfiguration()
 
         data = {}
 
@@ -133,7 +133,7 @@ class WeioDashBoardHandler(SockJSConnection):
     def getUserProjectsList(self, rq):
 
         # get configuration from file
-        config = weio_config.getConfiguration()
+        config = weioConfig.getConfiguration()
 
         data = {}
         data['requested'] = rq['request']
@@ -158,10 +158,10 @@ class WeioDashBoardHandler(SockJSConnection):
         #print "CHANGE PROJECT", rq
         # get configuration from file
         print "TO CHANGE ", rq
-        config = weio_config.getConfiguration()
+        config = weioConfig.getConfiguration()
         # TODO add directories logic for examples, flash & sd card
         config["last_opened_project"] = rq['data']+"/"
-        weio_config.saveConfiguration(config);
+        weioConfig.saveConfiguration(config);
 
         data = {}
         data['requested'] = rq['request']
@@ -177,14 +177,14 @@ class WeioDashBoardHandler(SockJSConnection):
     def sendUserData(self,rq):
         data = {}
         # get configuration from file
-        config = weio_config.getConfiguration()
+        config = weioConfig.getConfiguration()
         data['requested'] = rq['request']
 
         data['name'] = config["user"]
         self.send(json.dumps(data))
 
     def newProject(self, rq):
-        config = weio_config.getConfiguration()
+        config = weioConfig.getConfiguration()
         #print "NEW PROJECT", rq
         data = {}
         data['requested'] = rq['request']
@@ -206,7 +206,7 @@ class WeioDashBoardHandler(SockJSConnection):
         self.send(json.dumps(data))
 
     def duplicateProject(self, rq):
-        config = weio_config.getConfiguration()
+        config = weioConfig.getConfiguration()
 
         path = rq['storageUnit'] + "/userProjects/" + rq['path']
 
@@ -231,7 +231,7 @@ class WeioDashBoardHandler(SockJSConnection):
         data = {}
         data['requested'] = rq['request']
 
-        config = weio_config.getConfiguration()
+        config = weioConfig.getConfiguration()
         projectToKill = config["last_opened_project"]
 
         print "PROJECT TO KILL ", projectToKill
@@ -242,7 +242,7 @@ class WeioDashBoardHandler(SockJSConnection):
 
         if len(folders) > 0 :
          config["last_opened_project"] = folders[0]
-         weio_config.saveConfiguration(config)
+         weioConfig.saveConfiguration(config)
 
          data['data'] = "reload page"
         else :
@@ -271,7 +271,7 @@ class WeioDashBoardHandler(SockJSConnection):
     def createTarForProject(self, rq):
         # TEST IF NAME IS OK FIRST
         # get configuration from file
-        config = weio_config.getConfiguration()
+        config = weioConfig.getConfiguration()
         data = {}
         data['requested'] = "status"
         data['status'] = "Making archive..."
@@ -301,7 +301,7 @@ class WeioDashBoardHandler(SockJSConnection):
         #print contents
 
         # get configuration from file
-        confFile = weio_config.getConfiguration()
+        confFile = weioConfig.getConfiguration()
         pathCurrentProject = confFile["user_projects_path"] + storageUnit
 
         projectName = name.split(".tar")[0]

@@ -53,19 +53,19 @@ def saveConfiguration(conf):
     
  
 #example & test configuration 
-# weio_config = {}
-# weio_config['user_projects_path'] = 'userProjects/'
-# weio_config['last_opened_project'] = 'myFirstProject/'
-# weio_config['last_opened_files'] = ['index.html', 'weioMain.py']
-# weio_config['editor_html_path'] = 'editor/editor.html'
-# weio_config['preview_html_path'] = 'preview/preview.html'
-# weio_config['dependencies_path'] = 'clientDependencies'
-# weio_config['weio_lib_path'] = 'weioLib'
-# weio_config['absolut_root_path'] = '/tmp/weio'
-# weio_config['port'] = 8081
-# weio_config['ip'] = '0.0.0.0'
+# weioConfig = {}
+# weioConfig['user_projects_path'] = 'userProjects/'
+# weioConfig['last_opened_project'] = 'myFirstProject/'
+# weioConfig['last_opened_files'] = ['index.html', 'weioMain.py']
+# weioConfig['editor_html_path'] = 'editor/editor.html'
+# weioConfig['preview_html_path'] = 'preview/preview.html'
+# weioConfig['dependencies_path'] = 'clientDependencies'
+# weioConfig['weio_lib_path'] = 'weioLib'
+# weioConfig['absolut_root_path'] = '/tmp/weio'
+# weioConfig['port'] = 8081
+# weioConfig['ip'] = '0.0.0.0'
 # 
 # # 
-# saveConfiguration(weio_config)
+# saveConfiguration(weioConfig)
 # a = getConfiguration()
 # print a['user_projects_path']

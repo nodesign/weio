@@ -45,7 +45,7 @@ sys.path.append(r'./');
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
 from weioLib import weioFiles
-from weioLib import weio_config
+from weioLib import weioConfig
 from weioLib import weioIdeGlobals
 
 import functools
@@ -93,7 +93,7 @@ class WeioUpdaterHandler(SockJSConnection):
             global currentWeioConfigurator
             
             self.distantJsonUpdater = json.loads(str(response.body))
-            currentWeioConfigurator = weio_config.getConfiguration()
+            currentWeioConfigurator = weioConfig.getConfiguration()
 
             print "My software version " + \
                 currentWeioConfigurator["weio_version"] + \
@@ -163,7 +163,7 @@ class WeioUpdaterHandler(SockJSConnection):
             print "Setting kill flag to YES in current config.weio"
             print "Now I'm ready to exit Tornado and install new version"
             currentWeioConfigurator["kill_flag"] = "YES"
-            weio_config.saveConfiguration(currentWeioConfigurator)
+            weioConfig.saveConfiguration(currentWeioConfigurator)
             #self.progressInfo("81%", "WeIO installing")
             # Now quit Tornado and leave script to do his job
             exit()

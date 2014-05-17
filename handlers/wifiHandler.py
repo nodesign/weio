@@ -45,7 +45,6 @@ sys.path.append(r'./');
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
 from weioLib import weioFiles
-from weioLib import weio_config
 from weioLib import weioUnblock
 
 # Import globals for main Tornado

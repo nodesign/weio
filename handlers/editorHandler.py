@@ -47,7 +47,7 @@ from weioLib import weioFiles
 from weioLib import weioUnblock
 
 # IMPORT BASIC CONFIGURATION FILE 
-from weioLib import weio_config
+from weioLib import weioConfig
 
 # Wifi detection route handler  
 class WeioEditorHandler(SockJSConnection):
@@ -60,7 +60,7 @@ class WeioEditorHandler(SockJSConnection):
     def getTreeInHTML(self,rq):
         
         # get configuration from file
-        config = weio_config.getConfiguration()
+        config = weioConfig.getConfiguration()
         
         data = {}
         data['requested'] = rq['request']
@@ -150,7 +150,7 @@ class WeioEditorHandler(SockJSConnection):
         contents = f['data']
         
         # get configuration from file
-        confFile = weio_config.getConfiguration()
+        confFile = weioConfig.getConfiguration()
         pathCurrentProject = confFile["user_projects_path"] + confFile["last_opened_project"]
         
         
@@ -207,7 +207,7 @@ class WeioEditorHandler(SockJSConnection):
     def sendPlatformDetails(self, rq):
         
         # get configuration from file
-        config = weio_config.getConfiguration()
+        config = weioConfig.getConfiguration()
         
         data = {}
         

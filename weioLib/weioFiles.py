@@ -35,7 +35,7 @@
 ###
 
 
-import weio_config
+import weioConfig
 from collections import namedtuple
 import shutil
 
@@ -112,7 +112,7 @@ def tree(dir, padding, print_files=True):
             if ((file != ".DS_Store") and (".pyc" not in file) and (file != "__init__.py")) :
                 fullpath =  "'" + dir + file + "'"
                 if (".tar" in file):
-                    confFile = weio_config.getConfiguration()
+                    confFile = weioConfig.getConfiguration()
                     projectName = "userFiles/"+confFile['last_opened_project']
                     htmlTree+=padding + '<li class="file"><a class="fileTitle" id="'+ str(getStinoFromFile(dir+file)) +'" href="' + projectName + file + '"  target="_blank">' + file + '</a>'
                 else :
@@ -209,7 +209,6 @@ def getRawContentFromFile(path):
         return None
     
 def saveRawContentToFile(path, data):
-    
     """Writes contents to given filename. Be aware that this function
      can explore the whole OS. Use checkIfPathIsInUserFolder(path) function to check if path is in user
      only folder."""
@@ -229,7 +228,6 @@ def saveRawContentToFile(path, data):
     move(tmp, path)
     return 0
 
-    
 def checkIfFileExists(path):
     if (os.path.exists(path)) :
         return True
@@ -243,9 +241,8 @@ def checkIfDirectoryExists(path):
         return False
         
 def checkIfPathIsInUserFolder(path):
-    
     """Checks if given path is in user folder"""
-    confFile = weio_config.getConfiguration()
+    confFile = weioConfig.getConfiguration()
     pathToCurrentProject = confFile["user_projects_path"] + confFile['last_opened_project'] 
     
     if pathToCurrentProject in (path) :
@@ -316,11 +313,13 @@ def listUserDirectories(path):
 def recreateUserFiles():
     """Destroys userFiles directory than recreates it with good symlinks and __init__.py file. 
     UserFiles will be in the path that was defined inside config.weio file"""
-    confFile = weio_config.getConfiguration()
+    confFile = weioConfig.getConfiguration()
     targetPath = confFile["user_projects_path"] 
     if (checkIfDirectoryExists(targetPath)) :
         shutil.rmtree(targetPath)
     os.makedirs(targetPath)
+
+    print "++++", targetPath
     
     if not(checkIfFileExists(targetPath + "__init__.py" )):
         f = open(targetPath+"__init__.py", 'w')
