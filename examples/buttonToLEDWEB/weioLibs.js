@@ -1,5 +1,5 @@
 require.config({
-    baseUrl: '../../../../libs/'
+    baseUrl: 'www/libs/'
 });
 
 // load libs in exact order

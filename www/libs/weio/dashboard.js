@@ -126,7 +126,7 @@ $(document).ready(function () {
     
         
         rq = { "request" : "packetRequests", "packets":dashboardPacket};
-        console.log("sending dashboard packets together ", rq);
+        console.log("DASHBOARD: sending dashboard packets together ", rq);
         dashboard.send(JSON.stringify(rq));
         //setTimeout(function(){dashboard.send(JSON.stringify(rq))},1000);
 
@@ -318,8 +318,7 @@ function runPreview() {
             // generate random number to prevent loading page from cache
             var randomNumber = Math.random();
             
-            $(".iframeContainerIndex").attr("src", confFile.user_projects_path +
-                confFile.last_opened_project + "index.html?" + randomNumber);
+            $(".iframeContainerIndex").attr("src", confFile.last_opened_project + "index.html?" + randomNumber);
             // console.log(confFile.weio_lib_path);
             $(".iframeContainerIndex").css("height", screen.height-60 + "px");
             $(".iframeContainerIndex").css("margin-top", screen.height+60 + "px");

@@ -1,7 +1,7 @@
 {
     "absolut_root_path": "/home/drasko/nodesign/weio", 
     "debug_mode": "True", 
-    "dependencies_path": "www/", 
+    "dependencies_path": "www", 
     "dns_name": "weio.local", 
     "editor_html_path": "www/dashboard.html", 
     "extern_projects_path": "/home/drasko/nodesign/weioUser/", 
@@ -12,13 +12,13 @@
         "index.html", 
         "weioMain.py"
     ], 
-    "last_opened_project": "examples/ledBlinkyPython/", 
+    "last_opened_project": "examples/buttonToLEDWEB/", 
     "play_composition_on_server_boot": "NO", 
     "port": 8080, 
     "user": "Drasko DRASKOVIC", 
     "userAppPort": 8082, 
     "userApp_debug_mode": "True", 
-    "user_projects_path": "userFiles/", 
+    "user_projects_path": "AAAAAAAAAAAAAAAAAAAAAAAAAuserFiles/", 
     "weio_lib_path": "weioLib", 
     "weio_version": "309"
 }

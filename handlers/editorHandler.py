@@ -56,7 +56,7 @@ class WeioEditorHandler(SockJSConnection):
     # DEFINE CALLBACKS HERE
     # First, define callback that will be called from websocket
     
-    #@weioUnblock.unblock
+    @weioUnblock.unblock
     def getTreeInHTML(self,rq):
         # get configuration from file
         config = weioConfig.getConfiguration()

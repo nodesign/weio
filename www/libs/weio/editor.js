@@ -284,7 +284,7 @@ $(document).ready(function () {
         editorPacket.push(rq);
         
         rq = { "request" : "packetRequests", "packets":editorPacket};
-        console.log("sending dashboard packets together ", rq);
+        console.log("EDITOR: sending dashboard packets together ", rq);
         
         editorSocket.send(JSON.stringify(rq));
         //setTimeout(function(){editorSocket.send(JSON.stringify(rq))},1000);

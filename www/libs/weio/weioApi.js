@@ -48,20 +48,21 @@ var _weio = null;
 var weioCallbacks = {
     "inbox":callInbox
 };
-var _addr;
 
 $(document).ready(function() {
+
+    // Change this port when running on PC
+    var port = "8082"
 
     /*
      * Identify server address and port to open websocket
      */
-    _addr = location.host;
-    if (_addr.indexOf(":")!=-1) {
+    var _addr = location.host;
+    if (location.port == "8080") {
         var a = _addr.split(":");
-        _addr = 'http://' + a[0] + '/api';
+        _addr = 'http://' + a[0] + ':' + port + '/api';
     } else {
         var a = 'http://' + _addr + '/api';
-        //var a = 'http://' + _addr + '/api';
         _addr = a;
     }
     console.log("WebSocket connecting to " + _addr);

@@ -188,7 +188,7 @@ if __name__ == '__main__':
                             #[(r"/editor/baseFiles", Editor.WeioEditorHandler)] +
                             #[(r"/close", WeioCloseConnection)] +
                             [(r"/", WeioEditorWebHandler),
-                            (r"/(.*)", tornado.web.StaticFileHandler,{"path": confFile["dependencies_path"]})] +
+                            (r"/(.*)", tornado.web.StaticFileHandler,{"path": "www"})] +
                             [(r"/login", loginHandlers.WeioLoginHandler)],
                             debug=debugMode, **settings
                           )

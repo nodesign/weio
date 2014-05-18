@@ -45,11 +45,17 @@ class WeioIndexHandler(web.RequestHandler):
         if (firstTimeSwitch=="YES") :
            path = "www/firstTime.html"
         else :
-           if (weioFiles.checkIfFileExists(confFile['user_projects_path'] + confFile['last_opened_project'] + "index.html")):
+           if (weioFiles.checkIfFileExists(confFile['last_opened_project'] + "index.html")):
               path = "www/userIndex.html"
            else :
               path = "www/error404.html"
         path = "www/userIndex.html"
+
+
+
+        #path = confFile['last_opened_project'] + "index.html"
+
+
         self.render(path, error="")
 
 
@@ -215,7 +221,7 @@ if __name__ == '__main__':
     # Instantiate all handlers for user Tornado
     app = web.Application(apiRouter.urls + [
     ('/', WeioIndexHandler),
-    (r"/(.*)", web.StaticFileHandler, {"path": "www/"})
+    (r"/(.*)", web.StaticFileHandler, {"path": "www"})
     ])
     app.listen(options.options.port, "0.0.0.0")
 

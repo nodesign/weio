@@ -57,78 +57,69 @@ global htmlTree
 # Tree function was originaly written by Doug Dahms
 # Code was modified by Uros Petrevski
 
-def tree(dir, padding, print_files=True):
+def tree(d, padding, print_files=True):
     # This function if full of ugliness, original solutions are needed and complete rewrite
-    #print "MY DIR ", dir
-   # try :
-        #if (checkIfFileExists(dir+"weioLibs")):
-    #    os.remove("www/libs/"+dir+"weioLibs")
-        #os.unlink("www/libs/"+dir+"weioLibs")
-    #except:
-     #   print "AAAAA"
     
     global htmlTree
-    #print padding[:-1] + '<label for="folder">' + basename(abspath(dir)) + '/' + "</label><input type='checkbox' id='folder1' />" 
-    htmlTree+=padding[:-1] + '<label for="folder">' + basename(abspath(dir)) + "</label>"
+    htmlTree+=padding[:-1] + '<label for="folder">' + basename(abspath(d)) + "</label>"
     htmlTree+="<input type='checkbox' id='folder1' checked=''>"
     htmlTree+="<i class='icon-remove' id='deleteProjectButton' role='button' data-toggle='modal'></i>"
     htmlTree+="\n"
-    #print "<ol>"
     htmlTree+="<ol>"
     htmlTree+="\n"
     padding = padding + ' '
+
     files = []
+
+
     if print_files:
-        files = listdir(dir)
+        for f in listdir(d):
+            if (f != "www"):
+                files.append(f)
     else:
-        files = [x for x in listdir(dir) if isdir(dir + sep + x)]
+        files = [x for x in listdir(d) if isdir(d + sep + x)]
+
+
+    print ">>>>>>>>>>>> ", files
+
     count = 0
-    for file in files:
+    for f in files:
         count += 1
-        #print padding
         htmlTree+=padding
         htmlTree+="\n"
-        path = dir + sep + file 
+        path = d + sep + f
+        print "### ", path
         if isdir(path):
             if count == len(files):
-                #print "<li>"
                 htmlTree+="<li>"
                 htmlTree+="\n"
                 tree(path, padding + '  ', print_files)
-                #print "</li>"
                 htmlTree+="</li>"
                 htmlTree+="\n"
             else:
-                #print "<li>"
                 htmlTree+="<li>"
                 htmlTree+="\n"
                 tree(path, padding + ' ', print_files)
-                #print "</li>"
                 htmlTree+="</li>"
                 htmlTree+="\n"
         else:
-            #print padding + '<li class="file"><a href="">' + file + '</a></li>'
             # filer all osx crap DS_Store and all binary Python files
-            if ((file != ".DS_Store") and (".pyc" not in file) and (file != "__init__.py")) :
-                fullpath =  "'" + dir + file + "'"
+            if ((file != ".DS_Store") and (".pyc" not in f) and (f != "__init__.py")) :
+                fullpath =  "'" + d + f + "'"
                 if (".tar" in file):
                     confFile = weioConfig.getConfiguration()
                     projectName = "userProjects/"+confFile['last_opened_project']
-                    htmlTree+=padding + '<li class="file"><a class="fileTitle" id="'+ str(getStinoFromFile(dir+file)) +'" href="' + projectName + file + '"  target="_blank">' + file + '</a>'
+                    htmlTree+=padding + '<li class="file"><a class="fileTitle" id="'+ str(getStinoFromFile(d+f)) +'" href="' + projectName + f + '"  target="_blank">' + f + '</a>'
                 else :
-                    htmlTree+=padding + '<li class="file"><a class="fileTitle" id="'+ str(getStinoFromFile(dir+file)) +'" href="' + dir + file + '">' + file + '</a>'
-                #htmlTree+='<a href="javascript:prepareToDeleteFile('+ fullpath +');">'
-                #htmlTree+='<i class="icon-remove" id="deleteFileButton" role="button" data-toggle="modal" href="javascript:prepareToDeleteFile('+ fullpath +');"></i>'
+                    htmlTree+=padding + '<li class="file"><a class="fileTitle" id="'+ str(getStinoFromFile(d+f)) +'" href="' + d + f + '">' + f + '</a>'
                 htmlTree+='<a href="">'
                 htmlTree+='<i class="icon-remove" id="deleteFileButton" role="button" data-toggle="modal"></i>'
                 htmlTree+='</a>'
                 htmlTree+='</li>'
                 htmlTree+="\n"
 
-    #print "</ol>"
     htmlTree+="</ol>"
     htmlTree+="\n"
-    #os.symlink("www/libs/", dir+"weioLibs")
 
 def getHtmlTree(path) :
     """Scans user folder and all folders inside that folder in search for files.
@@ -138,7 +129,7 @@ def getHtmlTree(path) :
     htmlTree = "<li>"
     tree(path, " ")
     htmlTree+="</li>"
-    #print htmlTree
+    print htmlTree
     return htmlTree
 
 def listOnlyFolders(path):
