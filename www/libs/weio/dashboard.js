@@ -591,27 +591,27 @@ function updateStatus(data){
  * Get project names and put it into dropbox menu
  */
 function updateProjects(data) {
-   
-   var tag = "";
-   tag+='<li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>';
-   tag+='<li><a tabindex="-1" href="#importProject" role="button" data-toggle="modal">Import existing project</a></li>';
-   tag+='<li class="divider"></li>';
-   tag+='<li><a tabindex="-1" href="#duplicateProject" role="button" data-toggle="modal">Duplicate active project</a></li>';
-   tag+='<li><a tabindex="-1" href="#downloadProject" role="button" data-toggle="modal">Archive active project</a></li>';
-   tag+='<li class="divider"></li>';
-   
-   for (var i=0; i<data.data.length; i++) {
-           tag+='<li class="dropdown-submenu scroll-menu">\n';
-           tag+='<a tabindex="-1" href="#">'+data.data[i].storageName+'</a>\n';
-           tag+='<ul class="dropdown-menu">\n';
-           tag+='<ul class="dropdown-menu scroll-menu" id="'+data.data[i].storageName+'UserProjects">\n';
-           for (var j=0; j<data.data[i].projects.length;j++) {
-               var s = "'"+data.data[i].storageName+"/userProjects/"+String(data.data[i].projects[j])+"'\n";
-               tag+='<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + data.data[i].projects[j] + '</a></li>\n'; 
-           }
-           
-           tag+='</ul></ul></li>\n';
-    }
+    var tag = "";
+    tag+='<li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>';
+    tag+='<li><a tabindex="-1" href="#importProject" role="button" data-toggle="modal">Import existing project</a></li>';
+    tag+='<li class="divider"></li>';
+    tag+='<li><a tabindex="-1" href="#duplicateProject" role="button" data-toggle="modal">Duplicate active project</a></li>';
+    tag+='<li><a tabindex="-1" href="#downloadProject" role="button" data-toggle="modal">Archive active project</a></li>';
+    tag+='<li class="divider"></li>';
+
+    $.each( data.data, function( idx, val ) {
+        tag+='<li class="dropdown-submenu scroll-menu">\n';
+        tag+='<a tabindex="-1" href="#">' + val.storageName + '</a>\n';
+        tag+='<ul class="dropdown-menu">\n';
+        tag+='<ul class="dropdown-menu scroll-menu" id="' + val.storageName + 'UserProjects">\n';
+        val.projects.forEach( function(p) {
+            var s = "'" + val.storageName + "/" + String(p) + "'\n";
+            console.log(s);
+            tag += '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + p + '</a></li>\n';
+        });
+        tag+='</ul></ul></li>\n';
+    });
+
     //console.log(tag);
     $("#userProjectsList").empty();
     $("#userProjectsList").append(tag);

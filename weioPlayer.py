@@ -118,11 +118,12 @@ class WeioPlayer():
         self.stop()
 
         data = {}
-        up = config["user_projects_path"]
+        #up = config["user_projects_path"]
         lp = config["last_opened_project"]
 
         # check if user project exists before launching
-        if (weioFiles.checkIfFileExists(up+lp+"main.py")):
+        #if (weioFiles.checkIfFileExists(up+lp+"main.py")):
+        if (weioFiles.checkIfFileExists(lp+"main.py")):
             print("weioMain indipendent process launching...")
 
             # Inform client the we run subprocess

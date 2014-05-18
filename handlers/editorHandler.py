@@ -64,10 +64,12 @@ class WeioEditorHandler(SockJSConnection):
         
         data = {}
         data['requested'] = rq['request']
-        up = config["user_projects_path"]
+        #up = config["user_projects_path"]
         lp = config["last_opened_project"]
-        if (weioFiles.checkIfDirectoryExists(up+lp)):
-            tree = weioFiles.getHtmlTree((up+lp))
+        #if (weioFiles.checkIfDirectoryExists(up+lp)):
+        if (weioFiles.checkIfDirectoryExists(lp)):
+            #tree = weioFiles.getHtmlTree((up+lp))
+            tree = weioFiles.getHtmlTree(lp)
             data['data'] = tree
         else:
             data['data'] = ""
@@ -205,7 +207,6 @@ class WeioEditorHandler(SockJSConnection):
             self.send(json.dumps(data))
     
     def sendPlatformDetails(self, rq):
-        
         # get configuration from file
         config = weioConfig.getConfiguration()
         
@@ -213,7 +214,8 @@ class WeioEditorHandler(SockJSConnection):
         
         platformS = ""
         
-        platformS += "WeIO version " + config["weio_version"] + " with Python " + platform.python_version() + " on " + platform.system() + "<br>"
+        platformS += "WeIO version " + config["weio_version"] + " with Python " + \
+                            platform.python_version() + " on " + platform.system() + "<br>"
         platformS += "GPL 3, Nodesign.net 2013 Uros Petrevski & Drasko Draskovic <br>"
         
         data['serverPush'] = 'sysConsole'

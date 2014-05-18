@@ -113,7 +113,7 @@ def tree(dir, padding, print_files=True):
                 fullpath =  "'" + dir + file + "'"
                 if (".tar" in file):
                     confFile = weioConfig.getConfiguration()
-                    projectName = "userFiles/"+confFile['last_opened_project']
+                    projectName = "userProjects/"+confFile['last_opened_project']
                     htmlTree+=padding + '<li class="file"><a class="fileTitle" id="'+ str(getStinoFromFile(dir+file)) +'" href="' + projectName + file + '"  target="_blank">' + file + '</a>'
                 else :
                     htmlTree+=padding + '<li class="file"><a class="fileTitle" id="'+ str(getStinoFromFile(dir+file)) +'" href="' + dir + file + '">' + file + '</a>'
@@ -143,6 +143,8 @@ def getHtmlTree(path) :
 
 def listOnlyFolders(path):
     """Scan only folders. This is useful to retreive all project from user projects"""
+
+    print "AAA ############## ", path
     return os.walk(path).next()[1]
             
 def getFileType(path):
@@ -299,16 +301,6 @@ def unTarFile(sourceFilePath, destination):
     tar.extractall(destination)
     tar.close()
     removeFile(sourceFilePath)
-    
-def listUserDirectories(path):
-    """Looks inside path and find all directories that have userProjects as sub dir. 
-    Example : ['/weioUser/sd', '/weioUser/flash']"""
-    userDirs = []
-    for d in listOnlyFolders(path) :
-        for subD in listOnlyFolders(path+d):
-            if (subD == "userProjects"):
-                userDirs.append(path+d)
-    return userDirs
     
 def recreateUserFiles():
     """Destroys userFiles directory than recreates it with good symlinks and __init__.py file. 

@@ -131,19 +131,19 @@ if __name__ == '__main__':
 
     # put absolut path in conf, needed for local testing on PC
     confFile['absolut_root_path'] = os.path.abspath(".")
-    weioConfig.saveConfiguration(confFile)
+    #weioConfig.saveConfiguration(confFile)
     firstTimeSwitch = confFile['first_time_run']
 
     # scan for changes and make links if necessary
-    weioFiles.recreateUserFiles()
+    #weioFiles.recreateUserFiles()
 
     import logging
     logging.getLogger().setLevel(logging.DEBUG)
 
 
-    # WEIO API BRIDGE
-    #WeioAPIBridgeRouter = SockJSRouter(weioAPIbridgeHandler.WeioAPIBridgeHandler, '/api')
-
+    ###
+    # Routers
+    ###
     # EDITOR ROUTES
     WeioEditorRouter = SockJSRouter(editorHandler.WeioEditorHandler, '/editorSocket')
 

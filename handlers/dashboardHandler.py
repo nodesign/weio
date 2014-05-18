@@ -100,8 +100,10 @@ class WeioDashBoardHandler(SockJSConnection):
 
         #print "USER PRJ NAME",lp
 
-        if (weioFiles.checkIfDirectoryExists(config["user_projects_path"]+config["last_opened_project"])):
-            print "PROJ NAME", config["user_projects_path"]+config["last_opened_project"]
+        #if (weioFiles.checkIfDirectoryExists(config["user_projects_path"]+config["last_opened_project"])):
+        if (weioFiles.checkIfDirectoryExists(config["last_opened_project"])):
+            #print "PROJ NAME", config["user_projects_path"]+config["last_opened_project"]
+            print "PROJ NAME", config["last_opened_project"]
             data['data'] = lp[2]
         else :
             data['data'] = "Select project here"
@@ -123,7 +125,8 @@ class WeioDashBoardHandler(SockJSConnection):
 
         platformS = ""
 
-        platformS += "WeIO version " + config["weio_version"] + " with Python " + platform.python_version() + " on " + platform.system() + "<br>"
+        platformS += "WeIO version " + config["weio_version"] + " with Python " + \
+                            platform.python_version() + " on " + platform.system() + "<br>"
         platformS += "GPL 3, Nodesign.net 2013 Uros Petrevski & Drasko Draskovic <br>"
 
         data['serverPush'] = 'sysConsole'
@@ -131,23 +134,40 @@ class WeioDashBoardHandler(SockJSConnection):
         weioIdeGlobals.CONSOLE.send(json.dumps(data))
 
     def getUserProjectsList(self, rq):
-
         # get configuration from file
         config = weioConfig.getConfiguration()
 
         data = {}
         data['requested'] = rq['request']
-        #data['data'] = weioFiles.listOnlyFolders(config["user_projects_path"]+"examples/userProjects")
 
-        userDirs = weioFiles.listUserDirectories(config["user_projects_path"])
-
-        #print "PROJECTS ", userDirs
         allUserProjects = []
-        for d in userDirs:
-            prj = weioFiles.listOnlyFolders(d+"/userProjects")
-            a = {"projects": prj, "path":d, "storageName":os.path.basename(d)}
-            if (len(prj)>0):
-                allUserProjects.append(a)
+
+        # Examples
+        examplesDir = "./examples"
+        if (os.path.exists(examplesDir)):
+            dirs = os.walk(examplesDir).next()[1]
+            a = {"storageName":"examples", "projects":dirs}
+            allUserProjects.append(a)
+
+        # Flash
+        if (platform.machine() == 'mips'):
+            flashDir = "/userProjects"
+        else:
+            flashDir = "./userProjects"
+        if (os.path.exists(flashDir)):
+            dirs = os.walk(flashDir).next()[1]
+            a = {"storageName":"flash", "projects":dirs}
+            allUserProjects.append(a)
+
+        # SD
+        if (platform.machine() == 'mips'):
+            sdDir = "/sd"
+        else:
+            sdDir = ""
+        if (os.path.exists(sdDir)):
+            dirs = os.walk(sdDir).next()[1]
+            a = {"storageName":"flash", "projects":dirs}
+            allUserProjects.append(a)
 
         data['data'] = allUserProjects
 
@@ -159,8 +179,24 @@ class WeioDashBoardHandler(SockJSConnection):
         # get configuration from file
         print "TO CHANGE ", rq
         config = weioConfig.getConfiguration()
-        # TODO add directories logic for examples, flash & sd card
-        config["last_opened_project"] = rq['data']+"/"
+
+        virtPath = rq['data']
+        storage = os.path.dirname(virtPath)
+
+        if (storage == "examples"):
+            path = virtPath
+        elif (storage == "flash"):
+            if (platform.machine() == 'mips'):
+                path = "/userProjects/" + os.path.basename(virtPath)
+            else:
+                path = "./userProjects/" + os.path.basename(virtPath)
+        elif (storage == "sd"):
+            if (platform.machine() == 'mips'):
+                path = "TBD" + os.path.basename(virtPath)
+            else:
+                path = "./userProjects/" + os.path.basename(virtPath)
+        
+        config["last_opened_project"] = path + "/"
         weioConfig.saveConfiguration(config);
 
         data = {}
@@ -171,7 +207,7 @@ class WeioDashBoardHandler(SockJSConnection):
 
         for i in range(0,len(rqlist)):
             rq['request'] = rqlist[i]
-            callbacks[rq['request']](self, rq)
+            callbacks[ rq['request'] ](self, rq)
 
 
     def sendUserData(self,rq):
@@ -227,7 +263,6 @@ class WeioDashBoardHandler(SockJSConnection):
         self.changeProject(data)
 
     def deleteCurrentProject(self, rq):
-
         data = {}
         data['requested'] = rq['request']
 
@@ -251,7 +286,6 @@ class WeioDashBoardHandler(SockJSConnection):
         self.send(json.dumps(data))
 
     def iteratePacketRequests(self, rq) :
-
         requests = rq["packets"]
 
         for uniqueRq in requests:
@@ -284,7 +318,9 @@ class WeioDashBoardHandler(SockJSConnection):
         storage = splitted[0]
 
         if (weioFiles.checkIfDirectoryExists(config["user_projects_path"]+config["last_opened_project"])):
-            weioFiles.createTarfile(config["user_projects_path"]+config["last_opened_project"]+lp+".tar", config["user_projects_path"]+config["last_opened_project"])
+            weioFiles.createTarfile( config["user_projects_path"] + config["last_opened_project"] + lp + ".tar", 
+                    config["user_projects_path"] + config["last_opened_project"])
+
             data['status'] = "Project archived"
             print "project archived"
         else :
