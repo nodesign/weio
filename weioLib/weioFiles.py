@@ -104,9 +104,9 @@ def tree(d, padding, print_files=True):
                 htmlTree+="\n"
         else:
             # filer all osx crap DS_Store and all binary Python files
-            if ((file != ".DS_Store") and (".pyc" not in f) and (f != "__init__.py")) :
+            if ((f != ".DS_Store") and (".pyc" not in f) and (f != "__init__.py")) :
                 fullpath =  "'" + d + f + "'"
-                if (".tar" in file):
+                if (".tar" in f):
                     confFile = weioConfig.getConfiguration()
                     projectName = "userProjects/"+confFile['last_opened_project']
                     htmlTree+=padding + '<li class="file"><a class="fileTitle" id="'+ str(getStinoFromFile(d+f)) +'" href="' + projectName + f + '"  target="_blank">' + f + '</a>'
