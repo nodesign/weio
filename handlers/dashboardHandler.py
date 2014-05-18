@@ -90,21 +90,18 @@ class WeioDashBoardHandler(SockJSConnection):
         self.send(json.dumps(data))
 
     def sendLastProjectName(self,rq):
-
         # get configuration from file
         config = weioConfig.getConfiguration()
 
         data = {}
         data['requested'] = rq['request']
-        lp = config["last_opened_project"].split("/")
+        lp = os.path.basename( config["last_opened_project"].strip("/") )
 
-        #print "USER PRJ NAME",lp
+        print "USER PRJ NAME", lp
 
-        #if (weioFiles.checkIfDirectoryExists(config["user_projects_path"]+config["last_opened_project"])):
         if (weioFiles.checkIfDirectoryExists(config["last_opened_project"])):
-            #print "PROJ NAME", config["user_projects_path"]+config["last_opened_project"]
             print "PROJ NAME", config["last_opened_project"]
-            data['data'] = lp[2]
+            data['data'] = lp
         else :
             data['data'] = "Select project here"
         # Send connection information to the client

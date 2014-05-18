@@ -58,17 +58,13 @@ class WeioEditorHandler(SockJSConnection):
     
     #@weioUnblock.unblock
     def getTreeInHTML(self,rq):
-        
         # get configuration from file
         config = weioConfig.getConfiguration()
         
         data = {}
         data['requested'] = rq['request']
-        #up = config["user_projects_path"]
         lp = config["last_opened_project"]
-        #if (weioFiles.checkIfDirectoryExists(up+lp)):
         if (weioFiles.checkIfDirectoryExists(lp)):
-            #tree = weioFiles.getHtmlTree((up+lp))
             tree = weioFiles.getHtmlTree(lp)
             data['data'] = tree
         else:
@@ -188,7 +184,7 @@ class WeioEditorHandler(SockJSConnection):
         data['status'] = "file has been removed"
         self.send(json.dumps(data))
 
-#   don't unblock saveAll beacuse each saveFile is unblocked already
+    # don't unblock saveAll beacuse each saveFile is unblocked already
     def saveAll(self, rq) :
         #print "SAVE ALL FILES FROM ARRAY ", rq
         files = rq['data']

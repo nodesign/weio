@@ -81,12 +81,13 @@ $(document).ready(function () {
     weioProgress = new Chart(document.getElementById("weioProgress").getContext("2d"));
                         
                                 
-//////////////////////////////////////////////////////////////// SOCK JS DASHBOARD        
+    //////////////////////////////////////////////////////////////// SOCK JS DASHBOARD        
                   
     dashboard = new SockJS('http://' + location.host + '/dashboard');
-/*
- * On opening of wifi web socket ask server to scan wifi networks
- */
+    
+    /*
+     * On opening of wifi web socket ask server to scan wifi networks
+     */
     dashboard.onopen = function() {
         console.log('Dashboard Web socket is opened');
         // turn on green light if connected
@@ -116,8 +117,8 @@ $(document).ready(function () {
         //dashboard.send(JSON.stringify(rq));
         
         dashboardPacket.push(rq);
-                  
-                  
+                
+                
         rq = { "request": "getPlayerStatus"};
         //dashboard.send(JSON.stringify(rq));
         
@@ -148,17 +149,17 @@ $(document).ready(function () {
         console.log(data);
 
         if ("requested" in data) {
-              // this is instruction that was echoed from server + data as response
-              instruction = data.requested;  
-              if (instruction in callbacks) 
-                  callbacks[instruction](data);
-          } else if ("serverPush" in data) {
-                 // this is instruction that was echoed from server + data as response
-                 
-                 instruction = data.serverPush;  
-                 if (instruction in callbacks) 
-                     callbacks[instruction](data);
-          }
+            // this is instruction that was echoed from server + data as response
+            instruction = data.requested;  
+            if (instruction in callbacks) 
+                callbacks[instruction](data);
+        } else if ("serverPush" in data) {
+                // this is instruction that was echoed from server + data as response
+                
+                instruction = data.serverPush;  
+                if (instruction in callbacks) 
+                    callbacks[instruction](data);
+        }
         
         
     };
@@ -175,97 +176,96 @@ $(document).ready(function () {
         
     };   
     
-    
     $('#importProjectUploader').change(function(evt){
             handleFileSelect(evt);
-     });
-    
-    
-   
-    
+    });
+        
 }); /* end of document on ready event */
 
-   function updateProgress(evt) {
-       // evt is an ProgressEvent.
-       if (evt.lengthComputable) {
-           var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
-           // Increase the progress bar length.
-           if (percentLoaded < 100) {
-               window.top.updateWeioProgressWheel(percentLoaded);
-               //console.log(percentLoaded + '%');
-           }
-       }
-   }
 
-   function transferEnded(evt) {
-      // console.log("end");
-       window.top.updateWeioProgressWheel(100);
-   }
+function updateProgress(evt) {
+    // evt is an ProgressEvent.
+    if (evt.lengthComputable) {
+        var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
+        // Increase the progress bar length.
+        if (percentLoaded < 100) {
+            window.top.updateWeioProgressWheel(percentLoaded);
+            //console.log(percentLoaded + '%');
+        }
+    }
+}
 
-   function errorFile(evt) {
-       switch(evt.target.error.code) {
-           case evt.target.error.NOT_FOUND_ERR:
-               alert('File Not Found!');
-               break;
-           case evt.target.error.NOT_READABLE_ERR:
-               alert('File is not readable');
-               break;
-           case evt.target.error.ABORT_ERR:
-               break; // noop
-           default:
-               alert('An error occurred reading this file.');
-       };
-   }
+
+function transferEnded(evt) {
+    // console.log("end");
+    window.top.updateWeioProgressWheel(100);
+}
+
+
+function errorFile(evt) {
+    switch(evt.target.error.code) {
+        case evt.target.error.NOT_FOUND_ERR:
+            alert('File Not Found!');
+            break;
+        case evt.target.error.NOT_READABLE_ERR:
+            alert('File is not readable');
+            break;
+        case evt.target.error.ABORT_ERR:
+            break; // noop
+        default:
+            alert('An error occurred reading this file.');
+    };
+}
 
 function handleFileSelect(evt) {
-   var files = evt.target.files; // FileList object
+    var files = evt.target.files; // FileList object
     //console.log("FILE");
-   
-   
-   for (var i = 0, f; f = files[i]; i++) {
+    
+    
+    for (var i = 0, f; f = files[i]; i++) {
 
-       /*
-       // Only process image files.
-       if (!f.type.match('image.*')) {
-           continue;
-       }
-       */
-       var reader = new FileReader();
+        /*
+        // Only process image files.
+        if (!f.type.match('image.*')) {
+            continue;
+        }
+        */
+        var reader = new FileReader();
 
-       reader.onprogress = updateProgress;
-       reader.onloadend = transferEnded;
-       reader.onerror = errorFile;
+        reader.onprogress = updateProgress;
+        reader.onloadend = transferEnded;
+        reader.onerror = errorFile;
 
-       // Closure to capture the file information.
-       reader.onload = (function(theFile) {
-                        return function(e) {
-                        //console.log("FILE ", theFile.name, " ", e.target.result);
-                        data = {}
-                        data.name = theFile.name;
-                        data.data = e.target.result;
-                        addNewProjectFromArchive(data);
-                        console.log("FILEEEEEEEEEEEEEEEEE");
-                        };
-                        })(f);
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+                            return function(e) {
+                            //console.log("FILE ", theFile.name, " ", e.target.result);
+                            data = {}
+                            data.name = theFile.name;
+                            data.data = e.target.result;
+                            addNewProjectFromArchive(data);
+                            console.log("FILEEEEEEEEEEEEEEEEE");
+                            };
+                            })(f);
 
-        reader.readAsDataURL(f);
-  
-   }
+            reader.readAsDataURL(f);
+    
+    }
 }
 
-/*
- * Add new project from TAR archive
- */ 
+    /*
+     * Add new project from TAR archive
+     */ 
 function addNewProjectFromArchive(data){
-   var rq = { "request": "addNewProjectFromArchive", "data" : data, "storageUnit":selectedStorageUnit};
-   dashboard.send(JSON.stringify(rq));
+    var rq = { "request": "addNewProjectFromArchive", "data" : data, "storageUnit":selectedStorageUnit};
+    dashboard.send(JSON.stringify(rq));
 }
+
 
 /*
  * isEditorActive
  */
 var isEditorActive = null;
-
 
 $(window).resize(function() {
     updateIframeHeight();
@@ -287,7 +287,6 @@ function setTestament(data) {
 /* 
  * Run Editor in targeted IFrame
  */ 
-
 function runEditor() {
     //$(".iframeContainer").show();
     $(".iframeContainer").animate( { "margin-top": "60px" }, { queue: false, duration: 500 });
@@ -307,7 +306,6 @@ function runEditor() {
  * Run preview mode
  */
 function runPreview() {
-    
     if (isEditorActive)
         document.getElementById("weioIframe").contentWindow.saveAll();
     
@@ -316,18 +314,18 @@ function runPreview() {
     
     
     $.getJSON('config.json', function(data) {
-              var confFile = data;
-              // generate random number to prevent loading page from cache
-              var randomNumber = Math.random();
-              
-              $(".iframeContainerIndex").attr("src", confFile.user_projects_path +
-                  confFile.last_opened_project + "index.html?" + randomNumber);
-              // console.log(confFile.weio_lib_path);
-              $(".iframeContainerIndex").css("height", screen.height-60 + "px");
-              $(".iframeContainerIndex").css("margin-top", screen.height+60 + "px");
-              
-              //$(".iframeContainer").hide();
-              });
+            var confFile = data;
+            // generate random number to prevent loading page from cache
+            var randomNumber = Math.random();
+            
+            $(".iframeContainerIndex").attr("src", confFile.user_projects_path +
+                confFile.last_opened_project + "index.html?" + randomNumber);
+            // console.log(confFile.weio_lib_path);
+            $(".iframeContainerIndex").css("height", screen.height-60 + "px");
+            $(".iframeContainerIndex").css("margin-top", screen.height+60 + "px");
+            
+            //$(".iframeContainer").hide();
+            });
     
     //$(".iframeContainers").animate( { "margin-top": -screen.height }, { queue: false, duration: 500 });
     $(".iframeContainer").animate( { "margin-top": -screen.height }, { queue: false, duration: 500 });
@@ -339,10 +337,10 @@ function runPreview() {
     isEditorActive = false;
 }
 
+
 /*
  * Run settings mode
  */
-
 function runSettings() {
     console.log("=========>> runSettings() CALLED")
     updateIframeHeight();
@@ -368,6 +366,7 @@ function duplicateProject() {
     dashboard.send(JSON.stringify(rq));
 }
 
+
 /**
  * Sets coresponding icon and message inside statusBar in the middle of header. 
  * 
@@ -382,6 +381,7 @@ function setStatus(line, message) {
         $( "#statusBarText2" ).html(message);
 }
 
+
 function prepareToPlay() {
     if (isEditorActive) {
         document.getElementById("weioIframe").contentWindow.play();
@@ -392,14 +392,15 @@ function prepareToPlay() {
     }
 }
 
+
 function play(){
     var rq = { "request": "play"};
     dashboard.send(JSON.stringify(rq));
     document.getElementById("weioIframe").contentWindow.clearConsole();
     playCounter = setInterval(function(){countTillPlay()},4);
     $( "#weioProgress" ).fadeTo( "fast", 100 );
-
 }
+
 
 function stop(){
     var rq = { "request": "stop"};
@@ -409,16 +410,18 @@ function stop(){
     readyToPlay = 0;
 }
 
+
 function countTillPlay() {
     updateWeioProgressWheel(readyToPlay);
     readyToPlay+=2;
 }
 
+
 function updateWeioProgressWheel(data) {
     $( "#weioProgress" ).css( "opacity", "100%" );
     /*
-     * CHART JS prefs
-     */
+        * CHART JS prefs
+        */
     var defs = {
         //Boolean - Whether we should show a stroke on each segment
         segmentShowStroke : false,
@@ -452,7 +455,6 @@ function updateWeioProgressWheel(data) {
     }
     
 
-    
     var wheel = [
                    // CPU
                    {
@@ -466,6 +468,7 @@ function updateWeioProgressWheel(data) {
                    ];
     
     weioProgress.Doughnut(wheel, defs);
+
     if (data==100) {
         readyToPlay = false;
         clearInterval(playCounter); 
@@ -622,9 +625,10 @@ function updateProjects(data) {
     tag+='<ul class="nav nav-pills">';
     for (var i=0; i<data.data.length; i++) {
         if (i==0)
-            tag+='<li class="active" id="'+data.data[i].storageName+'StorageUnit'+'"><a href="#">'+data.data[i].storageName+'</a></li>';
+            tag+='<li class="active" id="' + data.data[i].storageName +
+                    'StorageUnit'+'"><a href="#">' + data.data[i].storageName + '</a></li>';
         else 
-            tag+='<li id="'+data.data[i].storageName+'StorageUnit'+'"><a href="#">'+data.data[i].storageName+'</a></li>';
+            tag+='<li id="' + data.data[i].storageName + 'StorageUnit' + '"><a href="#">' + data.data[i].storageName + '</a></li>';
     }
     tag+='</ul>';
     
@@ -634,10 +638,6 @@ function updateProjects(data) {
     if (selectedStorageUnit==null)
         selectedStorageUnit = data.data[0].storageName;
         
-    
-    
-    //$("#"+selectedStorageUnit+"StorageUnit").attr("class", "active");
-    
     $(".storageUnitChooser").on('click', 'li', function(e) {
        //alert($(this).attr("id"));
        $( ".storageUnitChooser li" ).each(function() {
@@ -649,16 +649,6 @@ function updateProjects(data) {
        changeSelectedStorageUnit($(this).attr("id").split("StorageUnit")[0]);
        
     });
-    
-    /*
-    $( ".storageUnitChooser" ).click(function() {
-      $( ".storageUnitChooser li" ).each(function() {
-        $( this ).toggleClass( "active" );    
-        if ($(this).attr("class")=="active") changeSelectedStorageUnit($(this).attr("id"));
-      });
-    });
-    */
-
 }
 
 function changeSelectedStorageUnit(unit) {
