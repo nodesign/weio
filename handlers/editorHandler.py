@@ -57,7 +57,7 @@ class WeioEditorHandler(SockJSConnection):
     # First, define callback that will be called from websocket
     
     #@weioUnblock.unblock
-    def getTreeInHTML(self,rq):
+    def getFileTree(self,rq):
         # get configuration from file
         config = weioConfig.getConfiguration()
         
@@ -65,7 +65,7 @@ class WeioEditorHandler(SockJSConnection):
         data['requested'] = rq['request']
         lp = config["last_opened_project"]
         if (weioFiles.checkIfDirectoryExists(lp)):
-            tree = weioFiles.getHtmlTree(lp)
+            tree = weioFiles.getFileTree(lp)
             data['data'] = tree
         else:
             data['data'] = ""
@@ -241,7 +241,7 @@ class WeioEditorHandler(SockJSConnection):
     callbacks = {
         #'getIp' : sendIp,
         #'getLastProjectName' : sendLastProjectName,
-        'getFileTreeHtml' : getTreeInHTML,
+        'getFileTree' : getFileTree,
         'getFile': sendFileContent,
         #'play' : play,
         #'stop' : stop,

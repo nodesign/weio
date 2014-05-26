@@ -49,6 +49,8 @@ class WeioIndexHandler(web.RequestHandler):
               path = "www/userIndex.html"
            else :
               path = "www/error404.html"
+
+
         path = "www/userIndex.html"
 
 

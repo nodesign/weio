@@ -273,7 +273,7 @@ $(document).ready(function () {
         
         editorPacket = new Array();
         
-        var rq = { "request": "getFileTreeHtml"};
+        var rq = { "request": "getFileTree"};
         //editorSocket.send(JSON.stringify(rq));
         
         editorPacket.push(rq);
@@ -814,7 +814,7 @@ function scrollConsoleToBottom(){
  * Each key is binded to coresponding function
  */
 var callbacksEditor = {
-    "getFileTreeHtml" : updateFileTree,
+    "getFileTree" : updateFileTree,
     "status" : updateStatus,
     "stdout" : updateConsoleOutput,
     "stderr" : updateConsoleError,
@@ -858,9 +858,16 @@ function fileSaved(data) {
  * Attaches tree event listener
  */
 function updateFileTree(data) {
-    
+
+    console.log(data.data);
+
     $("#tree").html();
-    $("#tree").html(data.data);
+    //$("#tree").html(data.data);
+
+    $('#tree').tree({
+        // we have to give it array of dictionaries
+        data: data.data
+    });
   
 }
 

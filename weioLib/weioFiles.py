@@ -46,91 +46,45 @@ import uuid
 from shutil import move
 import tarfile
 
+import json
+
 #from sys import argv
 
 
 _ntuple_diskusage = namedtuple('usage', 'total used free')
 
 
-global htmlTree
-    
-# Tree function was originaly written by Doug Dahms
-# Code was modified by Uros Petrevski
+def addNode(path):
+    n = {}
+    n['label'] = os.path.basename(path)
+    n['children'] = []
 
-def tree(d, padding, print_files=True):
-    # This function if full of ugliness, original solutions are needed and complete rewrite
-    
-    global htmlTree
-    htmlTree+=padding[:-1] + '<label for="folder">' + basename(abspath(d)) + "</label>"
-    htmlTree+="<input type='checkbox' id='folder1' checked=''>"
-    htmlTree+="<i class='icon-remove' id='deleteProjectButton' role='button' data-toggle='modal'></i>"
-    htmlTree+="\n"
-    htmlTree+="<ol>"
-    htmlTree+="\n"
-    padding = padding + ' '
+    files = os.listdir(path)
 
-    files = []
-
-
-    if print_files:
-        for f in listdir(d):
-            if (f != "www"):
-                files.append(f)
-    else:
-        files = [x for x in listdir(d) if isdir(d + sep + x)]
-
-
-    print ">>>>>>>>>>>> ", files
-
-    count = 0
     for f in files:
-        count += 1
-        htmlTree+=padding
-        htmlTree+="\n"
-        path = d + sep + f
-        print "### ", path
-        if isdir(path):
-            if count == len(files):
-                htmlTree+="<li>"
-                htmlTree+="\n"
-                tree(path, padding + '  ', print_files)
-                htmlTree+="</li>"
-                htmlTree+="\n"
-            else:
-                htmlTree+="<li>"
-                htmlTree+="\n"
-                tree(path, padding + ' ', print_files)
-                htmlTree+="</li>"
-                htmlTree+="\n"
-        else:
-            # filer all osx crap DS_Store and all binary Python files
-            if ((f != ".DS_Store") and (".pyc" not in f) and (f != "__init__.py")) :
-                fullpath =  "'" + d + f + "'"
-                if (".tar" in f):
-                    confFile = weioConfig.getConfiguration()
-                    projectName = "userProjects/"+confFile['last_opened_project']
-                    htmlTree+=padding + '<li class="file"><a class="fileTitle" id="'+ str(getStinoFromFile(d+f)) +'" href="' + projectName + f + '"  target="_blank">' + f + '</a>'
-                else :
-                    htmlTree+=padding + '<li class="file"><a class="fileTitle" id="'+ str(getStinoFromFile(d+f)) +'" href="' + d + f + '">' + f + '</a>'
-                htmlTree+='<a href="">'
-                htmlTree+='<i class="icon-remove" id="deleteFileButton" role="button" data-toggle="modal"></i>'
-                htmlTree+='</a>'
-                htmlTree+='</li>'
-                htmlTree+="\n"
+        if os.path.isfile(os.path.join(path, f)):
+            n['children'].append(f)
+        elif os.path.isdir(os.path.join(path, f)):
+            n['children'].append(addNode(os.path.join(path, f)))
 
-    htmlTree+="</ol>"
-    htmlTree+="\n"
+    return n
 
-def getHtmlTree(path) :
+def getFileTree(path) :
     """Scans user folder and all folders inside that folder in search for files.
     Exports HTML string that can be directly used inside editor
     """
-    global htmlTree
-    htmlTree = "<li>"
-    tree(path, " ")
-    htmlTree+="</li>"
-    print htmlTree
-    return htmlTree
+    # Chop the trailing slash to use os.path.basename()
+    if (path[-1] == "/"):
+        path = path[:-1]
+
+    # get tree in a form of dictionary
+    td = addNode(path)
+    # jqtree demands list of dictionaries as a format
+    t = []
+    t.append(td)
+
+    print(json.dumps(t, indent=4, sort_keys=True)) 
+    return t
 
 def listOnlyFolders(path):
     """Scan only folders. This is useful to retreive all project from user projects"""
