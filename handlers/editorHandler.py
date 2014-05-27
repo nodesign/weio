@@ -67,8 +67,10 @@ class WeioEditorHandler(SockJSConnection):
         if (weioFiles.checkIfDirectoryExists(lp)):
             tree = weioFiles.getFileTree(lp)
             data['data'] = tree
+            data['projectRoot'] = lp.split("/")[0]
         else:
             data['data'] = ""
+            data['projectRoot'] = ""
         # Send connection information to the client
         self.send(json.dumps(data))
     

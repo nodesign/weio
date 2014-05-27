@@ -52,6 +52,11 @@ var editorSocket;
 var editor;
 
 /*
+ * Sets active project ROOT path
+ */
+var projectRoot;
+
+/*
  * Data related to files that are opened
  * name, type, data, id, path
  */
@@ -192,7 +197,86 @@ $(document).ready(function () {
             scaleIt();
         }                     
     });
-      
+    
+    $('#tree').bind(
+        'tree.select',
+        function(event) {
+            if (event.node) {
+                // node was selected
+                var node = event.node;
+                
+                var prjPath = "";
+                var runTree = true;
+                path = node.name;
+                var lastNode = node;
+                
+                // run thru the tree structure to find all parents. Path will be exported
+                while(runTree) {
+                    if (lastNode.parent.name != undefined) {
+                      path = lastNode.parent.name + "/" + path;
+                      lastNode = lastNode.parent;  
+                    } else {
+                        runTree = false;
+                    }
+                }
+                path = projectRoot + "/" + path;
+                
+                
+                if (!treeLock) {
+                    // console.log($(this).parents());                      
+                    // prepareToDeleteFile    
+                    // console.log("FILE ", $(e.target).is("#deleteFileButton"));
+                    // console.log("FOLDER ", $(e.target).is("#deleteProjectButton"));
+                    //if ($(e.target).hasClass('icon-remove')){
+                        var doesExist = false;
+
+                        // Adding strip if don't exists already
+                        for (var i in editorsInStack) {
+                            if (editorsInStack[i].path == path) {
+                                doesExist = true;
+                            }
+                        }
+                       
+                        if (!doesExist){
+                            // asks server to retreive file that we are intested in
+                            // regular files
+                            if ((path.indexOf(".css") != -1) || (path.indexOf(".py") != -1) || (path.indexOf(".js") != -1) ||
+                                (path.indexOf(".html") != -1) || (path.indexOf(".txt") != -1) || (path.indexOf(".md") != -1) ||
+                                (path.indexOf(".json") != -1) || (path.indexOf(".xml") != -1) || (path.indexOf(".less") != -1) ||
+                                (path.indexOf(".cofee") != -1) || (path.indexOf(".svg") != -1) ||
+                                // images
+                                (path.indexOf(".png") != -1) || (path.indexOf(".jpg") != -1) || (path.indexOf(".bmp") != -1) ||
+                                (path.indexOf(".gif") != -1) ||
+                                // tar archives
+                                (path.indexOf(".tar") != -1)
+                                ){
+                       
+                               var rq = { "request": "getFile", "data":path};
+                               editorSocket.send(JSON.stringify(rq));
+                               treeLock = true; // LOCK TREE INTERACTION HERE
+                           } else {treeLock = false;}
+                       
+                           // It's more sure to add to currentlyOpened array from
+                           // websocket callback than here in case that server don't answer
+                           } // if (!doesExist) 
+                           
+                               
+               } // if (!treeLock)       
+                
+                
+                //console.log(prjPath);
+               // alert(node.name);
+            }
+            else {
+                // event.node is null
+                // a node was deselected
+                // e.previous_node contains the deselected node
+            }
+        }
+    );
+    
+    
+/*      
     // Events for tree
     $('.tree').click(function(e){
             e.preventDefault(); 
@@ -252,7 +336,7 @@ $(document).ready(function () {
            } // if (!treeLock)              
     });
                   
-
+*/
     // Ace editor creation
     createEditor();
   
@@ -283,7 +367,7 @@ $(document).ready(function () {
         editorPacket.push(rq);
         
         rq = { "request" : "packetRequests", "packets":editorPacket};
-        console.log("EDITOR: sending dashboard packets together ", rq);
+        console.log("EDITOR: sending editor packets together ", rq);
         
         editorSocket.send(JSON.stringify(rq));
         //setTimeout(function(){editorSocket.send(JSON.stringify(rq))},1000);
@@ -342,6 +426,7 @@ $(document).ready(function () {
     });
 
 }); /* end of document on ready event */
+
 
 
 function updateProgress(evt) {
@@ -750,13 +835,14 @@ function updateConsoleSys(data) {
 function updateError(data) {
 	
 	var d = data.data;
-    	
+    //TODO correct path here
 	// Path extraction
+    /*
 	var projectName = $('.tree label[for=folder]').text();
 	var splitedFile = d[(d.length-1)].file.split("/");
 	console.log(splitedFile);
 	var path = 'userProjects/' + projectName + '/'+splitedFile[(splitedFile.length -1)];
-	
+	*/
 	var lastErrorObj = d[(d.length-1)]
     
     var doesExist = false;
@@ -858,8 +944,10 @@ function fileSaved(data) {
  */
 function updateFileTree(data) {
 
-    console.log(data.data);
-
+    //console.log(data.projectRoot);
+    
+    projectRoot = data.projectRoot;
+    
     $("#tree").html();
     //$("#tree").html(data.data);
 

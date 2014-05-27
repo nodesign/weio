@@ -59,7 +59,7 @@ def addNode(path):
     n['label'] = os.path.basename(path)
     n['children'] = []
 
-    files = os.listdir(path)
+    files = listdirFiltered(path)
 
     for f in files:
         if os.path.isfile(os.path.join(path, f)):
@@ -68,6 +68,11 @@ def addNode(path):
             n['children'].append(addNode(os.path.join(path, f)))
 
     return n
+
+def listdirFiltered(path):
+    for f in os.listdir(path):
+        if (not f.startswith('.')) and (not f.endswith('.pyc')):
+            yield f
 
 def getFileTree(path) :
     """Scans user folder and all folders inside that folder in search for files.
