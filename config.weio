@@ -1,10 +1,10 @@
 {
-    "absolut_root_path": "/home/drasko/nodesign/weio", 
+    "absolut_root_path": "/home/drasko/weio", 
     "debug_mode": "True", 
     "dependencies_path": "www", 
     "dns_name": "weio.local", 
     "editor_html_path": "www/dashboard.html", 
-    "extern_projects_path": "/home/drasko/nodesign/weioUser/", 
+    "extern_projects_path": "/home/drasko/nodesign/weioUser", 
     "first_time_run": "NO", 
     "ip": "0.0.0.0", 
     "kill_flag": "YES", 
@@ -18,7 +18,7 @@
     "user": "Drasko DRASKOVIC", 
     "userAppPort": 8082, 
     "userApp_debug_mode": "True", 
-    "user_projects_path": "AAAAAAAAAAAAAAAAAAAAAAAAAuserFiles/", 
+    "user_projects_path": "/home/drasko/weio/userProjects", 
     "weio_lib_path": "weioLib", 
     "weio_version": "309"
 }

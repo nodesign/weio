@@ -135,7 +135,7 @@ if __name__ == '__main__':
     firstTimeSwitch = confFile['first_time_run']
 
     # scan for changes and make links if necessary
-    #weioFiles.recreateUserFiles()
+    weioFiles.recreateSymlinks()
 
     import logging
     logging.getLogger().setLevel(logging.DEBUG)

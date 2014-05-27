@@ -147,10 +147,7 @@ class WeioDashBoardHandler(SockJSConnection):
             allUserProjects.append(a)
 
         # Flash
-        if (platform.machine() == 'mips'):
-            flashDir = "/userProjects"
-        else:
-            flashDir = "./userProjects"
+        flashDir = config["absolut_root_path"] + "/www/userProjects"
         if (os.path.exists(flashDir)):
             dirs = os.walk(flashDir).next()[1]
             a = {"storageName":"flash", "projects":dirs}

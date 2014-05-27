@@ -52,7 +52,11 @@ var weioCallbacks = {
 $(document).ready(function() {
 
     // Change this port when running on PC
-    var port = "8082"
+    var port = "8082";
+    $.getJSON('www/config.json', function(data) {
+        confFile = data;
+        port = confFile.userAppPort;
+    });
 
     /*
      * Identify server address and port to open websocket

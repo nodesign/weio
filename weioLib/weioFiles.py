@@ -71,7 +71,7 @@ def addNode(path):
 
 def listdirFiltered(path):
     for f in os.listdir(path):
-        if (not f.startswith('.')) and (not f.endswith('.pyc')):
+        if ( not (f == "www") and not f.startswith('.') and not f.endswith('.pyc') and not f.startswith('__init__') ):
             yield f
 
 def getFileTree(path) :
@@ -88,7 +88,7 @@ def getFileTree(path) :
     t = []
     t.append(td)
 
-    print(json.dumps(t, indent=4, sort_keys=True)) 
+    #print(json.dumps(t, indent=4, sort_keys=True)) 
     return t
 
 def listOnlyFolders(path):
@@ -252,38 +252,33 @@ def unTarFile(sourceFilePath, destination):
     tar.close()
     removeFile(sourceFilePath)
     
-def recreateUserFiles():
+def recreateSymlinks():
     """Destroys userFiles directory than recreates it with good symlinks and __init__.py file. 
     UserFiles will be in the path that was defined inside config.weio file"""
     confFile = weioConfig.getConfiguration()
-    targetPath = confFile["user_projects_path"] 
-    if (checkIfDirectoryExists(targetPath)) :
-        shutil.rmtree(targetPath)
-    os.makedirs(targetPath)
 
-    print "++++", targetPath
-    
-    if not(checkIfFileExists(targetPath + "__init__.py" )):
-        f = open(targetPath+"__init__.py", 'w')
-        f.write("")
-        f.close()
-        
+    # Create synlink for extern user projects        
     if (checkIfDirectoryExists(confFile["extern_projects_path"])):
-        links = listUserDirectories(confFile["extern_projects_path"])
-        for l in links:
-            os.symlink(l, targetPath+os.path.basename(l))
-            
-            if not(checkIfFileExists(l+"/userProjects/require.js")):
-                shutil.copyfile(confFile["absolut_root_path"]+"/www/libs/require.js", l+"/userProjects/require.js")
-                
-            #if not(os.path.islink(l+"/userProjects/require.js")):
-            #    os.symlink(confFile["absolut_root_path"]+"/www/libs/require.js", l+"/userProjects/require.js")
-            
-        # for examples is manual treatement and symlink require.js
-        os.symlink(confFile["absolut_root_path"] + "/examples", targetPath+"examples")
-        if not(os.path.islink(targetPath+"examples"+"/userProjects/require.js")):
-            os.symlink(confFile["absolut_root_path"]+"/www/libs/require.js", targetPath+"examples"+"/userProjects/require.js")
-    
+        print confFile["extern_projects_path"]
+        print confFile["absolut_root_path"] + "/www/userProjects"
+
+        dst = confFile["absolut_root_path"] + "/www/userProjects"
+        if (os.path.exists(dst)):
+            os.remove(dst)
+        os.symlink( confFile["extern_projects_path"], dst )
+
+    # Create symlink for 'examples' dir
+    dst = confFile["absolut_root_path"] + "/www/examples"
+    if (os.path.exists(dst)):
+        os.remove(dst)
+    os.symlink(confFile["absolut_root_path"] + "/examples", dst)
+
+    # Create symlink for 'www' in last opened project
+    dst = confFile["absolut_root_path"] + "/" + confFile["last_opened_project"] + "/www"
+    print dst
+    if (os.path.exists(dst)):
+        os.remove(dst)
+    os.symlink( confFile["absolut_root_path"] + "/www", dst )
     
 
 #print listUserDirectories("/Users/uros/workNow/nodesign/weIO/weio/weioUser/")
