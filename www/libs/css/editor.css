@@ -1,4 +1,6 @@
 @import "../bootstrap/css/bootstrap.css";
+
+@import "../jqtree/jqtree.css";
 /* Import Twitter bootstrap
  */
 /* Main color variables
@@ -434,6 +436,9 @@ div {
   box-sizing: border-box;
 }
 /* CSS Tree menu styles */
+ul.jqtree-tree .jqtree-title {
+  color: #FFFFFF;
+}
 ol.tree {
   padding: 8px 0;
   width: 200px;
