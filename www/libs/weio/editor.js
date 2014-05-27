@@ -192,8 +192,7 @@ $(document).ready(function () {
             scaleIt();
         }                     
     });
-    
-                  
+      
     // Events for tree
     $('.tree').click(function(e){
             e.preventDefault(); 
@@ -866,7 +865,8 @@ function updateFileTree(data) {
 
     $('#tree').tree({
         // we have to give it array of dictionaries
-        data: data.data
+        data: data.data,
+        autoOpen: true
     });
   
 }
