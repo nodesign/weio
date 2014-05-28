@@ -63,6 +63,13 @@ def setPwmPeriod(pin, period):
     except:
         print "setPwmPeriod(", pin,",",period,")"
         return -1
+        
+def setPwmLimit(limit):
+    try:
+        return gpio.setPwmlimit(limit)
+    except:
+        print "setPwmLimit(", limit,")"
+        return -1
 
 def pwmWrite(pin, value) :
     try:

@@ -99,6 +99,14 @@ class WeioGpio():
 
     def analogWrite(self, pin,value):
         self.pwmWrite(pin,value)
+    
+    def setPwmLimit(self, limit):
+        if (limit>65535.0):
+            self.pwmPrecision = 65535.0
+        elif (limit<=0):
+            self.pwmPrecision = 0.1
+        else:
+            self.pwmPrecision = limit
 
     def analogWriteResolution(self, res):
         if (res==8):

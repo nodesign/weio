@@ -41,49 +41,20 @@ import platform
 # WeIO API bindings from websocket to lower levels
 # Each data argument is array of data
 # Return value is dictionary
-
-def callMillis(data) :
-    bck = {}
-    value = millis() 
-    print "millis =",value
-    bck["data"] = value
-    return bck
-    
-def callConstrain(data) :
+def callpinMode(self, data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
-        constrain(data[0], data[1], data[2],)
-        bck["data"] = value
+        inputMode(data[0],data[1])
     else :
-        print "contrain ON PC", data
-        bck["data"] = 1 # faked value
-    bck["pin"] = data[0] # pin
-    return bck
-
-def callNotone(data) :
-    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
-        notone(data[0])
-    else :
-        print "notone ON PC", data
+        print "pinMode ON PC", data
     return None
 
-def callTone(data) :
-    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
-        print "TONE VALS", len(data)
-        if (len(data)==2):
-            tone(data[0], data[1])
-        elif (len(data)==3):
-            tone(data[0], data[1], data[2])
-    else :
-        print "tone ON PC", data
-    return None
-    
 def callDigitalWrite(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         digitalWrite(data[0], data[1])
     else :
         print "digitalWrite ON PC", data
     return None
-
+    
 def callDigitalRead(data) :
     bck = {}
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
@@ -92,16 +63,9 @@ def callDigitalRead(data) :
     else :
         print "digitalRead ON PC", data
         bck["data"] = 1 # faked value
-    bck["pin"] = data[0] # pin
+        bck["pin"] = data[0] # pin
     return bck
-
-def callInputMode(self, data) :
-    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
-        inputMode(data[0],data[1])
-    else :
-        print "inputMode ON PC", data
-    return None
-
+    
 def callAnalogRead(data) :
     bck = {}
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
@@ -111,31 +75,44 @@ def callAnalogRead(data) :
     else :
         print "analogRead ON PC", data
         bck["data"] = 1023 # faked value
-    bck["pin"] = data[0]
+        bck["pin"] = data[0]
     return bck
+
+def callSetPwmPeriod(data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        setPwmPeriod(data[0],data[1])
+        print data[0], data[1]
+    else:
+        print "setPwmPeriod ON PC", data
+    return None
+    
+def callSetPwmLimit(data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        setPwmLimit(data[0])
+    else:
+        print "setPwmLimit ON PC", data
+    return None
     
 def callPwmWrite(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         pwmWrite(data[0], data[1])
+        print data[0], data[1]
     else :
         print "pwmWrite ON PC", data
     return None
-
-def callSetPwmPeriod(data) :
+    
+def callProportion(data) :
+    bck = {}
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
-        pwmPeriod(data[0])
-    else:
-        print "setPwmPeriod ON PC", data
-    return None
+        #print "From browser ", data
+        value = proportion(data[0],data[1],data[2],data[3],data[4],) # this is pin number
+        bck["data"] = value
+    else :
+        print "proportion ON PC", data
+        bck["data"] = data
+    return bck
 
-def callSetPwmLimit(data) :
-    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
-        pwmLimit(data[0])
-    else:
-        print "setPwmLimit ON PC", data
-    return None
-
-def callAttachInterrupt(data):
+def callAttachInterrupt(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         attachInterrupt(data[0], data[1])
     else:
@@ -148,12 +125,61 @@ def callDetachInterrupt(data) :
     else:
         print "detachInterrupt ON PC", data
     return None
+    
+def callDelay(data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        delay(data[0])
+    else :
+        print "delay ON PC", data
+    return None
 
+def callTone(data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        print "TONE VALS", len(data)
+        if (len(data)==2):
+            tone(data[0], data[1])
+        elif (len(data)==3):
+            tone(data[0], data[1], data[2])
+    else :
+        print "tone ON PC", data
+    return None
+
+def callNotone(data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        notone(data[0])
+    else :
+        print "notone ON PC", data
+    return None
+
+def callConstrain(data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        constrain(data[0], data[1], data[2],)
+        bck["data"] = value
+    else :
+        print "contrain ON PC", data
+        bck["data"] = 1 # faked value
+        bck["pin"] = data[0] # pin
+    return bck
+    
+
+def callMillis(data) :
+    bck = {}
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        value = millis() 
+        bck["data"] = value
+    else :
+        print "millis ON PC", data
+        bck["data"] = 0 # faked value
+    return bck
+    
 def callGetTemperature(data):
     bck = {}
-    value = lm75.getTemperature() # this is pin number
-    print "temperature =",value
-    bck["data"] = value
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        value = getTemperature() 
+        bck["data"] = value
+    else :
+        print "getTemperature ON PC", data
+        bck["data"] = 0 # faked value
     return bck
 
 def genericInterrupt(data):
@@ -163,6 +189,10 @@ def genericInterrupt(data):
     #data["data"] = value
     #self.write_message(json.dumps(data))
     pass
+    
+def callUserMesage(data):
+    print "USER TALKS", data
+    #weioRunnerGlobals.userMain
 
 def pinsInfo(self, data) :
     bck = {}
@@ -178,18 +208,23 @@ def pinsInfo(self, data) :
 weioSpells = {
     "digitalWrite":callDigitalWrite,
     "digitalRead":callDigitalRead,
-    "inputMode":callInputMode,
     "analogRead":callAnalogRead,
-    "pwmWrite":callPwmWrite,
+    "pinMode":callpinMode,
     "setPwmPeriod":callSetPwmPeriod,
     "setPwmLimit":callSetPwmLimit,
+    "pwmWrite":callPwmWrite,
+    "proportion":callProportion,
     "attachInterrupt":callAttachInterrupt,
     "detachInterrupt":callDetachInterrupt,
-    "pinsInfo": pinsInfo,
-    "getTemperature": callGetTemperature,
     "tone": callTone,
     "notone": callNotone,
     "constrain":callConstrain,
-    "millis":callMillis
+    "millis":callMillis,
+    "getTemperature": callGetTemperature,
+    "delay":callDelay,
+    "pinsInfo": pinsInfo
+    #,
+   # "message":callUserMesage
     
 }
+

@@ -170,7 +170,7 @@ var uuid = null;
 
 function getMyUuid() {
     return uuid;
-}
+};
 
 /* 
  * Generate unique UUID number, uuid4 conforms to standard
@@ -183,7 +183,7 @@ function _generateUUID(){
         return (c=='x' ? r : (r&0x7|0x8)).toString(16);
     });
     return uuid;
-}
+};
 
 
 
@@ -192,16 +192,79 @@ function isWeioReady() {
         return _weio.readyState;
     else
         return false;
-}
+};
 
 /* 
  * Low level electronics instructions from JS
  */
-function millis(callback) {
-    console.log("millis");
- 	var fName = callback.name;
-	weioCallbacks[fName] = callback
-	genericMessage("millis", fName);
+function pinMode(pin, mode) {
+    genericMessage("pinMode", [pin,mode], null);
+};
+
+function digitalWrite(pin, value) {
+	genericMessage("digitalWrite", [pin,value], null);
+};
+
+function digitalRead(pin, callback) {
+    // create new callback call
+    var fName = callback.name;
+    //console.log("callback name:" + fName);
+    weioCallbacks[fName] = callback
+    genericMessage("digitalRead", [pin],fName);
+};
+
+
+function analogRead(pin, callback) { 
+    // create new callback call
+    var fName = callback.name;
+    //console.log("callback name:" + fName);
+    // add callback function to be called when data arrives
+    weioCallbacks[fName] = callback
+    genericMessage("analogRead", [pin], fName);
+    //console.log("Callbacks", weioCallbacks);
+};
+
+function setPwmPeriod(pin, period){
+    genericMessage("setPwmPeriod", [pin,period], null);
+};
+
+function setPwmLimit(limit){
+    genericMessage("setPwmLimit", [limit], null);
+};
+
+function pwmWrite(pin, value) {
+    genericMessage("pwmWrite", [pin,value], null);
+};
+
+function analogWrite(pin, value) {
+    genericMessage("pwmWrite", [pin,value], null);
+};
+
+function proportion(value, istart, istop, ostart, ostop, callback){
+    // create new callback call
+    var fName = callback.name;
+    //console.log("callback name:" + fName);
+    // add callback function to be called when data arrives
+    weioCallbacks[fName] = callback
+    genericMessage("proportion", [value, istart, istop, ostart, ostop, callback], fName);
+    //console.log("Callbacks", weioCallbacks);
+};
+
+function delay(period){
+	genericMessage("delay",[period], null);
+};
+
+function tone(pin, frequency, duration) {
+    if(typeof duration !== "undefined"){
+    	genericMessage("tone", [pin,frequency,duration], null);
+    }
+	else{
+		genericMessage("tone", [pin,frequency], null);
+	}
+};
+
+function notone(pin) {
+	genericMessage("notone", [pin], null);
 };
 
 function constrain(x, a, b, callback) {
@@ -214,82 +277,20 @@ function constrain(x, a, b, callback) {
 	genericMessage("constrain", [x,a,b], fName);
 };
 
-function tone(pin, frequency, duration) {
-    if(typeof duration !== "undefined"){
-    	genericMessage("tone", [pin,frequency,duration], null);
-    }
-	else{
-		genericMessage("tone", [pin,frequency], null);
-	}
+function millis(callback) {
+    console.log("millis");
+ 	var fName = callback.name;
+	weioCallbacks[fName] = callback
+	genericMessage("millis", fName);
 };
-
-
-function notone(pin) {
-	genericMessage("notone", [pin], null);
-};
-
-function digitalWrite(pin, value) {
-	genericMessage("digitalWrite", [pin,value], null);
-};
-
-function analogRead(pin, callback) { 
-    // create new callback call
-    var fName = callback.name;
-    //console.log("callback name:" + fName);
-    // add callback function to be called when data arrives
-    weioCallbacks[fName] = callback
-    genericMessage("analogRead", [pin], fName);
-    //console.log("Callbacks", weioCallbacks);
-};
-
-function digitalRead(pin, callback) {
-    // create new callback call
-    var fName = callback.name;
-    //console.log("callback name:" + fName);
-    weioCallbacks[fName] = callback
-    genericMessage("digitalRead", [pin],fName);
-}
 
 function getTemperature(callback) {
      console.log("temperature");
 	 var fName = callback.name;
-	 weioCallbacks[fName] = callback
-	 genericMessage("getTemperature", fName);
+	 weioCallbacks[fName] = callback;
+	 genericMessage("getTemperature", null, fName);
 		
-	
-}
-
-function inputMode(pin, mode) {
-    genericMessage("inputMode", [pin,mode], null);
-}
-
-function pwmWrite(pin, value) {
-    genericMessage("pwmWrite", [pin,value], null);
-}
-
-function setPwmPeriod(period){
-    genericMessage("setPwmPeriod", [period], null);
-}
-
-function setPwmPeriod0(period){
-    genericMessage("setPwmPeriod0", [period], null);
-}
-
-function setPwmPeriod1(period){
-    genericMessage("setPwmPeriod1", [period], null);
-}
-
-function setPwmLimit(limit){
-    genericMessage("setPwmLimit", [limit], null);
-}
-
-function setPwmLimit0(limit){
-    genericMessage("setPwmLimit0", [limit], null);
-}
-
-function setPwmLimit1(limit){
-    genericMessage("setPwmLimit1", [limit], null);
-}
+};
 
 function getConnectedUsers(callback) {
     // create new callback call
@@ -298,17 +299,17 @@ function getConnectedUsers(callback) {
     weioCallbacks[fName] = callback
     genericMessage("getConnectedUsers", null, fName);
     //console.log("Callbacks", weioCallbacks);
-}
+};
 
 function talkTo(uuid, data){
     genericMessage("talkTo", [uuid, data], null);
-}
+};
 
 function callInbox(data) {
     if(typeof onReceiveMessage == 'function'){
         onReceiveMessage(data.data);
     }
-}
+};
 
 
 /*
@@ -328,5 +329,5 @@ function genericMessage(instruction, data, clbck) {
     } else {
         console.log("Warning, message tried to be sent when websocket was not completely opened");
     }
-}
+};
 
