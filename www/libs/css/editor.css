@@ -436,8 +436,22 @@ div {
   box-sizing: border-box;
 }
 /* CSS Tree menu styles */
+/* FILES */
 ul.jqtree-tree .jqtree-title {
-  color: #FFFFFF;
+  padding-left: 18px;
+  vertical-align: middle;
+}
+li.jqtree_common {
+  background: url(../../img/document.png) 0 0 no-repeat;
+  margin-left: 0;
+}
+ul.jqtree-tree li.jqtree-folder {
+  padding-left: 9px;
+  background: url(../../img/folder-horizontal.png) 7px 4px no-repeat;
+}
+ul.jqtree-tree .jqtree-title {
+  color: #c8c8c8;
+  vertical-align: middle;
 }
 ol.tree {
   padding: 8px 0;
