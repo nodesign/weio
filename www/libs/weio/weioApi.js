@@ -56,89 +56,94 @@ $(document).ready(function() {
     $.getJSON('www/config.json', function(data) {
         confFile = data;
         port = confFile.userAppPort;
-    });
 
-    /*
-     * Identify server address and port to open websocket
-     */
-    var _addr = location.host;
-    if (location.port == "8080") {
-        var a = _addr.split(":");
-        _addr = 'http://' + a[0] + ':' + port + '/api';
-    } else {
-        var a = 'http://' + _addr + '/api';
-        _addr = a;
-    }
-    console.log("WebSocket connecting to " + _addr);
+        /**
+         * N.B. All the handling using the port must go inside .getJSON(),
+         * otherwise Javascript handles things in parallel, while (and before) getting the JSON,
+         * using undefined values for port
+         */
+        /*
+         * Identify server address and port to open websocket
+         */
+        var _addr = location.host;
+        if (location.port == "8080") {
+            var a = _addr.split(":");
+            _addr = 'http://' + a[0] + ':' + port + '/api';
+        } else {
+            var a = 'http://' + _addr + '/api';
+            _addr = a;
+        }
+        console.log("WebSocket connecting to " + _addr);
 
-    /*
-     * WebSocket openning
-     */
-                  
-    (function() {
-      // Initialize the socket & handlers
-      var connectToServer = function() {
-        _weio = new SockJS(_addr);
-     
-        _weio.onopen = function() {
-          clearInterval(connectRetry);
-          console.log('socket opened for weio API');
-            
-          // Client info will be sent to server
-          data = {};
-          data.appCodeName = navigator.appCodeName;
-          data.appName = navigator.appName;
-          data.appVersion = navigator.appVersion;
-          data.cookieEnabled = navigator.cookieEnabled;
-          data.onLine = navigator.onLine;
-          data.platform = navigator.platform;
-          data.userAgent = navigator.userAgent;
-            
-          uuid = _generateUUID()
-          data.uuid = uuid;
-            
-          // Say hello to server with some client data
-          var rq = { "request": "_info", "data":data};
-          _weio.send(JSON.stringify(rq));
-            
-          if(typeof onWeioReady == 'function'){
-            onWeioReady();
-          }
-     
-        };
-     
-        _weio.onmessage = function(e) {
-            // JSON data is parsed into object
-            data = JSON.parse(e.data);
-            console.log(data);
-            
-            if ("requested" in data) {
-                // this is instruction that was echoed from server + data as response
-                instruction = data.requested;  
-                if (instruction in weioCallbacks) 
-                    weioCallbacks[instruction](data);
-            } else if ("serverPush" in data) {
-                // this is instruction that was echoed from server + data as response
+        /*
+        * WebSocket openning
+        */
+                    
+        (function() {
+        // Initialize the socket & handlers
+        var connectToServer = function() {
+            _weio = new SockJS(_addr);
+        
+            _weio.onopen = function() {
+            clearInterval(connectRetry);
+            console.log('socket opened for weio API');
                 
-                instruction = data.serverPush;  
-                if (instruction in weioCallbacks) 
-                    weioCallbacks[instruction](data);
+            // Client info will be sent to server
+            data = {};
+            data.appCodeName = navigator.appCodeName;
+            data.appName = navigator.appName;
+            data.appVersion = navigator.appVersion;
+            data.cookieEnabled = navigator.cookieEnabled;
+            data.onLine = navigator.onLine;
+            data.platform = navigator.platform;
+            data.userAgent = navigator.userAgent;
                 
+            uuid = _generateUUID()
+            data.uuid = uuid;
+                
+            // Say hello to server with some client data
+            var rq = { "request": "_info", "data":data};
+            _weio.send(JSON.stringify(rq));
+                
+            if(typeof onWeioReady == 'function'){
+                onWeioReady();
             }
+        
+            };
+        
+            _weio.onmessage = function(e) {
+                // JSON data is parsed into object
+                data = JSON.parse(e.data);
+                console.log(data);
+                
+                if ("requested" in data) {
+                    // this is instruction that was echoed from server + data as response
+                    instruction = data.requested;  
+                    if (instruction in weioCallbacks) 
+                        weioCallbacks[instruction](data);
+                } else if ("serverPush" in data) {
+                    // this is instruction that was echoed from server + data as response
+                    
+                    instruction = data.serverPush;  
+                    if (instruction in weioCallbacks) 
+                        weioCallbacks[instruction](data);
+                    
+                }
+            };
+        
+            _weio.onclose = function() {
+            clearInterval(connectRetry);
+            connectRetry = setInterval(connectToServer, 500);
+            console.log('socket is closed or not opened for weioApi');
+        
+            };
+        
         };
-     
-        _weio.onclose = function() {
-          clearInterval(connectRetry);
-          connectRetry = setInterval(connectToServer, 500);
-          console.log('socket is closed or not opened for weioApi');
-     
-        };
-     
-     };
-      var connectRetry = setInterval(connectToServer, 500);
-    })();
+        var connectRetry = setInterval(connectToServer, 500);
+        })();
                
-});
+    }); /* getJSON */
+}); /* document.ready() */
 
 
 /* 
