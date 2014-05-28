@@ -450,8 +450,33 @@ ul.jqtree-tree li.jqtree-folder {
   background: url(../../img/folder-horizontal.png) 7px 4px no-repeat;
 }
 ul.jqtree-tree .jqtree-title {
+  /* TEXT COLOR */
+
   color: #c8c8c8;
   vertical-align: middle;
+}
+ul.jqtree-tree .jqtree-title:hover {
+  /* TEXT COLOR */
+
+  color: white;
+  vertical-align: middle;
+}
+ul.jqtree-tree .jqtree-toggler {
+  display: block;
+  position: absolute;
+  left: -1.5em;
+  top: 10%;
+  *top: 0;
+  /* fix for ie7 */
+
+  font-size: 12px;
+  line-height: 12px;
+  font-family: arial;
+  /* fix for ie9 */
+
+  border-bottom: none;
+  color: #c8c8c8;
+  text-decoration: none;
 }
 ol.tree {
   padding: 8px 0;
