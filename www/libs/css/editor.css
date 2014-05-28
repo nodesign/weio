@@ -478,6 +478,13 @@ ul.jqtree-tree .jqtree-toggler {
   color: #c8c8c8;
   text-decoration: none;
 }
+ul.jqtree-tree li.jqtree-selected > .jqtree-element,
+ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
+  color: white;
+  background-color: none;
+  background: none;
+  text-shadow: none;
+}
 ol.tree {
   padding: 8px 0;
   width: 200px;
