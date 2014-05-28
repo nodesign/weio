@@ -25,12 +25,6 @@ if [ $# -eq 0 ]
     # No local WeIO dir supplied, get WeIO from GitHub
     git clone --depth 1 https://github.com/nodesign/weio.git
     WEIO=weio
-
-    # update IoTPy submodule
-    cd $WEIO
-    git submodule init
-    git submodule update --depth 1
-    cd ..
 else
     WEIO=$1
 fi
