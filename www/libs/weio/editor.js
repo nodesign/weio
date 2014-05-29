@@ -57,6 +57,11 @@ var editor;
 var projectRoot;
 
 /*
+ * Delete button clicked
+ */
+var deleteButtonClicked = false;
+
+/*
  * Data related to files that are opened
  * name, type, data, id, path
  */
@@ -229,38 +234,44 @@ $(document).ready(function () {
                     // console.log("FOLDER ", $(e.target).is("#deleteProjectButton"));
                     //if ($(e.target).hasClass('icon-remove')){
                         var doesExist = false;
-
-                        // Adding strip if don't exists already
-                        for (var i in editorsInStack) {
-                            if (editorsInStack[i].path == path) {
-                                doesExist = true;
+                        
+                        // Do I have to delete file or I have to open file?
+                        if (deleteButtonClicked==false) {
+                        
+                        
+                            // Adding strip if don't exists already
+                            for (var i in editorsInStack) {
+                                if (editorsInStack[i].path == path) {
+                                    doesExist = true;
+                                }
                             }
-                        }
                        
-                        if (!doesExist){
-                            // asks server to retreive file that we are intested in
-                            // regular files
-                            if ((path.indexOf(".css") != -1) || (path.indexOf(".py") != -1) || (path.indexOf(".js") != -1) ||
-                                (path.indexOf(".html") != -1) || (path.indexOf(".txt") != -1) || (path.indexOf(".md") != -1) ||
-                                (path.indexOf(".json") != -1) || (path.indexOf(".xml") != -1) || (path.indexOf(".less") != -1) ||
-                                (path.indexOf(".cofee") != -1) || (path.indexOf(".svg") != -1) ||
-                                // images
-                                (path.indexOf(".png") != -1) || (path.indexOf(".jpg") != -1) || (path.indexOf(".bmp") != -1) ||
-                                (path.indexOf(".gif") != -1) ||
-                                // tar archives
-                                (path.indexOf(".tar") != -1)
-                                ){
+                            if (!doesExist){
+                                // asks server to retreive file that we are intested in
+                                // regular files
+                                if ((path.indexOf(".css") != -1) || (path.indexOf(".py") != -1) || (path.indexOf(".js") != -1) ||
+                                    (path.indexOf(".html") != -1) || (path.indexOf(".txt") != -1) || (path.indexOf(".md") != -1) ||
+                                    (path.indexOf(".json") != -1) || (path.indexOf(".xml") != -1) || (path.indexOf(".less") != -1) ||
+                                    (path.indexOf(".cofee") != -1) || (path.indexOf(".svg") != -1) ||
+                                    // images
+                                    (path.indexOf(".png") != -1) || (path.indexOf(".jpg") != -1) || (path.indexOf(".bmp") != -1) ||
+                                    (path.indexOf(".gif") != -1) ||
+                                    // tar archives
+                                    (path.indexOf(".tar") != -1)
+                                    ){
                        
-                               var rq = { "request": "getFile", "data":path};
-                               editorSocket.send(JSON.stringify(rq));
-                               treeLock = true; // LOCK TREE INTERACTION HERE
-                           } else {treeLock = false;}
+                                   var rq = { "request": "getFile", "data":path};
+                                   editorSocket.send(JSON.stringify(rq));
+                                   treeLock = true; // LOCK TREE INTERACTION HERE
+                               } else {treeLock = false;}
                        
-                           // It's more sure to add to currentlyOpened array from
-                           // websocket callback than here in case that server don't answer
-                           } // if (!doesExist) 
+                               // It's more sure to add to currentlyOpened array from
+                               // websocket callback than here in case that server don't answer
+                               } // if (!doesExist) 
                            
-                               
+                       } else { // delete file here! and don't open strip
+                           prepareToDeleteFile(path);
+                       }
                } // if (!treeLock)       
                 
                 
@@ -274,69 +285,7 @@ $(document).ready(function () {
             }
         }
     );
-    
-    
-/*      
-    // Events for tree
-    $('.tree').click(function(e){
-            e.preventDefault(); 
-            console.log(treeLock);
-            if (!treeLock) {
-                // console.log($(this).parents());                      
-                // prepareToDeleteFile    
-                // console.log("FILE ", $(e.target).is("#deleteFileButton"));
-                // console.log("FOLDER ", $(e.target).is("#deleteProjectButton"));
-                //if ($(e.target).hasClass('icon-remove')){
-                if ($(e.target).is("#deleteFileButton")) {
-                    // kill existing file
-                    //  console.log($(e.target).parents('li.file'));      
-                    var m = $(e.target).parents('li.file');
-                    var path = $(m).children('a.fileTitle').attr('href');
 
-                    prepareToDeleteFile(path);
-                       
-                } else if ($(e.target).is("#deleteProjectButton")) { 
-                    prepareToDeleteProject();       
-                } else if ($(e.target).hasClass('fileTitle')) {
-                    // Path extraction                        
-                    var path = $(e.target).attr('href');
-                    //console.log(path);   
-                    var doesExist = false;
-
-                    // Adding strip if don't exists already
-                    for (var i in editorsInStack) {
-                        if (editorsInStack[i].path == path) {
-                            doesExist = true;
-                        }
-                    }
-                       
-                    if (!doesExist){
-                        // asks server to retreive file that we are intested in
-                        // regular files
-                        if ((path.indexOf(".css") != -1) || (path.indexOf(".py") != -1) || (path.indexOf(".js") != -1) ||
-                            (path.indexOf(".html") != -1) || (path.indexOf(".txt") != -1) || (path.indexOf(".md") != -1) ||
-                            (path.indexOf(".json") != -1) || (path.indexOf(".xml") != -1) || (path.indexOf(".less") != -1) ||
-                            (path.indexOf(".cofee") != -1) || (path.indexOf(".svg") != -1) ||
-                            // images
-                            (path.indexOf(".png") != -1) || (path.indexOf(".jpg") != -1) || (path.indexOf(".bmp") != -1) ||
-                            (path.indexOf(".gif") != -1) ||
-                            // tar archives
-                            (path.indexOf(".tar") != -1)
-                            ){
-                       
-                           var rq = { "request": "getFile", "data":path};
-                           editorSocket.send(JSON.stringify(rq));
-                           treeLock = true; // LOCK TREE INTERACTION HERE
-                       }
-                       
-                       // It's more sure to add to currentlyOpened array from
-                       // websocket callback than here in case that server don't answer
-                       } // if (!doesExist) 
-                   } // if ($(e.target).hasClass('fileTitle'))
-           } // if (!treeLock)              
-    });
-                  
-*/
     // Ace editor creation
     createEditor();
   
@@ -400,8 +349,8 @@ $(document).ready(function () {
     editorSocket.onclose = function() {
         // turn on red light if disconnected
         console.log('Dashboard Web socket is closed');
-    };            
-                  
+    };
+
     //////////////// CONSOLE TABS          
     $("#tabConsole").click(function(e) {                    
         stopDataViz();               
@@ -955,6 +904,12 @@ function updateFileTree(data) {
         // we have to give it array of dictionaries
         data: data.data,
         autoOpen: true
+    });
+    var tag = "<i class='icon-remove delButton' id='deleteButton' role='button' data-toggle='modal'></i>";
+    $(tag).appendTo("div.jqtree-element.jqtree_common");
+    $(".icon-remove.delButton").click(function(){
+     console.log("deleteButton clicked!");
+     deleteButtonClicked = true;   
     });
   
 }
