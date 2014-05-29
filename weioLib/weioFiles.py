@@ -203,17 +203,17 @@ def checkIfPathIsInUserFolder(path):
         return False
         
 def removeFile(path):
-    """Removes specified file, if folder path is passed exception is rised"""
-    if (os.path.exists(path)) :
+    """Removes specified file, if folder path is passed folder will be deleted"""
+    if (os.path.isfile(path)):
         os.remove(path)
+    elif (os.path.isdir(path)):
+        shutil.rmtree(path)
     else :
         return None
 
 def removeDirectory(path):
-    """Removes specified userProject directory even if directory is not empty. It will execute
-        only in the case when path contains userProjects in its string"""
-    if "userProjects" in path:
-        shutil.rmtree(path)
+    """Removes specified directory even if directory is not empty."""
+    shutil.rmtree(path)
     
 def disk_usage(path):
     """Return disk usage statistics about the given path.

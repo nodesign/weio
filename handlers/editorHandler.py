@@ -151,21 +151,20 @@ class WeioEditorHandler(SockJSConnection):
         
         # get configuration from file
         confFile = weioConfig.getConfiguration()
-        pathCurrentProject = confFile["user_projects_path"] + confFile["last_opened_project"]
-        
+        print "WILL BE SAVED IN ", name
         
         if ((".html" in name) or (".py" in name) or (".json" in name) or
             (".css" in name) or (".txt" in name) or (".js" in name) or
             (".md" in name) or (".svg" in name) or (".xml" in name) or
             (".less" in name) or (".coffee" in name)):
             
-            weioFiles.saveRawContentToFile(pathCurrentProject+name, contents)
+            weioFiles.saveRawContentToFile(confFile["last_opened_project"] + name, contents)
         else :
             
             #decode from base64, file is binary
             bin = contents
             bin = bin.split(",")[1] # split header, for example: "data:image/jpeg;base64,"
-            weioFiles.saveRawContentToFile(pathCurrentProject+name, bin.decode("base64"))
+            weioFiles.saveRawContentToFile(confFile["last_opened_project"] + name, bin.decode("base64"))
 
         #print (pathCurrentProject+pathname)
                 

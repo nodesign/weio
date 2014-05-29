@@ -1054,14 +1054,14 @@ function updateStatus(data) {
 function refreshFiles(data) {
     updateStatus(data);
     // refresh html filetree 
-    var rq = { "request": "getFileTreeHtml"};
+    var rq = { "request": "getFileTree"};
     editorSocket.send(JSON.stringify(rq));
 }
 
 function fileRemoved(data) {
     updateStatus(data);
     // refresh html filetree 
-    var rq = { "request": "getFileTreeHtml"};
+    var rq = { "request": "getFileTree"};
     editorSocket.send(JSON.stringify(rq));
     
     // delete strip if opened
