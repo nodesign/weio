@@ -445,9 +445,6 @@ li.jqtree_common {
   background: url(../../img/document.png) 0 0 no-repeat;
   margin-left: 0;
 }
-li.jqtree_common:hover {
-  color: white;
-}
 ul.jqtree-tree li.jqtree-folder {
   padding-left: 9px;
   background: url(../../img/folder-horizontal.png) 7px 4px no-repeat;
@@ -456,6 +453,12 @@ ul.jqtree-tree .jqtree-title {
   /* TEXT COLOR */
 
   color: #c8c8c8;
+  vertical-align: middle;
+}
+ul.jqtree-tree .jqtree-title:hover {
+  /* TEXT COLOR */
+
+  color: white;
   vertical-align: middle;
 }
 ul.jqtree-tree .jqtree-toggler {
@@ -489,7 +492,6 @@ li {
   list-style: none;
 }
 li #deleteButton {
-  z-index: 1000 !important;
   position: absolute;
   margin-top: 7px;
   right: 15px;

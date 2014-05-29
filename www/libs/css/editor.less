@@ -581,10 +581,6 @@ li.jqtree_common {
     margin-left: 0;
 }
 
-li.jqtree_common:hover {
-    color:white;
-}
-
 ul.jqtree-tree li.jqtree-folder {
     padding-left: 9px;
     background: url(../../img/folder-horizontal.png) 7px 4px no-repeat;
@@ -597,11 +593,11 @@ ul.jqtree-tree .jqtree-title {
     vertical-align: middle;
 }
 
-// ul.jqtree-tree .jqtree-title:hover {
-//     /* TEXT COLOR */
-//     color:white;
-//     vertical-align: middle;
-// }
+ul.jqtree-tree .jqtree-title:hover {
+     /* TEXT COLOR */
+     color:white;
+     vertical-align: middle;
+}
 
 ul.jqtree-tree .jqtree-toggler {
     line-height: none;
@@ -615,6 +611,7 @@ ul.jqtree-tree .jqtree-toggler:hover {
     color: #FFFFFF;
     text-decoration: none;
 }
+
 
 ul.jqtree-tree li.jqtree-selected > .jqtree-element,
 ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
@@ -633,19 +630,21 @@ ol.tree
     font-size: 12px;
     
 }
+
 li 
 { 
     position: relative; 
     margin-left: 0px;
     list-style: none;
     
+    
     #deleteButton {
-        z-index:1000 !important;
+        //display:none;
         position:absolute;
         margin-top:7px;
         right:15px;
-        
-        color:rgb(200,200,200);
+        color: rgb(200,200,200);
+        //display:none;
         /*display:none;*/
         &:hover {
             cursor:pointer;
