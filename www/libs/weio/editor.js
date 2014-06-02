@@ -893,21 +893,25 @@ function fileSaved(data) {
  */
 function updateFileTree(data) {
     
+   
     projectRoot = data.projectRoot;
-    
+    console.log("TREE RELOAD!");
+    //$("ul.jqtree_common.jqtree-tree").html("");
     //$("#tree").html();
-    //$("#tree").html(data.data);
-
+    
+        // 
     $('#tree').tree({
         // we have to give it array of dictionaries
         data: data.data,
         autoOpen: true
     });
     
+    //$('#tree1').tree('reload');
     
-    $('#tree1').tree('reload');
+    $('#tree').tree('loadData', data.data);
     // when tree is loaded then add x buttons
     $('#tree1').load(addDeleteButtons());
+    
     
 }
 
