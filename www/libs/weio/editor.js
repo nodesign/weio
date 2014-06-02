@@ -892,12 +892,10 @@ function fileSaved(data) {
  * Attaches tree event listener
  */
 function updateFileTree(data) {
-
-    //console.log(data.projectRoot);
     
     projectRoot = data.projectRoot;
     
-    $("#tree").html();
+    //$("#tree").html();
     //$("#tree").html(data.data);
 
     $('#tree').tree({
@@ -905,6 +903,7 @@ function updateFileTree(data) {
         data: data.data,
         autoOpen: true
     });
+
     var tag = "<i class='icon-remove delButton' id='deleteButton' role='button' data-toggle='modal'></i>";
     $(tag).appendTo("div.jqtree-element.jqtree_common");
     $(".icon-remove.delButton").click(function(){
@@ -1063,7 +1062,6 @@ function fileRemoved(data) {
     // refresh html filetree 
     var rq = { "request": "getFileTree"};
     editorSocket.send(JSON.stringify(rq));
-    
     // delete strip if opened
     var path = data.path;
     var doesExist = false;
