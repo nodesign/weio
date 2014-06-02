@@ -903,17 +903,26 @@ function updateFileTree(data) {
         data: data.data,
         autoOpen: true
     });
+    
+    
+    $('#tree1').tree('reload');
+    // when tree is loaded then add x buttons
+    $('#tree1').load(addDeleteButtons());
+    
+}
 
+function addDeleteButtons() {
     var tag = "<i class='icon-remove delButton' id='deleteButton' role='button' data-toggle='modal'></i>";
     $(tag).appendTo("div.jqtree-element.jqtree_common");
     $(".icon-remove.delButton").click(function(){
      console.log("deleteButton clicked!");
      deleteButtonClicked = true;   
     });
-  
 }
 
-
+function reloadEditor() {
+    window.top.reloadIFrame(null);
+}
 
 function fixedCollapsing(showMe) {
     // Open new element and hide others
