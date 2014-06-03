@@ -54,7 +54,7 @@ def callDigitalWrite(data) :
     else :
         print "digitalWrite ON PC", data
     return None
-    
+
 def callDigitalRead(data) :
     bck = {}
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
@@ -65,7 +65,7 @@ def callDigitalRead(data) :
         bck["data"] = 1 # faked value
         bck["pin"] = data[0] # pin
     return bck
-    
+
 def callAnalogRead(data) :
     bck = {}
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
@@ -85,14 +85,14 @@ def callSetPwmPeriod(data) :
     else:
         print "setPwmPeriod ON PC", data
     return None
-    
+
 def callSetPwmLimit(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         setPwmLimit(data[0])
     else:
         print "setPwmLimit ON PC", data
     return None
-    
+
 def callPwmWrite(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         pwmWrite(data[0], data[1])
@@ -100,7 +100,7 @@ def callPwmWrite(data) :
     else :
         print "pwmWrite ON PC", data
     return None
-    
+
 def callProportion(data) :
     bck = {}
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
@@ -125,7 +125,7 @@ def callDetachInterrupt(data) :
     else:
         print "detachInterrupt ON PC", data
     return None
-    
+
 def callDelay(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         delay(data[0])
@@ -160,7 +160,7 @@ def callConstrain(data) :
         bck["data"] = 1 # faked value
         bck["pin"] = data[0] # pin
     return bck
-    
+
 
 def callMillis(data) :
     bck = {}
@@ -171,11 +171,11 @@ def callMillis(data) :
         print "millis ON PC", data
         bck["data"] = 0 # faked value
     return bck
-    
+
 def callGetTemperature(data):
     bck = {}
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
-        value = getTemperature() 
+        value = getTemperature()
         bck["data"] = value
     else :
         print "getTemperature ON PC", data
@@ -189,7 +189,7 @@ def genericInterrupt(data):
     #data["data"] = value
     #self.write_message(json.dumps(data))
     pass
-    
+
 def callUserMesage(data):
     print "USER TALKS", data
     #weioRunnerGlobals.userMain
@@ -205,6 +205,9 @@ def pinsInfo(self, data) :
         bck["data"] = None # fake data here
     return bck
 
+###
+# WeIO native spells
+###
 weioSpells = {
     "digitalWrite":callDigitalWrite,
     "digitalRead":callDigitalRead,
@@ -225,6 +228,22 @@ weioSpells = {
     "pinsInfo": pinsInfo
     #,
    # "message":callUserMesage
-    
 }
+
+###
+# User added spells (handlers)
+###
+weioUserSpells = {}
+
+def addUserEvent(event, handler):
+    global weioUserSpells
+    print "Adding event ", event
+    print "and handler ", handler
+    weioUserSpells[event] = handler
+
+    print weioUserSpells
+
+def removeUserEvents():
+    global weioUserSpells
+    weioUserSpells.clear()
 

@@ -242,7 +242,7 @@ class WeioDashBoardHandler(SockJSConnection):
 
         # destroy symlinks before
         # os.unlink(config["user_projects_path"]+config["last_opened_project"]+"weioLibs")
-        copytree(config["user_projects_path"]+config["last_opened_project"],config["user_projects_path"]+path)
+        copytree( config["user_projects_path"] + config["last_opened_project"], config["user_projects_path"] + path )
 
         data = {}
         data['requested'] = "status"

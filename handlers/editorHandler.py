@@ -159,12 +159,11 @@ class WeioEditorHandler(SockJSConnection):
             (".less" in name) or (".coffee" in name)):
             
             weioFiles.saveRawContentToFile(confFile["last_opened_project"] + name, contents)
-        else :
-            
+        else:
             #decode from base64, file is binary
             bin = contents
             bin = bin.split(",")[1] # split header, for example: "data:image/jpeg;base64,"
-            weioFiles.saveRawContentToFile(confFile["last_opened_project"] + name, bin.decode("base64"))
+            weioFiles.saveRawContentToFile(confFile["last_opened_project"] + "/" + name, bin.decode("base64"))
 
         #print (pathCurrentProject+pathname)
                 

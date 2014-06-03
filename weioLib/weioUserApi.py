@@ -178,8 +178,8 @@ class WeioAttach():
         self.procs[procId] = proc
 
     def event(self, event, handler):
-        event = WeioApiEvent(event, handler)
-        self.events[event] = event
+        e = WeioApiEvent(event, handler)
+        self.events[event] = e
 
     def interrupt(self, pin, edge, event):
         intr = WeioApiInterrupt(pin, edge, event)
@@ -197,9 +197,6 @@ attach = None
 shared = None
 console = None
 
-#attach = WeioAttach()
-#shared = WeioSharedVar()
-#console = WeioPrint()
-
+# Global WeIO gpio object
 gpio = None
 

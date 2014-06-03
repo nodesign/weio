@@ -25,8 +25,11 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 # Import globals for user Tornado
 from weioLib import weioRunnerGlobals
 
+from weioLib import weioParser
+
 # Global list of user processes
 userProcessList = []
+userEventList = []
 
 from weioLib import weioGpio
 from weioLib import weioIO
@@ -50,13 +53,9 @@ class WeioIndexHandler(web.RequestHandler):
            else :
               path = "www/error404.html"
 
-
         path = "www/userIndex.html"
 
-
-
         #path = confFile['last_opened_project'] + "index.html"
-
 
         self.render(path, error="")
 
@@ -85,6 +84,7 @@ class UserControl():
 
         # List of user processes
         self.userProcessList = []
+        self.userEventList = []
 
     def setConnectionObject(self, connection):
         # captures only the last connection
@@ -96,10 +96,16 @@ class UserControl():
             self.connection.send(data)
 
     def start(self, rq={'request':'play'}):
+
         print "STARTING USER PROCESSES"
 
-        if (len(self.userProcessList)!=0):
-            self.stop()
+        # Add user events
+        print "ADDING USER EVENTS"
+        for key in weioUserApi.attach.events:
+            print weioUserApi.attach.events[key].handler
+            weioParser.addUserEvent(weioUserApi.attach.events[key].event,
+                    weioUserApi.attach.events[key].handler)
+
 
         if (weioIO.gpio != None):
             if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
@@ -124,18 +130,28 @@ class UserControl():
                 print "STARTING PROCESS PID", p.pid
 
     def stop(self):
+        # Removing all User Events
+        weioParser.removeUserEvents()
+
         print "STOPPING USER PROCESSES"
+
+        print ">>> userProcessList = ", self.userProcessList
 
         for p in self.userProcessList:
             print "KILLING PROCESS PID", p.pid
             p.terminate()
             p.join(0.5)
-            try :
+            try:
                 # If job is not properly done than kill it with bazooka
                 os.kill(p.pid, 9) # very violent
             except:
                 pass
             self.userProcessList.remove(p)
+ 
+
+        print "OK"
+        print "### userProcessList = ", self.userProcessList
+
 
         if (weioIO.gpio != None):
             if (weioRunnerGlobals.WEIO_SERIAL_LINKED == True):
@@ -157,6 +173,11 @@ class UserControl():
             return
 
         if (cmd == "*START*"):
+            # First stop all pending processes
+            # and reset all pending events before re-loading new ones
+            if (len(self.userProcessList)!=0):
+                self.stop()
+
             # Re-load user main (in case it changed)
             self.userMain = self.loadUserProjectMain()
 
@@ -173,11 +194,15 @@ class UserControl():
         confFile = weioConfig.getConfiguration()
 
         # Get the last name of project and run it
-        projectModule = confFile["last_opened_project"].replace('/', '.') + "main"
+        projectModule = confFile["last_opened_project"].replace('/', '.')
+        if projectModule[-1] == '.':
+            projectModule = projectModule + "main"
+        else:
+            projectModule = projectModule + ".main"
         print projectModule
-        
+
         result = None
-        
+
         if (self.lastCalledProjectPath == projectModule):
             print "RELOADING"
             result = reload(self.userMain)
@@ -190,10 +215,10 @@ class UserControl():
             except :
                 print "MODULE CAN'T BE LOADED"
                 result = None
-                
+
         self.lastCalledProjectPath = projectModule
         return result
-        
+
 # User Tornado signal handler
 def signalHandler(userControl, sig, frame):
         #logging.warning('Caught signal: %s', sig)
