@@ -316,12 +316,13 @@ class WeioDashBoardHandler(SockJSConnection):
         data['requested'] = rq['request']
 
         splitted = config["last_opened_project"].split("/")
-        lp = splitted[2]
-        storage = splitted[0]
+        print "CHOOSE NAME", splitted
+        lp = splitted[-1]
 
-        if (weioFiles.checkIfDirectoryExists(config["user_projects_path"]+config["last_opened_project"])):
-            weioFiles.createTarfile( config["user_projects_path"] + config["last_opened_project"] + lp + ".tar",
-                    config["user_projects_path"] + config["last_opened_project"])
+
+        if (weioFiles.checkIfDirectoryExists(config["last_opened_project"])):
+            weioFiles.createTarfile(config["last_opened_project"] + "/" + lp + ".tar",
+                    config["last_opened_project"]+"/")
 
             data['status'] = "Project archived"
             print "project archived"
