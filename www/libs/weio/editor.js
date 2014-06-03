@@ -224,9 +224,9 @@ $(document).ready(function () {
                         runTree = false;
                     }
                 }
-                path = projectRoot + "/" + path;
-                
-                
+                path = projectRoot + path;
+
+
                 if (!treeLock) {
                     // console.log($(this).parents());                      
                     // prepareToDeleteFile    
@@ -259,7 +259,7 @@ $(document).ready(function () {
                                     // tar archives
                                     (path.indexOf(".tar") != -1)
                                     ){
-                       
+                                
                                    var rq = { "request": "getFile", "data":path};
                                    editorSocket.send(JSON.stringify(rq));
                                    treeLock = true; // LOCK TREE INTERACTION HERE

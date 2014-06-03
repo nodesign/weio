@@ -147,7 +147,7 @@ class WeioDashBoardHandler(SockJSConnection):
             allUserProjects.append(a)
 
         # Flash
-        flashDir = config["absolut_root_path"] + "/www/userProjects"
+        flashDir = config["extern_projects_path"] + "/flash"
         if (os.path.exists(flashDir)):
             dirs = os.walk(flashDir).next()[1]
             a = {"storageName":"flash", "projects":dirs}
@@ -178,19 +178,14 @@ class WeioDashBoardHandler(SockJSConnection):
         storage = os.path.dirname(virtPath)
 
         if (storage == "examples"):
-            path = virtPath
+            path = config["absolut_root_path"] + "/" + virtPath
         elif (storage == "flash"):
-            if (platform.machine() == 'mips'):
-                path = "/userProjects/" + os.path.basename(virtPath)
-            else:
-                path = "./userProjects/" + os.path.basename(virtPath)
+            path = config["extern_projects_path"] + "/" + virtPath
         elif (storage == "sd"):
-            if (platform.machine() == 'mips'):
-                path = "TBD" + os.path.basename(virtPath)
-            else:
-                path = "./userProjects/" + os.path.basename(virtPath)
-        
-        config["last_opened_project"] = path + "/"
+            # TODO
+            pass
+
+        config["last_opened_project"] = path
         weioConfig.saveConfiguration(config);
 
         data = {}
@@ -239,22 +234,22 @@ class WeioDashBoardHandler(SockJSConnection):
         config = weioConfig.getConfiguration()
 
         path = rq['storageUnit'] + "/userProjects/" + rq['path']
-
+        print "DUPLICATE",rq
         # destroy symlinks before
         # os.unlink(config["user_projects_path"]+config["last_opened_project"]+"weioLibs")
-        copytree(config["user_projects_path"]+config["last_opened_project"],config["user_projects_path"]+path)
-
-        data = {}
-        data['requested'] = "status"
-        data['status'] = "Project duplicated"
-        self.send(json.dumps(data))
+        # copytree(config["user_projects_path"]+config["last_opened_project"],config["user_projects_path"]+path)
+# 
+#         data = {}
+#         data['requested'] = "status"
+#         data['status'] = "Project duplicated"
+#         self.send(json.dumps(data))
 
         # now go to newely duplicated project
 
-        data['request'] = "changeProject"
-        data['data'] = path
+#        data['request'] = "changeProject"
+#        data['data'] = path
 
-        self.changeProject(data)
+#        self.changeProject(data)
 
     def deleteCurrentProject(self, rq):
         data = {}

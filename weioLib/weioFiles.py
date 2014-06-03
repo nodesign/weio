@@ -258,23 +258,23 @@ def recreateSymlinks():
     confFile = weioConfig.getConfiguration()
 
     # Create synlink for extern user projects        
-    if (checkIfDirectoryExists(confFile["extern_projects_path"])):
-        dst = confFile["absolut_root_path"] + "/www/userProjects"
-        if (os.path.lexists(dst)):
-            os.remove(dst)
-        os.symlink( confFile["extern_projects_path"], dst )
-
-    # Create symlink for 'examples' dir
-    dst = confFile["absolut_root_path"] + "/www/examples"
-    if (os.path.lexists(dst)):
-        os.remove(dst)
-    os.symlink(confFile["absolut_root_path"] + "/examples", dst)
-
-    # Create symlink for 'www' in last opened project
-    dst = confFile["absolut_root_path"] + "/" + confFile["last_opened_project"] + "/www"
-    if (os.path.lexists(dst)):
-        os.remove(dst)
-    os.symlink( confFile["absolut_root_path"] + "/www", dst )
+    # if (checkIfDirectoryExists(confFile["extern_projects_path"])):
+    #     dst = confFile["absolut_root_path"] + "/www/userProjects"
+    #     if (os.path.lexists(dst)):
+    #         os.remove(dst)
+    #     os.symlink( confFile["extern_projects_path"], dst )
+    # 
+    # # Create symlink for 'examples' dir
+    # dst = confFile["absolut_root_path"] + "/www/examples"
+    # if (os.path.lexists(dst)):
+    #     os.remove(dst)
+    # os.symlink(confFile["absolut_root_path"] + "/examples", dst)
+    # 
+    # # Create symlink for 'www' in last opened project
+    # dst = confFile["last_opened_project"] + "/www"
+    # if (os.path.lexists(dst)):
+    #     os.remove(dst)
+    # os.symlink( confFile["absolut_root_path"] + "/www", dst )
     
 
 #print listUserDirectories("/Users/uros/workNow/nodesign/weIO/weio/weioUser/")

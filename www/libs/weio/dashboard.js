@@ -613,7 +613,8 @@ function updateProjects(data) {
         });
         tag+='</ul></ul></li>\n';
     });
-
+    
+    console.log("storage", data.data);
     //console.log(tag);
     $("#userProjectsList").empty();
     $("#userProjectsList").append(tag);

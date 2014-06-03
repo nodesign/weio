@@ -173,11 +173,17 @@ class UserControl():
         confFile = weioConfig.getConfiguration()
 
         # Get the last name of project and run it
-        projectModule = confFile["last_opened_project"].replace('/', '.') + "main"
-        print projectModule
-        
+        projectModule = ""
+        pmod = confFile["last_opened_project"].split("/")
+        print pmod
+        for i in range(len(pmod)-2, len(pmod)):
+            projectModule = projectModule+pmod[i] + "."
+        projectModule = projectModule + "main"
+
+        #projectModule = confFile["last_opened_project"].replace('/', '.') + "main"
+
         result = None
-        
+
         if (self.lastCalledProjectPath == projectModule):
             print "RELOADING"
             result = reload(self.userMain)
@@ -190,10 +196,10 @@ class UserControl():
             except :
                 print "MODULE CAN'T BE LOADED"
                 result = None
-                
+
         self.lastCalledProjectPath = projectModule
         return result
-        
+
 # User Tornado signal handler
 def signalHandler(userControl, sig, frame):
         #logging.warning('Caught signal: %s', sig)
