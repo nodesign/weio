@@ -318,7 +318,10 @@ function runPreview() {
             // generate random number to prevent loading page from cache
             var randomNumber = Math.random();
             
-            $(".iframeContainerIndex").attr("src", confFile.last_opened_project + "index.html?" + randomNumber);
+            var sp = confFile.last_opened_project.split("/");
+            var path = sp[sp.length-2] + "/" + sp[sp.length-1];
+            
+            $(".iframeContainerIndex").attr("src", path + "/index.html?" + randomNumber);
             // console.log(confFile.weio_lib_path);
             $(".iframeContainerIndex").css("height", screen.height-60 + "px");
             $(".iframeContainerIndex").css("margin-top", screen.height+60 + "px");
