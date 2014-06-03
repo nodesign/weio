@@ -700,8 +700,10 @@ function newProjectIsCreated(data) {
     
     var rq = { "request": "getUserProjetsFolderList"};
     dashboard.send(JSON.stringify(rq));
+    rq = { "request": "getLastProjectName"};
+    dashboard.send(JSON.stringify(rq));
     reloadIFrame();
-    //changeProject(data.path);
+
 }
 
 

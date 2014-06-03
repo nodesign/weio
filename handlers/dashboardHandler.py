@@ -262,7 +262,7 @@ class WeioDashBoardHandler(SockJSConnection):
         data['status'] = "Project duplicated"
         self.send(json.dumps(data))
 
-        self.newProject(data)
+        self.newProject(rq)
 
     def deleteCurrentProject(self, rq):
         data = {}
