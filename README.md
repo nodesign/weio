@@ -1,32 +1,20 @@
-WEIO Web Of Things Platform
-Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
-All rights reserved
+WeIO - Connected. Smart. Simple.
+================================
 
-           ##      ## ######## ####  #######  
-           ##  ##  ## ##        ##  ##     ## 
-           ##  ##  ## ##        ##  ##     ## 
-           ##  ##  ## ######    ##  ##     ## 
-           ##  ##  ## ##        ##  ##     ## 
-           ##  ##  ## ##        ##  ##     ## 
-            ###  ###  ######## ####  #######
+![Alt text](http://we-io.net/img/weioBack.jpg "WeIO Board")
 
-                Web Of Things Platform 
+WeIO is an innovative open source hardware and software platform for rapid prototyping and creation of wirelessly connected interactive objects using only popular web languages such as HTML5 or Python.
 
-This file is part of WEIO
-WEIO is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+With WeIO making connected objects becomes as simple as making websites.
 
-WEIO is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+![Alt text](http://we-io.net/img/weioIDE.jpg "WeIO IDE")
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+WeIO removes a burden of technically complex embedded and system software programming making sophisticated object design easy to prototype, so that users can focus on the design and innovation.
 
-Authors : 
-Uros PETREVSKI <uros@nodesign.net>
-Drasko DRASKOVIC <drasko.draskovic@gmail.com>
+With WeIO everyone can easily create objects that sense the environment (sensors) or act upon the command (actuators) from the distance and from any device (PC, mobile phone or tablet). This way you can check the temperature, detect movements, control lights, move servo motors and do many other interesting things, making your objects smart and interactive. In addition, you can design rich graphical user interfaces for your intelligent things.
 
+One more advantage of WeIO is that it can create real standalone applications - i.e. objects that have their own intelligence. Thanks to WeIO’s multi-process design, these smart objects can do multiple tasks simultaneously while sending and receiving messages at the same time.
+
+WeIO consists of the development board and WeIO IDE, locally served (not from the cloud) web application that lets you program and control all inputs and outputs on the board from any browser. Programming of WeIO is easy and fun, as it is done with HTML5 or Python - languages that are loved by designers.
+
+WeIO project opens the doors to creating new and original objects that never existed before. And it will be available to the whole community - as an Open Source and Open Hardware. Possibility for everyone to quickly make industry-grade smart and connected objects that are practically ready for production and market is amazing! In the new era of specialized fablabs for innovative enterprises and DIY production tool like WeIO will find a significant place. 
