@@ -124,7 +124,7 @@ class WeioDashBoardHandler(SockJSConnection):
 
         platformS += "WeIO version " + config["weio_version"] + " with Python " + \
                             platform.python_version() + " on " + platform.system() + "<br>"
-        platformS += "GPL 3, Nodesign.net 2013 Uros Petrevski & Drasko Draskovic <br>"
+        platformS += "GPL 3, Nodesign.net 2013-2014 Uros Petrevski & Drasko Draskovic <br>"
 
         data['serverPush'] = 'sysConsole'
         data['data'] = platformS
@@ -140,7 +140,7 @@ class WeioDashBoardHandler(SockJSConnection):
         allUserProjects = []
 
         # Examples
-        examplesDir = "./examples"
+        examplesDir = config["absolut_root_path"] + "/examples"
         if (os.path.exists(examplesDir)):
             dirs = os.walk(examplesDir).next()[1]
             a = {"storageName":"examples", "projects":dirs}
@@ -153,19 +153,19 @@ class WeioDashBoardHandler(SockJSConnection):
             a = {"storageName":"flash", "projects":dirs}
             allUserProjects.append(a)
 
-        # SD
-        if (platform.machine() == 'mips'):
-            sdDir = "/sd"
-        else:
-            sdDir = ""
-        if (os.path.exists(sdDir)):
-            dirs = os.walk(sdDir).next()[1]
-            a = {"storageName":"flash", "projects":dirs}
-            allUserProjects.append(a)
+        # TODO
+        # # SD
+        # if (platform.machine() == 'mips'):
+        #     sdDir = "/sd"
+        # else:
+        #     sdDir = ""
+        # if (os.path.exists(sdDir)):
+        #     dirs = os.walk(sdDir).next()[1]
+        #     a = {"storageName":"flash", "projects":dirs}
+        #     allUserProjects.append(a)
 
         data['data'] = allUserProjects
 
-        #TODO add listing for examples, flash & sd card storage
         self.send(json.dumps(data))
 
     def changeProject(self,rq):
@@ -176,14 +176,18 @@ class WeioDashBoardHandler(SockJSConnection):
 
         virtPath = rq['data']
         storage = os.path.dirname(virtPath)
-
+        print 'STORAGE', storage
+        path = ""
         if (storage == "examples"):
+            print "EXAMPLE DETECTED"
             path = config["absolut_root_path"] + "/" + virtPath
         elif (storage == "flash"):
+            print "FLASH DETECTED"
             path = config["extern_projects_path"] + "/" + virtPath
         elif (storage == "sd"):
             # TODO
             pass
+        print 'STORAGE', path
 
         config["last_opened_project"] = path
         weioConfig.saveConfiguration(config);
@@ -198,7 +202,6 @@ class WeioDashBoardHandler(SockJSConnection):
             rq['request'] = rqlist[i]
             callbacks[ rq['request'] ](self, rq)
 
-
     def sendUserData(self,rq):
         data = {}
         # get configuration from file
@@ -210,46 +213,56 @@ class WeioDashBoardHandler(SockJSConnection):
 
     def newProject(self, rq):
         config = weioConfig.getConfiguration()
-        #print "NEW PROJECT", rq
+        print "NEW PROJECT", rq
         data = {}
         data['requested'] = rq['request']
-        path = rq['storageUnit'] + "/userProjects/" + rq['path']
+        path = ""
+        storage = rq['storageUnit']
 
-        weioFiles.createDirectory(config["user_projects_path"] + path)
-        # ADD HERE SOME DEFAULT FILES
-        # adding __init__.py
-        weioFiles.saveRawContentToFile(config["user_projects_path"] + path + "/__init__.py", "")
+        if (storage == "examples"):
+            path = config["absolut_root_path"] + "/" + rq['storageUnit'] + "/" + rq['path']
+        elif (storage == "flash"):
+            path = config["extern_projects_path"] + "/" + rq['storageUnit'] + "/" + rq['path']
+        elif (storage == "sd"):
+            # TODO
+            pass
+        print "CREATE PROJECT", path
+        if (len(path)>0):
+            weioFiles.createDirectory(path)
+            # ADD HERE SOME DEFAULT FILES
+            # adding __init__.py
+            weioFiles.saveRawContentToFile(path + "/__init__.py", "")
 
-        # copy all files from directory boilerplate to destination
-        mypath = "www/libs/weio/boilerPlate/"
-        onlyfiles = [ f for f in os.listdir(mypath) if isfile(join(mypath,f)) ]
-        for f in onlyfiles:
-            copyfile(mypath+f, config["user_projects_path"] + path +"/"+f)
+            # copy all files from directory boilerplate to destination
+            mypath = "www/libs/weio/boilerPlate/"
+            onlyfiles = [ f for f in os.listdir(mypath) if isfile(join(mypath,f)) ]
+            for f in onlyfiles:
+                copyfile(mypath+f, path +"/"+f)
+            
+            print "LASTOPENED new project", path
+            config["last_opened_project"] = path
+            weioConfig.saveConfiguration(config);
 
-        data['status'] = "New project created"
-        data['path'] = path
-        self.send(json.dumps(data))
+            data['status'] = "New project created"
+            data['path'] = path
+            self.send(json.dumps(data))
+        else:
+            print "BAD PATHNAME"
 
     def duplicateProject(self, rq):
         config = weioConfig.getConfiguration()
 
-        path = rq['storageUnit'] + "/userProjects/" + rq['path']
         print "DUPLICATE",rq
-        # destroy symlinks before
-        # os.unlink(config["user_projects_path"]+config["last_opened_project"]+"weioLibs")
-        # copytree(config["user_projects_path"]+config["last_opened_project"],config["user_projects_path"]+path)
-# 
-#         data = {}
-#         data['requested'] = "status"
-#         data['status'] = "Project duplicated"
-#         self.send(json.dumps(data))
 
-        # now go to newely duplicated project
 
-#        data['request'] = "changeProject"
-#        data['data'] = path
+        rq['request'] = 'createNewProject'
 
-#        self.changeProject(data)
+        data = {}
+        data['requested'] = "status"
+        data['status'] = "Project duplicated"
+        self.send(json.dumps(data))
+
+        self.newProject(data)
 
     def deleteCurrentProject(self, rq):
         data = {}
@@ -307,7 +320,7 @@ class WeioDashBoardHandler(SockJSConnection):
         storage = splitted[0]
 
         if (weioFiles.checkIfDirectoryExists(config["user_projects_path"]+config["last_opened_project"])):
-            weioFiles.createTarfile( config["user_projects_path"] + config["last_opened_project"] + lp + ".tar", 
+            weioFiles.createTarfile( config["user_projects_path"] + config["last_opened_project"] + lp + ".tar",
                     config["user_projects_path"] + config["last_opened_project"])
 
             data['status'] = "Project archived"

@@ -356,6 +356,7 @@ function runSettings() {
 function createNewProject() {
     projectName = $("#newProjectName").val();
     var rq = { "request": "createNewProject", "path":projectName, "storageUnit":selectedStorageUnit};
+    console.log("STORAGE UNIT CREATE NEW PROJECT", selectedStorageUnit);
     dashboard.send(JSON.stringify(rq));
 }
 
@@ -608,7 +609,7 @@ function updateProjects(data) {
         tag+='<ul class="dropdown-menu scroll-menu" id="' + val.storageName + 'UserProjects">\n';
         val.projects.forEach( function(p) {
             var s = "'" + val.storageName + "/" + String(p) + "'\n";
-            console.log(s);
+            console.log("DROP LIST ******************************************",s);
             tag += '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + p + '</a></li>\n';
         });
         tag+='</ul></ul></li>\n';
@@ -618,10 +619,9 @@ function updateProjects(data) {
     //console.log(tag);
     $("#userProjectsList").empty();
     $("#userProjectsList").append(tag);
-    
-    
+
     tag = "";
-    
+
     tag+='<ul class="nav nav-pills">';
     for (var i=0; i<data.data.length; i++) {
         if (i==0)
@@ -700,8 +700,8 @@ function newProjectIsCreated(data) {
     
     var rq = { "request": "getUserProjetsFolderList"};
     dashboard.send(JSON.stringify(rq));
-    
-    changeProject(data.path);
+    reloadIFrame();
+    //changeProject(data.path);
 }
 
 
