@@ -25,7 +25,8 @@
                       confFile = data;
                       // generate random number to prevent loading page from cache
                       var randomNumber = Math.random();
-                      $(".userIndex").attr("src", confFile.last_opened_project + "/index.html?"+randomNumber);
+                      var path = confFile.last_opened_project.split("www/");
+                      $(".userIndex").attr("src", path[1] + "/index.html?"+randomNumber);
                       
                       });
                 

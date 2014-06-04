@@ -218,6 +218,10 @@ class WeioDashBoardHandler(SockJSConnection):
             # ADD HERE SOME DEFAULT FILES
             # adding __init__.py
             weioFiles.saveRawContentToFile(path + "/__init__.py", "")
+            
+            # make symlink to www/
+            
+            os.symlink("www/", path + "/www")
 
             # copy all files from directory boilerplate to destination
             mypath = "www/libs/weio/boilerPlate/"
