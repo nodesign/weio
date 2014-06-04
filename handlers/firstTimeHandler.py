@@ -1,18 +1,18 @@
-### 
+###
 #
 # WEIO Web Of Things Platform
 # Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
 # All rights reserved
 #
-#               ##      ## ######## ####  #######  
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ######    ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
+#               ##      ## ######## ####  #######
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ######    ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
 #                ###  ###  ######## ####  #######
 #
-#                    Web Of Things Platform 
+#                    Web Of Things Platform
 #
 # This file is part of WEIO
 # WEIO is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Authors : 
+# Authors :
 # Uros PETREVSKI <uros@nodesign.net>
 # Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 #
@@ -58,32 +58,32 @@ import json
 
 
 
-# Wifi detection route handler  
+# Wifi detection route handler
 class WeioFirstTimeHandler(SockJSConnection):
-    
+
     global callbacks
-    
+
     def runWeio(self,rq):
-        
+
         fullName = rq['fullName']
         passwd1 = rq['password1']
         passwd2 = rq['password2']
         dnsName = rq['dnsName']
-        
+
         # This is two letters country code to be used to setup wifi region
         countryCode = rq['countryCode']
-        
+
         passwd = ""
         if (passwd1==passwd2):
-            passwd = passwd1 
-        
+            passwd = passwd1
+
         data = {}
         if (fullName!="" and passwd!="" and dnsName!=""):
             confFile = weioConfig.getConfiguration()
             # OK now is time to setup username and password
             confFile['user'] = fullName
             weioConfig.saveConfiguration(confFile)
-            
+
             output = "OK PASSWD"
             #echo -e "weio\nweio" | passwd
             command = "sh scripts/change_root_pswd.sh " + passwd
@@ -92,12 +92,10 @@ class WeioFirstTimeHandler(SockJSConnection):
                 # ATTENTION, DON'T MESS WITH THIS STUFF ON YOUR LOCAL COMPUTER
                 # First protection is mips detection, second is your own OS
                 # who hopefully needs sudo to change passwd on the local machine
-                if (platform.machine() == 'mips') : 
-                    
+                if (platform.machine() == 'mips') :
+
                     print Popen(command, stdout=PIPE, shell=True).stdout.read()
-                    
-                    path = confFile['user_projects_path'] + confFile['last_opened_project'] + "index.html"
-                    
+
                     firstTimeSwitch = "NO"
                     confFile['first_time_run']=firstTimeSwitch
                     weioConfig.saveConfiguration(confFile)
@@ -110,12 +108,12 @@ class WeioFirstTimeHandler(SockJSConnection):
                 print("Comand ERROR : " + str(output) + " " + command)
                 output = "ERR_CMD"
             print output
-        
+
             #sucess
             data['requested'] = rq['request']
             data['data'] = 'OK'
             self.send(json.dumps(data))
-    
+
         else :
 
             if (fullName==""):
@@ -130,11 +128,11 @@ class WeioFirstTimeHandler(SockJSConnection):
                 data['serverPush'] = 'error'
                 data['data'] = 'Please enter valid DNS name'
                 self.send(json.dumps(data))
-    
-    
+
+
     def pushBasicInfo(self,rq):
         # here we get basic info from WeIO
-        
+
         myIp = weioIpAddress.getLocalIpAddress()
 
         if (platform=='mips') :
@@ -147,7 +145,7 @@ class WeioFirstTimeHandler(SockJSConnection):
         data['ip'] = myIp
         data['dnsName'] = myAvahiName
         self.send(json.dumps(data))
-    
+
 
     #########################################################################
     # DEFINE CALLBACKS IN DICTIONARY
@@ -156,23 +154,23 @@ class WeioFirstTimeHandler(SockJSConnection):
     callbacks = {
         'runWeio' : runWeio,
         'getBasicInfo' : pushBasicInfo,
-    }   
-    
+    }
+
     def on_open(self, info) :
         pass
-    
-    
+
+
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
         req = json.loads(data)
         self.serve(req)
-    
+
     def serve(self, rq):
         """Parsed input from browser ready to be served"""
         # Call callback by key directly from socket
         global callbacks
         request = rq['request']
-        
+
         if request in callbacks :
             callbacks[request](self, rq)
         else :

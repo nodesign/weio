@@ -152,17 +152,20 @@ class WeioDashBoardHandler(SockJSConnection):
             dirs = os.walk(flashDir).next()[1]
             a = {"storageName":"flash", "projects":dirs}
             allUserProjects.append(a)
+            
+        # SD
+        flashDir = "www/sd"
+        if (os.path.exists(flashDir)):
+            dirs = os.walk(flashDir).next()[1]
+            a = {"storageName":"sd", "projects":dirs}
+            allUserProjects.append(a)
 
-        # TODO
-        # # SD
-        # if (platform.machine() == 'mips'):
-        #     sdDir = "/sd"
-        # else:
-        #     sdDir = ""
-        # if (os.path.exists(sdDir)):
-        #     dirs = os.walk(sdDir).next()[1]
-        #     a = {"storageName":"flash", "projects":dirs}
-        #     allUserProjects.append(a)
+        # USB flashDir
+        flashDir = "www/usbFlash"
+        if (os.path.exists(flashDir)):
+            dirs = os.walk(flashDir).next()[1]
+            a = {"storageName":"usbFlash", "projects":dirs}
+            allUserProjects.append(a)
 
         data['data'] = allUserProjects
 
@@ -258,27 +261,28 @@ class WeioDashBoardHandler(SockJSConnection):
         self.newProject(rq)
 
     def deleteCurrentProject(self, rq):
-        data = {}
-        data['requested'] = rq['request']
-
-        config = weioConfig.getConfiguration()
-        projectToKill = config["last_opened_project"]
-
-        print "PROJECT TO KILL ", projectToKill
-
-        weioFiles.removeDirectory(config["user_projects_path"]+projectToKill)
-
-        folders = weioFiles.listOnlyFolders(config["user_projects_path"]+ "examples/userProjects")
-
-        if len(folders) > 0 :
-         config["last_opened_project"] = folders[0]
-         weioConfig.saveConfiguration(config)
-
-         data['data'] = "reload page"
-        else :
-         data['data'] = "ask to create new project"
-
-        self.send(json.dumps(data))
+        pass
+        # data = {}
+        # data['requested'] = rq['request']
+        # 
+        # config = weioConfig.getConfiguration()
+        # projectToKill = config["last_opened_project"]
+        # 
+        # print "PROJECT TO KILL ", projectToKill
+        # 
+        # weioFiles.removeDirectory(config["user_projects_path"]+projectToKill)
+        # 
+        # folders = weioFiles.listOnlyFolders(config["user_projects_path"]+ "examples/userProjects")
+        # 
+        # if len(folders) > 0 :
+        #  config["last_opened_project"] = folders[0]
+        #  weioConfig.saveConfiguration(config)
+        # 
+        #  data['data'] = "reload page"
+        # else :
+        #  data['data'] = "ask to create new project"
+        # 
+        # self.send(json.dumps(data))
 
     def iteratePacketRequests(self, rq) :
         requests = rq["packets"]

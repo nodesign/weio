@@ -1,18 +1,18 @@
-### 
+###
 #
 # WEIO Web Of Things Platform
 # Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
 # All rights reserved
 #
-#               ##      ## ######## ####  #######  
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ######    ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
+#               ##      ## ######## ####  #######
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ######    ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
 #                ###  ###  ######## ####  #######
 #
-#                    Web Of Things Platform 
+#                    Web Of Things Platform
 #
 # This file is part of WEIO
 # WEIO is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Authors : 
+# Authors :
 # Uros PETREVSKI <uros@nodesign.net>
 # Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 #
@@ -47,6 +47,9 @@ from shutil import move
 import tarfile
 
 import json
+
+# IMPORT BASIC CONFIGURATION FILE
+from weioLib import weioConfig
 
 #from sys import argv
 
@@ -88,7 +91,7 @@ def getFileTree(path) :
     t = []
     t.append(td)
 
-    #print(json.dumps(t, indent=4, sort_keys=True)) 
+    #print(json.dumps(t, indent=4, sort_keys=True))
     return t
 
 def listOnlyFolders(path):
@@ -96,12 +99,12 @@ def listOnlyFolders(path):
 
     print "AAA ############## ", path
     return os.walk(path).next()[1]
-            
+
 def getFileType(path):
     """Extracts file extension and matches with proper name"""
     if (os.path.exists(path)) :
         extension = os.path.splitext(path)[1]
-            
+
         types = {
         ".css" : "css",
         ".py": "python",
@@ -115,14 +118,14 @@ def getFileType(path):
         ".less":"less",
         ".coffee":"coffee"
         }
-        
+
         images = {
         ".png" : "png",
         ".jpg" : "jpg",
         ".gif" : "gif",
         ".bmp" : "bmp"
         }
-    
+
         if (extension in types) :
             return types[extension]
         else :
@@ -132,14 +135,14 @@ def getFileType(path):
                 return "other"
     else:
         return None
-             
+
 def getFilenameFromPath(path):
     """Extracts filename from path"""
     if (os.path.exists(path)) :
         return os.path.basename(path)
     else:
         return None
-    
+
 def getStinoFromFile(path):
     """Returns st_ino of file. This is used for unique file id number"""
     if (os.path.exists(path)) :
@@ -148,7 +151,7 @@ def getStinoFromFile(path):
         return None
 
 def getRawContentFromFile(path):
-    
+
     """Reads contents from given filename and returns it. Be aware that this function
      can explore the whole OS. Use checkIfPathIsInUserFolder(path) function to check if path is in user
      only folder."""
@@ -159,14 +162,14 @@ def getRawContentFromFile(path):
         return rawData
     else:
         return None
-    
+
 def saveRawContentToFile(path, data):
     """Writes contents to given filename. Be aware that this function
      can explore the whole OS. Use checkIfPathIsInUserFolder(path) function to check if path is in user
      only folder."""
-    
+
     tmp = "./"+str(uuid.uuid1())+".tmp"
-    
+
     try :
         inputFile = open(tmp, 'w')
         print(inputFile)
@@ -176,7 +179,7 @@ def saveRawContentToFile(path, data):
         print NameError
         os.remove(tmp)
         return -1
-    
+
     move(tmp, path)
     return 0
 
@@ -191,17 +194,7 @@ def checkIfDirectoryExists(path):
         return True
     else :
         return False
-        
-def checkIfPathIsInUserFolder(path):
-    """Checks if given path is in user folder"""
-    confFile = weioConfig.getConfiguration()
-    pathToCurrentProject = confFile["user_projects_path"] + confFile['last_opened_project'] 
-    
-    if pathToCurrentProject in (path) :
-        return True
-    else :
-        return False
-        
+
 def removeFile(path):
     """Removes specified file, if folder path is passed folder will be deleted"""
     if (os.path.isfile(path)):
@@ -214,7 +207,7 @@ def removeFile(path):
 def removeDirectory(path):
     """Removes specified directory even if directory is not empty."""
     shutil.rmtree(path)
-    
+
 def disk_usage(path):
     """Return disk usage statistics about the given path.
 
@@ -239,18 +232,49 @@ def createTarfile(output_filename, source_dir):
     filelist = [ f for f in os.listdir(source_dir) if f.endswith(".pyc") ]
     for f in filelist:
         os.remove(source_dir+f)
-    
-    # compress    
+
+    # compress
     tar = tarfile.open(output_filename, "w:gz")
     tar.add(source_dir, arcname=os.path.basename(source_dir)) # arcname=os.path.basename(source_dir)
     tar.close()
-    
+
 def unTarFile(sourceFilePath, destination):
     """Decompresses Tar archive and create new project. Destroys archive file after"""
     tar = tarfile.open(sourceFilePath)
     tar.extractall(destination)
     tar.close()
     removeFile(sourceFilePath)
+
+def symlinkExternalProjects():
+    config = weioConfig.getConfiguration()
+
+    # Flash
+    if (os.path.exists(config["extern_projects_path_flash"])):
+        if not(os.path.islink("www/flash")):
+            os.symlink(config["extern_projects_path_flash"], "www/flash")
+        else :
+            # unlink then link to make sure that path is correct
+            os.unlink("www/flash")
+            os.symlink(config["extern_projects_path_flash"], "www/flash")
+
+    # SD
+    if (os.path.exists(config["extern_projects_path_sd"])):
+        if not(os.path.islink("www/sd")):
+            os.symlink(config["extern_projects_path_sd"], "www/sd")
+        else :
+            # unlink then link to make sure that path is correct
+            os.unlink("www/sd")
+            os.symlink(config["extern_projects_path_sd"], "www/sd")
+
+    # USB Flash
+    if (os.path.exists(config["extern_projects_path_usbFlash"])):
+        if not(os.path.islink("www/usbFlash")):
+            os.symlink(config["extern_projects_path_usbFlash"], "www/usbFlash")
+        else :
+            # unlink then link to make sure that path is correct
+            os.unlink("www/usbFlash")
+            os.symlink(config["extern_projects_path_usbFlash"], "www/usbFlash")
+
 #print listUserDirectories("/Users/uros/workNow/nodesign/weIO/weio/weioUser/")
 #recreateUserFiles()
 #print listUserDirectories("/weioUser/")

@@ -118,7 +118,6 @@ class WeioPlayer():
         self.stop()
 
         data = {}
-        #up = config["user_projects_path"]
         lp = config["last_opened_project"]
 
         # check if user project exists before launching

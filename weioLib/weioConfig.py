@@ -54,7 +54,6 @@ def saveConfiguration(conf):
  
 #example & test configuration 
 # weioConfig = {}
-# weioConfig['user_projects_path'] = 'userProjects/'
 # weioConfig['last_opened_project'] = 'myFirstProject/'
 # weioConfig['last_opened_files'] = ['index.html', 'weioMain.py']
 # weioConfig['editor_html_path'] = 'editor/editor.html'
@@ -68,4 +67,3 @@ def saveConfiguration(conf):
 # # 
 # saveConfiguration(weioConfig)
 # a = getConfiguration()
-# print a['user_projects_path']

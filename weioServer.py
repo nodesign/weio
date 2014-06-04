@@ -128,6 +128,9 @@ if __name__ == '__main__':
     global wifiPeriodicCheck
 
     confFile = weioConfig.getConfiguration()
+    
+    # Create symlinks to external projects
+    weioFiles.symlinkExternalProjects()
 
     # put absolut path in conf, needed for local testing on PC
     confFile['absolut_root_path'] = os.path.abspath(".")
