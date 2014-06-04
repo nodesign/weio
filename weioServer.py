@@ -134,8 +134,6 @@ if __name__ == '__main__':
     weioConfig.saveConfiguration(confFile)
     firstTimeSwitch = confFile['first_time_run']
 
-    # scan for changes and make links if necessary
-    weioFiles.recreateSymlinks()
 
     import logging
     logging.getLogger().setLevel(logging.DEBUG)
