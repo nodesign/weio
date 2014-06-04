@@ -140,14 +140,14 @@ class WeioDashBoardHandler(SockJSConnection):
         allUserProjects = []
 
         # Examples
-        examplesDir = config["absolut_root_path"] + "/examples"
+        examplesDir = "www/examples"
         if (os.path.exists(examplesDir)):
             dirs = os.walk(examplesDir).next()[1]
             a = {"storageName":"examples", "projects":dirs}
             allUserProjects.append(a)
 
         # Flash
-        flashDir = config["extern_projects_path"] + "/flash"
+        flashDir = "www/flash"
         if (os.path.exists(flashDir)):
             dirs = os.walk(flashDir).next()[1]
             a = {"storageName":"flash", "projects":dirs}
@@ -177,16 +177,7 @@ class WeioDashBoardHandler(SockJSConnection):
         virtPath = rq['data']
         storage = os.path.dirname(virtPath)
         print 'STORAGE', storage
-        path = ""
-        if (storage == "examples"):
-            print "EXAMPLE DETECTED"
-            path = config["absolut_root_path"] + "/" + virtPath
-        elif (storage == "flash"):
-            print "FLASH DETECTED"
-            path = config["extern_projects_path"] + "/" + virtPath
-        elif (storage == "sd"):
-            # TODO
-            pass
+        path = "www/"+virtPath
         print 'STORAGE', path
 
         config["last_opened_project"] = path
@@ -219,13 +210,8 @@ class WeioDashBoardHandler(SockJSConnection):
         path = ""
         storage = rq['storageUnit']
 
-        if (storage == "examples"):
-            path = config["absolut_root_path"] + "/" + rq['storageUnit'] + "/" + rq['path']
-        elif (storage == "flash"):
-            path = config["extern_projects_path"] + "/" + rq['storageUnit'] + "/" + rq['path']
-        elif (storage == "sd"):
-            # TODO
-            pass
+        path = "www/" + rq['storageUnit'] + "/" + rq['path']
+        
         print "CREATE PROJECT", path
         if (len(path)>0):
             weioFiles.createDirectory(path)

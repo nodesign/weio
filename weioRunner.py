@@ -174,13 +174,14 @@ class UserControl():
 
         # Get the last name of project and run it
         projectModule = ""
-        pmod = confFile["last_opened_project"].split("/")
-        print pmod
-        for i in range(len(pmod)-2, len(pmod)):
-            projectModule = projectModule+pmod[i] + "."
-        projectModule = projectModule + "main"
+        #pmod = confFile["last_opened_project"].split("/")
+        #print pmod
+        # for i in range(len(pmod)-2, len(pmod)):
+ #            projectModule = projectModule+pmod[i] + "."
+ #        projectModule = projectModule + "main"
 
-        #projectModule = confFile["last_opened_project"].replace('/', '.') + "main"
+        projectModule = confFile["last_opened_project"].replace('/', '.') + ".main"
+        print "CALL", projectModule
 
         result = None
 
