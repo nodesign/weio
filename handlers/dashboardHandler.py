@@ -250,7 +250,6 @@ class WeioDashBoardHandler(SockJSConnection):
 
         print "DUPLICATE",rq
 
-
         rq['request'] = 'createNewProject'
 
         data = {}
