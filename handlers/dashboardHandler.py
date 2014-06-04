@@ -183,6 +183,10 @@ class WeioDashBoardHandler(SockJSConnection):
         config["last_opened_project"] = path
         weioConfig.saveConfiguration(config);
 
+        # check if symlink to www/ exists
+        if not(os.path.islink(path+"/www")):
+            os.symlink("www/", path + "/www")
+
         data = {}
         data['requested'] = rq['request']
         self.send(json.dumps(data))
@@ -218,9 +222,8 @@ class WeioDashBoardHandler(SockJSConnection):
             # ADD HERE SOME DEFAULT FILES
             # adding __init__.py
             weioFiles.saveRawContentToFile(path + "/__init__.py", "")
-            
+
             # make symlink to www/
-            
             os.symlink("www/", path + "/www")
 
             # copy all files from directory boilerplate to destination
