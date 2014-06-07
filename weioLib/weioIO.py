@@ -2,6 +2,7 @@ import platform
 import time
 from weioLib.weioLm75 import WeioLm75
 from IoTPy.pyuper.gpio import GPIO
+from IoTPy.things.servomotor import Servo
 ###
 # Global interface
 ###
@@ -128,3 +129,9 @@ def millis():
 
 def getTemperature():
     return lm75.getTemperature()
+
+# BINDINGS TO LIBRARIES
+def initServo(pin):
+    return Servo(gpio.u, pin)
+
+
