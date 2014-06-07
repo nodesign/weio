@@ -128,9 +128,9 @@ class WeioEditorHandler(SockJSConnection):
                 else:
                     # all regular editable files
                     #print "DATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", data["data"]
-                    s = data["data"]
-                    uCode = urllib2.quote(s["data"].encode("utf8"))
-                    data["data"]["data"] = uCode
+                    #s = data["data"]
+                    #uCode = urllib2.quote(s["data"].encode("utf8"))
+                    #data["data"]["data"] = uCode
                     self.broadcast(clients, json.dumps(data))
 
 
@@ -147,9 +147,10 @@ class WeioEditorHandler(SockJSConnection):
         name = rq['data']['name']
 
         #print "NAME " + rq['data']['name']
-        utfContents = urllib2.unquote(urllib2.quote(contents)).decode("utf8")
+        #utfContents = urllib2.unquote(urllib2.quote(contents)).decode("utf8")
+        #utfContents = urllib2.unquote(s).decode('utf8')
 
-        weioFiles.saveRawContentToFile(path, utfContents)
+        weioFiles.saveRawContentToFile(path, contents)
 
         data['status'] = name + " saved!"
         self.broadcast(clients, json.dumps(data))
