@@ -54,6 +54,7 @@ from weioLib import weioConfig
 # Import globals for main Tornado
 from weioLib import weioIdeGlobals
 
+clients = set()
 
 # Wifi detection route handler
 class WeioDashBoardHandler(SockJSConnection):
@@ -87,7 +88,7 @@ class WeioDashBoardHandler(SockJSConnection):
         data['requested'] = rq['request']
         data['status'] = config["dns_name"] + " on " + ip
         # Send connection information to the client
-        self.send(json.dumps(data))
+        self.broadcast(clients, json.dumps(data))
 
     def sendLastProjectName(self,rq):
         # get configuration from file
@@ -105,7 +106,7 @@ class WeioDashBoardHandler(SockJSConnection):
         else :
             data['data'] = "Select project here"
         # Send connection information to the client
-        self.send(json.dumps(data))
+        self.broadcast(clients, json.dumps(data))
 
     def play(self, rq):
         weioIdeGlobals.PLAYER.play(rq)
@@ -169,7 +170,7 @@ class WeioDashBoardHandler(SockJSConnection):
 
         data['data'] = allUserProjects
 
-        self.send(json.dumps(data))
+        self.broadcast(clients, json.dumps(data))
 
     def changeProject(self,rq):
         #print "CHANGE PROJECT", rq
@@ -192,7 +193,7 @@ class WeioDashBoardHandler(SockJSConnection):
 
         data = {}
         data['requested'] = rq['request']
-        self.send(json.dumps(data))
+        self.broadcast(clients, json.dumps(data))
 
         rqlist = ["stop", "getLastProjectName", "getUserProjetsFolderList"]
 
@@ -207,7 +208,7 @@ class WeioDashBoardHandler(SockJSConnection):
         data['requested'] = rq['request']
 
         data['name'] = config["user"]
-        self.send(json.dumps(data))
+        self.broadcast(clients, json.dumps(data))
 
     def newProject(self, rq):
         config = weioConfig.getConfiguration()
@@ -241,7 +242,7 @@ class WeioDashBoardHandler(SockJSConnection):
 
             data['status'] = "New project created"
             data['path'] = path
-            self.send(json.dumps(data))
+            self.broadcast(clients, json.dumps(data))
         else:
             print "BAD PATHNAME"
 
@@ -255,7 +256,7 @@ class WeioDashBoardHandler(SockJSConnection):
         data = {}
         data['requested'] = "status"
         data['status'] = "Project duplicated"
-        self.send(json.dumps(data))
+        self.broadcast(clients, json.dumps(data))
 
         self.newProject(rq)
 
@@ -281,7 +282,7 @@ class WeioDashBoardHandler(SockJSConnection):
         # else :
         #  data['data'] = "ask to create new project"
         # 
-        # self.send(json.dumps(data))
+        # self.broadcast(json.dumps(data))
 
     def iteratePacketRequests(self, rq) :
         requests = rq["packets"]
@@ -298,7 +299,7 @@ class WeioDashBoardHandler(SockJSConnection):
         data['requested'] = rq['request']
         data['status'] = weioIdeGlobals.PLAYER.playing
 
-        self.send(json.dumps(data))
+        self.broadcast(clients, json.dumps(data))
 
     def createTarForProject(self, rq):
         # TEST IF NAME IS OK FIRST
@@ -307,7 +308,7 @@ class WeioDashBoardHandler(SockJSConnection):
         data = {}
         data['requested'] = "status"
         data['status'] = "Making archive..."
-        self.send(json.dumps(data))
+        self.broadcast(clients, json.dumps(data))
 
         data['requested'] = rq['request']
 
@@ -325,7 +326,7 @@ class WeioDashBoardHandler(SockJSConnection):
         else :
             data['status'] = "Error archiving project"
 
-        self.send(json.dumps(data))
+        self.broadcast(clients, json.dumps(data))
 
     def decompressNewProject(self, rq):
         print "decompress"
@@ -360,7 +361,7 @@ class WeioDashBoardHandler(SockJSConnection):
         else :
             data['requested'] = 'status'
             data['status'] = "Error this projet already exists"
-            self.send(json.dumps(data))
+            self.broadcast(clients, json.dumps(data))
 
 
 ##############################################################################################################################
@@ -391,6 +392,8 @@ class WeioDashBoardHandler(SockJSConnection):
     }
 
     def on_open(self, info) :
+        global clients
+        clients.add(self)
         # Store instance of the ConsoleConnection class
         # in the global variable that will be used
         # by the MainProgram thread
@@ -414,3 +417,8 @@ class WeioDashBoardHandler(SockJSConnection):
             callbacks[request](self, rq)
         else :
             print "unrecognised request ", rq['request']
+
+    def on_close(self):
+        global clients
+        # Remove client from the clients list and broadcast leave message
+        clients.remove(self)

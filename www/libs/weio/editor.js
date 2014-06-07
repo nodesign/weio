@@ -621,6 +621,12 @@ function saveFile(data) {
  */
 function saveAll() {
     if (editorsInStack.length > 0) {
+
+        for (var i=0; i <  editorsInStack.length; i++) {
+            var toUtf = encodeURI(editorsInStack[i].data);
+            editorsInStack[i].data = toUtf;
+        }
+
         var rq = { "request": "saveAll", "data":editorsInStack};
         editorSocket.send(JSON.stringify(rq));
     }
@@ -1018,7 +1024,7 @@ function fixedCollapsing(showMe) {
 function insertNewStrip(data) {
 
     var e = {};
-    e.data = data.data.data;
+    e.data = unescape(decodeURIComponent(data.data.data));
     e.name = data.data.name;
     e.path = data.data.path;
     e.type = data.data.type;

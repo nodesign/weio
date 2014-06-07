@@ -54,6 +54,8 @@ import functools
 
 import json
 
+clients = set()
+
 def weioWifiParseScan(wifi) :
     scaninfo = wifi.scan()
 
@@ -174,6 +176,9 @@ class WeioWifiHandler(SockJSConnection):
     ###
     @weioUnblock.unblock
     def on_open(self, info) :
+        global clients
+        clients.add(self)
+
         print "WIFI: on_open"
         if (platform.machine() == 'mips'):
             self.wifi.checkConnection()
@@ -214,3 +219,9 @@ class WeioWifiHandler(SockJSConnection):
             self.callbacks[request](rq)
         else :
             print "unrecognised request"
+    
+    def on_close(self) :
+        global clients
+        # Remove client from the clients list and broadcast leave message
+        clients.remove(self)
+    

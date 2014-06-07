@@ -46,8 +46,12 @@ from weioLib import weioIpAddress
 from weioLib import weioFiles
 from weioLib import weioUnblock
 
+import urllib2, urllib
+
 # IMPORT BASIC CONFIGURATION FILE
 from weioLib import weioConfig
+
+clients = set()
 
 # Wifi detection route handler
 class WeioEditorHandler(SockJSConnection):
@@ -79,7 +83,7 @@ class WeioEditorHandler(SockJSConnection):
             data['data'] = ""
             data['projectRoot'] = ""
         # Send connection information to the client
-        self.send(json.dumps(data))
+        self.broadcast(clients, json.dumps(data))
 
 
     # @weioUnblock.unblock
@@ -120,10 +124,14 @@ class WeioEditorHandler(SockJSConnection):
                     content = "data:image/"+prefix+";base64,"
                     content += f['data'].encode("base64")
                     f['data'] = content
-                    self.send(json.dumps(data))
+                    self.broadcast(clients, json.dumps(data))
                 else:
                     # all regular editable files
-                    self.send(json.dumps(data))
+                    #print "DATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", data["data"]
+                    s = data["data"]
+                    uCode = urllib2.quote(s["data"].encode("utf8"))
+                    data["data"]["data"] = uCode
+                    self.broadcast(clients, json.dumps(data))
 
 
     @weioUnblock.unblock
@@ -139,10 +147,12 @@ class WeioEditorHandler(SockJSConnection):
         name = rq['data']['name']
 
         #print "NAME " + rq['data']['name']
-        weioFiles.saveRawContentToFile(path, contents)
+        utfContents = urllib2.unquote(urllib2.quote(contents)).decode("utf8")
+
+        weioFiles.saveRawContentToFile(path, utfContents)
 
         data['status'] = name + " saved!"
-        self.send(json.dumps(data))
+        self.broadcast(clients, json.dumps(data))
 
 
     @weioUnblock.unblock
@@ -178,7 +188,7 @@ class WeioEditorHandler(SockJSConnection):
         #print (pathCurrentProject+pathname)
 
         data['status'] = name + " has been created"
-        self.send(json.dumps(data))
+        self.broadcast(clients, json.dumps(data))
 
 
     @weioUnblock.unblock
@@ -192,7 +202,7 @@ class WeioEditorHandler(SockJSConnection):
         weioFiles.removeFile(path)
 
         data['status'] = "file has been removed"
-        self.send(json.dumps(data))
+        self.broadcast(clients, json.dumps(data))
 
     # don't unblock saveAll beacuse each saveFile is unblocked already
     def saveAll(self, rq) :
@@ -210,7 +220,7 @@ class WeioEditorHandler(SockJSConnection):
             data = {}
             data['requested'] = rq['request']
             data['status'] = "Project has been saved"
-            self.send(json.dumps(data))
+            self.broadcast(clients, json.dumps(data))
 
     def sendPlatformDetails(self, rq):
         # get configuration from file
@@ -226,7 +236,7 @@ class WeioEditorHandler(SockJSConnection):
 
         data['serverPush'] = 'sysConsole'
         data['data'] = platformS
-        self.send(json.dumps(data))
+        self.broadcast(clients, json.dumps(data))
         #CONSOLE.send(json.dumps(data))
 
 
@@ -268,7 +278,9 @@ class WeioEditorHandler(SockJSConnection):
     }
 
     def on_open(self, info) :
-
+        global clients
+        clients.add(self)
+        
         global CONSOLE
         # Store instance of the ConsoleConnection class
         # in the global variable that will be used
@@ -290,3 +302,8 @@ class WeioEditorHandler(SockJSConnection):
             callbacks[request](self, rq)
         else :
             print "unrecognised request", rq['request']
+            
+    def on_close(self):
+        global clients
+        # Remove client from the clients list and broadcast leave message
+        clients.remove(self)

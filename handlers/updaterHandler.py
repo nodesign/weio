@@ -53,6 +53,8 @@ import json
 import hashlib
 import tarfile
 
+clients = set()
+
 # Wifi detection route handler  
 class WeioUpdaterHandler(SockJSConnection):
     def __init__(self, *args, **kwargs):
@@ -197,8 +199,8 @@ class WeioUpdaterHandler(SockJSConnection):
         return md5.hexdigest()
 
     def on_open(self, info) :
-        pass
-        
+        global clients
+        clients.add(self)
 
     def on_message(self, data):
         """Parsing JSON data that is comming from browser into python object"""
@@ -214,3 +216,9 @@ class WeioUpdaterHandler(SockJSConnection):
             self.callbacks[request](rq)
         else :
             print "unrecognised request"
+            
+    def on_close(self) :
+        global clients
+        # Remove client from the clients list and broadcast leave message
+        clients.remove(self)
+
