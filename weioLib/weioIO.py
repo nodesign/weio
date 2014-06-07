@@ -2,7 +2,12 @@ import platform
 import time
 from weioLib.weioLm75 import WeioLm75
 from IoTPy.pyuper.gpio import GPIO
-from IoTPy.things.servomotor import Servo
+import IoTPy.things.servomotor as servoLib
+import IoTPy.things.am2321 as am2321Lib
+import IoTPy.things.si7020 as si7020Lib
+import IoTPy.things.srf08 as srf08Lib
+import IoTPy.things.stepper as StepperLib
+
 
 ###
 # Global interface
@@ -12,7 +17,7 @@ from IoTPy.things.servomotor import Servo
 gpio = None
 lm75 = WeioLm75()
 
-PULL_UP = GPIO.PULL_UP 
+PULL_UP = GPIO.PULL_UP
 PULL_DOWN = GPIO.PULL_DOWN
 HIGH_Z = GPIO.HIGH_Z
 INPUT = GPIO.INPUT
@@ -65,7 +70,7 @@ def setPwmPeriod(pin, period):
     except:
         print "setPwmPeriod(", pin,",",period,")"
         return -1
-        
+
 def setPwmLimit(limit):
     try:
         return gpio.setPwmlimit(limit)
@@ -93,7 +98,7 @@ def attachInterrupt(pin, mode, callback):
     except:
         print "attachInterrupt(", pin,",",mode,",",callback,")"
         return -1
-    
+
 def detachInterrupt(pin):
     try:
         return gpio.detachInterrupt(pin)
@@ -111,7 +116,7 @@ def tone(pin, frequency, duration = 0):
     except:
         print "tone(", pin,",",frequency,",",duration,")"
         return -1
-        
+
 def notone(pin):
     try:
         return gpio.notone(pin)
@@ -124,7 +129,7 @@ def constrain(self, x, a, b):
     except:
         print "constrain(", x,",",a,",",b,")"
         return -1
-        
+
 def millis():
     return gpio.millis()
 
@@ -133,6 +138,16 @@ def getTemperature():
 
 # BINDINGS TO LIBRARIES
 def initServo(pin):
-    return Servo(gpio.u, pin)
+    return servoLib.Servo(gpio.u, pin)
 
+def initAm2321():
+    return am2321Lib.AM2321(gpio.u)
 
+def initSi7020():
+    return si7020Lib.Si7020(gpio.u)
+
+def initSrf08Lib():
+    return srf08Lib.Srf08(gpio.u)
+
+def initStepper(steps360, coilA0, coilA1, coilB0, coilB1):
+    return StepperLib.Stepper(gpio.u, steps360, coilA0, coilA1, coilB0, coilB1)
