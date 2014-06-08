@@ -89,6 +89,18 @@ class WeioDashBoardHandler(SockJSConnection):
         data['status'] = config["dns_name"] + " on " + ip
         # Send connection information to the client
         self.broadcast(clients, json.dumps(data))
+        
+    def sendPreviewPortNumber(self,rq):
+
+        # get configuration from file
+        config = weioConfig.getConfiguration()
+
+        data = {}
+        data['requested'] = rq['request']
+        data['data'] = config["userAppPort"]
+        # Send connection information to the client
+        self.broadcast(clients, json.dumps(data))
+    
 
     def sendLastProjectName(self,rq):
         # get configuration from file
@@ -98,11 +110,13 @@ class WeioDashBoardHandler(SockJSConnection):
         data['requested'] = rq['request']
         lp = os.path.basename( config["last_opened_project"].strip("/") )
 
+        storage = config["last_opened_project"].split("/")[0]
+        
         print "USER PRJ NAME", lp
 
         if (weioFiles.checkIfDirectoryExists(config["last_opened_project"])):
             print "PROJ NAME", config["last_opened_project"]
-            data['data'] = lp
+            data['data'] = config["last_opened_project"].split(storage+"/")
         else :
             data['data'] = "Select project here"
         # Send connection information to the client
@@ -418,7 +432,8 @@ class WeioDashBoardHandler(SockJSConnection):
         'getPlayerStatus': sendPlayerStatus,
         'archiveProject' : createTarForProject,
         'addNewProjectFromArchive' : decompressNewProject,
-        'duplicateProject': duplicateProject
+        'duplicateProject': duplicateProject,
+        'getPreviewPortNumber': sendPreviewPortNumber
 
     }
 

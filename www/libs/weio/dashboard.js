@@ -4,12 +4,12 @@
 * Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
 * All rights reserved
 *
-*               ##      ## ######## ####  #######  
-*               ##  ##  ## ##        ##  ##     ## 
-*               ##  ##  ## ##        ##  ##     ## 
-*               ##  ##  ## ######    ##  ##     ## 
-*               ##  ##  ## ##        ##  ##     ## 
-*               ##  ##  ## ##        ##  ##     ## 
+*               ##      ## ######## ####  #######
+*               ##  ##  ## ##        ##  ##     ##
+*               ##  ##  ## ##        ##  ##     ##
+*               ##  ##  ## ######    ##  ##     ##
+*               ##  ##  ## ##        ##  ##     ##
+*               ##  ##  ## ##        ##  ##     ##
 *                ###  ###  ######## ####  #######
 *
 *                    Web Of Things Platform
@@ -26,10 +26,10 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-* 
+*
 * This file is part of WEIO.
 *
-* Authors : 
+* Authors :
 * Uros PETREVSKI <uros@nodesign.net>
 * Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 *
@@ -62,6 +62,12 @@ var isPlaying = false;
 
 
 /*
+ * Preview port number
+ */
+var portPreview = 0;
+
+
+/*
  * This variable stores last selected storage unit
  */
 var selectedStorageUnit = null;
@@ -75,16 +81,16 @@ $(document).ready(function () {
     // generate random number to prevent loading page from cache
     var randomNumber = Math.random();
     $(".iframeContainer").attr("src", "editor.html?" + randomNumber);
-                  
+
     runEditor();
-    
+
     weioProgress = new Chart(document.getElementById("weioProgress").getContext("2d"));
-                        
-                                
-    //////////////////////////////////////////////////////////////// SOCK JS DASHBOARD        
-                  
+
+
+    //////////////////////////////////////////////////////////////// SOCK JS DASHBOARD
+
     dashboard = new SockJS('http://' + location.host + '/dashboard');
-    
+
     /*
      * On opening of wifi web socket ask server to scan wifi networks
      */
@@ -92,46 +98,51 @@ $(document).ready(function () {
         console.log('Dashboard Web socket is opened');
         // turn on green light if connected
         // get ip address
-        
+
         isEditorActive = true;
-        
+
         var dashboardPacket = new Array();
-        
+
         var rq = { "request": "getIp"};
         //dashboard.send(JSON.stringify(rq));
-        
+
         dashboardPacket.push(rq);
-        
+
         rq = { "request": "getLastProjectName"};
         //dashboard.send(JSON.stringify(rq));
-        
+
         dashboardPacket.push(rq);
-        
-        
+
+
         rq = { "request": "getUserProjetsFolderList"};
         //dashboard.send(JSON.stringify(rq));
-        
+
         dashboardPacket.push(rq);
-        
+
         rq = { "request": "getUser"};
         //dashboard.send(JSON.stringify(rq));
-        
+
         dashboardPacket.push(rq);
-                
-                
+
+
         rq = { "request": "getPlayerStatus"};
         //dashboard.send(JSON.stringify(rq));
-        
+
         dashboardPacket.push(rq);
-    
-        
+
+
+        rq = { "request": "getPreviewPortNumber"};
+        //dashboard.send(JSON.stringify(rq));
+
+        dashboardPacket.push(rq);
+
         rq = { "request" : "packetRequests", "packets":dashboardPacket};
         console.log("DASHBOARD: sending dashboard packets together ", rq);
         dashboard.send(JSON.stringify(rq));
         //setTimeout(function(){dashboard.send(JSON.stringify(rq))},1000);
 
-        
-        
+
+
         /*
         var rq = { "request": "getPlatform"};
         dashboard.send(JSON.stringify(rq));
@@ -150,18 +161,18 @@ $(document).ready(function () {
 
         if ("requested" in data) {
             // this is instruction that was echoed from server + data as response
-            instruction = data.requested;  
-            if (instruction in callbacks) 
+            instruction = data.requested;
+            if (instruction in callbacks)
                 callbacks[instruction](data);
         } else if ("serverPush" in data) {
                 // this is instruction that was echoed from server + data as response
-                
-                instruction = data.serverPush;  
-                if (instruction in callbacks) 
+
+                instruction = data.serverPush;
+                if (instruction in callbacks)
                     callbacks[instruction](data);
         }
-        
-        
+
+
     };
 
     dashboard.onclose = function() {
@@ -169,17 +180,17 @@ $(document).ready(function () {
         console.log('Dashboard Web socket is closed');
         isEditorActive = false;
         $("#status").attr("class", "disconnected");
-        
+
         var lostContact = "Browser lost connexion with WeIO! Try to simply reload this page.a" +
             "If problem still remains push WeIO reset button."
         setTestament(lostContact);
-        
-    };   
-    
+
+    };
+
     $('#importProjectUploader').change(function(evt){
             handleFileSelect(evt);
     });
-        
+
 }); /* end of document on ready event */
 
 
@@ -220,8 +231,8 @@ function errorFile(evt) {
 function handleFileSelect(evt) {
     var files = evt.target.files; // FileList object
     //console.log("FILE");
-    
-    
+
+
     for (var i = 0, f; f = files[i]; i++) {
 
         /*
@@ -249,13 +260,13 @@ function handleFileSelect(evt) {
                             })(f);
 
             reader.readAsDataURL(f);
-    
+
     }
 }
 
     /*
      * Add new project from TAR archive
-     */ 
+     */
 function addNewProjectFromArchive(data){
     var rq = { "request": "addNewProjectFromArchive", "data" : data, "storageUnit":selectedStorageUnit};
     dashboard.send(JSON.stringify(rq));
@@ -284,21 +295,21 @@ function setTestament(data) {
     }
 }
 
-/* 
+/*
  * Run Editor in targeted IFrame
- */ 
+ */
 function runEditor() {
     //$(".iframeContainer").show();
     $(".iframeContainer").animate( { "margin-top": "60px" }, { queue: false, duration: 500 });
     $(".iframeContainerIndex").animate( { "margin-top": screen.height+60+"px" },
             { queue: false, duration: 500 });
-    
+
     //$(".iframeContainerIndex").hide();
 
     $("#editorButtonHeader").attr("class", "top_tab selected");
     $("#previewButtonHeader").attr("class", "top_tab");
 
-    isEditorActive = true;    
+    isEditorActive = true;
 }
 
 
@@ -308,34 +319,38 @@ function runEditor() {
 function runPreview() {
     if (isEditorActive)
         document.getElementById("weioIframe").contentWindow.saveAll();
-    
+
     if (!isPlaying)
         play();
+
+    // generate random number to prevent loading page from cache
+    var randomNumber = Math.random();
+
+    var _addr = location.host;
+    var a = _addr.split(":");
     
+    if (portPreview==80) {
+        _addr = 'http://' + a[0];
+    } else {
+        _addr = 'http://' + a[0] + ':' + portPreview;
+    }
     
-    $.getJSON('config.json', function(data) {
-            var confFile = data;
-            // generate random number to prevent loading page from cache
-            var randomNumber = Math.random();
-            
-            var sp = confFile.last_opened_project.split("/");
-            var path = sp[sp.length-2] + "/" + sp[sp.length-1];
-            
-            $(".iframeContainerIndex").attr("src", path + "/index.html?" + randomNumber);
-            // console.log(confFile.weio_lib_path);
-            $(".iframeContainerIndex").css("height", screen.height-60 + "px");
-            $(".iframeContainerIndex").css("margin-top", screen.height+60 + "px");
-            
-            //$(".iframeContainer").hide();
-            });
+    var path = "";
     
+    $(".iframeContainerIndex").attr("src", path + "/index.html?" + randomNumber);
+    // console.log(confFile.weio_lib_path);
+    $(".iframeContainerIndex").css("height", screen.height-60 + "px");
+    $(".iframeContainerIndex").css("margin-top", screen.height+60 + "px");
+
+    //$(".iframeContainer").hide();
+
     //$(".iframeContainers").animate( { "margin-top": -screen.height }, { queue: false, duration: 500 });
     $(".iframeContainer").animate( { "margin-top": -screen.height }, { queue: false, duration: 500 });
     $(".iframeContainerIndex").animate( { "margin-top": "40px" }, { queue: false, duration: 500 });
-    
+
     $("#editorButtonHeader").attr("class", "top_tab");
     $("#previewButtonHeader").attr("class", "top_tab selected");
-    
+
     isEditorActive = false;
 }
 
@@ -371,8 +386,8 @@ function duplicateProject() {
 
 
 /**
- * Sets coresponding icon and message inside statusBar in the middle of header. 
- * 
+ * Sets coresponding icon and message inside statusBar in the middle of header.
+ *
  * setStatus(line, "hello world");
  * Line represents first or second line to display msg 0 or 1
  *
@@ -428,35 +443,35 @@ function updateWeioProgressWheel(data) {
     var defs = {
         //Boolean - Whether we should show a stroke on each segment
         segmentShowStroke : false,
-        
+
         //String - The colour of each segment stroke
         segmentStrokeColor : "#000",
-        
+
         //Number - The width of each segment stroke
         segmentStrokeWidth : 0,
-        
+
         //The percentage of the chart that we cut out of the middle.
         percentageInnerCutout : 60,
-        
-        //Boolean - Whether we should animate the chart	
+
+        //Boolean - Whether we should animate the chart
         animation : false,
-        
+
         //Number - Amount of animation steps
         animationSteps : 100,
-        
+
         //String - Animation easing effect
         animationEasing : "easeOutBounce",
-        
+
         //Boolean - Whether we animate the rotation of the Doughnut
         animateRotate : true,
-        
+
         //Boolean - Whether we animate scaling the Doughnut from the centre
         animateScale : false,
-        
+
         //Function - Will fire on animation completion.
         onAnimationComplete : null
     }
-    
+
 
     var wheel = [
                    // CPU
@@ -469,12 +484,12 @@ function updateWeioProgressWheel(data) {
                    color:"#444"
                    }
                    ];
-    
+
     weioProgress.Doughnut(wheel, defs);
 
     if (data==100) {
         readyToPlay = false;
-        clearInterval(playCounter); 
+        clearInterval(playCounter);
         // fade out wheel
         $( "#weioProgress" ).fadeTo( "slow", 0 );
         updateWeioProgressWheel(0);
@@ -487,7 +502,7 @@ function changeProject(path) {
 }
 
 function updateConsoleSys(data) {
-    if (isEditorActive) 
+    if (isEditorActive)
         document.getElementById("weioIframe").contentWindow.updateConsoleSys(data);
 }
 
@@ -515,7 +530,7 @@ function deleteProject() {
 }
 
 
-//CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////x  
+//CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////x
 /**
  * Define callbacks here and request keys
  * Each key is binded to coresponding function
@@ -536,9 +551,16 @@ var callbacks = {
     "deleteProject" : projectDeleted,
     "errorObjects": updateError,
     "getPlayerStatus": playerStatus,
-    "archiveProject": projectArchived
+    "archiveProject": projectArchived,
+    "getPreviewPortNumber": setPreviewPort
 }
 
+/**
+ * Set port number for preview
+ */
+function setPreviewPort(data){
+   portPreview =  data.data;
+}
 
 /**
  * Notify user that project has been archived and refresh file tree
@@ -562,10 +584,10 @@ function playerStatus(data) {
  */
 function projectDeleted(data) {
     //console.log("delete project here");
-    
+
     if (data.data == "reload page") {
         randomNumber = Math.random();
-        var url = 'http://' + location.host + '/?'+ randomNumber; 
+        var url = 'http://' + location.host + '/?'+ randomNumber;
         window.location = url;
     }
 }
@@ -617,7 +639,7 @@ function updateProjects(data) {
         });
         tag+='</ul></ul></li>\n';
     });
-    
+
     console.log("storage", data.data);
     //console.log(tag);
     $("#userProjectsList").empty();
@@ -630,27 +652,27 @@ function updateProjects(data) {
         if (i==0)
             tag+='<li class="active" id="' + data.data[i].storageName +
                     'StorageUnit'+'"><a href="#">' + data.data[i].storageName + '</a></li>';
-        else 
+        else
             tag+='<li id="' + data.data[i].storageName + 'StorageUnit' + '"><a href="#">' + data.data[i].storageName + '</a></li>';
     }
     tag+='</ul>';
-    
+
     $(".storageUnitChooser").empty();
     $(".storageUnitChooser").append(tag);
-    
+
     if (selectedStorageUnit==null)
         selectedStorageUnit = data.data[0].storageName;
-        
+
     $(".storageUnitChooser").on('click', 'li', function(e) {
        //alert($(this).attr("id"));
        $( ".storageUnitChooser li" ).each(function() {
            $( this ).attr( "class","notActive" );
        });
        $( this ).attr( "class", "active" );
-       
+
        console.log($(this).attr("id").split("StorageUnit")[0]);
        changeSelectedStorageUnit($(this).attr("id").split("StorageUnit")[0]);
-       
+
     });
 }
 
@@ -674,11 +696,11 @@ function setPlayerStatus(data) {
     if (data.state!="error") {
         isPlaying = true;
         $("#playButton").attr("class", "top_tab active");
-        
+
     } else {
         isPlaying = false;
         $("#playButton").attr("class", "top_tab");
-        
+
     }
     updateStatus(data);
 }
@@ -694,13 +716,13 @@ function stopped(data) {
  */
 function updateUserData(data) {
     $("#user").html(data.name);
-    
+
 }
 
 function newProjectIsCreated(data) {
-    
+
     updateStatus(data);
-    
+
     var rq = { "request": "getUserProjetsFolderList"};
     dashboard.send(JSON.stringify(rq));
     rq = { "request": "getLastProjectName"};

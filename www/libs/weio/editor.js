@@ -254,15 +254,22 @@ $(document).ready(function () {
                                     (path.indexOf(".cofee") != -1) || (path.indexOf(".svg") != -1) ||
                                     // images
                                     (path.indexOf(".png") != -1) || (path.indexOf(".jpg") != -1) || (path.indexOf(".bmp") != -1) ||
-                                    (path.indexOf(".gif") != -1) ||
-                                    // tar archives
-                                    (path.indexOf(".tar") != -1)
+                                    (path.indexOf(".gif") != -1)
                                     ){
 
                                    var rq = { "request": "getFile", "data":path};
                                    editorSocket.send(JSON.stringify(rq));
                                    treeLock = true; // LOCK TREE INTERACTION HERE
-                               } else {treeLock = false;}
+                               }    else {
+                                   // tar archives
+                                   if (path.indexOf(".tar") != -1) {
+                                       console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", path);
+                                       var target = path.split("www/")[1];
+                                       window.open("http://localhost:8082"+"/"+target);
+                                   }
+                               }
+                                   treeLock = false;
+
 
                                // It's more sure to add to currentlyOpened array from
                                // websocket callback than here in case that server don't answer

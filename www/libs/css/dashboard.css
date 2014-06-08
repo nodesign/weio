@@ -113,6 +113,7 @@ body {
   /*overflow-y:scroll;*/
 
   max-height: 400px;
+  min-width: 200px;
   margin: -1px 0 0;
 }
 .navbar-inner .container .dropdown-menu a {
@@ -371,7 +372,6 @@ li.dropdown .dropdown-toggle:hover {
   color: #eeeeee !important;
 }
 li.dropdown .dropdown-toggle {
-  padding: 0 50px 0 15px !important;
   margin-left: 10px;
 }
 .btn-group.open .btn.dropdown-toggle {
