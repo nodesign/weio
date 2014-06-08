@@ -85,7 +85,12 @@ var playPushed = false;
 /**
  * Autosave lock, deblock on keyup event in editor
  */
-activeAutoSave = false;
+var activeAutoSave = false;
+
+/*
+ * User server port
+ */
+var userServerPort = 0;
 
 /*
  * When all DOM elements are fully loaded
@@ -265,7 +270,18 @@ $(document).ready(function () {
                                    if (path.indexOf(".tar") != -1) {
                                        console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", path);
                                        var target = path.split("www/")[1];
-                                       window.open("http://localhost:8082"+"/"+target);
+                                       
+                                       var _addr = location.host;
+                                       var a = _addr.split(":");
+    
+                                       if (userServerPort==80) {
+                                           _addr = 'http://' + a[0];
+                                       } else {
+                                           _addr = 'http://' + a[0] + ':' + userServerPort;
+                                       }
+                                       
+                                       
+                                       window.open(_addr +"/"+target);
                                    }
                                }
                                    treeLock = false;
@@ -320,6 +336,13 @@ $(document).ready(function () {
         //editorSocket.send(JSON.stringify(rq));
 
         editorPacket.push(rq);
+
+
+        rq = { "request": "getUserPortNumber"};
+        //editorSocket.send(JSON.stringify(rq));
+
+        editorPacket.push(rq);
+
 
         rq = { "request" : "packetRequests", "packets":editorPacket};
         console.log("EDITOR: sending editor packets together ", rq);
@@ -877,9 +900,13 @@ var callbacksEditor = {
     "createNewFile": refreshFiles,
     "deleteFile": fileRemoved,
     "saveAll": allFilesSaved,
-    "errorObjects": updateError
+    "errorObjects": updateError,
+    "getUserPortNumber":setUserPortNumber
 }
 
+function setUserPortNumber(data){
+    userServerPort = data.data;
+}
 function previewImage(data) {
     //console.log("IMAGE",data.data.name);
     $("#previewImage").css("width", "364px");

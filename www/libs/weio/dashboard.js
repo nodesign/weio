@@ -62,9 +62,14 @@ var isPlaying = false;
 
 
 /*
- * Preview port number
+ * Preview port number, user server port
  */
-var portPreview = 0;
+var userServerPort = 0;
+
+/*
+ * storage + project name
+ */
+var projectName = "";
 
 
 /*
@@ -329,15 +334,14 @@ function runPreview() {
     var _addr = location.host;
     var a = _addr.split(":");
     
-    if (portPreview==80) {
+    if (userServerPort==80) {
         _addr = 'http://' + a[0];
     } else {
-        _addr = 'http://' + a[0] + ':' + portPreview;
+        _addr = 'http://' + a[0] + ':' + userServerPort;
     }
     
-    var path = "";
-    
-    $(".iframeContainerIndex").attr("src", path + "/index.html?" + randomNumber);
+    var path = projectName;
+    $(".iframeContainerIndex").attr("src", _addr + "/" + path + "/index.html?" + randomNumber);
     // console.log(confFile.weio_lib_path);
     $(".iframeContainerIndex").css("height", screen.height-60 + "px");
     $(".iframeContainerIndex").css("margin-top", screen.height+60 + "px");
@@ -559,7 +563,7 @@ var callbacks = {
  * Set port number for preview
  */
 function setPreviewPort(data){
-   portPreview =  data.data;
+   userServerPort =  data.data;
 }
 
 /**
@@ -605,6 +609,7 @@ function showIpAddress(data){
 function showProjectName(data){
     $("#projectTitle").empty();
     $("#projectTitle").append(data.data);
+    projectName = data.data;
 }
 
 /**

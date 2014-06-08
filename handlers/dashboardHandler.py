@@ -116,7 +116,7 @@ class WeioDashBoardHandler(SockJSConnection):
 
         if (weioFiles.checkIfDirectoryExists(config["last_opened_project"])):
             print "PROJ NAME", config["last_opened_project"]
-            data['data'] = config["last_opened_project"].split(storage+"/")
+            data['data'] = config["last_opened_project"].split(storage+"/")[1]
         else :
             data['data'] = "Select project here"
         # Send connection information to the client
@@ -383,24 +383,24 @@ class WeioDashBoardHandler(SockJSConnection):
 
         # get configuration from file
         confFile = weioConfig.getConfiguration()
-        pathCurrentProject = confFile["user_projects_path"] + storageUnit
+        pathCurrentProject = "www/" + storageUnit
 
         projectName = name.split(".tar")[0]
         data = {}
 
         if (weioFiles.checkIfDirectoryExists(pathCurrentProject+projectName) is False) :
             #decode from base64, file is binary
-            bin = contents
-            bin = bin.split(",")[1] # split header, for example: "data:image/jpeg;base64,"
-            weioFiles.saveRawContentToFile(pathCurrentProject+name, bin.decode("base64"))
+            bb = contents
+            bb = bb.split(",")[1] # split header, for example: "data:image/jpeg;base64,"
+            weioFiles.saveRawContentToFile(pathCurrentProject+name, bb.decode("base64"))
             #print "save to ", pathCurrentProject+name
-            weioFiles.createDirectory(pathCurrentProject+"userProjects/"+projectName)
+            weioFiles.createDirectory(pathCurrentProject+projectName)
             #print "mkdir ", pathCurrentProject+"userProjects/"+projectName
-            weioFiles.unTarFile(pathCurrentProject+name, pathCurrentProject+"userProjects/"+projectName)
+            weioFiles.unTarFile(pathCurrentProject+name, pathCurrentProject+projectName)
             #print "untar ", pathCurrentProject+"userProjects/"+projectName
 
             data['request'] = "changeProject"
-            data['data'] = storageUnit+"userProjects/"+projectName
+            data['data'] = storageUnit+projectName
 
             self.changeProject(data)
         else :

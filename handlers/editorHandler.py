@@ -251,8 +251,17 @@ class WeioEditorHandler(SockJSConnection):
                 callbacks[request](self, uniqueRq)
             else :
                 print "unrecognised request ", uniqueRq['request']
+                
+    def sendUserPortNumber(self, rq):
 
+        # get configuration from file
+        config = weioConfig.getConfiguration()
 
+        data = {}
+        data['requested'] = rq['request']
+        data['data'] = config["userAppPort"]
+        # Send connection information to the client
+        self.broadcast(clients, json.dumps(data))
 
 
     ##############################################################################################################################
@@ -273,7 +282,8 @@ class WeioEditorHandler(SockJSConnection):
         'createNewFile': createNewFile,
         'deleteFile': deleteFile,
         'saveAll' : saveAll,
-        'packetRequests': iteratePacketRequests
+        'packetRequests': iteratePacketRequests,
+        'getUserPortNumber': sendUserPortNumber
         #'getUser': sendUserData,
 
     }
