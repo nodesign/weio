@@ -181,23 +181,23 @@ $(document).ready(function () {
             //var killIndex = $.inArray(currentStrip, currentlyOpened);
 
             if ($(e.target).parents('.accordion-group').find('#codeEditorAce').length > 0) {
-				$(".safeHome").html('').append($('#codeEditorAce'));
-				$(".safeHome").hide();
-			}
+                $(".safeHome").html('').append($('#codeEditorAce'));
+                $(".safeHome").hide();
+            }
             if($('.accordion-group').length <= 1 && $('#codeEditorAce').parents('.safeHome').length < 1){
-				$(".safeHome").html('').append($('#codeEditorAce'));
-				$(".safeHome").hide();
+                $(".safeHome").html('').append($('#codeEditorAce'));
+                $(".safeHome").hide();
 
-			}
+            }
 
-			var iOBJ = findObjectInArray($(e.target).parents('.accordion-group').attr('id').split("_")[1]);
-			// Save
-			saveFile(editorsInStack[iOBJ]);
+            var iOBJ = findObjectInArray($(e.target).parents('.accordion-group').attr('id').split("_")[1]);
+            // Save
+            saveFile(editorsInStack[iOBJ]);
 
-			// Remove from array
-			editorsInStack.splice(iOBJ,1);
+            // Remove from array
+            editorsInStack.splice(iOBJ,1);
 
-			// Remove DIV
+            // Remove DIV
             $(e.target).parents('.accordion-group').remove();
             scaleIt();
         }
@@ -210,7 +210,6 @@ $(document).ready(function () {
                 // node was selected
                 var node = event.node;
 
-                var prjPath = "";
                 var runTree = true;
                 path = node.name;
                 var lastNode = node;
@@ -472,36 +471,36 @@ function createEditor(){
           // exclude arrowkeys
           if ((e.keyCode!=38) && (e.keyCode!=40) && (e.keyCode!=37) && (e.keyCode!=39)) {
 
-			// Remove previous change note
-			$('#codeEditorAce').parents('.accordion-group')
-			.find('.accordion-toggle')
-			.find('span.hasChanged').remove();
+            // Remove previous change note
+            $('#codeEditorAce').parents('.accordion-group')
+            .find('.accordion-toggle')
+            .find('span.hasChanged').remove();
 
-			// Add change note
-			$('#codeEditorAce').parents('.accordion-group')
-			.find('.accordion-toggle')
-			.append($('<span />')
-			.addClass('hasChanged')
-			.text('*'));
+            // Add change note
+            $('#codeEditorAce').parents('.accordion-group')
+            .find('.accordion-toggle')
+            .append($('<span />')
+            .addClass('hasChanged')
+            .text('*'));
 
-			var iOBJ = findObjectInArray($('#codeEditorAce').parents('.accordion-group').attr('id').split("_")[1]);
-			editorsInStack[iOBJ].data = editor.getValue();
+            var iOBJ = findObjectInArray($('#codeEditorAce').parents('.accordion-group').attr('id').split("_")[1]);
+            editorsInStack[iOBJ].data = editor.getValue();
 
             activeAutoSave = true;
           }
 
-		});
+        });
 
     editor.gotoLine(0);
 }
 
 // Pronalazimo objekat u nizu koji je vezan za file na kojem radimo
 function findObjectInArray(objectID){
-	for (var i=0; i<editorsInStack.length; i++){
-		if(editorsInStack[i].id == objectID){
-			return i;
-		}
-	}
+    for (var i=0; i<editorsInStack.length; i++){
+        if(editorsInStack[i].id == objectID){
+            return i;
+        }
+    }
 }
 
 function scaleIt(){
@@ -732,9 +731,15 @@ function prepareToDeleteProject() {
 }
 
 function deleteFile() {
-    var rq = { "request": "deleteFile", "path":toBeDeleted};
-    editorSocket.send(JSON.stringify(rq));
-    toBeDeleted = "";
+    var pr = toBeDeleted.split(projectRoot);
+     
+    if (pr[1].split("/").length==1) { // delete project
+        deleteProject();
+    } else { // delete only one file
+        var rq = { "request": "deleteFile", "path":toBeDeleted};
+        editorSocket.send(JSON.stringify(rq));
+        toBeDeleted = "";
+    }  
 }
 
 function deleteProject() {
@@ -789,16 +794,16 @@ function updateConsoleSys(data) {
 
 function updateError(data) {
 
-	var d = data.data;
+    var d = data.data;
     //TODO correct path here
-	// Path extraction
+    // Path extraction
     /*
-	var projectName = $('.tree label[for=folder]').text();
-	var splitedFile = d[(d.length-1)].file.split("/");
-	console.log(splitedFile);
-	var path = 'userProjects/' + projectName + '/'+splitedFile[(splitedFile.length -1)];
-	*/
-	var lastErrorObj = d[(d.length-1)]
+    var projectName = $('.tree label[for=folder]').text();
+    var splitedFile = d[(d.length-1)].file.split("/");
+    console.log(splitedFile);
+    var path = 'userProjects/' + projectName + '/'+splitedFile[(splitedFile.length -1)];
+    */
+    var lastErrorObj = d[(d.length-1)]
 
     var doesExist = false;
 
@@ -806,13 +811,13 @@ function updateError(data) {
 
     // Adding strip if don't exists already
     for (var i in editorsInStack) {
-		if (editorsInStack[i].path == path) {
-			doesExist = true;
+        if (editorsInStack[i].path == path) {
+            doesExist = true;
         }
     }
 
     if (!doesExist){
-		var rq = { "request": "getFile", "data":path};
+        var rq = { "request": "getFile", "data":path};
         editorSocket.send(JSON.stringify(rq));
         treeLock = true; // LOCK TREE INTERACTION HERE
     }
@@ -830,7 +835,7 @@ function updateError(data) {
                                                    }]);
 
         // TODO if it's inside this file. If file is not in project don't do anything
-		editor.gotoLine(lastErrorObj.line);
+        editor.gotoLine(lastErrorObj.line);
         window.top.stop();
 
     },1000);

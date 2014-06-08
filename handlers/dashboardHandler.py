@@ -293,28 +293,27 @@ class WeioDashBoardHandler(SockJSConnection):
 
 
     def deleteCurrentProject(self, rq):
-        pass
-        # data = {}
-        # data['requested'] = rq['request']
-        #
-        # config = weioConfig.getConfiguration()
-        # projectToKill = config["last_opened_project"]
-        #
-        # print "PROJECT TO KILL ", projectToKill
-        #
-        # weioFiles.removeDirectory(config["user_projects_path"]+projectToKill)
-        #
-        # folders = weioFiles.listOnlyFolders(config["user_projects_path"]+ "examples/userProjects")
-        #
-        # if len(folders) > 0 :
-        #  config["last_opened_project"] = folders[0]
-        #  weioConfig.saveConfiguration(config)
-        #
-        #  data['data'] = "reload page"
-        # else :
-        #  data['data'] = "ask to create new project"
-        #
-        # self.broadcast(json.dumps(data))
+        data = {}
+        data['requested'] = rq['request']
+
+        config = weioConfig.getConfiguration()
+        projectToKill = config["last_opened_project"]
+
+        print "PROJECT TO KILL ", projectToKill
+
+        weioFiles.removeDirectory(projectToKill)
+
+        folders = weioFiles.listOnlyFolders("www/examples")
+
+        if len(folders) > 0 :
+         config["last_opened_project"] = "www/examples/" + folders[0]
+         weioConfig.saveConfiguration(config)
+
+         data['data'] = "reload page"
+        else :
+         data['data'] = "ask to create new project"
+
+        self.broadcast(clients, json.dumps(data))
 
     def iteratePacketRequests(self, rq) :
         requests = rq["packets"]
