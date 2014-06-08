@@ -153,7 +153,7 @@ class WeioDashBoardHandler(SockJSConnection):
             dirs = os.walk(flashDir).next()[1]
             a = {"storageName":"flash", "projects":dirs}
             allUserProjects.append(a)
-            
+
         # SD
         flashDir = "www/sd"
         if (os.path.exists(flashDir)):
@@ -219,7 +219,7 @@ class WeioDashBoardHandler(SockJSConnection):
         storage = rq['storageUnit']
 
         path = "www/" + rq['storageUnit'] + "/" + rq['path']
-        
+
         print "CREATE PROJECT", path
         if (len(path)>0):
             weioFiles.createDirectory(path)
@@ -228,6 +228,10 @@ class WeioDashBoardHandler(SockJSConnection):
             weioFiles.saveRawContentToFile(path + "/__init__.py", "")
 
             # make symlink to www/
+            try :
+                os.remove(path + "/www")
+            except:
+                print "Symlink don't exist. Will create new one for this project"
             os.symlink("www/", path + "/www")
 
             # copy all files from directory boilerplate to destination
@@ -235,7 +239,7 @@ class WeioDashBoardHandler(SockJSConnection):
             onlyfiles = [ f for f in os.listdir(mypath) if isfile(join(mypath,f)) ]
             for f in onlyfiles:
                 copyfile(mypath+f, path +"/"+f)
-            
+
             print "LASTOPENED new project", path
             config["last_opened_project"] = path
             weioConfig.saveConfiguration(config);
@@ -251,37 +255,65 @@ class WeioDashBoardHandler(SockJSConnection):
 
         print "DUPLICATE",rq
 
-        rq['request'] = 'createNewProject'
+        storage = rq['storageUnit']
 
+        path = "www/" + rq['storageUnit'] + "/" + rq['path']
+
+        print "DUPLICATE PROJECT", path
         data = {}
-        data['requested'] = "status"
-        data['status'] = "Project duplicated"
-        self.broadcast(clients, json.dumps(data))
+        if (len(path)>0):
 
-        self.newProject(rq)
+            # Destroy symlink
+            os.remove(config["last_opened_project"]+"/www")
+            # copy all files
+            copytree(config["last_opened_project"], path)
+            # Recreate symlink
+            os.symlink("www/", config["last_opened_project"] + "/www")
+
+            config["last_opened_project"] = path
+            weioConfig.saveConfiguration(config)
+
+            data['status'] = "Project duplicated"
+
+            data['requested'] = "status"
+            self.broadcast(clients, json.dumps(data))
+
+            # now go to newely duplicated project
+
+            data['request'] = "changeProject"
+            data['data'] = rq['storageUnit'] + "/" + rq['path']
+
+            self.changeProject(data)
+        else:
+            print "BAD PATHNAME"
+            data['status'] = "Error duplicating project"
+
+            data['requested'] = "status"
+            self.broadcast(clients, json.dumps(data))
+
 
     def deleteCurrentProject(self, rq):
         pass
         # data = {}
         # data['requested'] = rq['request']
-        # 
+        #
         # config = weioConfig.getConfiguration()
         # projectToKill = config["last_opened_project"]
-        # 
+        #
         # print "PROJECT TO KILL ", projectToKill
-        # 
+        #
         # weioFiles.removeDirectory(config["user_projects_path"]+projectToKill)
-        # 
+        #
         # folders = weioFiles.listOnlyFolders(config["user_projects_path"]+ "examples/userProjects")
-        # 
+        #
         # if len(folders) > 0 :
         #  config["last_opened_project"] = folders[0]
         #  weioConfig.saveConfiguration(config)
-        # 
+        #
         #  data['data'] = "reload page"
         # else :
         #  data['data'] = "ask to create new project"
-        # 
+        #
         # self.broadcast(json.dumps(data))
 
     def iteratePacketRequests(self, rq) :
