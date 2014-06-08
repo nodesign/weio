@@ -247,46 +247,28 @@ def unTarFile(sourceFilePath, destination):
 
 def symlinkExternalProjects():
     config = weioConfig.getConfiguration()
-    
-    # Examples
-    # if (os.path.exists("examples")):
-    #     if not(os.path.islink("www/examples")):
-    #         os.symlink(config["extern_projects_path_flash"], "www/flash")
-    #     else :
-    #         # unlink then link to make sure that path is correct
-    #         os.unlink("www/flash")
-    #         os.symlink(config["extern_projects_path_flash"], "www/flash")
 
     # Flash
     if (os.path.exists(config["extern_projects_path_flash"])):
-        if not(os.path.islink("www/flash")):
-            os.symlink(config["extern_projects_path_flash"], "www/flash")
-        else :
-            # unlink then link to make sure that path is correct
-            os.unlink("www/flash")
-            os.symlink(config["extern_projects_path_flash"], "www/flash")
+        # unlink then link to make sure that path is correct
+        try :
+            os.remove("www/flash")
+        except:
+            print "Symlink don't exist. Will create new one for flash"
+        os.symlink(config["extern_projects_path_flash"], "www/flash")
 
     # SD
     if (os.path.exists(config["extern_projects_path_sd"])):
-        if not(os.path.islink("www/sd")):
-            os.symlink(config["extern_projects_path_sd"], "www/sd")
-        else :
-            # unlink then link to make sure that path is correct
-            os.unlink("www/sd")
-            os.symlink(config["extern_projects_path_sd"], "www/sd")
+        try :
+            os.remove("www/sd")
+        except:
+            print "Symlink don't exist. Will create new one for sd"
+        os.symlink(config["extern_projects_path_sd"], "www/sd")
 
     # USB Flash
     if (os.path.exists(config["extern_projects_path_usbFlash"])):
-        if not(os.path.islink("www/usbFlash")):
-            os.symlink(config["extern_projects_path_usbFlash"], "www/usbFlash")
-        else :
-            # unlink then link to make sure that path is correct
-            os.unlink("www/usbFlash")
-            os.symlink(config["extern_projects_path_usbFlash"], "www/usbFlash")
-
-#print listUserDirectories("/Users/uros/workNow/nodesign/weIO/weio/weioUser/")
-#recreateUserFiles()
-#print listUserDirectories("/weioUser/")
-#def makeSymLinksToUserDirs
-
-#print(scanFolders())
+        try :
+            os.remove("www/usbFlash")
+        except:
+            print "Symlink don't exist. Will create new one for usbFlash"
+        os.symlink(config["extern_projects_path_usbFlash"], "www/usbFlash")
