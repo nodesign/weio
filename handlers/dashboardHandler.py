@@ -206,7 +206,7 @@ class WeioDashBoardHandler(SockJSConnection):
             os.remove(path+"/www")
         except:
             print "Symlink don't exist. Will create new one for www in this project"
-        os.symlink(config["absolut_root_path"]+"/www/", path + "/www")
+        os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
 
         data = {}
         data['requested'] = rq['request']
@@ -243,13 +243,14 @@ class WeioDashBoardHandler(SockJSConnection):
             # ADD HERE SOME DEFAULT FILES
             # adding __init__.py
             weioFiles.saveRawContentToFile(path + "/__init__.py", "")
-
+            
+            
             # make symlink to www/
             try :
                 os.remove(path + "/www")
             except:
                 print "Symlink don't exist. Will create new one for this project"
-            os.symlink("www/", path + "/www")
+            os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
 
             # copy all files from directory boilerplate to destination
             mypath = "www/libs/weio/boilerPlate/"
@@ -285,7 +286,7 @@ class WeioDashBoardHandler(SockJSConnection):
             # copy all files
             copytree(config["last_opened_project"], path)
             # Recreate symlink
-            os.symlink("www/", config["last_opened_project"] + "/www")
+            os.symlink(config["absolut_root_path"] + "/www/", config["last_opened_project"] + "/www")
 
             config["last_opened_project"] = path
             weioConfig.saveConfiguration(config)
