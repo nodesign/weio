@@ -89,7 +89,7 @@ class WeioDashBoardHandler(SockJSConnection):
         data['status'] = config["dns_name"] + " on " + ip
         # Send connection information to the client
         self.broadcast(clients, json.dumps(data))
-        
+
     def sendPreviewPortNumber(self,rq):
 
         # get configuration from file
@@ -100,7 +100,7 @@ class WeioDashBoardHandler(SockJSConnection):
         data['data'] = config["userAppPort"]
         # Send connection information to the client
         self.broadcast(clients, json.dumps(data))
-    
+
 
     def sendLastProjectName(self,rq):
         # get configuration from file
@@ -111,7 +111,7 @@ class WeioDashBoardHandler(SockJSConnection):
         lp = os.path.basename( config["last_opened_project"].strip("/") )
 
         storage = config["last_opened_project"].split("/")[0]
-        
+
         print "USER PRJ NAME", lp
 
         if (weioFiles.checkIfDirectoryExists(config["last_opened_project"])):
@@ -201,9 +201,12 @@ class WeioDashBoardHandler(SockJSConnection):
         config["last_opened_project"] = path
         weioConfig.saveConfiguration(config);
 
-        # check if symlink to www/ exists
-        if not(os.path.islink(path+"/www")):
-            os.symlink("www/", path + "/www")
+        # In this way we avoid migrations between pc and weio and other archs
+        try :
+            os.remove(path+"/www")
+        except:
+            print "Symlink don't exist. Will create new one for www in this project"
+        os.symlink(config["absolut_root_path"]+"/www/", path + "/www")
 
         data = {}
         data['requested'] = rq['request']
