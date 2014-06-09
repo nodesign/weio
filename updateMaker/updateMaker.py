@@ -130,7 +130,7 @@ if (len(sys.argv)>=3) :
     config["port"] = 8080
     config["userAppPort"] = 80
     config["debug_mode"] = "False"
-    config["extern_projects_path"] = "/weioUser/"
+    config["extern_projects_path_flash"] = "/weioUser/flash"
     
     inputFile = open("../config.weio", 'w')
     ret = inputFile.write(json.dumps(config, indent=4, sort_keys=True))
@@ -148,7 +148,7 @@ if (len(sys.argv)>=3) :
     config["port"] = 8080
     config["userAppPort"] = 8082
     config["debug_mode"] = "True"
-    config["extern_projects_path"] = "/Users/uros/workNow/nodesign/weIO/weio/weioUser/"
+    config["extern_projects_path_flash"] = "/Users/uros/workNow/nodesign/weIO/weio/weioUser/flash"
     inputFile = open("../config.weio", 'w')
     ret = inputFile.write(json.dumps(config, indent=4, sort_keys=True))
     inputFile.close()
