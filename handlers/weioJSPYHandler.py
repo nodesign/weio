@@ -54,7 +54,7 @@ class WeioHandler(SockJSConnection):
         self.serve(json.loads(data))
 
     def serve(self, data) :
-        print "=== SERVE ==="
+        #print "=== SERVE ==="
         command = data["request"]
         #print data
 
