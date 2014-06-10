@@ -2,7 +2,7 @@
 <html lang="en">
     
   <head >
-    <script data-main="weioLibs" src="../require.js"></script> 
+    <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
     <title>My first Web app</title>
   </head>
 
@@ -10,5 +10,12 @@
 
     <p>Hello world!</p>
 
+  <script> 
+
+      function onWeioReady() {
+       console.log("DOM is loaded, websocket is opened");
+      }
+
+  </script>
   </body>
 </html>
