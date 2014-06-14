@@ -44,6 +44,9 @@ tar -xzvf $WEIO/productionScripts/weio.tar.gz -C files/
 # Setting first time run flag
 python $WEIO/openWrt/firstTimeFlag.py files/weio/config.weio
 
+# Copy feeds configuration file
+cp $WEIO/openWrt/feeds.config feeds.config
+
 # Install needed packages for WeIO
 cp $WEIO/openWrt/pkg_install.sh .
 ./pkg_install.sh
