@@ -248,6 +248,15 @@ def unTarFile(sourceFilePath, destination):
 def symlinkExternalProjects():
     config = weioConfig.getConfiguration()
 
+    # Examples
+    if ( os.path.exists(config["absolut_root_path"] + "/examples") ):
+        # unlink then link to make sure that path is correct
+        try :
+            os.remove("www/examples")
+        except:
+            print "Symlink don't exist. Will create new one for examples"
+        os.symlink(config["absolut_root_path"] + "/examples", "www/examples")
+
     # Flash
     if (os.path.exists(config["extern_projects_path_flash"])):
         # unlink then link to make sure that path is correct
