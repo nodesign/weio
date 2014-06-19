@@ -2,6 +2,11 @@ from IoTPy.pyuper.utils import IoTPy_APIError, errmsg
 
 
 PWM_PORT_RUNNING = [[0,0], [0,0]]
+
+def zeroPwmPort():
+    global PWM_PORT_RUNNING
+    PWM_PORT_RUNNING = [[0,0], [0,0]]
+
 class PWM:
     PWM_PORT_FUNCTIONS = [[50,51,52],[60,61,62]]
     PWM_PERIOD = 10000

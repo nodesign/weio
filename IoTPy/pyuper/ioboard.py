@@ -11,8 +11,10 @@ import glob
 from multiprocessing import Process, Queue
 
 import serial
+import signal
 
 from IoTPy.pyuper.utils import errmsg, IoTPy_APIError
+import IoTPy.pyuper.pwm
 
 """ Pin capabilities """
 CAP_RESERVED = 0x0
@@ -162,6 +164,9 @@ class IoBoard:
         self.version = __version__
         self.pinout = pinout
 
+        # Zero out PWM_PORT global
+        IoTPy.pyuper.pwm.zeroPwmPort()
+
     def get_info(self):
         return self.devicename, self.version
 
@@ -304,12 +309,18 @@ class Reader:
         #self.thread_read = threading.Thread(target=self.reader)
         #self.thread_read.setDaemon(1)
         #self.thread_read.start()
-        self.process_read = Process(target=self.reader, args=(self.alive, self.outq, self.serial, self.callback))
+        self.process_read = Process(target=self.reader, args=(self.outq, self.serial, self.callback))
         self.process_read.start()
         self.decodefun = decodefun
 
-    def reader(self, alive, q, serial, callback):
-        while alive:
+    def sigtermHandler(self, signum, stack):
+        print 'Reader process: got SIGTREM'
+        # Set process contect variable for temination
+        self.alive = False
+
+    def reader(self, q, serial, callback):
+        signal.signal(signal.SIGTERM, self.sigtermHandler)
+        while self.alive:
             try:
                 data = serial.read(1)            #read one, blocking
                 n = serial.inWaiting()           #look if there is more
@@ -326,14 +337,15 @@ class Reader:
                         q.put(data)
                         #self.outq.put(data)
             except:
-                errmsg("UPER API: serial port reading error.")
-                #raise APIError("Serial port reading error.")
-                alive = False
+                if (self.alive):
+                    errmsg("UPER API: serial port reading error.")
+                    raise APIError("Serial port reading error.")
+                    self.alive = False
                 break
 
     def stop(self):
         if self.alive:
             self.alive = False
+            # Send the message to the Reader process
             self.process_read.terminate()
-            self.process_read.join(0.1)
-            #self.thread_read.join()
+            self.process_read.join()
