@@ -129,6 +129,7 @@ class WeioGpio():
     def reset(self):
         weioRunnerGlobals.WEIO_SERIAL_LINKED = False
         self.u.reset()
+        self.u.ser.close()
 
     def stop(self):
         weioRunnerGlobals.WEIO_SERIAL_LINKED = False
