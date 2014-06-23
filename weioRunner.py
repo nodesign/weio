@@ -146,8 +146,9 @@ class UserControl():
                 os.kill(p.pid, 9) # very violent
             except:
                 pass
-            self.userProcessList.remove(p)
- 
+
+        # Empty the list of processes
+        del self.userProcessList[:]
 
         #print "OK"
         #print "### userProcessList = ", self.userProcessList
