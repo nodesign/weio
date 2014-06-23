@@ -2,7 +2,7 @@ import uper, time
 
 up = uper.Uper()
 
-for i in range(100):
+for i in xrange(100):
 	val = up.analogRead(23)
 	print val, "papugos"
 	voltai = 5.0/1024 * val

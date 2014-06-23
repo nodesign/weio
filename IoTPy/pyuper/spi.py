@@ -4,6 +4,19 @@ from IoTPy.pyuper.utils import IoTPy_IOError, IoTPy_ThingError, IoTPy_APIError, 
 
 
 class SPI:
+    """
+    SPI communication module.
+
+    :param board: IoBoard with SPI capability.
+    :type board: :class:`IoTPy.pyuper.ioboard.IoBoard`
+    :param port: SPI module number. Optional, default 0 (SPI0 module).
+    :type port: int
+    :param divider: SPI clock divider. SPI clock speed will be maximum clock speed (2MHz) divided by this value. Optional, default 1.
+    :type divider: int
+    :param mode: Standard SPI mode number (0-3). Optional, default 0.
+    :type mode: int
+    """
+
     def __init__(self, board, port=0, divider=1, mode=0):
         self.board = board
         self.port = port
@@ -27,7 +40,18 @@ class SPI:
     def __enter__(self):
         return self
 
-    def transaction(self, write_data, read_from_slave=0):
+    def transaction(self, write_data, read_from_slave=False):
+        """
+        Perform SPI data transaction.
+
+        :param write_data: Data to be shifted on MOSI line.
+        :type write_data: str
+        :param read_from_slave: Flag indicating whether the data received on MISO line should be ignored or not. Optional, default False.
+        :type read_from_slave: bool
+
+        :return: Data received on MISO line, if read_from_slave is True.
+        :rtype: str
+        """
         result = self.board.decode_sfp(self.board.uper_io(read_from_slave, self.board.encode_sfp(21 + self.port * 10, [write_data, read_from_slave])))
         if read_from_slave:
             return result[1][0]

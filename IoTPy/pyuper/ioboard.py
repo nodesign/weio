@@ -4,119 +4,35 @@
 __version__ = "0.01"
 
 import struct
+import threading
+import Queue
 import types
 import platform
 import glob
 
-from multiprocessing import Process, Queue
-
 import serial
-import signal
 
 from IoTPy.pyuper.utils import errmsg, IoTPy_APIError
-import IoTPy.pyuper.pwm
-
-""" Pin capabilities """
-CAP_RESERVED = 0x0
-CAP_GPIO     = 0x1
-CAP_ADC      = 0x2
-CAP_PWM      = 0x4
-CAP_SPI      = 0x8
-
-""" UPER1 board pinout """
-uper1_pinout = {
-1:  [CAP_GPIO,             [0], 	"PIO0_20"],
-2:  [CAP_GPIO,             [1], 	"PIO0_2"],
-3:  [CAP_GPIO | CAP_PWM,   [2,1,2], "PIO1_26"],
-4:  [CAP_GPIO,             [3], 	"PIO1_27"],
-5:  [CAP_GPIO | CAP_SPI,   [4,1,2], "PIO1_20"],  #SPI1 SCK
-6:  [CAP_RESERVED,					"PIO0_4"],
-7:  [CAP_RESERVED,					"PIO0_5"],
-8:  [CAP_GPIO | CAP_SPI,   [5,1,1],	"PIO0_21"],  #SPI1 MOSI
-9:  [CAP_GPIO,             [6],	    "PIO1_23"],
-10: [CAP_GPIO | CAP_PWM,   [7,1,0], "PIO1_24"],
-11: [CAP_GPIO,             [8],	    "PIO0_7"],
-12: [CAP_GPIO,             [9],	    "PIO1_28"],
-13: [CAP_GPIO,             [10],	"PIO1_31"],
-14: [CAP_GPIO | CAP_SPI,   [11,1,0],"PIO1_21"],  #SPI1 MISO
-15: [CAP_GPIO,             [12],	"PIO0_8"],
-16: [CAP_GPIO,             [13],	"PIO0_9"],
-17: [CAP_GPIO,             [14],	"PIO0_10"],
-18: [CAP_GPIO,             [15],	"PIO1_29"],
-19: [CAP_RESERVED],
-20: [CAP_RESERVED],
-21: [CAP_RESERVED],
-22: [CAP_RESERVED],
-23: [CAP_GPIO | CAP_ADC,   [33,0],	"PIO1_19"],
-24: [CAP_GPIO | CAP_ADC,   [32,1],	"PIO1_25"],
-25: [CAP_GPIO | CAP_ADC,   [31,2],	"PIO1_16"],
-26: [CAP_GPIO | CAP_ADC,   [30,3],	"PIO0_19"],
-27: [CAP_GPIO | CAP_PWM,   [29,0,0],"PIO0_18"],
-28: [CAP_GPIO | CAP_PWM,   [28,0,1],"PIO0_17"],
-29: [CAP_GPIO,             [27],	"PIO1_15"],
-30: [CAP_GPIO | CAP_ADC,   [26,4],	"PIO0_23"],
-31: [CAP_GPIO | CAP_ADC,   [25,5],	"PIO0_22"],
-32: [CAP_GPIO | CAP_ADC,   [24,6],	"PIO0_16"],
-33: [CAP_GPIO | CAP_ADC,   [23,7],	"PIO0_15"],
-34: [CAP_GPIO | CAP_PWM,   [22,0,2],"PIO1_22"],
-35: [CAP_GPIO,             [21],	"PIO1_14"],
-36: [CAP_GPIO,             [20],	"PIO1_13"],
-37: [CAP_GPIO,             [19],	"PIO0_14"],
-38: [CAP_GPIO,             [18],	"PIO0_13"],
-39: [CAP_GPIO | CAP_PWM,   [17,1,1],"PIO0_12"],
-40: [CAP_GPIO,             [16],	"PIO0_11"]
-}
-
-""" WEIO board pinout """
-weio_pinout = {
-0 : [CAP_GPIO,             [20],    "PIO1_13"],
-1 : [CAP_GPIO,             [19],    "PIO0_14"],
-2 : [CAP_GPIO,             [13],    "PIO0_9"],
-3 : [CAP_GPIO,             [12],    "PIO0_8"],
-4 : [CAP_GPIO,             [14],    "PIO0_10"],
-5 : [CAP_GPIO,             [1],     "PIO0_2"],
-6 : [CAP_GPIO,             [8],     "PIO0_7"],
-7 : [CAP_GPIO,             [21],    "PIO1_14"],
-8 : [CAP_GPIO,             [5],     "PIO0_21"],
-9 : [CAP_GPIO,             [11],    "PIO1_21"],
-10: [CAP_GPIO,             [4],     "PIO1_20"],
-11: [CAP_GPIO,             [0],     "PIO0_20"],
-12: [CAP_GPIO,             [18],    "PIO0_13"],
-13: [CAP_GPIO,             [16],    "PIO0_11"],
-14: [CAP_GPIO,             [27],    "PIO1_15"],
-15: [CAP_GPIO,             [6],     "PIO1_23"],
-16: [CAP_GPIO,             [3],     "PIO1_27"],
-17: [CAP_GPIO,             [9],     "PIO1_28"],
-18: [CAP_GPIO | CAP_PWM,   [29,0,0],"PIO0_18"],
-19: [CAP_GPIO | CAP_PWM,   [28,0,1],"PIO0_17"],
-20: [CAP_GPIO | CAP_PWM,   [22,0,2],"PIO1_22"],
-21: [CAP_GPIO | CAP_PWM,   [7,1,0], "PIO1_24"],
-22: [CAP_GPIO | CAP_PWM,   [17,1,1],"PIO0_12"],
-23: [CAP_GPIO | CAP_PWM,   [2,1,2], "PIO1_26"],
-24: [CAP_GPIO | CAP_ADC,   [33,0],  "PIO1_19"],
-25: [CAP_GPIO | CAP_ADC,   [32,1],  "PIO1_25"],
-26: [CAP_GPIO | CAP_ADC,   [31,2],  "PIO1_16"],
-27: [CAP_GPIO | CAP_ADC,   [30,3],  "PIO0_19"],
-28: [CAP_GPIO | CAP_ADC,   [26,4],  "PIO0_23"],
-29: [CAP_GPIO | CAP_ADC,   [25,5],  "PIO0_22"],
-30: [CAP_GPIO | CAP_ADC,   [24,6],  "PIO0_16"],
-31: [CAP_GPIO | CAP_ADC,   [23,7],  "PIO0_15"]
-}
+from IoTPy.pyuper.pinouts import UPER1_PINOUT
 
 class IoBoard:
-    """ low level IO """
-    cap_reserved = CAP_RESERVED
-    cap_gpio = CAP_GPIO
-    cap_adc = CAP_ADC
-    cap_pwm = CAP_PWM
+    """
+    Uper type board class.
 
-    def __init__(self, pinout=weio_pinout, serial_port=None):
+    :param pinout: A list describing physical board pin layout and capabilities. Optional, default is IoPinout.UPER1_PINOUT.
+    :type pinout: :class:`IoTPy.pyuper.pinouts.IoPinout`
+    :param serial_port: Name of SFP command serial communications port.
+    :type serial_port: str
+    """
+
+    def __init__(self, pinout=UPER1_PINOUT, serial_port=None):
+        """__init__(self, pinout=UPER1_PINOUT, serial_port=None)"""
         ser = None
         if serial_port is None:
             my_platform = platform.system()
             if my_platform == "Windows":
                 ports_list = []
-                for i in range(256):
+                for i in xrange(256):
                     try:
                         ser = serial.Serial(i)
                         ports_list.append('COM' + str(i + 1))
@@ -151,26 +67,33 @@ class IoBoard:
         if not ser:
             raise IoTPy_APIError("No UPER found on USB/serial ports.")
 
-        self.ser = ser
-        self.ser.flush()
-        #self.outq = Queue.Queue()
-        self.outq = Queue()
-        self.reader = Reader(self.ser, self.outq, self.internalCallBack, self.decode_sfp)
-
         self.interrupts = [None] * 8
         self.callbackdict = {}
+
+        self.ser = ser
+        self.ser.flush()
+        self.outq = Queue.Queue()
+        self.reader = Reader(self.ser, self.outq, self.internalCallBack, self.decode_sfp)
+        #self.reader = Reader(self.ser, self.outq, self.callbackdict, self.decode_sfp)
 
         self.devicename = "uper"
         self.version = __version__
         self.pinout = pinout
 
-        # Zero out PWM_PORT global
-        IoTPy.pyuper.pwm.zeroPwmPort()
-
     def get_info(self):
+        """
+        Get IoBoard device name and version info.
+
+        :return: Tuple containing board name and version.
+        """
         return self.devicename, self.version
 
     def stop(self):
+        """
+        Stop all communications with the board and close serial communication port.
+
+        :raise: IoTPy_APIError
+        """
 
         #for i in range(7):
         #    self.detachInterrupt(i)
@@ -181,13 +104,13 @@ class IoBoard:
         except:
             raise IoTPy_APIError("UPER API: Serial/USB port disconnected.")
 
-    def encode_int(self, intarg):
+    def _encode_int(self, intarg):
         if intarg < 64:
             return (chr(intarg))
         packedint = struct.pack('>I', intarg).lstrip('\x00')
         return (chr(0xc0 | (len(packedint) - 1)) + packedint)
 
-    def encode_bytes(self, bytestr):
+    def _encode_bytes(self, bytestr):
         if len(bytestr) < 64:
             return (chr(0x40 | len(bytestr)) + bytestr)
         packedlen = struct.pack('>I', len(bytestr)).lstrip('\x00')
@@ -199,12 +122,29 @@ class IoBoard:
             raise IoTPy_APIError("UPER API: - too long string passed to UPER, encode_bytes can't handle it.")
 
     def encode_sfp(self, command, args):
-        functions = {types.StringType: self.encode_bytes, types.IntType: self.encode_int}
+        """
+        Construct binary SFP command.
+
+        :param command: SFP command ID.
+        :type command: int
+        :param args: A list of SFP arguments, which can be either an integer or a byte collection (string).
+        :type args: list
+        :return: Binary SFP command.
+        :rtype: str
+        """
+        functions = {types.StringType: self._encode_bytes, types.IntType: self._encode_int}
         sfp_command = chr(command) + ''.join(functions[type(arg)](arg) for arg in args)
         sfp_command = '\xd4' + struct.pack('>H', len(sfp_command)) + sfp_command
         return sfp_command
 
     def decode_sfp(self, buffer):
+        """
+        Decode SFP command from byte buffer.
+
+        :param buffer: A byte buffer which stores SFP command.
+        :type buffer: str
+        :return: A list containing decoded SFP function ID and arguments (if any).
+        """
         result = []
         if buffer[0:1] != '\xd4':
             return result
@@ -248,6 +188,12 @@ class IoBoard:
         return result
 
     def uper_io(self, ret, output_buf):
+        """
+
+        :param ret:
+        :param output_buf:
+        :return:
+        """
         try:
             self.ser.write(output_buf)
         except:
@@ -260,14 +206,27 @@ class IoBoard:
                 raise IoTPy_APIError("Nothing to read on serial port exception.")
         return data
 
-    def internalCallBack(self, intdata):
+    def internalCallBack(self, interrupt_data):
+        """
+
+        :param interrupt_data:
+        :return:
+        """
+
         try:
-            self.callbackdict[self.interrupts[intdata[0]]][1]()
+            interrupt_event = { 'id':interrupt_data[0], 'type':interrupt_data[1] & 0xFF, 'values':interrupt_data[1] >> 8 }
+            callback_entry = self.callbackdict[self.interrupts[interrupt_event['id']]]
+            callback_entry['callback'](interrupt_event, callback_entry['userobject'])
         except:
             raise IoTPy_APIError("UPER API: internal call back problem.")
         return
 
     def get_device_info(self):
+        """
+        Return information about the device.
+
+        :return: A list containing board type, major and minor firmware versions, 16 byte unique identifier, microcontroller part and bootcode version numbers.
+        """
         device_info = []
         result = self.decode_sfp(self.uper_io(1, self.encode_sfp(255, [])))
         if result[0] != -1:
@@ -292,6 +251,9 @@ class IoBoard:
         return port_class(self, port, pins)
 
     def reset(self):
+        """
+        Perform software restart.
+        """
         self.uper_io(0, self.encode_sfp(251, []))
 
     def __enter__(self):
@@ -300,52 +262,61 @@ class IoBoard:
     def __exit__(self, exc_type, exc_value, traceback):
         self.stop()
 
+
 class Reader:
     def __init__(self, serial, outq, callback, decodefun):
         self.serial = serial
         self.outq = outq
         self.callback = callback
         self.alive = True
-        #self.thread_read = threading.Thread(target=self.reader)
-        #self.thread_read.setDaemon(1)
-        #self.thread_read.start()
-        self.process_read = Process(target=self.reader, args=(self.outq, self.serial, self.callback))
-        self.process_read.start()
+
+        self.irq_available = threading.Condition()
+        self.irq_requests = list()
+
+        self.thread_irq = threading.Thread(target=self.interrupt_handler)
+        self.thread_irq.start()
+
+        self.thread_read = threading.Thread(target=self.reader)
+        self.thread_read.setDaemon(1)
+        self.thread_read.start()
         self.decodefun = decodefun
 
-    def sigtermHandler(self, signum, stack):
-        print 'Reader process: got SIGTREM'
-        # Set process contect variable for temination
+    def interrupt_handler(self):
+        with self.irq_available:
+            while self.alive:
+                self.irq_available.wait(0.05)
+                while len(self.irq_requests):
+                    interrupt = self.irq_requests.pop(0)
+                    try:
+                        self.callback(interrupt[1])
+                    except:
+                        errmsg("UPER API: Interrupt callback error")
+
         self.alive = False
 
-    def reader(self, q, serial, callback):
-        signal.signal(signal.SIGTERM, self.sigtermHandler)
+    def reader(self):
         while self.alive:
             try:
-                data = serial.read(1)            #read one, blocking
-                n = serial.inWaiting()           #look if there is more
+                data = self.serial.read(1)            #read one, blocking
+                n = self.serial.inWaiting()           #look if there is more
                 if n:
-                    data = data + serial.read(n)    #and get as much as possible
+                    data = data + self.serial.read(n)    #and get as much as possible
                 if data:
                     if data[3] == '\x08':
                         interrupt = self.decodefun(data)
-                        callback_process = Process(target=callback, args=[interrupt[1]])
-                        callback_process.start()
-                        #callbackthread = threading.Thread(target=self.callback, args=[interrupt[1]])
-                        #callbackthread.start()
+                        with self.irq_available:
+                            self.irq_requests.append(interrupt)
+                            self.irq_available.notify()
                     else:
-                        q.put(data)
-                        #self.outq.put(data)
+                        self.outq.put(data)
             except:
-                if (self.alive):
-                    errmsg("UPER API: serial port reading error.")
-                    raise APIError("Serial port reading error.")
-                    self.alive = False
+                errmsg("UPER API: serial port reading error.")
+                #raise APIError("Serial port reading error.")
                 break
+        self.alive = False
 
     def stop(self):
         if self.alive:
             self.alive = False
-            # Send the message to the Reader process
-            self.process_read.terminate()
-            self.process_read.join()
+            self.thread_irq.join()
+            self.thread_read.join()
