@@ -4,7 +4,7 @@ from weioLib.weioLm75 import WeioLm75
 from IoTPy.pyuper.gpio import GPIO
 import IoTPy.things.servomotor as servoLib
 import IoTPy.things.am2321 as am2321Lib
-import IoTPy.things.si7020 as si7020Lib
+import IoTPy.things.si70xx as si70xxLib
 import IoTPy.things.srf08 as srf08Lib
 import IoTPy.things.stepper as StepperLib
 
