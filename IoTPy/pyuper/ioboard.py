@@ -13,7 +13,9 @@ import glob
 import serial
 
 from IoTPy.pyuper.utils import errmsg, IoTPy_APIError
-from IoTPy.pyuper.pinouts import UPER1_PINOUT
+from IoTPy.pyuper.pinouts import WEIO_PINOUT
+
+import IoTPy.pyuper.pwm
 
 class IoBoard:
     """
@@ -25,8 +27,8 @@ class IoBoard:
     :type serial_port: str
     """
 
-    def __init__(self, pinout=UPER1_PINOUT, serial_port=None):
-        """__init__(self, pinout=UPER1_PINOUT, serial_port=None)"""
+    def __init__(self, pinout=WEIO_PINOUT, serial_port=None):
+        """__init__(self, pinout=WEIO_PINOUT, serial_port=None)"""
         ser = None
         if serial_port is None:
             my_platform = platform.system()
@@ -79,6 +81,9 @@ class IoBoard:
         self.devicename = "uper"
         self.version = __version__
         self.pinout = pinout
+
+        # Zero out PWM_PORT global
+        IoTPy.pyuper.pwm.zeroPwmPort()
 
     def get_info(self):
         """
