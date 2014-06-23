@@ -249,35 +249,44 @@ def symlinkExternalProjects():
     config = weioConfig.getConfiguration()
 
     # Examples
-    if ( os.path.exists(config["absolut_root_path"] + "/examples") ):
+    if ( os.path.lexists(config["absolut_root_path"] + "/examples") ):
         # unlink then link to make sure that path is correct
         try :
-            os.remove("www/examples")
+            os.unlink("www/examples")
         except:
             print "Symlink don't exist. Will create new one for examples"
         os.symlink(config["absolut_root_path"] + "/examples", "www/examples")
 
     # Flash
-    if (os.path.exists(config["extern_projects_path_flash"])):
+    if (os.path.lexists(config["extern_projects_path_flash"])):
         # unlink then link to make sure that path is correct
         try :
-            os.remove("www/flash")
+            os.unlink("www/flash")
         except:
             print "Symlink don't exist. Will create new one for flash"
         os.symlink(config["extern_projects_path_flash"], "www/flash")
 
     # SD
-    if (os.path.exists(config["extern_projects_path_sd"])):
+    if (os.path.lexists(config["extern_projects_path_sd"])):
         try :
-            os.remove("www/sd")
+            os.unlink("www/sd")
         except:
             print "Symlink don't exist. Will create new one for sd"
         os.symlink(config["extern_projects_path_sd"], "www/sd")
 
     # USB Flash
-    if (os.path.exists(config["extern_projects_path_usbFlash"])):
+    if (os.path.lexists(config["extern_projects_path_usbFlash"])):
         try :
-            os.remove("www/usbFlash")
+            os.unlink("www/usbFlash")
         except:
             print "Symlink don't exist. Will create new one for usbFlash"
         os.symlink(config["extern_projects_path_usbFlash"], "www/usbFlash")
+
+    # Re-link current project's www
+    lastWww = config["last_opened_project"] + '/' + 'www'
+    if os.path.lexists(lastWww):
+        try:
+            os.unlink(lastWww)
+        except:
+            print "Symlink don't exist. Will create new one for usbFlash"
+        os.symlink(config["absolut_root_path"] + "/www", lastWww)
