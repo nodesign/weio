@@ -90,8 +90,8 @@ class WeioWifi() :
 
         # We can not serve anything if we are not in sta or ap mode
         #print "CHECKING WIFI!"
-        if (self.mode != None):
-           print "self.mode = " + self.mode
+        #if (self.mode != None):
+        #   print "self.mode = " + self.mode
         #print "weioIpAddress.getLocalIpAddress() = " + weioIpAddress.getLocalIpAddress()
 
         if (self.mode == None):
