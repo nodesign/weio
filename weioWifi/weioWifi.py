@@ -71,7 +71,7 @@ class WeioWifi() :
         command = "iwconfig " + self.interface
         status = weioSubprocess.shellBlocking(command)
 
-        print(str(status))
+        #print(str(status))
         # We are in STA mode, so check if we are connected
         if (status == "ERR_CMD") or "No such device" in status :
             # WiFi is DOWN
@@ -89,10 +89,10 @@ class WeioWifi() :
                 self.mode = "sta"
 
         # We can not serve anything if we are not in sta or ap mode
-        print "CHECKING WIFI!"
+        #print "CHECKING WIFI!"
         if (self.mode != None):
            print "self.mode = " + self.mode
-        print "weioIpAddress.getLocalIpAddress() = " + weioIpAddress.getLocalIpAddress()
+        #print "weioIpAddress.getLocalIpAddress() = " + weioIpAddress.getLocalIpAddress()
 
         if (self.mode == None):
             self.disconnectedCounter = self.disconnectedCounter + 1
