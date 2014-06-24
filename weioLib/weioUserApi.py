@@ -161,10 +161,10 @@ class WeioApiEvent():
         self.handler = handler
 
 class WeioApiInterrupt():
-    def __init__ (self, pin, edge, event) :
+    def __init__ (self, pin, edge, handler) :
         self.pin = pin
         self.edge = edge
-        self.event = event
+        self.handler = handler
 
 class WeioAttach():
     def __init__(self):
@@ -181,9 +181,9 @@ class WeioAttach():
         e = WeioApiEvent(event, handler)
         self.events[event] = e
 
-    def interrupt(self, pin, edge, event):
-        intr = WeioApiInterrupt(pin, edge, event)
-        slef.ints[pin] = intr
+    def interrupt(self, pin, edge, handler):
+        intr = WeioApiInterrupt(pin, edge, handler)
+        self.ints[pin] = intr
 
 class WeioClient():
     def __init__(self, info, connection):

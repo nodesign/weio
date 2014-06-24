@@ -106,7 +106,6 @@ class UserControl():
             weioParser.addUserEvent(weioUserApi.attach.events[key].event,
                     weioUserApi.attach.events[key].handler)
 
-
         if (weioIO.gpio != None):
             if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
                 try :
@@ -114,7 +113,15 @@ class UserControl():
 
                     # Initialize globals for the user Tornado
                     weioRunnerGlobals.DECLARED_PINS = weioIO.gpio.declaredPins
-                except :
+
+                    # Add user defined interrupts
+                    #print "ADDING USER INTERRUPTS"
+                    for key in weioUserApi.attach.ints:
+                        weioIO.gpio.attachInterrupt(weioUserApi.attach.ints[key].pin,
+                                weioUserApi.attach.ints[key].edge,
+                                weioUserApi.attach.ints[key].handler)
+
+                except:
                     print "LPC coprocessor is not present"
                     weioIO.gpio = None
 
@@ -162,7 +169,7 @@ class UserControl():
         # Reset user attached elements
         weioUserApi.attach.procs = {}
         weioUserApi.attach.events = {}
-        weioUserApi.attach.ins = {}
+        weioUserApi.attach.ints = {}
 
     def userPlayer(self, fd, events):
         #print "Inside userControl()"
