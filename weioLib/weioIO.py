@@ -2,6 +2,8 @@ import platform
 import time
 from weioLib.weioLm75 import WeioLm75
 from IoTPy.pyuper.gpio import GPIO
+from IoTPy.pyuper.interrupt import Interrupt
+
 import IoTPy.things.servomotor as servoLib
 import IoTPy.things.am2321 as am2321Lib
 import IoTPy.things.si70xx as si70xxLib
@@ -24,6 +26,9 @@ INPUT = GPIO.INPUT
 OUTPUT = GPIO.OUTPUT
 HIGH = 1
 LOW = 0
+CHANGE = Interrupt.EDGE_CHANGE
+RISING = Interrupt.EDGE_RISE
+FALLING = Interrupt.EDGE_FALL
 
 ###
 # User API functions for GPIO
@@ -98,6 +103,16 @@ def attachInterrupt(pin, mode, callback):
     except:
         print "attachInterrupt(", pin,",",mode,",",callback,")"
         return -1
+
+def getInterruptType(mode):
+    if (mode is HIGH):
+        return "HIGH"
+    elif (mode is LOW):
+        return "LOW"
+    elif (mode is RISING):
+        return "RISING"
+    elif (mode is FALLING):
+        return "FALLING"
 
 def detachInterrupt(pin):
     try:

@@ -17,12 +17,19 @@ def setup():
     attach.interrupt(pin, 4, testInt)
     
 def myProcess():
+    m = 0
     while True:
         a=digitalRead(pin)
-        print "Value on the pin ",pin," = ",a
+        print "Value on the pin ",pin," = ",a, " Iteration ", m
         delay(200)
+        if (m==50):
+            print "detaching"
+            detachInterrupt(pin)
+        m = m+1
+    
         
 def testInt(args1, args2):
     print "*** INTERRUPT ***"
     print "ARGS1 = ", args1
     print "ARGS2 = ", args2
+    print getInterruptType(args1["type"])

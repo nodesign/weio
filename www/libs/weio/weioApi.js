@@ -46,8 +46,14 @@ var _weio = null;
  * Each key is binded to coresponding function
  */
 var weioCallbacks = {
-    "inbox":callInbox
+    "inbox":callInbox,
+    "attachInterrupt":weioExecuteInterrupt
 };
+
+/**
+ * This is where callback names are stored behind pin numbers
+*/
+var weioInterrupts = [];
 
 $(document).ready(function() {
 
@@ -74,6 +80,11 @@ $(document).ready(function() {
             _addr = a;
         }
         console.log("WebSocket connecting to " + _addr);
+        
+        // init interrupts
+        for (var i=0; i<32; i++) {
+            weioInterrupts.push("");
+        }
 
         /*
         * WebSocket openning
@@ -161,10 +172,6 @@ var INPUT_PULLDOWN = 2;
 var INPUT_HIGHZ = 0;
 var ADC_INPUT = 5;
 var OUTPUT = 1;
-var PWM0_OUTPUT = 6;
-var PWM1_OUTPUT = 7;
-var PWM_OUTPUT = 8;
-
 
 /*
  * Unique UUID number of this session
@@ -316,6 +323,22 @@ function callInbox(data) {
     }
 };
 
+function attachInterrupt(pin, mode, callback) {
+    var fName = callback.name;
+    weioInterrupts[pin] = fName;
+    weioCallbacks[fName] = callback;
+    genericMessage("attachInterrupt", [pin, mode], null);
+}
+
+function weioExecuteInterrupt(data) {
+    console.log("INTERRUPR",data);
+}
+
+function detachInterrupt(pin) {
+    delete weioCallbacks[weioInterrupts[pin]];
+    weioInterrupts[pin] = "";
+    genericMessage("detachInterrupt", [pin], null);
+}
 
 /*
  * Generic handler for sending messages to server
