@@ -48,7 +48,8 @@ var socketOpened = false;
 
 
 function connectToBoard() {
-    
+    // connection example
+     //   dashboard = new SockJS('http://' + location.host + '/dashboard');
     if (socketOpened==false) {
         /*
          * Identify server address and port to open websocket
