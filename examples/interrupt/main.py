@@ -14,7 +14,7 @@ def setup():
     attach.process(myProcess)
     
     # attach user-defined interrupt handler to pin 5
-    attach.interrupt(pin, 4, testInt)
+    attach.interrupt(pin, RISING, testInt)
     
 def myProcess():
     m = 0
