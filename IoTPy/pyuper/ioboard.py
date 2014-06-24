@@ -6,6 +6,7 @@ __version__ = "0.01"
 import struct
 import threading
 import Queue
+import multiprocessing.Queue
 import types
 import platform
 import glob
@@ -74,7 +75,9 @@ class IoBoard:
 
         self.ser = ser
         self.ser.flush()
-        self.outq = Queue.Queue()
+        #self.outq = Queue.Queue()
+        self.outq = multiprocessing.Queue()
+
         self.reader = Reader(self.ser, self.outq, self.internalCallBack, self.decode_sfp)
         #self.reader = Reader(self.ser, self.outq, self.callbackdict, self.decode_sfp)
 
