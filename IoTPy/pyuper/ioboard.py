@@ -6,6 +6,7 @@ __version__ = "0.01"
 import struct
 import threading
 import Queue
+import multiprocessing
 import types
 import platform
 import glob
