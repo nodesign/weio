@@ -55,30 +55,43 @@ class WeioHandler(SockJSConnection):
 
     def serve(self, data) :
         #print "=== SERVE ==="
-        command = data["request"]
+        #command = data["request"]
         #print data
+
+
+
+
+        # Create userAgentMessage and send it to the launcher process
+        msg = weioRunnerGlobals.userAgentMessage()
+        #msg.conn = self
+        msg.req = data["request"]
+        msg.data = data["data"]
+        msg.res = None
+
+        print "===> AGENT: PUTTING THE MESSAGE INTO THE QUEUE"
+        weioRunnerGlobals.QOUT.put(msg)
 
         # treat requests using dictionaries
         # talks to hardware directly
-        result = None
-        if command in weioSpells or command in weioUserSpells:
-            if command in weioSpells:
-                result = weioSpells[command](data["data"])
-            elif command in weioUserSpells:
-                result = weioUserSpells[command](data["data"])
-            else:
-                result = None
-
-            if not(result is None):
-                if not self.connection_closed:
-                    if ("callback" in data):
-                        result["serverPush"] = data["callback"] # this is specific callback for JS (name of function to call)
-                    else:
-                        result["serverPush"] = command # this is callback for JS, traceback of called command
-                    try:
-                        self.send(json.dumps(result))
-                    except:
-                        self.connection_closed = True
+        #result = None
+        #if command in weioSpells or command in weioUserSpells:
+        #    if command in weioSpells:
+        #        result = weioSpells[command](data["data"])
+        #    elif command in weioUserSpells:
+        #        result = weioUserSpells[command](data["data"])
+        #    else:
+        #        result = None
+        #            
+        #    if not(result is None):
+        #        if not self.connection_closed:
+        #            if ("callback" in data):
+        #                result["serverPush"] = data["callback"] # this is specific callback for JS (name of function to call)
+        #            else:
+        #                result["serverPush"] = command # this is callback for JS, traceback of called command
+        #            try:
+        #                self.send(json.dumps(result))
+        #            except:
+        #                self.connection_closed = True
 
     def on_close(self):
         self.connection_closed = True

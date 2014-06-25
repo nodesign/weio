@@ -52,6 +52,11 @@ class WeioGpio():
         numberOfTries = 1000
         cnt = 0
         closed = True
+        # This array will keep interrupt object on corresponding pin number
+        self.interrupts = []
+        for i in range(32):
+            self.interrupts.append(None)
+            
         while closed:
             try:
                 self.u = IoBoard()
@@ -122,9 +127,13 @@ class WeioGpio():
     def attachInterrupt(self, pin, mode, callback):
         interrupt = self.u.get_pin(Interrupt, pin)
         interrupt.attach(mode, callback)
+        self.interrupts[pin] = interrupt
 
     def detachInterrupt(self, pin):
-        pass
+        interrupt = self.interrupts[pin]
+        if not(interrupt is None):
+            interrupt.detach()
+            self.interrupts[pin] = None
 
     def reset(self):
         weioRunnerGlobals.WEIO_SERIAL_LINKED = False
