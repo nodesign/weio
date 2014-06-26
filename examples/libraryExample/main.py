@@ -1,7 +1,7 @@
 from weioLib.weioIO import *
 from weioLib.weioUserApi import attach
 # import servo library
-from IoTPy.things.servomotor import Servo
+from things.servomotor import Servo
 
 def setup():
     attach.process(myProcess)
