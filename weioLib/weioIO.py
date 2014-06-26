@@ -34,6 +34,9 @@ FALLING = Interrupt.EDGE_FALL
 # User API functions for GPIO
 ###
 
+def getWeio():
+    return gpio.u
+
 def mainInterrupt(data):
     try:
         return gpio.mainInterrupt(data)
