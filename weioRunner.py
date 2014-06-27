@@ -128,6 +128,9 @@ class UserControl():
         weioUserApi.attach.events = {}
         weioUserApi.attach.ints = {}
 
+        # Clear all conncetions
+        weioRunnerGlobals.weioConnections.clear()
+
     def userPlayer(self, fd, events):
         #print "Inside userControl()"
 
@@ -233,21 +236,19 @@ def signalHandler(userControl, sig, frame):
 
 
 def listenerThread():
+    print "*** Starting listenerThread"
     while (True):
         msg = weioRunnerGlobals.QIN.get()
 
-        pass
-        if not(msg.res is None):
-            if not msg.conn.connection_closed:
+        if (msg.res is not None):
+            if (msg.connUuid in weioRunnerGlobals.weioConnections):
                 if ("callback" in msg.data):
                     result["serverPush"] = msg.data["callback"]
                 else:
                     result["serverPush"] = msg.req
-                try:
-                    msg.conn.send(json.dumps(result))
-                except:
-                    msg.conn.connection_closed = True
-    
+                
+                weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
+
 
 
 if __name__ == '__main__':
@@ -283,6 +284,12 @@ if __name__ == '__main__':
     signalCallback = functools.partial(signalHandler, userControl)
     signal.signal(signal.SIGTERM, signalCallback)
     signal.signal(signal.SIGINT, signalCallback)
+
+    # Start listener thread
+    t = threading.Thread(target=listenerThread)
+    t.daemon = True
+    # Start it
+    t.start()
 
     # Create ioloop
     ioloop = ioloop.IOLoop.instance()

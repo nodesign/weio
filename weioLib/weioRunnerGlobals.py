@@ -43,7 +43,8 @@ DECLARED_PINS = None
 WEIO_SERIAL_LINKED = False
 
 # Connected clients
-weioConnections = set()
+weioConnectionSet = set()
+weioConnections = {}
 
 # UserTornado-to-launcher communication queues
 # Direction In-Out related to User Tornado
@@ -55,4 +56,4 @@ class userAgentMessage():
         self.req = None
         self.res = None
         self.data = None
-        self.conn = None
+        self.connUuid = None

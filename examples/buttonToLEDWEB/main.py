@@ -8,5 +8,5 @@ def setup() :
 
 def peraEvent(data):
     print "Jednom Pera"
-    time.sleep(1)
+    #time.sleep(1)
     print "Uvek Pera"
