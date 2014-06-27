@@ -7,14 +7,19 @@ from weioLib.weioParser import weioSpells
 from weioLib.weioParser import weioUserSpells
 from weioLib import weioRunnerGlobals
 
+import uuid
+
 class WeioHandler(SockJSConnection):
     def __init__(self, *args, **kwargs):
         SockJSConnection.__init__(self, *args, **kwargs)
-        self.connections = weioRunnerGlobals.weioConnections
+        #self.connections = weioRunnerGlobals.weioConnections
 
     def on_open(self, request):
         # Add client to the clients list
-        self.connections.add(self)
+
+        # Add the connection to the connections dictionary
+        connUuid = uuid.uuid4()
+        weioRunnerGlobals.weioConnections[connUuid] = self
 
         # collect client ip address and user machine info
         # print self.request to see all available info on user connection
@@ -54,35 +59,25 @@ class WeioHandler(SockJSConnection):
         self.serve(json.loads(data))
 
     def serve(self, data) :
-        #print "=== SERVE ==="
-        command = data["request"]
-        #print data
+        # Create userAgentMessage and send it to the launcher process
+        msg = weioRunnerGlobals.userAgentMessage()
+        for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
+            if (conn == self):
+                msg.connUuid = connUuid 
+        msg.req = data["request"]
+        msg.data = data["data"]
+        msg.res = None
 
-        # treat requests using dictionaries
-        # talks to hardware directly
-        result = None
-        if command in weioSpells or command in weioUserSpells:
-            if command in weioSpells:
-                result = weioSpells[command](data["data"])
-            elif command in weioUserSpells:
-                result = weioUserSpells[command](data["data"])
-            else:
-                result = None
+        # Send message to launcher process
+        weioRunnerGlobals.QOUT.put(msg)
 
-            if not(result is None):
-                if not self.connection_closed:
-                    if ("callback" in data):
-                        result["serverPush"] = data["callback"] # this is specific callback for JS (name of function to call)
-                    else:
-                        result["serverPush"] = command # this is callback for JS, traceback of called command
-                    try:
-                        self.send(json.dumps(result))
-                    except:
-                        self.connection_closed = True
 
     def on_close(self):
         self.connection_closed = True
         print "*SYSOUT* Client with IP address : " + self.ip + " disconnected from server!"
         # Remove client from the clients list and broadcast leave message
-        self.connections.remove(self)
+        #self.connections.remove(self)
+        for connUuid, conn in self.connections.iteritems():
+            if (conn == self):
+                weioRunnerGlobals.weioConnections.pop(connUuid)
 
