@@ -51,14 +51,15 @@ from handlers import editorHandler #, WeioEditorStopHandler, WeioEditorPlayHandl
 # IMPORT WEIOAPI BRIDGE CLASS, this connects user webapp with tornado server
 #from weioLib import weioAPIbridgeHandler
 
-# IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
+# Import basic configuration file all paths are defined inside
 from weioLib import weioConfig
 
 #IMPORT DASHBOARD HANDLER
 from handlers import dashboardHandler
 
-#IMPORT LOGIN HANDLER
-from handlers import loginHandlers
+#Import signin and login handler
+from handlers import loginHandler
+from handlers import signinHandler
 
 # IMPORT WIFI DETECTION AND CONFIGURATION
 from handlers import wifiHandler
@@ -89,19 +90,22 @@ from weioPlayer import WeioPlayer
 from weioLib import weioIdeGlobals
 
 # Editor web app route handler
-class WeioEditorWebHandler(loginHandlers.BaseHandler):
+class WeioEditorWebHandler(loginHandler.BaseHandler):
     #@tornado.web.authenticated
     def get(self):
-        global confFile
-        global firstTimeSwitch
         confFile = weioConfig.getConfiguration()
         firstTimeSwitch = confFile['first_time_run']
 
         if (firstTimeSwitch=="YES") :
-            path = "www/firstTime.html"
-        else :
-            path = confFile['editor_html_path']
+            self.redirect("/signin")
+            return
 
+        if (confFile["login_required"] == "YES"):
+            if not self.current_user:
+                self.redirect("/login")
+                return
+
+        path = confFile['editor_html_path']
         self.render(path, error="")
 
 # Periodic callback that checks button state for AP and STA
@@ -122,8 +126,6 @@ def checkWifiButtons() :
 
 if __name__ == '__main__':
     # Take configuration from conf file and use it to define parameters
-    global confFile
-    global firstTimeSwitch
     global wifiButtons
     global wifiPeriodicCheck
 
@@ -164,7 +166,7 @@ if __name__ == '__main__':
     WeioStatsRouter = SockJSRouter(statsHandler.WeioStatsHandler, '/stats')
 
 
-    secret = loginHandlers.generateCookieSecret()
+    secret = loginHandler.generateCookieSecret()
     print secret
     settings = {
         "cookie_secret": secret,
@@ -189,8 +191,9 @@ if __name__ == '__main__':
                             #[(r"/editor/baseFiles", Editor.WeioEditorHandler)] +
                             #[(r"/close", WeioCloseConnection)] +
                             [(r"/", WeioEditorWebHandler),
-                            (r"/(.*)", tornado.web.StaticFileHandler,{"path": "www"})] +
-                            [(r"/login", loginHandlers.WeioLoginHandler)],
+                                (r"/signin", signinHandler.WeioSigninHandler),
+                                (r"/login", loginHandler.WeioLoginHandler),
+                            (r"/(.*)", tornado.web.StaticFileHandler,{"path": "www"})],
                             debug=debugMode, **settings
                           )
                           # DEBUG WILL DECREASE SPEED!!! HOW TO AVOID THIS??? see Watchers section down here

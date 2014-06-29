@@ -3,6 +3,8 @@ import uuid
 
 import tornado
 
+from weioLib import weioConfig
+
 class BaseHandler(tornado.web.RequestHandler):
     @property
     def db(self):
@@ -21,10 +23,15 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class WeioLoginHandler(BaseHandler):
     def get(self):
-        self.render("../www/login.html", next=self.get_argument("next","/"))
+        try:
+            errormessage = self.get_argument("error")
+        except:
+            errormessage = ""
+        self.render("../www/login.html", errormessage = errormessage)
 
     def post(self):
-        username = self.get_argument("username", "")
+        #username = self.get_argument("username", "")
+        username = "weio"
         password = self.get_argument("password", "")
         auth = self.checkPermission(password, username)
 
@@ -36,7 +43,11 @@ class WeioLoginHandler(BaseHandler):
             self.redirect(u"/login" + error_msg)
 
     def checkPermission(self, password, username):
-        if username == "admin" and password == "admin":
+        confFile = weioConfig.getConfiguration()
+        validPass = confFile['password']
+        #if username == "admin" and password == "admin":
+        #    return True
+        if password == validPass:
             return True
         return False
 
