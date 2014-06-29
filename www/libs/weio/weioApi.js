@@ -134,11 +134,11 @@ $(document).ready(function() {
                         weioCallbacks[instruction](data);
                 } else if ("serverPush" in data) {
                     // this is instruction that was echoed from server + data as response
-                    
+
                     instruction = data.serverPush;  
                     if (instruction in weioCallbacks) 
-                        weioCallbacks[instruction](data);
-                    
+                        weioCallbacks[instruction](data.data);
+
                 }
             };
         

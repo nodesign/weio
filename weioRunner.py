@@ -244,15 +244,15 @@ def listenerThread():
         msg = weioRunnerGlobals.QIN.get()
 
         if (msg.res is not None):
+            #print "MESSAGE",msg.req, msg.res, msg.data, msg.connUuid
             if (msg.connUuid in weioRunnerGlobals.weioConnections):
-                if ("callback" in msg.data):
-                    result["serverPush"] = msg.data["callback"]
-                else:
-                    result["serverPush"] = msg.req
+                result = {}
 
-                weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
-
-
+                if (msg.callbackJS is not None):
+                    result["serverPush"] = msg.callbackJS
+                    result["data"] = msg.res
+                    #print "RESULT",result
+                    weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
 
 if __name__ == '__main__':
     ###

@@ -56,4 +56,5 @@ class userAgentMessage():
         self.req = None
         self.res = None
         self.data = None
+        self.callbackJS = None
         self.connUuid = None

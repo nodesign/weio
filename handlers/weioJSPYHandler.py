@@ -66,7 +66,8 @@ class WeioHandler(SockJSConnection):
                 msg.connUuid = connUuid 
         msg.req = data["request"]
         msg.data = data["data"]
-        msg.res = None
+        if "callback" in data:
+            msg.callbackJS = data["callback"]
 
         # Send message to launcher process
         weioRunnerGlobals.QOUT.put(msg)

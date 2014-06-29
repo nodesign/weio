@@ -3,14 +3,8 @@ import time
 from weioLib.weioLm75 import WeioLm75
 from IoTPy.pyuper.gpio import GPIO
 from IoTPy.pyuper.interrupt import Interrupt
-
-import things.servomotor as servoLib
-import things.am2321 as am2321Lib
-import things.si70xx as si70xxLib
-import things.srf08 as srf08Lib
-import things.stepper as StepperLib
-
-
+from IoTPy.pyuper.i2c import I2C as interfaceI2C
+from IoTPy.pyuper.spi import SPI as interfaceSPI
 ###
 # Global interface
 ###
@@ -33,10 +27,6 @@ FALLING = Interrupt.EDGE_FALL
 ###
 # User API functions for GPIO
 ###
-
-def getWeio():
-    return gpio.u
-
 def mainInterrupt(data):
     try:
         return gpio.mainInterrupt(data)
@@ -154,18 +144,16 @@ def millis():
 def getTemperature():
     return lm75.getTemperature()
 
-# BINDINGS TO LIBRARIES
-def initServo(pin):
-    return servoLib.Servo(gpio.u, pin)
+# NATIVE PROTOCOLES
+class I2C():
+    def __init__(self, *args):
+        return interfaceI2C(gpio.u,*args)
 
-def initAm2321():
-    return am2321Lib.AM2321(gpio.u)
+class SPI():
+    def __init__(self, *args):
+        return interfaceSPI(gpio.u,*args)
 
-def initSi7020():
-    return si7020Lib.Si7020(gpio.u)
+# CALL FOR THING LIBRARIES
+def weioLib(lib, *args):
+    return lib(gpio.u,*args)
 
-def initSrf08Lib():
-    return srf08Lib.Srf08(gpio.u)
-
-def initStepper(steps360, coilA0, coilA1, coilB0, coilB1):
-    return StepperLib.Stepper(gpio.u, steps360, coilA0, coilA1, coilB0, coilB1)
