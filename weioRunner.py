@@ -101,7 +101,7 @@ class UserControl():
 
     def start(self, rq={'request':'play'}):
         print "STARTING USER PROCESSES"
-        
+
         self.launcherProcess = multiprocessing.Process(target=self.launcher)
         self.launcherProcess.start()
 
@@ -161,6 +161,19 @@ class UserControl():
         # Get the last name of project and run it
         projectModule = confFile["last_opened_project"].replace('/', '.') + ".main"
         print "CALL", projectModule
+
+        # Init GPIO object for uper communication
+        if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
+            try :
+                weioIO.gpio = weioGpio.WeioGpio()
+
+                # Initialize globals for the user Tornado
+                weioRunnerGlobals.DECLARED_PINS = weioIO.gpio.declaredPins
+            except:
+                print "LPC coprocessor is not present"
+                weioIO.gpio = None
+
+
         # Import userMain from local module
         try :
             userMain = __import__(projectModule, fromlist=[''])
@@ -179,16 +192,6 @@ class UserControl():
             #print weioUserApi.attach.events[key].handler
             weioParser.addUserEvent(weioUserApi.attach.events[key].event,
                     weioUserApi.attach.events[key].handler)
-
-        if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
-            try :
-                weioIO.gpio = weioGpio.WeioGpio()
-
-                # Initialize globals for the user Tornado
-                weioRunnerGlobals.DECLARED_PINS = weioIO.gpio.declaredPins
-            except:
-                print "LPC coprocessor is not present"
-                weioIO.gpio = None
 
         # Launching threads
         for key in weioUserApi.attach.procs:
@@ -246,7 +249,7 @@ def listenerThread():
                     result["serverPush"] = msg.data["callback"]
                 else:
                     result["serverPush"] = msg.req
-                
+
                 weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
 
 
