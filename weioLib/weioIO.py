@@ -2,6 +2,7 @@ import platform
 import time
 from weioLib.weioLm75 import WeioLm75
 from IoTPy.pyuper.gpio import GPIO
+from IoTPy.pyuper.i2c import I2C
 import IoTPy.things.servomotor as servoLib
 import IoTPy.things.am2321 as am2321Lib
 import IoTPy.things.si7020 as si7020Lib
@@ -137,6 +138,10 @@ def getTemperature():
     return lm75.getTemperature()
 
 # BINDINGS TO LIBRARIES
+
+def initI2c():
+    return I2C(gpio.u)
+    
 def initServo(pin):
     return servoLib.Servo(gpio.u, pin)
 
