@@ -194,14 +194,10 @@ def callUserMesage(data):
     print "USER TALKS", data
     #weioRunnerGlobals.userMain
 
-def pinsInfo(self, data) :
+def pinsInfo(data) :
+    print("GET PIN INFO ASKED!")
     bck = {}
-    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
-        #print "*SYSOUT* ", pins
-        bck["data"] = weioRunnerGlobals.DECLARED_PINS
-    else:
-        print "pinsInfo ON PC", data
-        bck["data"] = None # fake data here
+    bck["data"] = getPinInfo()
     return bck
 
 ###

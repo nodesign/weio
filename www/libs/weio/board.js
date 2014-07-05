@@ -50,6 +50,8 @@ var socketOpened = false;
 function connectToBoard() {
     // connection example
      //   dashboard = new SockJS('http://' + location.host + '/dashboard');
+
+     console.log("Opening board");
     if (socketOpened==false) {
         /*
          * Identify server address and port to open websocket
@@ -57,18 +59,21 @@ function connectToBoard() {
         var _addr = location.host;
         if (_addr.indexOf(":")!=-1) {
             var a = _addr.split(":");
-            _addr = 'ws://' + a[0] + ':8082/api';
+            //_addr = 'ws://' + a[0] + ':8082/api';
+            _addr = 'http://' + a[0] + ':8082/api';
         } else {
             var a = 'ws://' + _addr + ':8082/api';
             _addr = a;
         }
-        console.log("WebSocket connecting to board on " + _addr);
+        console.log("WebSocket connecting to board on ", _addr);
         
         /*
          * WebSocket openning
          */
         
-        boardSocket = new WebSocket(_addr);
+        //boardSocket = new WebSocket(_addr);
+        boardSocket = new SockJS(_addr);
+        
         
 
         //////////////////////////////////////////////////////////////// BOARD JS STATS        
@@ -80,7 +85,7 @@ function connectToBoard() {
             console.log('Board Web socket is opened');
             socketOpened = true;
             
-            var rq = { "request": "_getBoardData", "data":""};
+            var rq = { "request": "pinsInfo", "data":"", "callback":"pinsInfo"};
             boardSocket.send(JSON.stringify(rq));
         };
         
@@ -114,7 +119,7 @@ function connectToBoard() {
         };
             
     } else {
-        var rq = { "request": "_getBoardData", "data":""};
+        var rq = { "request": "pinsInfo", "data":"","callback":"pinsInfo"};
         boardSocket.send(JSON.stringify(rq));
     }
 
@@ -123,13 +128,16 @@ function connectToBoard() {
 
 function boardData(data) {
     console.log("DATA BOARD ", data.data);
+
+    for (var i=0; i<32; i++) {
+     if (data.data.data[i] != -1 ) {
+         $("#pin"+String(i)).attr("class", "pin_on");
+     } else { 
+         $("#pin"+String(i)).attr("class", "pin");
+        }
+    }
     
-    for (var i=0; i<32; i++) $("#pin"+String(i)).attr("class", "pin");
-    
-    for (i in data.data) 
-        if (data.data[i] != -1) 
-            $("#pin"+String(i)).attr("class", "pin_on");
-    
+          
 }
 
 //CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -138,5 +146,5 @@ function boardData(data) {
  * Each key is binded to coresponding function
  */
 var callbacksBoard = {
-    "_getBoardData": boardData
+    "pinsInfo": boardData
 }
