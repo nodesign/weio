@@ -144,6 +144,10 @@ def millis():
 def getTemperature():
     return lm75.getTemperature()
 
+def getPinInfo():
+    print "INFO", gpio
+    return gpio.getPinInfo()
+
 # NATIVE PROTOCOLES
 class I2C():
     def __init__(self, *args):
@@ -156,4 +160,3 @@ class SPI():
 # CALL FOR THING LIBRARIES
 def weioLib(lib, *args):
     return lib(gpio.u,*args)
-

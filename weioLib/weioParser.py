@@ -199,7 +199,6 @@ def pinsInfo(self, data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         #print "*SYSOUT* ", pins
         bck["data"] = weioRunnerGlobals.DECLARED_PINS
-        pass
     else:
         print "pinsInfo ON PC", data
         bck["data"] = None # fake data here

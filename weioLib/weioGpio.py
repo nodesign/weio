@@ -47,7 +47,11 @@ import os
 
 class WeioGpio():
     def __init__(self):
+        # set all pins to -1 (nothing selected), this is just information no real action on pins will be performed
         self.declaredPins = []
+        for a in range(32):
+            self.declaredPins.append(-1)
+
         self.pwmPrecision = 255
         numberOfTries = 1000
         cnt = 0
@@ -56,7 +60,7 @@ class WeioGpio():
         self.interrupts = []
         for i in range(32):
             self.interrupts.append(None)
-            
+
         while closed:
             try:
                 self.u = IoBoard()
@@ -72,6 +76,10 @@ class WeioGpio():
                     closed = False
                     print "uper not present"
                 #die(details)
+    def getPinInfo(self):
+        print "hello get info"
+        return self.declaredPins
+
     def inputMode(self, pin, mode) :
         """Sets input mode for digitalRead purpose. Available modes are : INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP"""
         gpio = self.u.get_pin(GPIO, pin)
@@ -79,21 +87,25 @@ class WeioGpio():
 
     def digitalWrite(self, pin, state) :
         """Sets voltage to +3.3V or Ground on corresponding pin. This function takes two parameters : pin number and it's state that can be HIGH = +3.3V or LOW = Ground"""
+        self.declaredPins[pin] = GPIO.OUTPUT
         gpio = self.u.get_pin(GPIO, pin)
         gpio.write(state)
 
     def digitalRead(self,pin) :
         """Reads actual voltage on corresponding pin. There are two possible answers : 0 if pin is connected to the Ground or 1 if positive voltage is detected"""
+        self.declaredPins[pin] = GPIO.INPUT
         gpio = self.u.get_pin(GPIO, pin)
         return gpio.read()
 
     def analogRead(self, pin) :
         """Reads input on specified Analog to Digital Convertor. ADC is available on pins from 25 to 32 Output is 10bits resolution or from 0-1023"""
+        self.declaredPins[pin] = GPIO.INPUT
         adc = self.u.get_pin(ADC, pin)
         return adc.read()
 
     def pwmWrite(self, pin, value) :
         """Pulse with modulation is available at 6 pins from 19-24 and has 16bits of precision. By default WeIO sets PWM frequency at 20000ms and 8bit precision or from 0-255. This setup is well situated for driving LED lighting. Precision and frequency can be changed separately by calling additional functions for other uses : setPwmPeriod and setPwmLimit. PWM can also drive two different frequencies on two separate banks of 3 pins. For this feature look functions : setPwmPeriod0, setPwmPeriod1, setPwmLimit0 and setPwmLimit1."""
+        self.declaredPins[pin] = GPIO.OUTPUT
         pwm = self.u.get_pin(PWM, pin)
         value = 1.0/self.pwmPrecision*value
         pwm.write(value)
@@ -103,8 +115,9 @@ class WeioGpio():
         pwm.width_us(period)
 
     def analogWrite(self, pin,value):
+        self.declaredPins[pin] = GPIO.OUTPUT
         self.pwmWrite(pin,value)
-    
+
     def setPwmLimit(self, limit):
         if (limit>65535.0):
             self.pwmPrecision = 65535.0
@@ -125,6 +138,7 @@ class WeioGpio():
         return float(ostart) + (float(ostop) - float(ostart)) * ((float(value) - float(istart)) / (float(istop) - float(istart)))
 
     def attachInterrupt(self, pin, mode, callback):
+        self.declaredPins[pin] = GPIO.INPUT
         interrupt = self.u.get_pin(Interrupt, pin)
         interrupt.attach(mode, callback)
         self.interrupts[pin] = interrupt
@@ -146,8 +160,9 @@ class WeioGpio():
 
     def stopReader(self):
         self.u.reader.stop()
-        
+
     def tone(self, pin, frequency, duration = 0):
+        self.declaredPins[pin] = GPIO.OUTPUT
         pwm = self.u.get_pin(PWM, pin)
         if(frequency == 0):
             frequency=1
@@ -158,11 +173,12 @@ class WeioGpio():
             sleep(duration*0.001)
             pwm.period(10000)
             pwm.write(0)
+
     def notone(self, pin):
         pwm = self.u.get_pin(PWM, pin)
         pwm.period(10000)
         pwm.write(0)
-        
+
     def constrain(self, x, a, b):
         if(x > a):
             if(x < b):
@@ -171,8 +187,9 @@ class WeioGpio():
             return a
         if(x > b):
             return b
-            
-    def millis(self,):
+
+    def millis(self):
         a = 1000*time.time()
         return a
-        
+
+
