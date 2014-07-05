@@ -67,9 +67,6 @@ from handlers import wifiHandler
 # IMPORT UPDATER
 from handlers import updaterHandler
 
-# IMPORT FIRST TIME HANDLER
-from handlers import firstTimeHandler
-
 # IMPORT STATS HANDLER
 from handlers import statsHandler
 
@@ -159,9 +156,6 @@ if __name__ == '__main__':
     # UPDATER ROUTE
     WeioUpdaterRouter = SockJSRouter(updaterHandler.WeioUpdaterHandler, '/updater')
 
-    # FIRST TIME ROUTER
-    WeioFirstTimeRouter = SockJSRouter(firstTimeHandler.WeioFirstTimeHandler, '/firstTime')
-
     # STATS ROUTER
     WeioStatsRouter = SockJSRouter(statsHandler.WeioStatsHandler, '/stats')
 
@@ -184,7 +178,6 @@ if __name__ == '__main__':
                             list(WeioDashboardRouter.urls) +
                             list(WeioWifiRouter.urls) +
                             list(WeioUpdaterRouter.urls) +
-                            list(WeioFirstTimeRouter.urls) +
                             list(WeioStatsRouter.urls)+
 
                             # pure websocket implementation
