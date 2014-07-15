@@ -1,0 +1,72 @@
+<!--#######################################
+#                                     #
+#   how to have porportion on WEIO    #
+#                                     #
+#######################################
+
+#syntax = proportion(value, istart, istop, ostart, ostop)
+#return a value proportionned 
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+
+  <head >
+  <link rel="stylesheet" type="text/css" href="mystyle.css">
+
+    <title>My first Web app</title>
+    <style>
+        body {
+          background:black;
+        }
+        font {
+           font-family:Helvetica;
+           font-size:100px;
+           font-weight:bold;
+           text-transform:uppercase;
+        }
+        p {
+           cursor:pointer;
+           margin:0.2em;
+           line-height:1em;
+        }
+        
+        
+    </style>
+
+    <script>
+    
+    var propor = 0;
+    
+    function onWeioReady() {
+        setInterval(function() {
+        // Do something every 100ms
+        //pinCallback will be called when data arrives from server
+        pwmWrite(18,propor);
+        analogRead(31,Callback);
+    }, 100);
+    }
+    
+    function Callback(data1) {
+
+        propor=proportion(data1.data, 0,1024,0,255);
+        $("#phrase").html("AnalogRead is "+ data1.data +"  proportion = "+propor);
+        $("body").css("background","white");
+        $("#phrase").css("color","black");
+
+    }
+
+    
+    </script>
+  </head>
+
+  <body>
+
+    <font>
+        <p id="phrase" ></p>
+    </font>
+
+  </body>
+</html>
