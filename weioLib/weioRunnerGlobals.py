@@ -34,6 +34,8 @@
 #
 ###
 
+import multiprocessing
+
 # Pins declared by the user program
 DECLARED_PINS = None
 
@@ -41,5 +43,18 @@ DECLARED_PINS = None
 WEIO_SERIAL_LINKED = False
 
 # Connected clients
-weioConnections = set()
+weioConnectionSet = set()
+weioConnections = {}
 
+# UserTornado-to-launcher communication queues
+# Direction In-Out related to User Tornado
+QIN = multiprocessing.Queue()
+QOUT = multiprocessing.Queue()
+
+class userAgentMessage():
+    def __init__(self):
+        self.req = None
+        self.res = None
+        self.data = None
+        self.callbackJS = None
+        self.connUuid = None

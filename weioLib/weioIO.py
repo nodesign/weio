@@ -2,14 +2,9 @@ import platform
 import time
 from weioLib.weioLm75 import WeioLm75
 from IoTPy.pyuper.gpio import GPIO
-from IoTPy.pyuper.i2c import I2C
-import IoTPy.things.servomotor as servoLib
-import IoTPy.things.am2321 as am2321Lib
-import IoTPy.things.si7020 as si7020Lib
-import IoTPy.things.srf08 as srf08Lib
-import IoTPy.things.stepper as StepperLib
-
-
+from IoTPy.pyuper.interrupt import Interrupt
+from IoTPy.pyuper.i2c import I2C as interfaceI2C
+from IoTPy.pyuper.spi import SPI as interfaceSPI
 ###
 # Global interface
 ###
@@ -25,11 +20,13 @@ INPUT = GPIO.INPUT
 OUTPUT = GPIO.OUTPUT
 HIGH = 1
 LOW = 0
+CHANGE = Interrupt.EDGE_CHANGE
+RISING = Interrupt.EDGE_RISE
+FALLING = Interrupt.EDGE_FALL
 
 ###
 # User API functions for GPIO
 ###
-
 def mainInterrupt(data):
     try:
         return gpio.mainInterrupt(data)
@@ -100,6 +97,16 @@ def attachInterrupt(pin, mode, callback):
         print "attachInterrupt(", pin,",",mode,",",callback,")"
         return -1
 
+def getInterruptType(mode):
+    if (mode is HIGH):
+        return "HIGH"
+    elif (mode is LOW):
+        return "LOW"
+    elif (mode is RISING):
+        return "RISING"
+    elif (mode is FALLING):
+        return "FALLING"
+
 def detachInterrupt(pin):
     try:
         return gpio.detachInterrupt(pin)
@@ -137,22 +144,19 @@ def millis():
 def getTemperature():
     return lm75.getTemperature()
 
-# BINDINGS TO LIBRARIES
+def getPinInfo():
+    print "INFO", gpio
+    return gpio.getPinInfo()
 
-def initI2c():
-    return I2C(gpio.u)
-    
-def initServo(pin):
-    return servoLib.Servo(gpio.u, pin)
+# NATIVE PROTOCOLES
+class I2C():
+    def __init__(self, *args):
+        return interfaceI2C(gpio.u,*args)
 
-def initAm2321():
-    return am2321Lib.AM2321(gpio.u)
+class SPI():
+    def __init__(self, *args):
+        return interfaceSPI(gpio.u,*args)
 
-def initSi7020():
-    return si7020Lib.Si7020(gpio.u)
-
-def initSrf08Lib():
-    return srf08Lib.Srf08(gpio.u)
-
-def initStepper(steps360, coilA0, coilA1, coilB0, coilB1):
-    return StepperLib.Stepper(gpio.u, steps360, coilA0, coilA1, coilB0, coilB1)
+# CALL FOR THING LIBRARIES
+def weioLib(lib, *args):
+    return lib(gpio.u,*args)

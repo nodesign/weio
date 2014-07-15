@@ -4,6 +4,7 @@ from tornado import web, ioloop, options, websocket
 import sys,os,logging, platform, json, signal, datetime
 
 import multiprocessing
+import threading
 
 import functools
 import subprocess
@@ -79,12 +80,15 @@ class UserControl():
         # Ask this variable is player is playing at this moment
         self.playing = False
 
-        # User Project main module (main.py)
-        self.userMain = self.loadUserProjectMain()
-
         # List of user processes
         self.userProcessList = []
         self.userEventList = []
+
+        # launcherProcess
+        self.launcherProcess = None
+
+        self.qIn = weioRunnerGlobals.QOUT
+        self.qOut = weioRunnerGlobals.QIN
 
     def setConnectionObject(self, connection):
         # captures only the last connection
@@ -96,38 +100,10 @@ class UserControl():
             self.connection.send(data)
 
     def start(self, rq={'request':'play'}):
-
         print "STARTING USER PROCESSES"
 
-        # Add user events
-        #print "ADDING USER EVENTS"
-        for key in weioUserApi.attach.events:
-            #print weioUserApi.attach.events[key].handler
-            weioParser.addUserEvent(weioUserApi.attach.events[key].event,
-                    weioUserApi.attach.events[key].handler)
-
-
-        if (weioIO.gpio != None):
-            if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
-                try :
-                    weioIO.gpio = weioGpio.WeioGpio()
-
-                    # Initialize globals for the user Tornado
-                    weioRunnerGlobals.DECLARED_PINS = weioIO.gpio.declaredPins
-                except :
-                    print "LPC coprocessor is not present"
-                    weioIO.gpio = None
-
-            # Launching threads
-            for key in weioUserApi.attach.procs :
-                #print key
-                p = multiprocessing.Process(target=weioUserApi.attach.procs[key].procFnc, args=weioUserApi.attach.procs[key].procArgs)
-                p.daemon = True
-                # Add it to the global list of user processes
-                self.userProcessList.append(p)
-                # Start it
-                p.start()
-                #print "STARTING PROCESS PID", p.pid
+        self.launcherProcess = multiprocessing.Process(target=self.launcher)
+        self.launcherProcess.start()
 
     def stop(self):
         # Removing all User Events
@@ -135,33 +111,25 @@ class UserControl():
 
         print "STOPPING USER PROCESSES"
 
-        #print ">>> userProcessList = ", self.userProcessList
+        print "=======<> self.launcherProcess ", self.launcherProcess
 
-        for p in self.userProcessList:
-            #print "KILLING PROCESS PID", p.pid
-            p.terminate()
-            p.join(0.5)
+        if (self.launcherProcess != None):
+            self.launcherProcess.terminate()
+            self.launcherProcess.join(0.5)
             try:
                 # If job is not properly done than kill it with bazooka
-                os.kill(p.pid, 9) # very violent
+                os.kill(self.launcherProcess.pid, 9) # very violent
             except:
                 pass
-            self.userProcessList.remove(p)
- 
-
-        #print "OK"
-        #print "### userProcessList = ", self.userProcessList
-
-
-        if (weioIO.gpio != None):
-            if (weioRunnerGlobals.WEIO_SERIAL_LINKED == True):
-                weioIO.gpio.stopReader()
-                weioIO.gpio.reset()
+            self.launcherProcess = None
 
         # Reset user attached elements
         weioUserApi.attach.procs = {}
         weioUserApi.attach.events = {}
-        weioUserApi.attach.ins = {}
+        weioUserApi.attach.ints = {}
+
+        # Clear all conncetions
+        weioRunnerGlobals.weioConnections.clear()
 
     def userPlayer(self, fd, events):
         #print "Inside userControl()"
@@ -175,56 +143,116 @@ class UserControl():
         if (cmd == "*START*"):
             # First stop all pending processes
             # and reset all pending events before re-loading new ones
-            if (len(self.userProcessList)!=0):
+            if (self.launcherProcess != None):
                 self.stop()
-
-            # Re-load user main (in case it changed)
-            self.userMain = self.loadUserProjectMain()
-
-            # Calling user setup() if present
-            if "setup" in vars(self.userMain):
-                self.userMain.setup()
 
             # Then start processes from it
             self.start()
+
         elif (cmd == "*STOP*"):
             self.stop()
 
-    def loadUserProjectMain(self):
+
+    def launcher(self):
+        print "======>>> LAUNCHING..."
+        # Re-load user main (in case it changed)
         confFile = weioConfig.getConfiguration()
 
         # Get the last name of project and run it
-
         projectModule = confFile["last_opened_project"].replace('/', '.') + ".main"
-        #print "CALL", projectModule
+        print "CALL", projectModule
 
-        result = None
-
-        if (self.lastCalledProjectPath == projectModule):
-            #print "RELOADING"
-            result = reload(self.userMain)
-        else :
-            #print "NEW IMPORT"
-            # Import userMain from local module
+        # Init GPIO object for uper communication
+        if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
             try :
-                userMain = __import__(projectModule, fromlist=[''])
-                result = userMain
-            except :
-                #print "MODULE CAN'T BE LOADED"
-                result = None
+                weioIO.gpio = weioGpio.WeioGpio()
 
-        self.lastCalledProjectPath = projectModule
-        return result
+                # Initialize globals for the user Tornado
+                weioRunnerGlobals.DECLARED_PINS = weioIO.gpio.declaredPins
+            except:
+                print "LPC coprocessor is not present"
+                weioIO.gpio = None
+
+
+        # Import userMain from local module
+        try :
+            userMain = __import__(projectModule, fromlist=[''])
+        except :
+            print "MODULE CAN'T BE LOADED"
+            result = None
+
+
+        # Calling user setup() if present
+        if "setup" in vars(userMain):
+            userMain.setup()
+
+        # Add user events
+        print "ADDING USER EVENTS"
+        for key in weioUserApi.attach.events:
+            #print weioUserApi.attach.events[key].handler
+            weioParser.addUserEvent(weioUserApi.attach.events[key].event,
+                    weioUserApi.attach.events[key].handler)
+
+        # Launching threads
+        for key in weioUserApi.attach.procs:
+            #print key
+            t = threading.Thread(target=weioUserApi.attach.procs[key].procFnc,
+                        args=weioUserApi.attach.procs[key].procArgs)
+            t.daemon = True
+            # Start it
+            t.start()
+            #print "STARTING PROCESS PID", t.pid
+
+        while (True):
+            # Get the command from userTornado (blocking)
+            msg = self.qIn.get()
+
+            print "*** GOT THE COMMAND: ", msg.req
+
+            # Execute the command
+            msg.res = None
+            if msg.req in weioParser.weioSpells or msg.req in weioParser.weioUserSpells:
+                if msg.req in weioParser.weioSpells:
+                    msg.res = weioParser.weioSpells[msg.req](msg.data)
+                elif msg.req in weioParser.weioUserSpells:
+                    msg.res = weioParser.weioUserSpells[msg.req](msg.data)
+            else:
+                msg.res = None
+
+            # Send back the result
+            self.qOut.put(msg)
+
+
 
 # User Tornado signal handler
 def signalHandler(userControl, sig, frame):
         #logging.warning('Caught signal: %s', sig)
         #print "CALLING STOP IF PRESENT"
-        if "stop" in vars(userControl.userMain):
-            logging.warning('Calling user defined stop function')
-            userControl.userMain.stop()
+        #if "stop" in vars(userControl.userMain):
+        #    logging.warning('Calling user defined stop function')
+        #    userControl.userMain.stop()
+        if (weioIO.gpio != None):
+            if (weioRunnerGlobals.WEIO_SERIAL_LINKED == True):
+                weioIO.gpio.stopReader()
+                weioIO.gpio.reset()
         sys.exit(0)
 
+
+def listenerThread():
+    print "*** Starting listenerThread"
+    while (True):
+        msg = weioRunnerGlobals.QIN.get()
+
+        if (msg.res is not None):
+            #print "MESSAGE",msg.req, msg.res, msg.data, msg.connUuid
+            if (msg.connUuid in weioRunnerGlobals.weioConnections):
+                result = {}
+
+                if (msg.callbackJS is not None):
+                    result["serverPush"] = msg.callbackJS
+                    result["data"] = msg.res
+                    #print "RESULT",result
+                    weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
 
 if __name__ == '__main__':
     ###
@@ -252,20 +280,6 @@ if __name__ == '__main__':
     logging.info(" [*] Listening on 0.0.0.0:" + str(options.options.port))
     print "*SYSOUT* User API Websocket is created at localhost:" + str(options.options.port) + "/api"
 
-    ###
-    # Construct global gpio object
-    # Must be constructed here and nowhere else, because it creates UNIQUE UPER object
-    ###
-
-    try :
-        weioIO.gpio = weioGpio.WeioGpio()
-
-        # Initialize globals for the user Tornado
-        weioRunnerGlobals.DECLARED_PINS = weioIO.gpio.declaredPins
-    except :
-        print "LPC coprocessor is not present"
-        weioIO.gpio = None
-
     # Create a userControl object
     userControl = UserControl()
 
@@ -273,6 +287,12 @@ if __name__ == '__main__':
     signalCallback = functools.partial(signalHandler, userControl)
     signal.signal(signal.SIGTERM, signalCallback)
     signal.signal(signal.SIGINT, signalCallback)
+
+    # Start listener thread
+    t = threading.Thread(target=listenerThread)
+    t.daemon = True
+    # Start it
+    t.start()
 
     # Create ioloop
     ioloop = ioloop.IOLoop.instance()

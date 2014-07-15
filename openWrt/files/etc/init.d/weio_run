@@ -12,23 +12,25 @@ start() {
 
 stop() {
     echo "Stopping WeIO application"
-    
-    # Trick for avoiding grep to show in ps command: 
+
+    # Trick for avoiding grep to show in ps command:
     # http://stackoverflow.com/questions/9375711/more-elegant-ps-aux-grep-v-grep
     # http://www.perlmonks.org/bare/?node_id=203760
     if [ -n "$(ps | grep "[w]eio_run_forever.sh")" ]; then
-    	echo "Stopping weio_run_forever.sh..."
-    	killall weio_run_forever.sh
+        echo "Stopping weio_run_forever.sh..."
+        killall weio_run_forever.sh
     fi
-    
+
     if [ -n "$(ps | grep  "[w]eioServer.py")" ]; then
-    	echo "Stopping python server.py..."
-    	killall weioServer.py
+        echo "Stopping python server.py..."
+        SPID=`ps | grep  "[w]eioServer.py" | awk '{print $1}'`
+        kill -9 $SPID
     fi
-    
+
     if [ -n "$(ps | grep  "[w]eioRunner.py")" ]; then
         echo "Stopping user program weioRunner.py..."
-        killall weioRunner.py
+        RPID=`ps | grep  "[w]eioRunner.py" | awk '{print $1}'`
+        kill -9 $RPID
     fi
 }
 
@@ -36,3 +38,4 @@ restart() {
     stop
     start
 }
+

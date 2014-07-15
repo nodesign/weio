@@ -1,11 +1,5 @@
 from time import sleep
 
-from pyuper.gpio import GPIO
-from pyuper.i2c import i2c
-from IoTPy.pyuper.ioboard import IoBoard
-from IoTPy.things.si7020 import Si7020
-
-
 LOW = 0
 HIGH =1
 LSBFIRST = 1
@@ -17,6 +11,14 @@ TempCmd  = 0x03
 
 
 class SHT1X:
+    """
+    SHT10, SHT11 and SHT15 humidity and temperature sensor class.
+
+    :param data_pin: GPIO pin connected to DATA line.
+    :type data_pin: :class:`IoTPy.pyuper.gpio.GPIO`
+    :param clk_pin: GPIO pin connected to SCK line.
+    :type clk_pin: :class:`IoTPy.pyuper.gpio.GPIO`
+    """
 
     def __init__(self, data_pin, clk_pin):
         self.data_pin = data_pin
@@ -29,7 +31,7 @@ class SHT1X:
         pass
 
     def _shift_out(self, bit_order, byte, bits):
-        for i in range(bits):
+        for i in xrange(bits):
             if bit_order == LSBFIRST:
                 self.data_pin.write(byte & (1 << i))
             else:
@@ -60,7 +62,7 @@ class SHT1X:
 
     def _shift_in(self, bits):
         ret = 0
-        for i in range(bits):
+        for i in xrange(bits):
             self.clk_pin.write(HIGH)
             sleep(0.01)
             ret = ret * 2 + self.data_pin.read()
@@ -68,7 +70,7 @@ class SHT1X:
         return ret
 
     def _wait_sht(self):
-        for i in range(100):
+        for i in xrange(100):
             sleep(0.002)
             ack = self.data_pin.read()
             if ack == LOW:
@@ -98,9 +100,22 @@ class SHT1X:
         return val
 
     def temperature(self):
+        """
+        Measure and return temperature.
+
+        :return: A measured temperature in celsius.
+        :rtype: int
+        """
         return (self._temperature_raw() * 0.01) - 40.1
 
     def humidity(self):
+        """
+        Measure and return humidity.
+
+        :return: A measured humidity value in percents.
+        :rtype: int
+        """
+
         """
         C1 = -4.0       # for 12 Bit
         C2 =  0.0405    # for 12 Bit
@@ -120,14 +135,3 @@ class SHT1X:
         self._skip_crc()
         linear_humidity = C1 + C2 * val + C3 * val * val
         return((self.temperature() - 25.0 ) * (T1 + T2 * val) + linear_humidity)
-
-if __name__ == '__main__':
-    with IoBoard() as u, u.get_pin(GPIO, 1) as pin1, u.get_pin(GPIO, 2) as pin2, SHT1X(pin1, pin2) as sensor, i2c(u) as myi2c, Si7020(myi2c) as other_sensor:
-        """
-        print "Temperature RAW = ", readTemperatureRaw()
-        """
-        while 1:
-            print "----------------------------------"
-            print "Si7020 t = %4.2fC RH= %4.2f%%" % (other_sensor.temperature(), other_sensor.humidity())
-            print "SHT11  t = %4.2fC RH= %4.2f%%" % (sensor.temperature(), sensor.humidity())
-            sleep(0.5)
