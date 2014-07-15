@@ -1,0 +1,82 @@
+<!--###################################
+#                                     #
+#   how to have digitalWrite on WEIO  #
+#                                     #
+#######################################
+
+#syntax = digitalWrite(pin,value) 
+#Value is 0 and 1 or LOW and HIGH
+--> 
+
+
+<!DOCTYPE html>
+<html lang="en">
+<script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+
+  <head >
+  <link rel="stylesheet" type="text/css" href="mystyle.css">
+
+    <title>My first Web app</title>
+    <style>
+        body {
+          background:black;
+        }
+        font {
+           font-family:Helvetica;
+           font-size:200px;
+           font-weight:bold;
+           text-transform:uppercase;
+        }
+        p {
+           cursor:pointer;
+           margin:0.2em;
+           line-height:1em;
+        }
+        
+        
+    </style>
+
+    <script>
+    
+    var light = false;
+    
+    function onWeioReady() {
+        lights();
+    }
+    
+    function lights() {
+
+        if (light) {
+            
+            $("#phrase").html("Turn OFF the light!");
+            $("body").css("background","white");
+            $("#phrase").css("color","black");
+            digitalWrite(18, LOW);
+            digitalWrite(19, LOW);
+            digitalWrite(20, LOW);
+            genericMessage("pera", null);
+            light = !light;
+        } else {
+           
+            $("#phrase").html("Turn ON the light!");
+            $("body").css("background","black");
+            $("#phrase").css("color","white");
+            digitalWrite(18, HIGH);
+            digitalWrite(19, HIGH);
+            digitalWrite(20, HIGH);
+            genericMessage("pera", null);
+            light = !light;
+        }
+    }
+    
+    </script>
+  </head>
+
+  <body>
+
+    <font>
+        <p id="phrase" onclick="lights()"></p>
+    </font>
+
+  </body>
+</html>

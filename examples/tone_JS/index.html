@@ -1,0 +1,73 @@
+<!--###################################
+#                                     #
+#   how to have tone on WEIO          #
+#                                     #
+#######################################
+
+syntax = tone(pin, hertz, duration) duration is optionnal 
+there are 6 pwm pins on weio (23, 22, 21, 20, 19, 18)
+tone use pwm pin. 
+duration is optionnal and is in milliseconds 
+notone(pin) is function to detach tone of pin (you don't need this function if you use duration argument
+--> 
+
+
+<!DOCTYPE html>
+<html lang="en">
+<script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+
+  <head >
+  <link rel="stylesheet" type="text/css" href="mystyle.css">
+
+    <title>My first Web app</title>
+    <style>
+        body {
+          background:black;
+        }
+        font {
+           font-family:Helvetica;
+           font-size:100px;
+           font-weight:bold;
+           text-transform:uppercase;
+        }
+        p {
+           cursor:pointer;
+           margin:0.2em;
+           line-height:1em;
+        }
+        
+        
+    </style>
+
+    <script>
+    
+    var hertz = 0;
+    
+    function onWeioReady() {
+        hertzs();
+    }
+    
+    function hertzs() {
+
+        $("#phrase").html("Frequency for tone function  = "+ hertz);
+        $("body").css("background","white");
+        $("#phrase").css("color","black");
+        tone(23, hertz);
+        hertz = hertz+50;
+        if(hertz > 18000){
+            hertz=0;
+        }
+            
+
+    }
+    </script>
+  </head>
+
+  <body>
+
+    <font>
+        <p id="phrase" onclick="hertzs()"></p>
+    </font>
+
+  </body>
+</html>

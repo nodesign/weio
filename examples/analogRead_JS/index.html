@@ -1,0 +1,66 @@
+<!--###################################
+#                                     #
+#   how to have analogRead on WEIO    #
+#                                     #
+#######################################
+
+#syntax = analogRead(pin,callback) 
+# Value returned is in callback function
+# the value is between 0 and 1023
+# analog pin are between pin 31 and pin 24
+--> 
+
+<!DOCTYPE html>
+<html lang="en">
+<script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+
+  <head >
+  <link rel="stylesheet" type="text/css" href="mystyle.css">
+
+    <title>My first Web app</title>
+    <style>
+        body {
+          background:black;
+        }
+        font {
+           font-family:Helvetica;
+           font-size:100px;
+           font-weight:bold;
+           text-transform:uppercase;
+        }
+        p {
+           cursor:pointer;
+           margin:0.2em;
+           line-height:1em;
+        }
+        
+    </style>
+
+    <script>
+    
+    function onWeioReady() {
+        setInterval(function() {
+        // Do something every 100ms
+        //pinCallback will be called when data arrives from server
+        analogRead(31,pinCallback);
+    }, 100);
+    }
+    
+    function pinCallback(data) {
+
+        $("#phrase").html("AnalogRead Value on the pin 31 is "+ data.data);
+        $("body").css("background","white");
+        $("#phrase").css("color","black");
+
+    }
+    </script>
+  </head>
+
+  <body>
+
+    <font>
+        <p id="phrase" ></p>
+    </font>
+
+  </body>
+</html>
