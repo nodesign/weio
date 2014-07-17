@@ -149,13 +149,17 @@ def getPinInfo():
     return gpio.getPinInfo()
 
 # NATIVE PROTOCOLES
-class I2C():
-    def __init__(self, *args):
-        return interfaceI2C(gpio.u,*args)
 
-class SPI():
-    def __init__(self, *args):
-        return interfaceSPI(gpio.u,*args)
+def initI2C():
+    return interfaceI2C(gpio.u)
+
+def initSPI(port):
+    if (port is 0):
+        return interfaceSPI(gpio.u, 0)
+    elif (port is 1):
+        return interfaceSPI(gpio.u, 1)
+    else :
+        print "Error, only port 0 or port 1 are alowed as parameter"
 
 # CALL FOR THING LIBRARIES
 def weioLib(lib, *args):
