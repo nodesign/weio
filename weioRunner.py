@@ -161,7 +161,6 @@ class UserControl():
         # Get the last name of project and run it
         projectModule = confFile["last_opened_project"].replace('/', '.') + ".main"
         print "CALL", projectModule
-
         # Init GPIO object for uper communication
         if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
             try :
@@ -172,7 +171,6 @@ class UserControl():
             except:
                 print "LPC coprocessor is not present"
                 weioIO.gpio = None
-
 
         # Import userMain from local module
         try :
@@ -282,6 +280,8 @@ if __name__ == '__main__':
 
     # Create a userControl object
     userControl = UserControl()
+    print "start user script"
+    userControl.start()
 
     # Install signal handlers
     signalCallback = functools.partial(signalHandler, userControl)
