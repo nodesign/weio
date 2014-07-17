@@ -252,14 +252,9 @@ function analogWrite(pin, value) {
     genericMessage("pwmWrite", [pin,value], null);
 };
 
-function proportion(value, istart, istop, ostart, ostop, callback){
-    // create new callback call
-    var fName = callback.name;
-    //console.log("callback name:" + fName);
-    // add callback function to be called when data arrives
-    weioCallbacks[fName] = callback
-    genericMessage("proportion", [value, istart, istop, ostart, ostop, callback], fName);
-    //console.log("Callbacks", weioCallbacks);
+function proportion(value, istart, istop, ostart, ostop){
+    return ostart + (ostop-ostart) * ((value -istart) / (istop - istart))
+    
 };
 
 function delay(period){
@@ -279,14 +274,18 @@ function notone(pin) {
 	genericMessage("notone", [pin], null);
 };
 
-function constrain(x, a, b, callback) {
-    // create new callback call
-    var fName = callback.name;
-    //console.log("callback name:" + fName);
-    // add callback function to be called when data arrives
-    weioCallbacks[fName] = callback
-  
-	genericMessage("constrain", [x,a,b], fName);
+function constrain(x, a, b) {
+    if(x > a){
+        if(x < b){
+            return a
+		}
+	}
+    if(x < a){
+        return a
+	}
+    if(x > b){
+        return b
+	}
 };
 
 function millis(callback) {
@@ -358,4 +357,3 @@ function genericMessage(instruction, data, clbck) {
         console.log("Warning, message tried to be sent when websocket was not completely opened");
     }
 };
-
