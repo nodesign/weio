@@ -357,4 +357,3 @@ function genericMessage(instruction, data, clbck) {
         console.log("Warning, message tried to be sent when websocket was not completely opened");
     }
 };
-
