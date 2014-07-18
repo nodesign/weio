@@ -36,6 +36,7 @@
 
 import tornado
 import platform
+import subprocess
 
 from weioLib import weioConfig
 from handlers import loginHandler
@@ -76,7 +77,7 @@ class WeioSigninHandler(loginHandler.BaseHandler):
             # First protection is mips detection, second is your own OS
             # who hopefully needs sudo to change passwd on the local machine
             if (platform.machine() == 'mips'):
-                print Popen(command, stdout=PIPE, shell=True).stdout.read()
+                subprocess.call(command, shell=True)
                 firstTimeSwitch = "NO"
                 confFile['first_time_run']=firstTimeSwitch
             else:
