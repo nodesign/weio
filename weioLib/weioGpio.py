@@ -64,7 +64,7 @@ class WeioGpio():
         while closed:
             try:
                 self.u = IoBoard()
-                print "opened port"
+                #print "opened port"
                 closed = False
                 weioRunnerGlobals.WEIO_SERIAL_LINKED = True
             except IoTPy_APIError, e: # seems can't establish connection with the UPER board
