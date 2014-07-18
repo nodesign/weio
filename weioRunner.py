@@ -100,7 +100,7 @@ class UserControl():
             self.connection.send(data)
 
     def start(self, rq={'request':'play'}):
-        print "STARTING USER PROCESSES"
+        #print "STARTING USER PROCESSES"
 
         self.launcherProcess = multiprocessing.Process(target=self.launcher)
         self.launcherProcess.start()
@@ -109,9 +109,9 @@ class UserControl():
         # Removing all User Events
         weioParser.removeUserEvents()
 
-        print "STOPPING USER PROCESSES"
+        #print "STOPPING USER PROCESSES"
 
-        print "=======<> self.launcherProcess ", self.launcherProcess
+        #print "=======<> self.launcherProcess ", self.launcherProcess
 
         if (self.launcherProcess != None):
             self.launcherProcess.terminate()
@@ -154,13 +154,13 @@ class UserControl():
 
 
     def launcher(self):
-        print "======>>> LAUNCHING..."
+        #print "======>>> LAUNCHING..."
         # Re-load user main (in case it changed)
         confFile = weioConfig.getConfiguration()
 
         # Get the last name of project and run it
         projectModule = confFile["last_opened_project"].replace('/', '.') + ".main"
-        print "CALL", projectModule
+        #print "CALL", projectModule
         # Init GPIO object for uper communication
         if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
             try :
@@ -176,7 +176,7 @@ class UserControl():
         try :
             userMain = __import__(projectModule, fromlist=[''])
         except :
-            print "MODULE CAN'T BE LOADED"
+            print "MODULE CAN'T BE LOADED. Maybe you have some import errors?"
             result = None
 
 
@@ -185,7 +185,7 @@ class UserControl():
             userMain.setup()
 
         # Add user events
-        print "ADDING USER EVENTS"
+        #print "ADDING USER EVENTS"
         for key in weioUserApi.attach.events:
             #print weioUserApi.attach.events[key].handler
             weioParser.addUserEvent(weioUserApi.attach.events[key].event,
@@ -205,7 +205,7 @@ class UserControl():
             # Get the command from userTornado (blocking)
             msg = self.qIn.get()
 
-            print "*** GOT THE COMMAND: ", msg.req
+            #print "*** GOT THE COMMAND: ", msg.req
 
             # Execute the command
             msg.res = None
@@ -237,7 +237,7 @@ def signalHandler(userControl, sig, frame):
 
 
 def listenerThread():
-    print "*** Starting listenerThread"
+    #print "*** Starting listenerThread"
     while (True):
         msg = weioRunnerGlobals.QIN.get()
 
@@ -280,8 +280,8 @@ if __name__ == '__main__':
 
     # Create a userControl object
     userControl = UserControl()
-    print "start user script"
-    userControl.start()
+    #print "start user script"
+    #userControl.start()
 
     # Install signal handlers
     signalCallback = functools.partial(signalHandler, userControl)

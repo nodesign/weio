@@ -84,7 +84,7 @@ class WeioPlayer():
 
         processName = './weioRunner.py'
 
-        print("weioMain indipendent process launching...")
+        #print("weioMain indipendent process launching...")
 
         self.weioPipe = subprocess.Popen([processName], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         self.ioloopObj = ioloop.IOLoop.instance()
@@ -123,7 +123,7 @@ class WeioPlayer():
         # check if user project exists before launching
         #if (weioFiles.checkIfFileExists(up+lp+"main.py")):
         if (weioFiles.checkIfFileExists(lp+"/main.py")):
-            print("weioMain indipendent process launching...")
+            #print("weioMain indipendent process launching...")
 
             # Inform client the we run subprocess
             data['requested'] = rq['request']
@@ -203,7 +203,7 @@ class WeioPlayer():
 
         if self.weioPipe.poll() is not None :
             """ Child is terminated STDOUT"""
-            print "Child has terminated - removing handler STDOUT"
+            #print "Child has terminated - removing handler STDOUT"
             self.playing = False
             ioloop.IOLoop.instance().remove_handler(self.weioPipe.stdout.fileno())
             self.stdoutHandlerIsLive = False;
@@ -230,7 +230,7 @@ class WeioPlayer():
             data['status'] = "Check output console for errors!"
 
             if 'Traceback (most recent call last):' in stderr :
-                print "traceback info is comming..."
+                #print "traceback info is comming..."
                 self.errLine = 0
 
             print "ERR " +  str(self.errLine) + " : " + stderr
@@ -267,7 +267,7 @@ class WeioPlayer():
 
         if self.weioPipe.poll() is not None :
             """ Child is terminated STDERR"""
-            print "Child has terminated - removing handler STDERR"
+            #print "Child has terminated - removing handler STDERR"
             self.playing = False
             self.errLine = 0
             data = {}
