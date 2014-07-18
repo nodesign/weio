@@ -48,23 +48,23 @@
 
         if (light) {
             
-            $(phrase).html("Turn OFF the light!");
+            $("#phrase").html("Turn OFF the light!");
             $("body").css("background","white");
             $("#phrase").css("color","black");
             digitalWrite(18, LOW);
             digitalWrite(19, LOW);
             digitalWrite(20, LOW);
-            genericMessage("pera", null);
+            genericMessage("webEvent", null);
             light = !light;
         } else {
            
-            $(phrase).html("Turn ON the light!");
+            $("#phrase").html("Turn ON the light!");
             $("body").css("background","black");
             $("#phrase").css("color","white");
             digitalWrite(18, HIGH);
             digitalWrite(19, HIGH);
             digitalWrite(20, HIGH);
-            genericMessage("pera", null);
+            genericMessage("webEvent", null);
             light = !light;
         }
     }
