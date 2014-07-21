@@ -205,7 +205,8 @@ if (len(sys.argv)>=nArguments) :
     
 else :
     print 
-    print "WeIO update maker : [version] [description] [seconds needed for install]"
+    print "WeIO update maker : [version] [description] [seconds needed for install] [local]"
+    print "local opetion means that archive won't be sent to FTP server"
     print "Store release information in releases.txt file"
     print "example : ./updateMaker 0.12 'some bug fixes'"
     print
