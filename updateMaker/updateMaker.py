@@ -109,16 +109,23 @@ weio_update['whatsnew'] = 'long text maybe from some file'
 weio_update['url'] = 'http://www.we-io.net/downloads/weio' + weio_update['version'] + '.tar.gz'
 weio_update['md5'] = '995884813e29f06b71a940975b202398'
 
-
-if (len(sys.argv)>=3) :
+nArguments = 4
+noFTP = False
+if (len(sys.argv)>=nArguments) :
     
     print
     checkVersionOnServer()
     print
     print "Connecting to WeIO Ftp server"
-    
-    usr = raw_input("Username :")
-    pswd = getpass.getpass(prompt="Password :")
+
+    for a in sys.argv:
+        if (a == "local"):
+            noFTP = True
+ 
+    if (noFTP is False):
+        usr = raw_input("Username :")
+        pswd = getpass.getpass(prompt="Password :")
+
     print "Open config.weio"
     inputFile = open("../config.weio", 'r')
     rawData = inputFile.read()
@@ -162,35 +169,39 @@ if (len(sys.argv)>=3) :
         weio_update['whatsnew'] = open('releases.weio', 'r').read()
         weio_update['kill_flag'] = "NO"
         
-        if (len(sys.argv)>3):
+        if (len(sys.argv)>nArguments):
             weio_update['install_duration'] = sys.argv[3]
         else:
             weio_update['install_duration'] = 35
-        
+
         saveConfiguration(weio_update)
-        try :
-            
-            print "Uploading " + packetFile + " ..."
-            prgs = 0
-            filesize = os.path.getsize(packetFile)
-            uploadToServer(packetFile)
-            print "Uploading update.weio ..."
-            prgs = 0
-            filesize = os.path.getsize("update.weio")
-            uploadToServer("update.weio")
-            print "Uploading releases.weio ..."
-            prgs = 0
-            filesize = os.path.getsize("releases.weio")
-            uploadToServer("releases.weio")
-            print "Done uploading"
-            print
-            checkVersionOnServer()
-            size = os.path.getsize(packetFile)/1000
-            print "File size of the packet : " + str(size) + " kb"  
-            
-        except ValueError:
-            print ValueError
-            print "Upload didn't make it."
+
+        if (noFTP is False):
+            try :
+
+                print "Uploading " + packetFile + " ..."
+                prgs = 0
+                filesize = os.path.getsize(packetFile)
+                uploadToServer(packetFile)
+                print "Uploading update.weio ..."
+                prgs = 0
+                filesize = os.path.getsize("update.weio")
+                uploadToServer("update.weio")
+                print "Uploading releases.weio ..."
+                prgs = 0
+                filesize = os.path.getsize("releases.weio")
+                uploadToServer("releases.weio")
+                print "Done uploading"
+                print
+                checkVersionOnServer()
+                size = os.path.getsize(packetFile)/1000
+                print "File size of the packet : " + str(size) + " kb"
+
+            except ValueError:
+                print ValueError
+                print "Upload didn't make it."
+        else:
+               print "Not sending to FTP local version is made"
     
 else :
     print 
