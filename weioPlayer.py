@@ -131,20 +131,21 @@ class WeioPlayer():
             self.send(json.dumps(data))
 
             consoleWelcome = {}
+            consoleWelcome['data'] = "WeIO user program started"
             consoleWelcome['serverPush'] = "sysConsole"
 
             self.lastLaunched = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             consoleWelcome['data'] = 'WeIO user server launched ' + self.lastLaunched
             if (weioIdeGlobals.CONSOLE != None):
-                weioIdeGlobals.CONSOLE.send(json.dumps(data))
+                #weioIdeGlobals.CONSOLE.send(json.dumps(data))
+                weioIdeGlobals.CONSOLE.send(json.dumps(consoleWelcome))
             self.playing = True
 
             # send *start* command to user tornado
             self.weioPipe.stdin.write("*START*")
             
 
-        #weioIdeGlobals.CONSOLE.send(json.dumps(consoleWelcome))
         else : # FILE DON'T EXIST
             warning = {}
             warning['requested'] = rq['request']
