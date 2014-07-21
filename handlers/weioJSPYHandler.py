@@ -26,7 +26,7 @@ class WeioHandler(SockJSConnection):
         self.userAgent = None
         self.ip = request.ip
 
-        #print "*SYSOUT* Client with IP address : " + self.ip + " connected to server!"
+        print "*SYSOUT* Client with IP address: " + self.ip + " connected to server"
 
         #print "============="
         #print self.session.conn_info.get_header('x-client-ip')
@@ -75,7 +75,7 @@ class WeioHandler(SockJSConnection):
 
     def on_close(self):
         self.connection_closed = True
-        print "*SYSOUT* Client with IP address : " + self.ip + " disconnected from server!"
+        print "*SYSOUT* Client with IP address: " + self.ip + " disconnected from server"
         # Remove client from the clients list and broadcast leave message
         #self.connections.remove(self)
         for connUuid, conn in self.connections.iteritems():
