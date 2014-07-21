@@ -61,9 +61,10 @@ function fromAdc(data) {
         color : "#888"
     }
     ];
-    
+    //console.log(data);
     var pinNumber = data.pin;
     adcs[pinNumber].Doughnut(pieData,potarDefs);
+    //console.log(pinNumber);
     $("#valueFor"+pinNumber).html(data.data);
 }
 
