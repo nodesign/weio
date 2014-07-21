@@ -74,29 +74,44 @@ find weio -name '.DS_Store' -delete
 # compress in every case
 tar -zcvf weio.tar.gz weio/
 
+echo "WeIO stripped and compressed"
+tar -zcvf weio.tar.gz weio/
+# kill weio folder
+rm -r weio
+
+# To decompress type : tar -zxvf weio.tar.gz
+
+echo ""
+echo "Created archive weio.tar.gz"
+echo ""
+echo "Now do:"
+echo "$ scp -r weio.tar.gz root@weio.local:/tmp"
+echo "and then in WeIO:"
+echo "tar -xzvf /tmp/weio.tar.gz"
+
 # make tar archive 
-if [ "$1" == "no_compression" ]; then
-    echo "WeIO stripped no compression is executed"
-else
-    echo "Patching WeIO project for production"
-    patch weio/www/libs/weio/weioApi.js < 01_portChange.patch
-    
-    echo "WeIO stripped and compressed"
-    tar -zcvf weio.tar.gz weio/
-    # kill weio folder
-    rm -r weio
-
-    # To decompress type : tar -zxvf weio.tar.gz
-
-    echo ""
-    echo "Created archive weio.tar.gz"
-    echo ""
-    echo "Now do:"
-    echo "$ scp -r weio.tar.gz root@weio.local:/tmp"
-    echo "and then in WeIO:"
-    echo "tar -xzvf /tmp/weio.tar.gz"
-    
-fi
+# if [ "$1" == "no_compression" ]; then
+#     echo "WeIO stripped no compression is executed"
+# else
+#     echo "Patching WeIO project for production"
+#     #patch weio/www/libs/weio/weioApi.js < 01_portChange.patch
+#
+#     echo "WeIO stripped and compressed"
+#     tar -zcvf weio.tar.gz weio/
+#     # kill weio folder
+#     rm -r weio
+#
+#     # To decompress type : tar -zxvf weio.tar.gz
+#
+#     echo ""
+#     echo "Created archive weio.tar.gz"
+#     echo ""
+#     echo "Now do:"
+#     echo "$ scp -r weio.tar.gz root@weio.local:/tmp"
+#     echo "and then in WeIO:"
+#     echo "tar -xzvf /tmp/weio.tar.gz"
+#
+# fi
 
 
 
