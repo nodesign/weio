@@ -232,11 +232,9 @@ weioUserSpells = {}
 
 def addUserEvent(event, handler):
     global weioUserSpells
-    print "Adding event ", event
-    print "and handler ", handler
+    #print "Adding event ", event
+    #print "and handler ", handler
     weioUserSpells[event] = handler
-
-    print weioUserSpells
 
 def removeUserEvents():
     global weioUserSpells
