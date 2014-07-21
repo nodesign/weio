@@ -60,6 +60,7 @@ def callDigitalRead(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         value = digitalRead(data[0])
         bck["data"] = value
+        bck["pin"] = data[0]
     else :
         print "digitalRead ON PC", data
         bck["data"] = 1 # faked value
@@ -72,6 +73,7 @@ def callAnalogRead(data) :
         #print "From browser ", data
         value = analogRead(data[0]) # this is pin number
         bck["data"] = value
+        bck["pin"] = data[0]
     else :
         print "analogRead ON PC", data
         bck["data"] = 1023 # faked value

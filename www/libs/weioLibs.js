@@ -21,7 +21,7 @@ var requireQueue = function(modules) {
 requireQueue([
   'jquery/jquery-2.0.2.min',
   'sockJS/sockjs-0.3.min',
-  'weio/weioApi'
+  'weio/weioApi',
   //'chartJS/Chart.min',
   //'bootstrap/js/bootstrap.min',
   //'weio/wifi',
