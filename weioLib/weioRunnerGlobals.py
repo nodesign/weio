@@ -46,6 +46,9 @@ WEIO_SERIAL_LINKED = False
 weioConnectionSet = set()
 weioConnections = {}
 
+# Running flag
+running = False
+
 # UserTornado-to-launcher communication queues
 # Direction In-Out related to User Tornado
 QIN = multiprocessing.Queue()
