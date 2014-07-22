@@ -12,6 +12,8 @@ import subprocess
 from weioLib import weioUserApi
 from weioLib import weioIO
 
+import pickle
+
 # JS to PYTHON handler
 from handlers.weioJSPYHandler import WeioHandler
 
@@ -106,6 +108,11 @@ class UserControl():
         self.launcherProcess.start()
 
     def stop(self):
+        weioRunnerGlobals.running = False
+        fRunning = open('/weio/running.p', 'wb')
+        pickle.dump(weioRunnerGlobals.running, fRunning)
+        fRunning.close()
+        
         # Removing all User Events
         weioParser.removeUserEvents()
 
@@ -127,20 +134,26 @@ class UserControl():
         weioUserApi.attach.procs = {}
         weioUserApi.attach.events = {}
         weioUserApi.attach.ints = {}
-
-        # Clear all conncetions
+        
+        # Clear all connetions
         weioRunnerGlobals.weioConnections.clear()
+        
+        # Empty the Queue of all messages
+        while self.qIn.empty() == False:
+            self.qIn.get()
+
+        while self.qOut.empty() == False:
+            self.qOut.get()
+            
 
     def userPlayer(self, fd, events):
-        #print "Inside userControl()"
-
         if (fd is not None):
             cmd = os.read(fd,128)
-            #print "Received: " + cmd
+            cmd = cmd.split('*')[-2]
         else:
             return
 
-        if (cmd == "*START*"):
+        if (cmd == "START"):
             # First stop all pending processes
             # and reset all pending events before re-loading new ones
             if (self.launcherProcess != None):
@@ -149,7 +162,7 @@ class UserControl():
             # Then start processes from it
             self.start()
 
-        elif (cmd == "*STOP*"):
+        elif (cmd == "STOP"):
             self.stop()
 
 
@@ -200,6 +213,11 @@ class UserControl():
             # Start it
             t.start()
             #print "STARTING PROCESS PID", t.pid
+        
+        weioRunnerGlobals.running = True
+        fRunning = open('/weio/running.p', 'wb')
+        pickle.dump(weioRunnerGlobals.running, fRunning)
+        fRunning.close()
 
         while (True):
             # Get the command from userTornado (blocking)

@@ -9,14 +9,17 @@ from weioLib import weioRunnerGlobals
 
 import uuid
 
+import pickle
+
+import os
+
+
 class WeioHandler(SockJSConnection):
     def __init__(self, *args, **kwargs):
         SockJSConnection.__init__(self, *args, **kwargs)
         #self.connections = weioRunnerGlobals.weioConnections
 
     def on_open(self, request):
-        # Add client to the clients list
-
         # Add the connection to the connections dictionary
         connUuid = uuid.uuid4()
         weioRunnerGlobals.weioConnections[connUuid] = self
@@ -55,22 +58,34 @@ class WeioHandler(SockJSConnection):
         self.send(json.dumps(data))
 
     def on_message(self, data):
-        """Parsing JSON data that is comming from browser into python object"""
-        self.serve(json.loads(data))
+        if os.path.isfile('/weio/running.p'):
+            fRunning = open('/weio/running.p', 'rb')
+            running = pickle.load(fRunning)
+            fRunning.close()
+            
+            if (running == True):
+                """Parsing JSON data that is comming from browser into python object"""
+                self.serve(json.loads(data))
+            else:
+                weioRunnerGlobals.weioConnections.clear()
+
+        else:
+            weioRunnerGlobals.weioConnections.clear()
 
     def serve(self, data) :
-        # Create userAgentMessage and send it to the launcher process
-        msg = weioRunnerGlobals.userAgentMessage()
         for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
             if (conn == self):
+        	# Create userAgentMessage and send it to the launcher process
+        	msg = weioRunnerGlobals.userAgentMessage()
                 msg.connUuid = connUuid 
-        msg.req = data["request"]
-        msg.data = data["data"]
-        if "callback" in data:
-            msg.callbackJS = data["callback"]
+        	msg.req = data["request"]
+        	msg.data = data["data"]
 
-        # Send message to launcher process
-        weioRunnerGlobals.QOUT.put(msg)
+        	if "callback" in data:
+            		msg.callbackJS = data["callback"]
+
+        	# Send message to launcher process
+        	weioRunnerGlobals.QOUT.put(msg)
 
 
     def on_close(self):
