@@ -1,2 +1,14 @@
-digitalWrite(18, HIGH)
-        
+from weioLib.weioIO import *
+from weioLib.weioUserApi import attach
+
+def setup() :
+    attach.process(blinky)
+
+def blinky() :
+    print "Hello world!"
+    pause = 100
+    while True:
+        digitalWrite(20, HIGH)
+        delay(pause)
+        digitalWrite(20, LOW)
+        delay(pause)
