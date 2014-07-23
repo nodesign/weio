@@ -95,6 +95,8 @@ class WeioEditorWebHandler(loginHandler.BaseHandler):
 
         if (firstTimeSwitch=="YES") :
             self.redirect("/signin")
+            # Create symlinks to external projects
+            weioFiles.symlinkExternalProjects()
             return
 
         if (confFile["login_required"] == "YES"):
