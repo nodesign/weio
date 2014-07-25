@@ -53,12 +53,12 @@ class WeioSigninHandler(loginHandler.BaseHandler):
         confFile = weioConfig.getConfiguration()
         fullName = self.get_argument("fullName", "")
         passwd = self.get_argument("password", "")
-        hostname = self.get_argument("hostname", "")
+        boardname = self.get_argument("boardname", "")
 
         # This is two letters country code to be used to setup wifi region
         countryCode = self.get_argument("countryCode", "")
 
-        print "************ ", fullName, passwd, hostname, countryCode
+        print "************ ", fullName, passwd, boardname, countryCode
 
         data = {}
         # OK now is time to setup username and password
@@ -68,25 +68,37 @@ class WeioSigninHandler(loginHandler.BaseHandler):
         output = "OK PASSWD"
         #echo -e "weio\nweio" | passwd
 
+        # ATTENTION, DON'T MESS WITH THIS STUFF ON YOUR LOCAL COMPUTER
+        # First protection is mips detection, second is your own OS
+        # who hopefully needs sudo to change passwd on the local machine
         if (platform.machine() == 'mips'):
+
+            # Change root password
             command = "sh scripts/change_root_pswd.sh " + passwd
             print "EXEC : " + command
 
-        try:
-            # ATTENTION, DON'T MESS WITH THIS STUFF ON YOUR LOCAL COMPUTER
-            # First protection is mips detection, second is your own OS
-            # who hopefully needs sudo to change passwd on the local machine
-            if (platform.machine() == 'mips'):
+            try:
                 subprocess.call(command, shell=True)
                 firstTimeSwitch = "NO"
                 confFile['first_time_run']=firstTimeSwitch
-            else:
-                firstTimeSwitch = "NO"
-                confFile['first_time_run']=firstTimeSwitch
-        except:
-            output = "ERR_CMD"
-        print output
+            except:
+                output = "ERR_CMD PASSWD"
+                print output
 
+            # Change avahi name
+            command = "sh scripts/change_boardname.sh " + boardname
+            print "EXEC : " + command
+
+            try:
+                subprocess.call(command, shell=True)
+            except:
+                output = "ERR_CMD BRDNAME"
+
+        else:
+            # On PC
+            firstTimeSwitch = "NO"
+            confFile['first_time_run']=firstTimeSwitch
+        
         # Save new password in the config file
         confFile['password'] = passwd
 
