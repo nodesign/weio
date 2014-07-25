@@ -288,7 +288,7 @@ function goAp() {
         wifiSocket.send(JSON.stringify(changeWifi));
         $('#createWifi').modal('hide');
         
-        var lostContact = "Browser lost connexion with WeIO! That's normal because WeIO goes to AP - Acess Point mode now. Please connect to " + essidAPuser + " wifi network and then reload this page";
+        var lostContact = "Browser lost connection with WeIO! That's normal because WeIO goes to AP - Acess Point mode now. Please connect to " + essidAPuser + " wifi network and then reload this page";
         setTestament(lostContact);
     }
     
@@ -317,11 +317,10 @@ function goSta() {
             console.log("GoTo STA ", changeWifi);
             wifiSocket.send(JSON.stringify(changeWifi));
 
-            selectedCell = -1; // reset selection
-            var lostContact = "Browser lost connexion with WeIO! That's normal because WeIO goes to STA mode now. Please connect to " + selectedCell.essid + " wifi network and then reload this page";
+            var lostContact = "Browser lost connection with WeIO! That's normal because WeIO goes to STA mode now. Please connect to " + selectedCell.essid + " wifi network and then reload this page";
             setTestament(lostContact);
-            
 
+            selectedCell = -1; // reset selection
         }
     } else {
         
@@ -331,10 +330,10 @@ function goSta() {
         console.log("GoTo STA ", changeWifi);
         wifiSocket.send(JSON.stringify(changeWifi));
         
-        selectedCell = -1; // reset selection
-        var lostContact = "Browser lost connexion with WeIO! That's normal because WeIO goes to STA mode now. Please connect to " + selectedCell.essid + " wifi network and then reload this page";
+        var lostContact = "Browser lost connection with WeIO! That's normal because WeIO goes to STA mode now. Please connect to " + selectedCell.essid + " wifi network and then reload this page";
         setTestament(lostContact);
 
+        selectedCell = -1; // reset selection
     }
     
     
