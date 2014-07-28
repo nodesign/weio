@@ -107,7 +107,7 @@ def callProportion(data) :
     bck = {}
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         #print "From browser ", data
-        value = proportion(data[0],data[1],data[2],data[3],data[4],) # this is pin number
+        value = proportion(data[0],data[1],data[2],data[3],data[4]) # this is pin number
         bck["data"] = value
     else :
         print "proportion ON PC", data
@@ -223,8 +223,7 @@ weioSpells = {
     "getTemperature": callGetTemperature,
     "delay":callDelay,
     "pinsInfo": pinsInfo
-    #,
-   # "message":callUserMesage
+  # "message":callUserMesage
 }
 
 ###
