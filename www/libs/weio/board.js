@@ -40,76 +40,88 @@ var boardSocket;
 var socketOpened = false;
 
 
+
 function connectToBoard() {
     // connection example
      //   dashboard = new SockJS('http://' + location.host + '/dashboard');
 
      console.log("Opening board");
     if (socketOpened==false) {
+
         /*
          * Identify server address and port to open websocket
          */
-        var _addr = location.host;
-        if (_addr.indexOf(":")!=-1) {
-            var a = _addr.split(":");
-            //_addr = 'ws://' + a[0] + ':8082/api';
-            _addr = 'http://' + a[0] + ':8082/api';
-        } else {
-            var a = 'ws://' + _addr + ':8082/api';
-            _addr = a;
-        }
-        console.log("WebSocket connecting to board on ", _addr);
+        var port = "8082";
+        $.getJSON('config.json', function(data) {
+            var getInfoFromBoard;
+            confFile = data;
+            port = confFile.userAppPort;
 
-        /*
-         * WebSocket openning
-         */
-
-        //boardSocket = new WebSocket(_addr);
-        boardSocket = new SockJS(_addr);
-
-
-
-        //////////////////////////////////////////////////////////////// BOARD JS STATS
-
-        /*
-         * On opening of wifi web socket ask server to scan wifi networks
-         */
-        boardSocket.onopen = function() {
-            console.log('Board Web socket is opened');
-            socketOpened = true;
-
-            var rq = { "request": "pinsInfo", "data":"", "callback":"pinsInfo"};
-            boardSocket.send(JSON.stringify(rq));
-        };
-
-        /*
-         * Dashboard parser, what we got from server
-         */
-        boardSocket.onmessage = function(e) {
-            //console.log('Received: ' + e.data);
-
-            // JSON data is parsed into object
-            data = JSON.parse(e.data);
-            console.log(data);
-
-            // switch
-            if ("requested" in data) {
-                // this is instruction that was echoed from server + data as response
-                instruction = data.requested;
-                if (instruction in callbacksBoard)
-                    callbacksBoard[instruction](data);
-            } else if ("serverPush" in data) {
-                // this is instruction that was echoed from server + data as response
-                instruction = data.serverPush;
-                if (instruction in callbacksBoard)
-                    callbacksBoard[instruction](data);
+            var _addr = location.host;
+            if (location.port == "8080") {
+                var a = _addr.split(":");
+                _addr = 'http://' + a[0] + ':' + port + '/api';
+            } else {
+                var a = 'http://' + _addr + '/api';
+                _addr = a;
             }
-        };
 
-        boardSocket.onclose = function() {
-            console.log('Board Web socket is closed');
-            socketOpened = false;
-        };
+            /*
+             * WebSocket openning
+             */
+
+            //boardSocket = new WebSocket(_addr);
+            boardSocket = new SockJS(_addr);
+
+            //////////////////////////////////////////////////////////////// BOARD JS STATS
+
+            /*
+             * On opening of wifi web socket ask server to scan wifi networks
+             */
+            boardSocket.onopen = function() {
+                console.log('Board Web socket is opened');
+                socketOpened = true;
+                getInfoFromBoard = setInterval(getInfo, 500);
+            };
+            
+            function getInfo(){
+                console.log("GETTING BOARD INFO");
+                var rq = { "request": "pinsInfo", "data":"", "callback":"pinsInfo"};
+                boardSocket.send(JSON.stringify(rq));
+            }
+
+            /*
+             * Dashboard parser, what we got from server
+             */
+            boardSocket.onmessage = function(e) {
+                //console.log('Received: ' + e.data);
+
+                // JSON data is parsed into object
+                data = JSON.parse(e.data);
+                console.log(data);
+
+                // switch
+                if ("requested" in data) {
+                    // this is instruction that was echoed from server + data as response
+                    instruction = data.requested;
+                    if (instruction in callbacksBoard)
+                        callbacksBoard[instruction](data);
+                } else if ("serverPush" in data) {
+                    // this is instruction that was echoed from server + data as response
+                    instruction = data.serverPush;
+                    if (instruction in callbacksBoard)
+                        callbacksBoard[instruction](data);
+                }
+            };
+
+            boardSocket.onclose = function() {
+                console.log('Board Web socket is closed');
+                socketOpened = false;
+                clearInterval(getInfoFromBoard);
+            };
+
+
+        });
 
     } else {
         var rq = { "request": "pinsInfo", "data":"","callback":"pinsInfo"};
