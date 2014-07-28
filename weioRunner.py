@@ -53,10 +53,9 @@ class WeioIndexHandler(web.RequestHandler):
         else :
             if (weioFiles.checkIfFileExists(confFile['last_opened_project'] + "/index.html")):
                 path = "www/userIndex.html"
+
             else :
                 path = "www/error404.html"
-
-        path = "www/userIndex.html"
 
         #path = confFile['last_opened_project'] + "index.html"
 
