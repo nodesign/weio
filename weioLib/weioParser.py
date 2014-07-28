@@ -197,9 +197,9 @@ def callUserMesage(data):
     #weioRunnerGlobals.userMain
 
 def pinsInfo(data) :
-    print("GET PIN INFO ASKED!")
     bck = {}
-    bck["data"] = getPinInfo()
+    bck["data"] = weioRunnerGlobals.DECLARED_PINS
+    #print("GET PIN INFO ASKED!", bck["data"])
     return bck
 
 ###

@@ -177,9 +177,6 @@ class UserControl():
         if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
             try :
                 weioIO.gpio = weioGpio.WeioGpio()
-
-                # Initialize globals for the user Tornado
-                weioRunnerGlobals.DECLARED_PINS = weioIO.gpio.declaredPins
             except:
                 print "LPC coprocessor is not present"
                 weioIO.gpio = None
@@ -188,7 +185,7 @@ class UserControl():
         try :
             userMain = __import__(projectModule, fromlist=[''])
         except :
-            print "MODULE CAN'T BE LOADED. Maybe you have some import errors?"
+            print "MODULE CAN'T BE LOADED. Maybe you have some errors in modules that you wish to import?"
             result = None
 
 
