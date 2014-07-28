@@ -96,7 +96,7 @@ $(document).ready(function() {
             _weio = new SockJS(_addr);
         
             _weio.onopen = function() {
-            clearInterval(connectRetry);
+            //clearInterval(connectRetry);
             console.log('socket opened for weio API');
                 
             // Client info will be sent to server
@@ -143,14 +143,15 @@ $(document).ready(function() {
             };
         
             _weio.onclose = function() {
-            clearInterval(connectRetry);
-            connectRetry = setInterval(connectToServer, 500);
+            //clearInterval(connectRetry);
+            //connectRetry = setInterval(connectToServer, 500);
             console.log('socket is closed or not opened for weioApi');
         
             };
         
         };
-        var connectRetry = setInterval(connectToServer, 500);
+        //var connectRetry = setInterval(connectToServer, 500);
+        connectToServer();
         })();
                
     }); /* getJSON */
