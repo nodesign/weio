@@ -92,6 +92,11 @@ var activeAutoSave = false;
  */
 var userServerPort = 0;
 
+/**
+ * Global configuration
+ */
+var confFile;
+
 /*
  * When all DOM elements are fully loaded
  */
@@ -268,28 +273,42 @@ $(document).ready(function () {
                                }    else {
                                    // tar archives
                                    if (path.indexOf(".tar") != -1) {
-                                       console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", path);
-                                       var target = path.split("www/")[1];
+                                        console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", path);
+                                        var target = path.split("www/")[1];
                                        
-                                       var _addr = location.host;
-                                       var a = _addr.split(":");
-    
-                                       if (userServerPort==80) {
-                                           _addr = 'http://' + a[0];
-                                       } else {
-                                           _addr = 'http://' + a[0] + ':' + userServerPort;
-                                       }
-                                       
-                                       
-                                       window.open(_addr +"/"+target);
-                                   }
-                               }
-                                   treeLock = false;
+                                        var _addr = location.host;
+                                        var a = _addr.split(":");
+
+                                        /** Get global configuration */
+                                        $.getJSON('config.json', function(data) {
+                                                confFile = data;
+
+                                                var http_prefix = "http://"
+
+                                                if (confFile.https == "YES") {
+                                                    http_prefix = "https://";
+                                                }
+                                                else {
+                                                    http_prefix = "http://";
+                                                }
+            
+                                                if (userServerPort==80) {
+                                                    _addr = http_prefix + a[0];
+                                                } else {
+                                                    _addr = http_prefix + a[0] + ':' + userServerPort;
+                                                }
+
+                                                window.open(_addr +"/"+target);
+                                        }); /** getJSON */  
+                                    }
+                                }
+                                
+                                treeLock = false;
 
 
                                // It's more sure to add to currentlyOpened array from
                                // websocket callback than here in case that server don't answer
-                               } // if (!doesExist)
+                            } // if (!doesExist)
 
                        } else { // delete file here! and don't open strip
                            prepareToDeleteFile(path);
@@ -314,71 +333,83 @@ $(document).ready(function () {
 
     //////////////////////////////////////////////////////////////// SOCK JS EDITOR
 
-    /*
-     * SockJS object, Web socket
-     */
-    editorSocket = new SockJS('http://' + location.host + '/editorSocket');
-    /*
-     * On opening of wifi web socket ask server to scan wifi networks
-     */
-    editorSocket.onopen = function() {
-        console.log('editor Web socket is opened');
-        // get files
+    /** Get global configuration */
+    $.getJSON('config.json', function(data) {
+                confFile = data;
 
-        editorPacket = new Array();
+                if (confFile.https == "YES") {
+                    http_prefix = "https://";
+                }
+                else {
+                    http_prefix = "http://";
+                }
 
-        var rq = { "request": "getFileTree"};
-        //editorSocket.send(JSON.stringify(rq));
+                /*
+                * SockJS object, Web socket
+                */
+                editorSocket = new SockJS(http_prefix + location.host + '/editorSocket');
+                /*
+                * On opening of wifi web socket ask server to scan wifi networks
+                */
+                editorSocket.onopen = function() {
+                    console.log('editor Web socket is opened');
+                    // get files
 
-        editorPacket.push(rq);
+                    editorPacket = new Array();
 
-        rq = { "request": "getPlatform"};
-        //editorSocket.send(JSON.stringify(rq));
+                    var rq = { "request": "getFileTree"};
+                    //editorSocket.send(JSON.stringify(rq));
 
-        editorPacket.push(rq);
+                    editorPacket.push(rq);
+
+                    rq = { "request": "getPlatform"};
+                    //editorSocket.send(JSON.stringify(rq));
+
+                    editorPacket.push(rq);
 
 
-        rq = { "request": "getUserPortNumber"};
-        //editorSocket.send(JSON.stringify(rq));
+                    rq = { "request": "getUserPortNumber"};
+                    //editorSocket.send(JSON.stringify(rq));
 
-        editorPacket.push(rq);
+                    editorPacket.push(rq);
 
 
-        rq = { "request" : "packetRequests", "packets":editorPacket};
-        console.log("EDITOR: sending editor packets together ", rq);
+                    rq = { "request" : "packetRequests", "packets":editorPacket};
+                    console.log("EDITOR: sending editor packets together ", rq);
 
-        editorSocket.send(JSON.stringify(rq));
-        //setTimeout(function(){editorSocket.send(JSON.stringify(rq))},1000);
-    };
+                    editorSocket.send(JSON.stringify(rq));
+                    //setTimeout(function(){editorSocket.send(JSON.stringify(rq))},1000);
+                };
 
-    /*
-     * Dashboard parser, what we got from server
-     */
-    editorSocket.onmessage = function(e) {
-        //console.log('Received: ' + e.data);
+                /*
+                * Dashboard parser, what we got from server
+                */
+                editorSocket.onmessage = function(e) {
+                    //console.log('Received: ' + e.data);
 
-        // JSON data is parsed into object
-        data = JSON.parse(e.data);
-        console.log(data);
+                    // JSON data is parsed into object
+                    data = JSON.parse(e.data);
+                    console.log(data);
 
-        // switch
-       if ("requested" in data) {
-           // this is instruction that was echoed from server + data as response
-           instruction = data.requested;
-           if (instruction in callbacksEditor)
-               callbacksEditor[instruction](data);
-       } else if ("serverPush" in data) {
-              // this is instruction that was echoed from server + data as response
-              instruction = data.serverPush;
-              if (instruction in callbacksEditor)
-                  callbacksEditor[instruction](data);
-       }
-    };
+                    // switch
+                if ("requested" in data) {
+                    // this is instruction that was echoed from server + data as response
+                    instruction = data.requested;
+                    if (instruction in callbacksEditor)
+                        callbacksEditor[instruction](data);
+                } else if ("serverPush" in data) {
+                        // this is instruction that was echoed from server + data as response
+                        instruction = data.serverPush;
+                        if (instruction in callbacksEditor)
+                            callbacksEditor[instruction](data);
+                }
+                };
 
-    editorSocket.onclose = function() {
-        // turn on red light if disconnected
-        console.log('Dashboard Web socket is closed');
-    };
+                editorSocket.onclose = function() {
+                    // turn on red light if disconnected
+                    console.log('Dashboard Web socket is closed');
+                };
+    }); /** getJSON */  
 
     //////////////// CONSOLE TABS
     $("#tabConsole").click(function(e) {

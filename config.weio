@@ -7,7 +7,8 @@
     "extern_projects_path_flash": "/Users/uros/workNow/nodesign/weIO/weio/weioUser/flash", 
     "extern_projects_path_sd": "", 
     "extern_projects_path_usbFlash": "", 
-    "first_time_run": "YES", 
+    "first_time_run": "NO", 
+    "https": "NO", 
     "ip": "0.0.0.0", 
     "kill_flag": "YES", 
     "last_opened_files": [

@@ -49,57 +49,77 @@ var estimatedInstallTime = 0;
 
 var updaterChart;
 
+/**
+ * Global configuration
+ */
+var confFile;
+var http_prefix = "http://";
+
 $(document).ready(function() {
-    /**
-     * Wifi SockJS object, Web socket for scaning and changing wifi parameters
-     */
-    updaterSocket = new SockJS('http://' + location.host + '/updater');
 
-                      
-    //////////////////////////////////////////////////////////////////////////////////////////////////// SOCK JS WIFI        
-        
-    /*
-    * On opening of wifi web socket ask server to scan wifi networks
-    */
-    updaterSocket.onopen = function() {
-        console.log('Updater Web socket is opened');
-        //updateCheck();
-    };
+    /** Get global configuration */
+    $.getJSON('config.json', function(data) {
+                      confFile = data;
 
-    /*
-    * Wifi web socket parser, what we got from server
-    */
-    updaterSocket.onmessage = function(e) {
-        //console.log('Received: ' + e.data);
+            if (confFile.https == "YES") {
+                http_prefix = "https://";
+            }
+            else {
+                http_prefix = "http://";
+            }
 
-        // JSON data is parsed into object
-        data = JSON.parse(e.data);
-        console.log(data);
+            /**
+            * Wifi SockJS object, Web socket for scaning and changing wifi parameters
+            */
+            updaterSocket = new SockJS(http_prefix + location.host + '/updater');
 
-        if ("requested" in data) {
-              // this is instruction that was echoed from server + data as response
-              instruction = data.requested;  
+                            
+            //////////////////////////////////////////////////////////////////////////////////////////////////// SOCK JS WIFI        
                 
-              if (instruction in callbacksUpdater) 
-                  callbacksUpdater[instruction](data);
-          } else if ("serverPush" in data) {
-                 // this is instruction that was echoed from server + data as response
-                 
-                 instruction = data.serverPush;  
-                 if (instruction in callbacksUpdater) 
-                     callbacksUpdater[instruction](data);
-          }
-    };
+            /*
+            * On opening of wifi web socket ask server to scan wifi networks
+            */
+            updaterSocket.onopen = function() {
+                console.log('Updater Web socket is opened');
+                //updateCheck();
+            };
 
-    updaterSocket.onclose = function() {
-        console.log('Updater Web socket is closed');
-    };
+            /*
+            * Wifi web socket parser, what we got from server
+            */
+            updaterSocket.onmessage = function(e) {
+                //console.log('Received: ' + e.data);
+
+                // JSON data is parsed into object
+                data = JSON.parse(e.data);
+                console.log(data);
+
+                if ("requested" in data) {
+                    // this is instruction that was echoed from server + data as response
+                    instruction = data.requested;  
+                        
+                    if (instruction in callbacksUpdater) 
+                        callbacksUpdater[instruction](data);
+                } else if ("serverPush" in data) {
+                        // this is instruction that was echoed from server + data as response
+                        
+                        instruction = data.serverPush;  
+                        if (instruction in callbacksUpdater) 
+                            callbacksUpdater[instruction](data);
+                }
+            };
+
+            updaterSocket.onclose = function() {
+                console.log('Updater Web socket is closed');
+            };
+    
+    }); /** getJSON */
                   
     updaterChart = new Chart(document.getElementById("updateProgressChart").getContext("2d"));
                   
-
-                  
 });
+
+
 /**
  * Update check. Asks server to compare it's own version with distant one
  */
@@ -168,7 +188,7 @@ function countTimeTillReload(data) {
 function reloadMe() {
     var randomNumber = Math.random();
     // prevent loading from cache
-    var url = "http://" + location.host + "/?"+randomNumber;
+    var url = http_prefix + location.host + "/?"+randomNumber;
     //location.reload();
     window.location.href = url;
 }
