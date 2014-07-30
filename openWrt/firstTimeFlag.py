@@ -19,6 +19,6 @@ config['first_time_run'] = "YES"
 config['port'] = 8080
 config['userAppPort'] = 80
 config['debug_mode'] = "False"
-config['extern_projects_path'] = "/weioUserProjects"
+config['extern_projects_path_flash'] = "/weioUser"
 config['absolut_root_path']= "/weio"
 saveConfiguration(sys.argv[1], config)
