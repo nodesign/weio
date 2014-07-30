@@ -14,3 +14,6 @@
 ./scripts/feeds install mjpg-streamer
 ./scripts/feeds install fswebcam
 ./scripts/feeds install libv4l
+./scripts/feeds install libi2c
+./scripts/feeds install i2c-tools
+./scripts/feeds install python-smbus
