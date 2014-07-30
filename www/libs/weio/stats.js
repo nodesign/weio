@@ -76,6 +76,11 @@ var defs = {
 	onAnimationComplete : null
 }
 
+/**
+ * Global configuration
+ */
+var confFile;
+
 /*
  * When all DOM elements are fully loaded
  */
@@ -84,49 +89,62 @@ $(document).ready(function () {
     ramViz = new Chart(document.getElementById("ramViz").getContext("2d"));
     flashViz = new Chart(document.getElementById("flashViz").getContext("2d"));
     tempViz = new Chart(document.getElementById("tempViz").getContext("2d"));
-                  
-     /*
-     * SockJS object, Web socket
-     */
-    statSocket = new SockJS('http://' + location.host + '/stats');
-                  
-    //////////////////////////////////////////////////////////////// SOCK JS STATS        
-   
-    /*
-     * On opening of wifi web socket ask server to scan wifi networks
-     */
-    statSocket.onopen = function() {
-        console.log('stats Web socket is opened');
-      
-    };
-    
-    /*
-     * Dashboard parser, what we got from server
-     */
-    statSocket.onmessage = function(e) {
-        //console.log('Received: ' + e.data);
-        
-        // JSON data is parsed into object
-        data = JSON.parse(e.data);
-        console.log(data);
-        
-        // switch
-        if ("requested" in data) {
-            // this is instruction that was echoed from server + data as response
-            instruction = data.requested;  
-            if (instruction in callbacksStats) 
-                callbacksStats[instruction](data);
-        } else if ("serverPush" in data) {
-            // this is instruction that was echoed from server + data as response
-            instruction = data.serverPush;  
-            if (instruction in callbacksStats) 
-                callbacksStats[instruction](data);
-        }
-    };
-    
-    statSocket.onclose = function() {
-        console.log('Stats Web socket is closed');
-    };
+               
+    /** Get global configuration */
+    $.getJSON('config.json', function(data) {
+                confFile = data;
+                var http_prefix = "http://";
+
+                if (confFile.https == "YES") {
+                    http_prefix = "https://";
+                }
+                else {
+                    http_prefix = "http://";
+                }
+                /*
+                * SockJS object, Web socket
+                */
+                statSocket = new SockJS(http_prefix + location.host + '/stats');
+                            
+                //////////////////////////////////////////////////////////////// SOCK JS STATS        
+            
+                /*
+                * On opening of wifi web socket ask server to scan wifi networks
+                */
+                statSocket.onopen = function() {
+                    console.log('stats Web socket is opened');
+                
+                };
+                
+                /*
+                * Dashboard parser, what we got from server
+                */
+                statSocket.onmessage = function(e) {
+                    //console.log('Received: ' + e.data);
+                    
+                    // JSON data is parsed into object
+                    data = JSON.parse(e.data);
+                    console.log(data);
+                    
+                    // switch
+                    if ("requested" in data) {
+                        // this is instruction that was echoed from server + data as response
+                        instruction = data.requested;  
+                        if (instruction in callbacksStats) 
+                            callbacksStats[instruction](data);
+                    } else if ("serverPush" in data) {
+                        // this is instruction that was echoed from server + data as response
+                        instruction = data.serverPush;  
+                        if (instruction in callbacksStats) 
+                            callbacksStats[instruction](data);
+                    }
+                };
+                
+                statSocket.onclose = function() {
+                    console.log('Stats Web socket is closed');
+                };
+
+    }); /** getJSON */
 });
 
 

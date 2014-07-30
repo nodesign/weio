@@ -1,5 +1,5 @@
 #!/usr/bin/python -u
-from tornado import web, ioloop, options, websocket
+from tornado import web, ioloop, options, websocket, httpserver
 
 import sys,os,logging, platform, json, signal, datetime
 
@@ -287,7 +287,19 @@ if __name__ == '__main__':
     ('/', WeioIndexHandler),
     (r"/(.*)", web.StaticFileHandler, {"path": "www"})
     ])
-    app.listen(options.options.port, "0.0.0.0")
+    #app.listen(options.options.port, "0.0.0.0")
+
+    if (confFile["https"] == "YES"):
+        http_server = httpserver.HTTPServer(app,
+                ssl_options={
+                    "certfile": os.path.join(confFile['absolut_root_path'], "weioSSL.crt"),
+                    "keyfile": os.path.join(confFile['absolut_root_path'], "weioSSL.key"),
+                })
+    else:
+        # Plain ol' HTTP
+        http_server = httpserver.HTTPServer(app)
+    
+    http_server.listen(options.options.port, address=confFile['ip'])
 
     logging.info(" [*] Listening on 0.0.0.0:" + str(options.options.port))
     print "*SYSOUT* User API Websocket is created at localhost:" + str(options.options.port) + "/api"

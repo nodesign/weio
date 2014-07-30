@@ -66,6 +66,11 @@ var wifiMode = "";
  */
 var selectedCell = -1;
 
+/**
+ * Global configuration
+ */
+var confFile;
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////// SOCK JS WIFI        
@@ -78,49 +83,65 @@ var wifiSocket;
 
 $(document).ready(function() {
 
-                  
-    wifiSocket = new SockJS('http://' + location.host + '/wifi');
-              
-    /*
-     * On opening of wifi web socket ask server to scan wifi networks
-     */
-    wifiSocket.onopen = function() {
-        console.log('Wifi Web socket is opened');
-        //setTimeout(function(){scanWifiNetworks()},5000);
-        scanWifiNetworks();
-    };
-
-    /*
-     * Wifi web socket parser, what we got from server
-     */
-    wifiSocket.onmessage = function(e) {
-        //console.log('Received: ' + e.data);
-        
-        // JSON data is parsed into object
-        data = JSON.parse(e.data);
-        console.log(data);
-        
-        if ("requested" in data) {
-            // this is instruction that was echoed from server + data as response
-            instruction = data.requested;  
-            
-            if (instruction in callbacksWifi) 
-                callbacksWifi[instruction](data);
-        } else if ("serverPush" in data) {
-            // this is instruction that was echoed from server + data as response
-            
-            instruction = data.serverPush;  
-            if (instruction in callbacksWifi) 
-                callbacksWifi[instruction](data);
-        }
-    };
-
-    wifiSocket.onclose = function() {
-        console.log('Wifi Web socket is closed');
-
-    };
+    /** Get global configuration */
+    $.getJSON('config.json', function(data) {
+                    console.log("BBB");
+                    confFile = data;
+                    console.log(confFile);
 
 
+            var http_prefix = "http://";
+
+            if (confFile.https == "YES") {
+                http_prefix = "https://";
+            }
+            else {
+                http_prefix = "http://";
+            }
+
+            wifiSocket = new SockJS(http_prefix + location.host + '/wifi');
+                    
+            /*
+            * On opening of wifi web socket ask server to scan wifi networks
+            */
+            wifiSocket.onopen = function() {
+                console.log('Wifi Web socket is opened');
+                //setTimeout(function(){scanWifiNetworks()},5000);
+                scanWifiNetworks();
+            };
+
+            /*
+            * Wifi web socket parser, what we got from server
+            */
+            wifiSocket.onmessage = function(e) {
+                //console.log('Received: ' + e.data);
+                
+                // JSON data is parsed into object
+                data = JSON.parse(e.data);
+                console.log(data);
+                
+                if ("requested" in data) {
+                    // this is instruction that was echoed from server + data as response
+                    instruction = data.requested;  
+                    
+                    if (instruction in callbacksWifi) 
+                        callbacksWifi[instruction](data);
+                } else if ("serverPush" in data) {
+                    // this is instruction that was echoed from server + data as response
+                    
+                    instruction = data.serverPush;  
+                    if (instruction in callbacksWifi) 
+                        callbacksWifi[instruction](data);
+                }
+            };
+
+            wifiSocket.onclose = function() {
+                console.log('Wifi Web socket is closed');
+
+            };
+
+
+    }); /** getJSON */
                   
 });
 

@@ -44,6 +44,7 @@ import tornado.httpserver
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
 import json, functools
+import subprocess
 
 # IMPORT EDITOR CLASSES, this connects editor webapp with tornado server
 from handlers import editorHandler #, WeioEditorStopHandler, WeioEditorPlayHandler
@@ -197,8 +198,20 @@ if __name__ == '__main__':
 
     # If we are on the WEIO machine, we have to assure connection before doing anything
     #wifiHandler.wifi.checkConnection()
+    if (confFile["https"] == "YES"):
+        # Generate SSL key
+        subprocess.check_call(confFile['absolut_root_path'] + "/scripts/generate_ssl_key.sh", shell=True)
+        
+        # Start the HTTPS server with this key
+        http_server = tornado.httpserver.HTTPServer(app,
+            ssl_options={
+                "certfile": os.path.join(confFile['absolut_root_path'], "weioSSL.crt"),
+                "keyfile": os.path.join(confFile['absolut_root_path'], "weioSSL.key"),
+            })
+    else:
+        # Plain ol' HTTP
+        http_server = tornado.httpserver.HTTPServer(app)
 
-    http_server = tornado.httpserver.HTTPServer(app)
     http_server.listen(tornado.options.options.port, address=confFile['ip'])
 
 

@@ -77,6 +77,11 @@ var projectName = "";
  */
 var selectedStorageUnit = null;
 
+/**
+ * Global configuration
+ */
+var confFile;
+
 /*
  * When all DOM elements are fully loaded
  */
@@ -91,106 +96,119 @@ $(document).ready(function () {
 
     weioProgress = new Chart(document.getElementById("weioProgress").getContext("2d"));
 
+    /** Get global configuration */
+    $.getJSON('config.json', function(data) {
+            confFile = data;
 
-    //////////////////////////////////////////////////////////////// SOCK JS DASHBOARD
+            //////////////////////////////////////////////////////////////// SOCK JS DASHBOARD
 
-    dashboard = new SockJS('http://' + location.host + '/dashboard');
+            var http_prefix = "http://";
 
-    /*
-     * On opening of wifi web socket ask server to scan wifi networks
-     */
-    dashboard.onopen = function() {
-        console.log('Dashboard Web socket is opened');
-        // turn on green light if connected
-        // get ip address
+            if (confFile.https == "YES") {
+                http_prefix = "https://";
+            }
+            else {
+                http_prefix = "http://";
+            }
+            dashboard = new SockJS(http_prefix + location.host + '/dashboard');
 
-        isEditorActive = true;
+            /*
+            * On opening of wifi web socket ask server to scan wifi networks
+            */
+            dashboard.onopen = function() {
+                console.log('Dashboard Web socket is opened');
+                // turn on green light if connected
+                // get ip address
 
-        var dashboardPacket = new Array();
+                isEditorActive = true;
 
-        var rq = { "request": "getIp"};
-        //dashboard.send(JSON.stringify(rq));
+                var dashboardPacket = new Array();
 
-        dashboardPacket.push(rq);
+                var rq = { "request": "getIp"};
+                //dashboard.send(JSON.stringify(rq));
 
-        rq = { "request": "getLastProjectName"};
-        //dashboard.send(JSON.stringify(rq));
+                dashboardPacket.push(rq);
 
-        dashboardPacket.push(rq);
+                rq = { "request": "getLastProjectName"};
+                //dashboard.send(JSON.stringify(rq));
 
-
-        rq = { "request": "getUserProjetsFolderList"};
-        //dashboard.send(JSON.stringify(rq));
-
-        dashboardPacket.push(rq);
-
-        rq = { "request": "getUser"};
-        //dashboard.send(JSON.stringify(rq));
-
-        dashboardPacket.push(rq);
-
-
-        rq = { "request": "getPlayerStatus"};
-        //dashboard.send(JSON.stringify(rq));
-
-        dashboardPacket.push(rq);
+                dashboardPacket.push(rq);
 
 
-        rq = { "request": "getPreviewPortNumber"};
-        //dashboard.send(JSON.stringify(rq));
+                rq = { "request": "getUserProjetsFolderList"};
+                //dashboard.send(JSON.stringify(rq));
 
-        dashboardPacket.push(rq);
+                dashboardPacket.push(rq);
 
-        rq = { "request" : "packetRequests", "packets":dashboardPacket};
-        console.log("DASHBOARD: sending dashboard packets together ", rq);
-        dashboard.send(JSON.stringify(rq));
-        //setTimeout(function(){dashboard.send(JSON.stringify(rq))},1000);
+                rq = { "request": "getUser"};
+                //dashboard.send(JSON.stringify(rq));
 
-
-
-        /*
-        var rq = { "request": "getPlatform"};
-        dashboard.send(JSON.stringify(rq));
-        */
-    };
-
-    /*
-     * Dashboard parser, what we got from server
-     */
-    dashboard.onmessage = function(e) {
-        //console.log('Received: ' + e.data);
-
-        // JSON data is parsed into object
-        data = JSON.parse(e.data);
-        console.log(data);
-
-        if ("requested" in data) {
-            // this is instruction that was echoed from server + data as response
-            instruction = data.requested;
-            if (instruction in callbacks)
-                callbacks[instruction](data);
-        } else if ("serverPush" in data) {
-                // this is instruction that was echoed from server + data as response
-
-                instruction = data.serverPush;
-                if (instruction in callbacks)
-                    callbacks[instruction](data);
-        }
+                dashboardPacket.push(rq);
 
 
-    };
+                rq = { "request": "getPlayerStatus"};
+                //dashboard.send(JSON.stringify(rq));
 
-    dashboard.onclose = function() {
-        // turn on red light if disconnected
-        console.log('Dashboard Web socket is closed');
-        isEditorActive = false;
-        $("#status").attr("class", "disconnected");
+                dashboardPacket.push(rq);
 
-        var lostContact = "Browser lost connexion with WeIO! Try to simply reload this page.a" +
-            "If problem still remains push WeIO reset button."
-        setTestament(lostContact);
 
-    };
+                rq = { "request": "getPreviewPortNumber"};
+                //dashboard.send(JSON.stringify(rq));
+
+                dashboardPacket.push(rq);
+
+                rq = { "request" : "packetRequests", "packets":dashboardPacket};
+                console.log("DASHBOARD: sending dashboard packets together ", rq);
+                dashboard.send(JSON.stringify(rq));
+                //setTimeout(function(){dashboard.send(JSON.stringify(rq))},1000);
+
+
+
+                /*
+                var rq = { "request": "getPlatform"};
+                dashboard.send(JSON.stringify(rq));
+                */
+            };
+
+            /*
+            * Dashboard parser, what we got from server
+            */
+            dashboard.onmessage = function(e) {
+                //console.log('Received: ' + e.data);
+
+                // JSON data is parsed into object
+                data = JSON.parse(e.data);
+                console.log(data);
+
+                if ("requested" in data) {
+                    // this is instruction that was echoed from server + data as response
+                    instruction = data.requested;
+                    if (instruction in callbacks)
+                        callbacks[instruction](data);
+                } else if ("serverPush" in data) {
+                        // this is instruction that was echoed from server + data as response
+
+                        instruction = data.serverPush;
+                        if (instruction in callbacks)
+                            callbacks[instruction](data);
+                }
+
+
+            };
+
+            dashboard.onclose = function() {
+                // turn on red light if disconnected
+                console.log('Dashboard Web socket is closed');
+                isEditorActive = false;
+                $("#status").attr("class", "disconnected");
+
+                var lostContact = "Browser lost connection with WeIO! Try to simply reload this page. " +
+                    "If problem still remains push WeIO reset button."
+                setTestament(lostContact);
+
+            };
+    }); /** getJSON */
+
 
     $('#importProjectUploader').change(function(evt){
             handleFileSelect(evt);
@@ -333,11 +351,20 @@ function runPreview() {
 
     var _addr = location.host;
     var a = _addr.split(":");
+
+    var http_prefix = "http://";
+
+    if (confFile.https == "YES") {
+        http_prefix = "https://";
+    }
+    else {
+        http_prefix = "http://";
+    }
     
     if (userServerPort==80) {
-        _addr = 'http://' + a[0];
+        _addr = http_prefix + a[0];
     } else {
-        _addr = 'http://' + a[0] + ':' + userServerPort;
+        _addr = http_prefix + a[0] + ':' + userServerPort;
     }
     
     var path = projectName;
@@ -589,9 +616,18 @@ function playerStatus(data) {
 function projectDeleted(data) {
     //console.log("delete project here");
 
+    var http_prefix = "http://";
+
+    if (confFile.https == "YES") {
+        http_prefix = "https://";
+    }
+    else {
+        http_prefix = "http://";
+    }
+
     if (data.data == "reload page") {
         randomNumber = Math.random();
-        var url = 'http://' + location.host + '/?'+ randomNumber;
+        var url = http_prefix + location.host + '/?'+ randomNumber;
         window.location = url;
     }
 }
