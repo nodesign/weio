@@ -52,9 +52,10 @@ class SPI:
         :return: Data received on MISO line, if read_from_slave is True.
         :rtype: str
         """
-        result = self.board.decode_sfp(self.board.uper_io(read_from_slave, self.board.encode_sfp(21 + self.port * 10, [write_data, read_from_slave])))
-        if read_from_slave:
-            return result[1][0]
+        res = self.board.uper_io(read_from_slave, self.board.encode_sfp(21 + self.port * 10, [write_data, int(read_from_slave)]))
+
+        if res:
+            return self.board.decode_sfp(res)[1][0]
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.board.uper_io(0, self.board.encode_sfp( 22 + self.port * 10, []))

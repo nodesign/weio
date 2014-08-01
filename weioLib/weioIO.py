@@ -36,9 +36,9 @@ def mainInterrupt(data):
 
 def pinMode(pin, mode):
     try:
-        return gpio.inputMode(pin, mode)
+        return gpio.pinMode(pin, mode)
     except:
-        print "inputMode(", pin,",", mode,")"
+        print "pinMode(", pin,",", mode,")"
         return -1
 
 def digitalWrite(pin, state):

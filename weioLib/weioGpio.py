@@ -77,7 +77,7 @@ class WeioGpio():
                     print "uper not present"
                 #die(details)
 
-    def inputMode(self, pin, mode) :
+    def pinMode(self, pin, mode) :
         """Sets input mode for digitalRead purpose. Available modes are : INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP"""
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
         gpio = self.u.get_pin(GPIO, pin)

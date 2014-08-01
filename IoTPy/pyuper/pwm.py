@@ -4,13 +4,6 @@ from IoTPy.pyuper.utils import IoTPy_APIError, errmsg
 
 PWM_PORT_RUNNING = [{'channels':0, 'period':0}, {'channels':0, 'period':0}]
 
-def zeroPwmPort():
-    global PWM_PORT_RUNNING
-    PWM_PORT_RUNNING[0]['channels'] = 0
-    PWM_PORT_RUNNING[0]['period'] = 0
-    PWM_PORT_RUNNING[1]['channels'] = 0
-    PWM_PORT_RUNNING[1]['period'] = 0
-
 class PWM:
     """
     PWM (Pulse Width Modulation) pin module.
