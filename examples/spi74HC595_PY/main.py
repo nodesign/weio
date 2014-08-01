@@ -25,7 +25,7 @@ def myProcess():
         b = 0
         for i in range(9):
             digitalWrite(latchPin, LOW)
-            spi.transaction(struct.pack("B", b),1)
+            spi.transaction(struct.pack("B", b))
             digitalWrite(latchPin, HIGH)
             b = 1
             b = b<<i

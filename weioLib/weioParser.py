@@ -41,9 +41,9 @@ import platform
 # WeIO API bindings from websocket to lower levels
 # Each data argument is array of data
 # Return value is dictionary
-def callpinMode(self, data) :
+def callPinMode(self, data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
-        inputMode(data[0],data[1])
+        pinMode(data[0],data[1])
     else :
         print "pinMode ON PC", data
     return None
@@ -209,7 +209,7 @@ weioSpells = {
     "digitalWrite":callDigitalWrite,
     "digitalRead":callDigitalRead,
     "analogRead":callAnalogRead,
-    "pinMode":callpinMode,
+    "pinMode":callPinMode,
     "setPwmPeriod":callSetPwmPeriod,
     "setPwmLimit":callSetPwmLimit,
     "pwmWrite":callPwmWrite,

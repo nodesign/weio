@@ -6,7 +6,6 @@ __version__ = "0.01"
 import struct
 import threading
 import Queue
-import multiprocessing
 import types
 import platform
 import glob
@@ -14,9 +13,7 @@ import glob
 import serial
 
 from IoTPy.pyuper.utils import errmsg, IoTPy_APIError
-from IoTPy.pyuper.pinouts import WEIO_PINOUT
-
-import IoTPy.pyuper.pwm
+from IoTPy.pyuper.pinouts import WEIO_PINOUT 
 
 class IoBoard:
     """
@@ -29,7 +26,7 @@ class IoBoard:
     """
 
     def __init__(self, pinout=WEIO_PINOUT, serial_port=None):
-        """__init__(self, pinout=WEIO_PINOUT, serial_port=None)"""
+        """__init__(self, pinout=UPER1_PINOUT, serial_port=None)"""
         ser = None
         if serial_port is None:
             my_platform = platform.system()
@@ -75,18 +72,13 @@ class IoBoard:
 
         self.ser = ser
         self.ser.flush()
-        #self.outq = Queue.Queue()
-        self.outq = multiprocessing.Queue()
-
+        self.outq = Queue.Queue()
         self.reader = Reader(self.ser, self.outq, self.internalCallBack, self.decode_sfp)
         #self.reader = Reader(self.ser, self.outq, self.callbackdict, self.decode_sfp)
 
         self.devicename = "uper"
         self.version = __version__
         self.pinout = pinout
-
-        # Zero out PWM_PORT global
-        IoTPy.pyuper.pwm.zeroPwmPort()
 
     def get_info(self):
         """
@@ -221,12 +213,13 @@ class IoBoard:
         :return:
         """
 
+        interrupt_event = { 'id':interrupt_data[0], 'type':interrupt_data[1] & 0xFF, 'values':interrupt_data[1] >> 8 }
+        callback_entry = self.callbackdict[self.interrupts[interrupt_event['id']]]
+			
         try:
-            interrupt_event = { 'id':interrupt_data[0], 'type':interrupt_data[1] & 0xFF, 'values':interrupt_data[1] >> 8 }
-            callback_entry = self.callbackdict[self.interrupts[interrupt_event['id']]]
             callback_entry['callback'](interrupt_event, callback_entry['userobject'])
-        except:
-            raise IoTPy_APIError("UPER API: internal call back problem.")
+        except Exception as e:
+            errmsg("[UPER API] Interrupt callback exception: %s" % e)
         return
 
     def get_device_info(self):
@@ -297,8 +290,8 @@ class Reader:
                     interrupt = self.irq_requests.pop(0)
                     try:
                         self.callback(interrupt[1])
-                    except:
-                        errmsg("UPER API: Interrupt callback error")
+                    except Exception as e:
+                        errmsg("UPER API: Interrupt callback error (%s)" % e)
 
         self.alive = False
 
