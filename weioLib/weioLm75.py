@@ -71,7 +71,7 @@ class WeioLm75:
             # set instruction to get temperature - 0x0 to get temperature
             self.inst = struct.pack('B', 0x0)
 
-    def getTemperature(self):
+    def getTemperature(self, unit="C"):
         if (platform.machine() == 'mips') :
             # ask for a temperature
             self.f.write(self.inst)
@@ -84,7 +84,15 @@ class WeioLm75:
             temp |= struct.unpack('B', rcv[1])[0]
 
             temp >>= 5
-            return float(temp)*0.125
+            c = float(temp)*0.125
+            if (unit is "C"):
+                return c
+            elif (unit is "K"):
+                return c + 273.15
+            elif (unit is "F"):
+                return 1.8*c+32
+            else:
+                print "Bad unit. You can choose between C,K or F"
         else :
             print "This is fake temperature 25.123, testing purposes"
             return 25.123

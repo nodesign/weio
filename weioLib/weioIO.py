@@ -141,8 +141,8 @@ def constrain(self, x, a, b):
 def millis():
     return gpio.millis()
 
-def getTemperature():
-    return lm75.getTemperature()
+def getTemperature(unit="C"):
+    return lm75.getTemperature(unit)
 
 def getPinInfo():
     print "INFO", gpio
@@ -153,13 +153,8 @@ def getPinInfo():
 def initI2C():
     return interfaceI2C(gpio.u)
 
-def initSPI(port):
-    if (port is 0):
-        return interfaceSPI(gpio.u, 0)
-    elif (port is 1):
-        return interfaceSPI(gpio.u, 1)
-    else :
-        print "Error, only port 0 or port 1 are alowed as parameter"
+def initSPI(*args):
+    return interfaceSPI(gpio.u, *args)
 
 # CALL FOR THING LIBRARIES
 def weioLib(lib, *args):
