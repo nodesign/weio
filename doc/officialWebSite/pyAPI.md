@@ -193,6 +193,7 @@ Optional parameters :
 Divider is SPI clock divider. SPI clock speed will be maximum clock speed (2MHz) divided by this value. Optional, default 1.
 Mode is SPI mode number defining clock polarity and clock edge. See SPI specification for more details. There are 4 possible modes (0-3)
 ```python
+# This example uses chip 74HC595 serial-in parallel out converter
 from weioLib.weioIO import *
 from weioLib.weioUserApi import attach
 import struct
@@ -246,10 +247,11 @@ def myProcess():
 Interrupts
 ----------
 ### attachInterrupt(pin, mode, callback) 
-Attaches signal interrupt on pin and calls given function each time when signal condition is fulfilled. Signal can fire interrupt on these conditions : signal is HIGH, signal is LOW, signal CHANGE, signal RISING and signal FALLING. There can be 8 interruptions declared. If you want to stop interruption on pin call detachInterruption(pin) function.
+Attaches signal interrupt on pin and calls given function each time when signal condition is fulfilled. Signal can fire interrupt on these conditions : signal is HIGH, signal is LOW, signal CHANGE, signal RISING and signal FALLING. There can be total of 8 interruptions declared. If you want to stop interruption, call detachInterruption(pin) function.
 Callback function that is provided will be filled in option by integer type of signal change that occurred. Use interruptType[iType] to decode integer in human readable format : RISING, FALLING,...
 
-Comming soon...
+
+
 
 ### detachInterrupt(pin)
 Attaches signal interrupt on pin and calls given function each time when signal condition is fulfilled. Signal can fire interrupt on these conditions : signal is HIGH, signal is LOW, signal CHANGE, signal RISING and signal FALLING. There can be 8 interruptions declared. If you want to stop interruption on pin call detachInterruption(pin) function.
@@ -258,3 +260,20 @@ Callback function that is provided will be filled in option by integer type of s
 Comming soon...
 ### This is attached callback to interrupt
 Comming soon...
+
+Temperature
+-----------
+### getTemperature(unit="C")
+Reads board temperature from LM75. By default temperature is expressed in Celzius degrees. To express temperature in other units available units are ("C", "K" and "F"). Example, call getTemperature("K") to get temparature in Kelvin unit
+```python
+from weioLib.weioIO import *
+from weioLib.weioUserApi import attach
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    while True: #create an infinite loop
+        print getTemperature() 
+        delay(300) #stop during 300ms
+```
