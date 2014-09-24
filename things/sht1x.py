@@ -4,11 +4,6 @@ LOW = 0
 HIGH =1
 LSBFIRST = 1
 MSBFIRST = 0
-OUTPUT = 1
-INPUT = 0
-
-TempCmd  = 0x03
-
 
 class SHT1X:
     """
@@ -54,18 +49,18 @@ class SHT1X:
         self.clk_pin.write(HIGH)
         ack = self.data_pin.read()
         if ack != LOW:
-            print "Ack Error 0"
+            raise RuntimeError("No ACK. Sensor not present?")
         self.clk_pin.write(LOW)
         ack = self.data_pin.read()
         if ack != HIGH:
-            print "Ack Error 1"
+            raise RuntimeError("No ACK. Sensor not present?")
 
     def _shift_in(self, bits):
         ret = 0
         for i in xrange(bits):
             self.clk_pin.write(HIGH)
             sleep(0.01)
-            ret = ret * 2 + self.data_pin.read()
+            ret = (ret << 1) + self.data_pin.read()
             self.clk_pin.write(LOW)
         return ret
 
@@ -76,7 +71,7 @@ class SHT1X:
             if ack == LOW:
                 break
         if ack == HIGH:
-            print "Ack Error 2"
+            raise RuntimeError("Measurement wait timeout")
 
     def _get_data_sht(self):
         val = self._shift_in(8) * 256
