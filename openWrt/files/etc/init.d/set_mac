@@ -10,5 +10,6 @@ start() {
     sed "s/option macaddr.*$/option macaddr ${MAC}/" -i /etc/config/wireless.sta
     sed "s/option macaddr.*$/option macaddr ${MAC}/" -i /etc/config/wireless.ap
     sed "s/option macaddr.*$/option macaddr ${MAC}/" -i /etc/config/wireless.ap.rescue
-
+    
+    sed "s/option ssid.*$/option ssid WeIO ${MAC}/" -i /etc/config/wireless.ap.rescue
 }
