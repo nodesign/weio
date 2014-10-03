@@ -137,7 +137,7 @@ $(document).ready(function() {
 
                     instruction = data.serverPush;  
                     if (instruction in weioCallbacks) 
-                        weioCallbacks[instruction](data.data);
+                        weioCallbacks[instruction](data.data.data);
 
                 }
             };

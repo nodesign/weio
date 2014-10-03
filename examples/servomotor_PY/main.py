@@ -20,12 +20,12 @@
 
 from weioLib.weioIO import *
 from weioLib.weioUserApi import attach
-
+from things.servomotor import Servo
 def setup():
     attach.process(myProcess)
     
 def myProcess():
-    s = initServo(23)
+    s = weioLib(Servo,23)
     while True :
         for i in range(180):
             s.write(i)
