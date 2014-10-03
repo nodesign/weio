@@ -148,6 +148,16 @@ def getPinInfo():
     print "INFO", gpio
     return gpio.getPinInfo()
 
+# LIST SERIAL PORTS ON THE MACHINE
+def listSerial():
+    ser = []
+    dirs = os.listdir("/dev")
+    for a in range(len(dirs)):
+        if ("tty" in dirs[a]):
+            #print dirs[a]
+            ser.append(dirs[a])
+    return ser
+
 # NATIVE PROTOCOLES
 
 def initI2C():
