@@ -1,4 +1,5 @@
-from weioLib.weioUserApi import attach, shared
+from weioLib.weio import *
+
 import os, time
 from subprocess import Popen, PIPE
 

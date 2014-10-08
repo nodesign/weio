@@ -7,20 +7,18 @@
 #servomotor library
 # there are 6 pwm pins on weio (23, 22, 21, 20, 19, 18)
 # servomotor use pwm pin. 
-#initServo(pin) return Servo object and attach the Servo variable to a pwm pin
-#write(angle) servo is a vairable of type Servo
-#angle is the value to write to the servo, from 0 to 180
+# initServo(pin) return Servo object and attach the Servo variable to a pwm pin
+# write(angle) servo is a vairable of type Servo
+# angle is the value to write to the servo, from 0 to 180
 
-#other functions :
-#writeMilliseconds(ms)
-#readMilliseconds()
-#read()
+# other functions :
+# writeMilliseconds(ms)
+# readMilliseconds()
+# read()
 
-
-
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach
+from weioLib.weio import *
 from things.servomotor import Servo
+
 def setup():
     attach.process(myProcess)
     

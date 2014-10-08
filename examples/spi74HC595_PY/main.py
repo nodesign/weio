@@ -9,8 +9,8 @@
 # Serial output in 8 bit format
 # Larch pin to HIGH to end communication and present outputs on chip pins
 
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach
+from weioLib.weio import *
+
 import struct
 
 def setup():

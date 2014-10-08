@@ -7,8 +7,7 @@
 #syntax = proportion(value, istart, istop, ostart, ostop)
 #return a value proportionned 
 
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach
+from weioLib.weio import *
 
 def setup():
     attach.process(myProcess)

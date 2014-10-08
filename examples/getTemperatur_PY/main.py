@@ -4,8 +4,7 @@
 #                                     #
 #######################################
 
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach
+from weioLib.weio import *
 
 def setup():
     attach.process(myProcess)

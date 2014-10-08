@@ -4,8 +4,7 @@
 #		12 May 2014
 ###
 
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach
+from weioLib.weio import *
 
 pin = 23
 

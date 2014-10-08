@@ -1,15 +1,14 @@
-from weioLib.weioUserApi import attach, LOW, HIGH
-from weioLib.weioIO import *
+from weioLib.weio import *
 import devices.servo
 
 servoPin = 23
 potentiometerPin = 25
 
-def setup() :
+def setup():
     digitalWrite(servoPin, LOW)
     attach.process(loop)
     
-def loop() :
+def loop():
     s = devices.servo.Servo()
     s.setMinLimit(650)
     s.setMaxLimit(2450)

@@ -8,8 +8,7 @@
 # there are 8 analog pins on weio (between 24 to 31)
 # value is between 0 and 1023
 
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach
+from weioLib.weio import *
 
 def setup():
     attach.process(myProcess)

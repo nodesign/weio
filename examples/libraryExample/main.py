@@ -1,5 +1,5 @@
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach
+from weioLib.weio import *
+
 # import servo library
 from things.servomotor import Servo
 
