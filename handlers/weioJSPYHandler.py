@@ -58,17 +58,9 @@ class WeioHandler(SockJSConnection):
         self.send(json.dumps(data))
 
     def on_message(self, data):
-        if os.path.isfile('/weio/running.p'):
-            fRunning = open('/weio/running.p', 'rb')
-            running = pickle.load(fRunning)
-            fRunning.close()
-            
-            if (running == True):
-                """Parsing JSON data that is comming from browser into python object"""
-                self.serve(json.loads(data))
-            else:
-                weioRunnerGlobals.weioConnections.clear()
-
+        if (weioRunnerGlobals.running.value == True):
+            """Parsing JSON data that is comming from browser into python object"""
+            self.serve(json.loads(data))
         else:
             weioRunnerGlobals.weioConnections.clear()
 

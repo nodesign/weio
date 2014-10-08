@@ -1,7 +1,7 @@
 #!/usr/bin/python -u
 from tornado import web, ioloop, options, websocket, httpserver
 
-import sys,os,logging, platform, json, signal, datetime
+import sys, os, logging, platform, json, signal, datetime
 
 import multiprocessing
 import threading
@@ -63,7 +63,7 @@ class WeioIndexHandler(web.RequestHandler):
 
 
 ###
-# WeIO User Even Handler
+# WeIO User Event Handler
 ###
 class UserControl():
     def __init__(self):
@@ -107,10 +107,7 @@ class UserControl():
         self.launcherProcess.start()
 
     def stop(self):
-        weioRunnerGlobals.running = False
-        fRunning = open('/weio/running.p', 'wb')
-        pickle.dump(weioRunnerGlobals.running, fRunning)
-        fRunning.close()
+        weioRunnerGlobals.running.value = False
         
         # Removing all User Events
         weioParser.removeUserEvents()
@@ -210,10 +207,7 @@ class UserControl():
             t.start()
             #print "STARTING PROCESS PID", t.pid
         
-        weioRunnerGlobals.running = True
-        fRunning = open('/weio/running.p', 'wb')
-        pickle.dump(weioRunnerGlobals.running, fRunning)
-        fRunning.close()
+        weioRunnerGlobals.running.value = True
 
         while (True):
             # Get the command from userTornado (blocking)
