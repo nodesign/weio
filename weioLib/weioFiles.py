@@ -251,7 +251,7 @@ def symlinkExternalProjects():
     # Examples
     if ( os.path.lexists(config["absolut_root_path"] + "/examples") ):
         # unlink then link to make sure that path is correct
-        try :
+        try:
             os.unlink("www/examples")
         except:
             print "Symlink don't exist. Will create new one for examples"
@@ -260,7 +260,7 @@ def symlinkExternalProjects():
     # Flash
     if (os.path.lexists(config["extern_projects_path_flash"])):
         # unlink then link to make sure that path is correct
-        try :
+        try:
             os.unlink("www/flash")
         except:
             print "Symlink don't exist. Will create new one for flash"
@@ -268,7 +268,7 @@ def symlinkExternalProjects():
 
     # SD
     if (os.path.lexists(config["extern_projects_path_sd"])):
-        try :
+        try:
             os.unlink("www/sd")
         except:
             print "Symlink don't exist. Will create new one for sd"
@@ -276,7 +276,7 @@ def symlinkExternalProjects():
 
     # USB Flash
     if (os.path.lexists(config["extern_projects_path_usbFlash"])):
-        try :
+        try:
             os.unlink("www/usbFlash")
         except:
             print "Symlink don't exist. Will create new one for usbFlash"
@@ -288,5 +288,5 @@ def symlinkExternalProjects():
         try:
             os.unlink(lastWww)
         except:
-            print "Symlink don't exist. Will create new one for usbFlash"
+            print "Symlink don't exist. Will create new one for www"
         os.symlink(config["absolut_root_path"] + "/www", lastWww)
