@@ -66,8 +66,7 @@ class PowerModule:
         second = (self.output>>8) & 0xFF
 
         digitalWrite(self.latchPin, LOW)
-        self.spi.transaction(struct.pack("B", first))
-        self.spi.transaction(struct.pack("B", second))
+        self.spi.transaction(struct.pack("BB", first,second))
         digitalWrite(self.latchPin, HIGH)
 
     def reverseBits(self, x):
