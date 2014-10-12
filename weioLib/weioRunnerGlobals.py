@@ -51,6 +51,9 @@ weioConnections = {}
 # Running flag
 running = multiprocessing.Value(ctypes.c_bool, False)
 
+# Is WeIO connected to remote App
+remoteConnected = multiprocessing.Value(ctypes.c_bool, False)
+
 # UserTornado-to-launcher communication queues
 # Direction In-Out related to User Tornado
 QIN = multiprocessing.Queue()
