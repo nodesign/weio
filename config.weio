@@ -20,7 +20,7 @@
     "password": "weio", 
     "play_composition_on_server_boot": "NO", 
     "port": 8080, 
-    "remote": "thingsmart.net:9090", 
+    "remote": "", 
     "user": "Drasko DRASKOVIC", 
     "userAppPort": 8082, 
     "userApp_debug_mode": "True", 
