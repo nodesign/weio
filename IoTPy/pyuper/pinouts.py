@@ -117,3 +117,14 @@ WEIO_PINOUT = IoPinout({
     30: IoParams(CAP_GPIO | CAP_ADC,    24, "PIO0_16",  [6]),
     31: IoParams(CAP_GPIO | CAP_ADC,    23, "PIO0_15",  [7])
 })
+USBKEY_PINOUT = IoPinout({
+    0 : IoParams(CAP_GPIO,              0, "PD4"),
+    1 : IoParams(CAP_GPIO,              1, "PD5"),
+    2 : IoParams(CAP_GPIO,              2, "PD6"),
+    3 : IoParams(CAP_GPIO,              3, "PD7"),
+    4 : IoParams(CAP_GPIO,              4, "PB5"),
+    5 : IoParams(CAP_GPIO,              5, "PE2")
+})
+
+
+
