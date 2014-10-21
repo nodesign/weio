@@ -9,6 +9,7 @@ import Queue
 import types
 import platform
 import glob
+import time
 
 import serial
 
@@ -29,6 +30,12 @@ class IoBoard:
     def __init__(self, pinout=None, serial_port=None):
         """__init__(self, pinout=UPER1_PINOUT, serial_port=None)"""
         ser = None
+        confFile = weioConfig.getConfiguration()
+        if confFile['weio_board'] == "UNO":
+            baudrate = 250000
+        else:
+            baudrate = 230400
+
         if serial_port is None:
             my_platform = platform.system()
             if my_platform == "Windows":
@@ -48,7 +55,8 @@ class IoBoard:
             try:
                 port_to_try = serial.Serial(
                     port=my_port,
-                    baudrate=230400, #virtual com port on USB is always max speed
+                    baudrate=baudrate,
+                    #baudrate=250000,#virtual com port on USB is always max speed
                     parity=serial.PARITY_ODD,
                     stopbits=serial.STOPBITS_ONE,
                     bytesize=serial.EIGHTBITS,
@@ -80,7 +88,6 @@ class IoBoard:
         self.devicename = "uper"
         self.version = __version__
 
-        confFile = weioConfig.getConfiguration()
         pinout = confFile['weio_board']+"_PINOUT"
         self.pinout = eval(pinout)
 
