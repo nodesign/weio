@@ -73,7 +73,8 @@ def addNode(path):
     return n
 
 def listdirFiltered(path):
-    for f in os.listdir(path):
+    dirs = os.listdir(path)
+    for f in dirs:
         if ( not (f == "www") and not f.startswith('.') and not f.endswith('.pyc') and not f.startswith('__init__') ):
             yield f
 
