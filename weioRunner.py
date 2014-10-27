@@ -9,8 +9,7 @@ import threading
 import functools
 import subprocess
 
-from weioLib import weioUserApi
-from weioLib import weioIO
+
 
 import pickle
 
@@ -34,6 +33,7 @@ from weioLib import weioParser
 userProcessList = []
 userEventList = []
 
+from weioLib import weioUserApi
 from weioLib import weioGpio
 from weioLib import weioIO
 

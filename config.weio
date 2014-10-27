@@ -24,7 +24,7 @@
     "user": "Drasko DRASKOVIC", 
     "userAppPort": 8082, 
     "userApp_debug_mode": "True", 
-    "weio_board": "USBKEY", 
+    "weio_board": "WeIO",
     "weio_lib_path": "weioLib", 
     "weio_version": "336"
 }
