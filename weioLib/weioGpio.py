@@ -104,7 +104,7 @@ class WeioGpio():
         return gpio.read()
 
     def portWrite(self, port, value) :
-        """Reads actual voltage on corresponding pin. There are two possible answers : 0 if pin is connected to the Ground or 1 if positive voltage is detected"""
+        """Sets voltage to +3.3V or Ground on corresponding port. This function takes two parameters : port number and a byte representing the port value"""
         for i in range(8):
             pin = (8 * port) + i
             weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.OUTPUT

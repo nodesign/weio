@@ -92,10 +92,12 @@ class UPER1_GPIO(GPIO):
 
     def write_port(self, value, port):
         """
-        Write a digital value (0 or 1). If GPIO pin is not configured as output, set it's GPIO mode to GPIO.OUTPUT.
+        Write a byte to a port. If the port is not configured as output, set it's GPIO mode to GPIO.OUTPUT.
 
-        :param value: Digital output value (0 or 1)
+        :param value: PORT value
         :type value: int
+        :param port: The port number (0 ... 3)
+        :type valye: int
         """
         self.board.uper_io(0, self.board.encode_sfp(70, [port, value]))
 
