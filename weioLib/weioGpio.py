@@ -110,7 +110,7 @@ class WeioGpio():
             pin = (8 * port) + i
             weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.OUTPUT
             gpio = self.mainGpio[pin]
-            #gpio.setup(GPIO.OUPUT)
+            gpio.setup(GPIO.OUTPUT)
         gpio.write_port(value)
 
     def analogRead(self, pin) :
