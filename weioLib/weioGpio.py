@@ -103,6 +103,16 @@ class WeioGpio():
         gpio.setup(GPIO.INPUT, mode)
         return gpio.read()
 
+    def portWrite(self, port, value) :
+        """Reads actual voltage on corresponding pin. There are two possible answers : 0 if pin is connected to the Ground or 1 if positive voltage is detected"""
+        for i in range(8):
+        #for pin in range((8 * port), (8 * port) + 8):
+            pin = (8 * port) + i
+            weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.OUTPUT
+            gpio = self.mainGpio[pin]
+            #gpio.setup(GPIO.OUPUT)
+        gpio.write_port(value)
+
     def analogRead(self, pin) :
         """Reads input on specified Analog to Digital Convertor. ADC is available on pins from 25 to 32 Output is 10bits resolution or from 0-1023"""
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT

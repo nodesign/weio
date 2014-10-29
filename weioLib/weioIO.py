@@ -54,6 +54,13 @@ def digitalRead(pin, mode=NONE) :
         print "digitalRead(", pin,")"
         return -1
 
+def portWrite(pin, state):
+    try:
+        return gpio.portWrite(pin, state)
+    except:
+        print "portWrite(", pin,",", state,")"
+        return -1
+
 def analogRead(pin) :
     try:
         return gpio.analogRead(pin)

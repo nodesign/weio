@@ -67,6 +67,13 @@ def callDigitalRead(data) :
         bck["pin"] = data[0] # pin
     return bck
 
+def callPortWrite(data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        digitalWrite(data[0], data[1])
+    else :
+        print "digitalWrite ON PC", data
+    return None
+
 def callAnalogRead(data) :
     bck = {}
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
@@ -208,6 +215,7 @@ def pinsInfo(data) :
 weioSpells = {
     "digitalWrite":callDigitalWrite,
     "digitalRead":callDigitalRead,
+    "portWrite":callPortWrite,
     "analogRead":callAnalogRead,
     "pinMode":callPinMode,
     "setPwmPeriod":callSetPwmPeriod,
