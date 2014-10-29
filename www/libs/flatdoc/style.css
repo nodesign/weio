@@ -1,0 +1,16 @@
+@media (min-width: 500px) {
+    body .content p img {
+      float: right !important;
+      margin-right: -600px !important;
+    }
+}
+
+body .content p img {
+     margin-bottom:25px;
+     clear:both;
+     display:block;
+}
+
+body .level-2 {
+    color:#505050 !important;
+}

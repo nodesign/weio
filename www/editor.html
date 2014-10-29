@@ -26,6 +26,18 @@
 <!-- Ace code editor -->
 <script src="libs/ace/ace.js"> </script>
 
+<!-- FlatDoc documentation -->
+<script src='libs/flatdoc/legacy.js'></script>
+<script src='libs/flatdoc/flatdoc.js'></script>
+<link  href='libs/flatdoc/theme-white/style.css' rel='stylesheet'>
+<link  href='libs/flatdoc/style.css' rel='stylesheet'>
+<script src='libs/flatdoc/theme-white/script.js'></script>
+<!-- Initializer -->
+<script>
+    Flatdoc.run({
+      fetcher: Flatdoc.file('jsAPI.md')
+    });
+</script>
 
 </head>
 <body>
@@ -354,7 +366,16 @@
             </div>
                 
             <div id="doc-pane" class="tab-pane"></div>
+            
+            <div role='flatdoc' class='content-root'>
+              <div class='menubar'>
+                <div class='menu section' role='flatdoc-menu'></div>
+              </div>
+              <div role='flatdoc-content' class='content'></div>
             </div>
+            
+            </div>
+            
         </div>
     </div>
     <!-- 3-columns -->
