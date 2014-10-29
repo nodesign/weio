@@ -90,17 +90,14 @@ class UPER1_GPIO(GPIO):
 
         return self.board.decode_sfp(self.board.uper_io(1, self.board.encode_sfp(5, [self.logical_pin])))[1][1]
 
-    def write_port(self, value):
+    def write_port(self, value, port):
         """
         Write a digital value (0 or 1). If GPIO pin is not configured as output, set it's GPIO mode to GPIO.OUTPUT.
 
         :param value: Digital output value (0 or 1)
         :type value: int
         """
-        if self.direction != GPIO.OUTPUT:
-            self.setup(GPIO.OUTPUT)
-
-        self.board.uper_io(0, self.board.encode_sfp(70, [self.logical_pin, value]))
+        self.board.uper_io(0, self.board.encode_sfp(70, [port, value]))
 
     def attach_irq(self, event, callback=None, user_object=None, debounce_time=50):
         """
