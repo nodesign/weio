@@ -69,9 +69,9 @@ def callDigitalRead(data) :
 
 def callPortWrite(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
-        digitalWrite(data[0], data[1])
+        portWrite(data[0], data[1])
     else :
-        print "digitalWrite ON PC", data
+        print "portWrite ON PC", data
     return None
 
 def callAnalogRead(data) :
