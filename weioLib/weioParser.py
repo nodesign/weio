@@ -48,6 +48,13 @@ def callPinMode(self, data) :
         print "pinMode ON PC", data
     return None
 
+def callPortMode(self, data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        portMode(data[0],data[1])
+    else :
+        print "pinMode ON PC", data
+    return None
+
 def callDigitalWrite(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         digitalWrite(data[0], data[1])
@@ -218,6 +225,7 @@ weioSpells = {
     "portWrite":callPortWrite,
     "analogRead":callAnalogRead,
     "pinMode":callPinMode,
+    "portMode":callPortMode,
     "setPwmPeriod":callSetPwmPeriod,
     "setPwmLimit":callSetPwmLimit,
     "pwmWrite":callPwmWrite,

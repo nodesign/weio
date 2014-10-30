@@ -40,6 +40,13 @@ def pinMode(pin, mode):
         print "pinMode(", pin,",", mode,")"
         return -1
 
+def portMode(port, mode):
+    #try:
+    return gpio.portMode(port, mode)
+    #except:
+    #    print "portMode(", port,",", mode,")"
+    #    return -1
+
 def digitalWrite(pin, state):
     try:
         return gpio.digitalWrite(pin, state)
