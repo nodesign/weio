@@ -36,6 +36,9 @@ class GPIO:
     def write_port(self, value):
     	raise NotImplementedError()
 
+    def read_port(self, port):
+        raise NotImplementedError()
+
     def attach_irq(self, event, callback=None, user_object=None, debounce_time=50):
         raise NotImplementedError()
 

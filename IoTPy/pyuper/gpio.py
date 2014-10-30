@@ -99,7 +99,17 @@ class UPER1_GPIO(GPIO):
         :param port: The port number (0 ... 3)
         :type valye: int
         """
+        print value
         self.board.uper_io(0, self.board.encode_sfp(70, [port, value]))
+
+    def read_port(self, port):
+        """
+        Read a digital signal value. If GPIO pis in not configure as input, set it to GPIO.PULL_UP pin mode.
+
+        :return: Digital signal value: 0 (LOW) or 1 (HIGH).
+        :rtype: int
+        """
+        return self.board.decode_sfp(self.board.uper_io(1, self.board.encode_sfp(71, [port])))[1][1]
 
     def attach_irq(self, event, callback=None, user_object=None, debounce_time=50):
         """

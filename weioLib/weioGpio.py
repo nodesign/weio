@@ -92,6 +92,7 @@ class WeioGpio():
     def portMode(self, port, mode) :
         """Sets input mode for portRead purpose. Available modes are : INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP"""
         for i in range(8):
+            print "here"
             pin = (8 * port) + i
             gpio = self.mainGpio[pin]
             weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
@@ -122,6 +123,11 @@ class WeioGpio():
             gpio = self.mainGpio[pin]
             gpio.setup(GPIO.OUTPUT)
         gpio.write_port(value, port)
+
+    def portRead(self,port, mode=GPIO.NONE) :
+        """Reads actual voltage on corresponding port. There are two possible answers : 0 if pin is connected to the Ground or 1 if positive voltage is detected"""
+        gpio = self.mainGpio[port]
+        return gpio.read_port(port)
 
     def analogRead(self, pin) :
         """Reads input on specified Analog to Digital Convertor. ADC is available on pins from 25 to 32 Output is 10bits resolution or from 0-1023"""
