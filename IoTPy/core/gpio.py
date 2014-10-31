@@ -27,6 +27,9 @@ class GPIO:
     def setup(self, direction, resistor=PULL_UP):
         raise NotImplementedError()
 
+    def port_mode(self, direction, port, resistor=PULL_UP):
+        raise NotImplementedError()
+
     def read(self):
         raise NotImplementedError()
 

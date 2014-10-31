@@ -66,6 +66,40 @@ class UPER1_GPIO(GPIO):
 
         self.board.uper_io(0, self.board.encode_sfp(3, [self.logical_pin, mode]))
 
+
+    def port_mode(self, direction, port, resistor=GPIO.PULL_UP):
+        """
+        Configure PORT.
+
+        :param direction: GPIO direction: GPIO.OUTPUT or GPIO.INPUT
+        :param port: PORT number (0...3)
+        :param resistor: GPIO internal resistor mode. Used when direction is GPIO.INPUT. Should be GPIO.PULL_UP, \
+        GPIO.PULL_DOWN or GPIO.NONE.
+
+        :raise: IoTPy_APIError
+        """
+        if not direction in [GPIO.OUTPUT, GPIO.INPUT]:
+            raise IoTPy_APIError("Invalid GPIO direction. Should be GPIO.INPUT or GPIO.OUTPUT")
+
+        if direction == GPIO.INPUT and not resistor in [GPIO.NONE, GPIO.PULL_UP, GPIO.PULL_DOWN]:
+            raise IoTPy_APIError("Invalid GPIO resistor setting. Should be GPIO.NONE, GPIO.PULL_UP or GPIO.PULL_DOWN")
+
+        self.direction = direction
+
+        if direction == GPIO.INPUT:
+            self.resistor = resistor
+
+            if resistor == GPIO.PULL_UP:
+                mode = 4  # PULL_UP
+            elif resistor == GPIO.PULL_DOWN:
+                mode = 2  # PULL_DOWN
+            else:
+                mode = 0  # HIGH_Z
+        else:
+            mode = 1  # OUTPUT
+
+        self.board.uper_io(0, self.board.encode_sfp(72, [port, mode]))
+
     def write(self, value):
         """
         Write a digital value (0 or 1). If GPIO pin is not configured as output, set it's GPIO mode to GPIO.OUTPUT.

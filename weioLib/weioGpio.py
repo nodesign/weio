@@ -96,9 +96,9 @@ class WeioGpio():
             gpio = self.mainGpio[pin]
             weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
             if (mode is GPIO.OUTPUT):
-                gpio.setup(GPIO.OUTPUT)
+                gpio.port_mode(GPIO.OUTPUT, port)
             else:
-                gpio.setup(GPIO.INPUT, mode)
+                gpio.port_mode(GPIO.INPUT, port, mode)
 
     def digitalWrite(self, pin, state) :
         """Sets voltage to +3.3V or Ground on corresponding pin. This function takes two parameters : pin number and it's state that can be HIGH = +3.3V or LOW = Ground"""
@@ -120,7 +120,6 @@ class WeioGpio():
             pin = (8 * port) + i
             weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.OUTPUT
             gpio = self.mainGpio[pin]
-            #gpio.setup(GPIO.OUTPUT)
         gpio.write_port(value, port)
 
     def portRead(self,port, mode=GPIO.NONE) :
@@ -129,7 +128,6 @@ class WeioGpio():
             pin = (8 * port) + i
             weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
             gpio = self.mainGpio[pin]
-            #gpio.setup(GPIO.INPUT, mode)
         return gpio.read_port(port)
 
     def analogRead(self, pin) :
