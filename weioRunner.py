@@ -250,7 +250,7 @@ def listenerThread():
         msg = weioRunnerGlobals.QIN.get()
         #print "GOT MSG: ", msg
         if (msg.res is not None):
-            print "MESSAGE", msg.req, msg.res, msg.data, msg.connUuid
+            #print "MESSAGE", msg.req, msg.res, msg.data, msg.connUuid
             if (msg.connUuid in weioRunnerGlobals.weioConnections):
                 result = {}
 
