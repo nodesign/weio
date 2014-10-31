@@ -61,9 +61,9 @@ def digitalRead(pin, mode=NONE) :
         print "digitalRead(", pin,")"
         return -1
 
-def portWrite(pin, state):
+def portWrite(port, state):
     try:
-        return gpio.portWrite(pin, state)
+        return gpio.portWrite(port, state)
     except:
         print "portWrite(", pin,",", state,")"
         return -1

@@ -99,7 +99,6 @@ class UPER1_GPIO(GPIO):
         :param port: The port number (0 ... 3)
         :type valye: int
         """
-        print value
         self.board.uper_io(0, self.board.encode_sfp(70, [port, value]))
 
     def read_port(self, port):
