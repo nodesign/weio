@@ -41,14 +41,14 @@ import platform
 # WeIO API bindings from websocket to lower levels
 # Each data argument is array of data
 # Return value is dictionary
-def callPinMode(self, data) :
+def callPinMode(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         pinMode(data[0],data[1])
     else :
         print "pinMode ON PC", data
     return None
 
-def callPortMode(self, data) :
+def callPortMode(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         portMode(data[0],data[1])
     else :
