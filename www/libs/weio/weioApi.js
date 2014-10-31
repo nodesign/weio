@@ -226,6 +226,22 @@ function digitalRead(pin, callback) {
     genericMessage("digitalRead", [pin],fName);
 };
 
+function portWrite(port, value) {
+    genericMessage("portWrite", [port, value], null);
+};
+
+function portRead(port, callback) {
+    // create new callback call
+    var fName = callback.name;
+    //console.log("callback name:" + fName);
+    weioCallbacks[fName] = callback
+    genericMessage("portRead", [port],fName);
+};
+
+function portMode(port, value) {
+    genericMessage("portMode", [port, value], null);
+};
+
 
 function analogRead(pin, callback) { 
     // create new callback call
