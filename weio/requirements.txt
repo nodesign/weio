@@ -1,4 +1,0 @@
-tornado
-sockjs-tornado
-pyserial
-futures
