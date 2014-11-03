@@ -22,7 +22,7 @@
     "play_composition_on_server_boot": "YES", 
     "port": 8080, 
     "remote": "thingsmart.net:9090", 
-    "user": "Nikola Marcetic", 
+    "user": "Nikola", 
     "userAppPort": 8082, 
     "userApp_debug_mode": "True", 
     "weio_lib_path": "weioLib", 

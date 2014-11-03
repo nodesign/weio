@@ -104,7 +104,7 @@ class WeioSettingsHandler(SockJSConnection):
         self.auto_to_ap = rq['data']['auto_to_ap']
 
         config = weioConfig.getConfiguration()
-        config['dns_name'] = self.dns_name + ".locale"
+        config['dns_name'] = self.dns_name + ".local"
         config['auto_to_ap'] = self.auto_to_ap
       
         if (platform.machine() == 'mips'):
