@@ -67,8 +67,11 @@ class WeioSettingsHandler(SockJSConnection):
         self.play_composition_on_server_boot = rq['data']['play_composition_on_server_boot']
         config = weioConfig.getConfiguration()
         config["user"] = self.user
-        config["password"] = self.password
         config["play_composition_on_server_boot"] = self.play_composition_on_server_boot
+        # Check if new password is sent
+        if self.password:
+            config["password"] = self.password
+        
 
         # ATTENTION, DON'T MESS WITH THIS STUFF ON YOUR LOCAL COMPUTER
         # First protection is mips detection, second is your own OS
