@@ -1,0 +1,351 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+
+
+    <title>WeIO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="libs/css/dashboard.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+
+    <script src="libs/jquery/jquery-2.0.2.min.js"> </script>
+    <script src="libs/bootstrap/js/bootstrap.min.js"> </script>
+    <!--<script src="libs/weio/dashboardLinker.js"> </script>-->
+        
+    <script src="libs/sockJS/sockjs-0.3.min.js"> </script>
+    
+    <script src="libs/weio/wifi.js?n=1"> </script> 
+    <script src="libs/weio/dashboard.js?n=1"> </script>
+    <script src="libs/weio/updater.js?n=1"> </script>
+        
+    <script src="libs/chartJS/Chart.min.js"> </script>
+ 
+    
+
+  <!-- main javascript code is at the end of this file-->
+    
+
+</head>
+<body>
+    
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+
+                <a class="brand" href="#"><img src="img/weioLogo.png" id="logo"></img><h1>Weio</h1></a>
+                <div class="nav-collapse collapse"> 
+                    
+                    
+                    <ul class="modeBT nav">
+                        <li id="previewButtonHeader" class="top_tab">
+                          <a href="javascript:runPreview();" id="previewButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Preview">Preview</a>
+                        </li>
+                        <li id="editorButtonHeader" class="top_tab">
+                          <a href="javascript:runEditor();" id="editorButton" onmouseover="$(this).tooltip()" data-placement="bottom" title="Edit" >Edit</a>
+                        </li>
+                    </ul>
+
+                    <ul class="nav">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" id="projectTitle" data-toggle="dropdown" >loading...</a>
+                            <ul class="dropdown-menu" id="userProjectsList"></ul>
+                        </li>
+                    </ul>
+                        
+                    <ul class="serverBT nav">
+                        <li id="playButton" class="top_tab">
+                            <a class="icn-btn" href="javascript:prepareToPlay();" onmouseover="$(this).tooltip()" data-placement="bottom">Play</a>
+                        </li>
+                        <li id="stopButton" class="top_tab ">
+                            <a class="icn-btn" href="javascript:stop();" onmouseover="$(this).tooltip()" data-placement="bottom">Stop</a>
+                        </li>
+                    </ul>
+                    
+                    
+                    <div id="controlCenter">
+                         
+                         <span class="label" id="statusBar">
+                                <p id="statusBarText1">loading...</p>
+                                <p id="statusBarText2">Gimme some good code!</p>
+                                <canvas id="weioProgress" class="weioProgressWheel"></canvas>
+                         </span>
+                         
+                    </div>
+                       
+                    <div class="user pull-right">
+                            <div class="btn-group pull-right">
+                                <a class="btn dropdown-toggle" data-toggle="dropdown" id="user" onclick="updateCheck()"></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#updateWeio" data-toggle="modal" id="needsUpdateStatus"><i class="icon-spinner icon-spin"></i> Checking updates...</a></li>
+                                    <!-- <li class="divider"></li>
+                                    <li><a onclick="runSettings()">Settings</a></li>
+                                    
+                                    <li><a href="#">Logout</a></li> -->
+                                </ul>
+                            </div>
+
+
+                            <div class="btn-group pull-right">
+                                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" onclick="injectWifiNetworksInDropMenu()" id="connectedWifiName">
+                                    Scanning wifi...
+                                </a>
+                                <ul class="dropdown-menu" id="wifiDefaultCommands">
+                                </ul>
+                                <ul class="dropdown-menu" id="wifiNetworks">
+                                </ul>
+                                
+                            </div>
+                            <!--   <form class="navbar-search pull-right">
+                            <input type="text" class="search-query" placeholder="Search in project">
+                            </form> -->
+
+                        </div>
+
+                    </div>
+                </div><!--/.nav-collapse -->
+            </div>
+        </div>
+    </div> <!-- /Fixed navbar -->
+    
+    
+    <!-- Modal Change Wifi Network -->
+    <div id="changeWifi" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalChangeWifiLabel">Connect manually to another network</h3>
+        </div>
+        
+        <div class="modal-body" id="wifiParameters">
+
+            <input type="text" class="input-small" placeholder="SSID" id="wifiSSID">
+            <input type="password" class="input-small" placeholder="Password" id="wifiPassword">
+            <input type="text" class="input-small" placeholder="Encryption" id="encryption">
+            
+
+            <p>You are about to change wifi network. If you continue, connection with Weio will be lost.
+                Remember that you have to switch to the same network with
+                your computer to gain again access to Weio.</p>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <button class="btn btn-primary" onclick="changeWifiNetwork()" data-dismiss="modal">Continue</button>
+        </div>
+    </div>
+    
+    <!-- END Modal Change Wifi Network   -->
+    
+    <!-- Change Wifi Network Simple change-->
+    <div id="wifiPasswordPrompt" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalSimpleChangeWifiLabel"></h3>
+        </div>
+
+        <div class="modal-body" id="wifiParameters">
+            <input type="password" class="input-small" placeholder="Password" id="wifiPasswordSimple">
+
+            <p>You are about to change wifi network. If you continue, connection with Weio will be lost.
+                Remember that you have to switch to the same network with your computer to
+                gain again access to Weio.</p>
+
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <button class="btn btn-primary" onclick="goSta()">Continue</button>
+        </div>
+    </div>
+    <!-- END Change Wifi Network Simple change -->
+
+
+
+    <!-- Modal Create Wifi Network -->
+    <div id="createWifi" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalCreateWifiLabel">Create AP network</h3>
+        </div>
+        <div class="modal-body" id="wifiParameters">
+
+            <input type="text" class="input-small" placeholder="SSID" id="wifiSSIDAP">
+            <input type="password" class="input-small" placeholder="Password" id="wifiPasswordAP">
+
+            <p>You are about to change wifi network. If you continue, connection with Weio will be lost.
+                Remember that you have to switch to the same network with your
+                computer to gain again access to Weio.</p>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <button class="btn btn-primary" onclick="goAp()">Continue</button>
+        </div>
+    </div>
+    <!-- END Modal Change Wifi Network -->
+    
+    
+    <!-- Modal Updater process first screen -->
+       <div id="updateWeio" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+           <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+               <h3 id="myModalUpdateWeioLabel">Welcome to WeIO updater procedure</h3>
+           </div>
+           <div class="modal-body" id="updateWeioData">
+
+           </div>
+           <div class="modal-footer">
+               <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+               <button class="btn btn-primary" onclick="runUpdateProcedure()" id="updateButton">OK</button>
+           </div>
+       </div>
+       <!-- END Modal Updater process  -->
+
+
+       <!-- Modal Updater process second screen -->
+          <div id="updateWeioProcedure" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  <h3 id="myModalUpdateWeioLabel">Update progress</h3>
+              </div>
+              <div class="modal-body" id="updateWeioData">
+                  
+                  <h4 id="progressStatus"></h4>
+                  
+                  <canvas id="updateProgressChart"></canvas>
+                  <p>WeIO is updating now. Please don't touch anything. If program stucks after progress
+                        bar is done try to reload this page or to reset hardware</p>
+                  
+              </div>
+              <div class="modal-footer">
+                  <button class="btn btn-primary" onclick="reloadMe()" id="reloadMeButton">Reload</button>
+              </div>
+          </div>
+          <!-- END Modal Updater process  -->
+    
+    
+    <!-- Modal Create New project -->
+    <div id="createNewProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3>Create new project</h3>
+        </div>
+        <div class="modal-body" id="wifiParameters">
+            
+            <input type="text" class="input-small" placeholder="Name without spaces" id="newProjectName" style="width:200px">
+            
+            <div class="storageUnitChooser"></div>
+            
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <button class="btn btn-primary" onclick="createNewProject()" data-dismiss="modal">Continue</button>
+        </div>
+    </div>
+    <!-- END Modal Create New project -->
+    
+    <!-- Modal Duplicate active project -->
+    <div id="duplicateProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3>Give a name to duplicated project</h3>
+        </div>
+        <div class="modal-body" id="wifiParameters">
+            
+            <input type="text" class="input-small" placeholder="Name without spaces" id="duplicatedProjectName" style="width:200px">
+            <div class="storageUnitChooser"></div>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <button class="btn btn-primary" onclick="duplicateProject()" data-dismiss="modal">Continue</button>
+        </div>
+    </div>
+    <!-- END Modal Duplicate active project -->
+    
+    <!-- Archive project -->
+    <div id="downloadProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3>Download active project</h3>
+        </div>
+        
+        <div class="modal-body" id="wifiParameters">
+             <p>WeIO will archive your project and show it inside file tree. Then you can click to download it</p>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <button class="btn btn-primary" onclick="archiveProject()" data-dismiss="modal">Continue</button>
+        </div>
+    </div>
+    <!-- END Archive project -->
+    
+    <!-- Import existing project -->
+    <div id="importProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3>Import existing project</h3>
+        </div>
+        
+        <div class="modal-body" id="wifiParameters">
+            
+                <p>Import projet to :</p>
+            	
+             <div class="storageUnitChooser"></div>
+             
+             
+             <div style="position:relative;">
+             		<a class='btn' href='javascript:;'>
+             			Choose WeIO project tar file...
+             			<input id="importProjectUploader" type="file"
+                         style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:
+                         "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;'
+                         name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'></a>
+             		&nbsp;
+             		<span class='label label-info' id="upload-file-info"></span>
+             </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <button class="btn btn-primary" onclick="" data-dismiss="modal">Finish</button>
+        </div>
+    </div>
+    <!-- END Archive project -->
+       
+       
+    
+    <!-- Modal Something bad happened - deconnection -->
+    <div id="imDead" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3>Oh! I've lost connection!</h3>
+        </div>
+        
+        <div class="modal-body" id="testament">
+            
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn btn-primary" onclick="location.reload()" data-dismiss="modal">Reload</button>
+        </div>
+    </div>
+    <!-- Modal Something bad happened - deconnexion -->
+
+
+
+    <iframe class="iframeContainer" src="" id="weioIframe"></iframe>
+    <iframe class="iframeContainerIndex" src="" id="weioIframeIndex"></iframe>
+    
+</body>
+</html>

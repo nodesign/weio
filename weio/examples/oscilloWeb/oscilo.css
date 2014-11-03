@@ -1,0 +1,97 @@
+body {
+    height:100%;
+}
+
+.dataViz{
+    display:block;
+    border: 1px solid;
+    border-color: #888;
+    border-radius: 8px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    width: 180px;
+    height: 180px;
+    float:left;
+}
+
+.content {
+    display:inline-block;
+    float:left;
+}
+
+.oscilo {
+    position: relative;
+    margin-left: -61px;
+    margin-top: 16px;
+}
+
+.value {
+    position: relative;
+    font-family:Helvetica, Arial, Sans-Serif;
+    font-size: 22px;
+    text-align:center;
+    font-weight:bold;
+    margin-top: -92px;
+    margin-left: 0px;
+}
+
+.pin {
+    position: relative;
+    font-family:Helvetica, Arial, Sans-Serif;
+    font-size: 14px;
+    margin-top: -24px;
+    margin-left: 70px;
+    color:#888;
+}
+
+.icon-remove {
+    position: fixed;
+    margin-top: -128px;
+    margin-left: 161px;
+    color:#888;
+}
+
+.icon-remove:hover
+{ 
+    color:#000;
+}
+
+.logo {
+    display:inline-block;
+    float:left;
+    margin-left:-7px;
+    margin-right:20px;
+    padding:4px 12px;
+    list-style:none;
+}
+
+.menu {
+    position:relative;
+    margin-left:-38px;
+    margin-top:3px;
+    margin-bottom:3px;
+    width: 100%;
+    display: block;
+    height: 40px;
+    
+}
+.txt {
+    display:inline-block;
+    float:left;
+    margin:2px;
+    /*border:1px solid;*/
+    border-radius:3px;
+    background:#999;
+    padding:4px 12px;
+    list-style:none;
+    font-family:Helvetica, Arial, Sans-Serif;
+    font-size: 13px;
+    font-weight:bold;
+    color:white;
+}
+
+
+
+
+

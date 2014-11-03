@@ -1,0 +1,509 @@
+@import "../bootstrap/css/bootstrap.css";
+
+@import "../jqtree/jqtree.css";
+/* Import Twitter bootstrap
+ */
+/* Main color variables
+ */
+/*
+ * left and right sidebar width when opened
+ * DON'T MODIFY these parameters thay are hard
+ * coded and hardcoded in editor.js file as well
+ *//*
+ * Closed sidebar (left or right) width
+ * DON'T MODIFY these parameters thay are hard
+ * coded and hardcoded in editor.js file as well
+ */
+body,
+div {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+/* 
+ * Editor CSS
+ */
+.columns {
+  position: relative;
+  width: 100%;
+}
+.columns .leftSideBar {
+  background-color: #383838;
+  width: 199px;
+  position: fixed;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+.columns .leftSideBar #leftSideBarButton {
+  position: absolute;
+  color: #FFF;
+  opacity: 0.5;
+  font-size: 14px;
+  width: 25px;
+  height: 25px;
+  padding: 6px;
+  background: transparent;
+  border: 0;
+  top: 50%;
+  left: 177px;
+  z-index: 1000;
+}
+.columns .leftSideBar #leftSideBarButton:hover {
+  opacity: 1;
+}
+.columns .leftSideBar .bottomButtons {
+  width: 100%;
+  height: 32px;
+  background-color: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  bottom: 0px;
+  /*
+            
+            #searchInProject {
+                height: 18px;
+                width: 150px;
+                background: #494949;
+                border-color: transparent;
+                margin-top: -10px;
+                margin-left: 10px;
+                background: #2c2c2c;
+                border-radius:0px;
+                margin-bottom: -19px;
+                color:white;
+            }
+            
+            #searchInProject::-webkit-input-placeholder {
+                color: #696969;
+            }
+            
+            
+            #searchInProjectButton {
+                height: 24px;
+                background: transparent;
+                border: none;
+                -webkit-box-shadow: none;
+                -moz-box-shadow: none;
+                box-shadow: none;
+                i {
+                    position:absolute;
+                    color:white;
+                    margin-top:-17px;
+                    margin-left:156px;
+                    text-decoration:none;
+                    font-size:133%;
+                    opacity:0.4;
+                }
+            }
+
+            */
+
+}
+.columns .leftSideBar .bottomButtons button {
+  display: block;
+  float: left;
+  color: white;
+  padding: 6px;
+  background: transparent;
+  border: 0;
+  font-size: 80%;
+  opacity: 0.2;
+  z-index: 1000;
+}
+.columns .leftSideBar .bottomButtons button:hover {
+  opacity: 1;
+}
+.columns .leftSideBar .bottomButtons #updateFiles {
+  position: absolute;
+  margin-left: -25px;
+  width: 18px;
+  opacity: 0;
+}
+.columns .editorContainer {
+  background-color: #d8d8d8;
+  position: fixed;
+  left: 199px;
+  right: 15px;
+  height: 100%;
+  background-image: url('../../img/watermark.png');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  /*
+         * ALL ACCORDIONS
+         */
+
+}
+.columns .editorContainer #errorAlert {
+  border-radius: 0px;
+  position: relative;
+  margin-bottom: 0px;
+  /* strip close button*/
+
+}
+.columns .editorContainer #errorAlert #closeButton {
+  position: absolute;
+  top: 10px;
+  right: 23px;
+  opacity: 0.7;
+  cursor: pointer;
+  color: #585858;
+  text-decoration: none;
+  z-index: 1000;
+}
+.columns .editorContainer #errorAlert #closeButton:hover {
+  opacity: 1;
+}
+.columns .editorContainer .accordion-group {
+  background: white;
+  margin-bottom: 5px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+  border-color: #dadada;
+  border-radius: 2px;
+}
+.columns .editorContainer .accordion-heading {
+  display: block;
+  position: relative;
+  background: white;
+  /* strip close button*/
+
+}
+.columns .editorContainer .accordion-heading a {
+  font-weight: bold;
+  color: #585858;
+  opacity: 0.7;
+  cursor: pointer;
+  text-decoration: none;
+}
+.columns .editorContainer .accordion-heading a:hover {
+  opacity: 1;
+}
+.columns .editorContainer .accordion-heading #closeButton {
+  position: absolute;
+  top: 9px;
+  right: 15px;
+  opacity: 0.7;
+  cursor: pointer;
+  text-decoration: none;
+  z-index: 1000;
+}
+.columns .editorContainer .accordion-heading #closeButton:hover {
+  opacity: 1;
+}
+.columns .editorContainer .accordion-body.in.collapse {
+  min-height: 85%;
+}
+.columns .editorContainer .editor {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+}
+.columns .rightSideBar {
+  background-color: #ffffff;
+  width: 15px;
+  position: fixed;
+  height: 100%;
+  right: 0;
+  top: 0;
+  /*
+         * BOARD IMAGE AND PINS BUTTONS 
+         */
+
+  /*
+         * END OF BOARD IMAGE AND PINS BUTTONS 
+         */
+
+  /*
+         * STATS DATAVIZ
+         */
+
+  /*
+         * END OF STATS DATAVIZ
+         */
+
+}
+.columns .rightSideBar #consoleTabs {
+  position: absolute;
+  background-color: #EAEAEA;
+  width: 100%;
+  height: 44px;
+}
+.columns .rightSideBar #consoleTabs #consoleTabsElements {
+  margin-top: 5px;
+}
+.columns .rightSideBar .tab-content {
+  width: 100%;
+}
+.columns .rightSideBar #consoleOutput {
+  display: block;
+  height: 100%;
+  overflow: auto;
+  padding: 15px;
+  color: black;
+  text-decoration: none;
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 16px;
+  margin-left: 5px;
+  margin-top: 19px;
+}
+.columns .rightSideBar #consoleOutput #stderr {
+  color: #ff0000;
+  text-decoration: none;
+}
+.columns .rightSideBar #consoleOutput #sys {
+  color: #4ab5ce;
+  text-decoration: none;
+}
+.columns .rightSideBar #board-image {
+  margin: 34px 74px;
+}
+.columns .rightSideBar ul#pinlist1 {
+  position: absolute;
+  left: 12px;
+  top: 95px;
+}
+.columns .rightSideBar ul#pinlist1a {
+  position: absolute;
+  left: 12px;
+  top: 238px;
+}
+.columns .rightSideBar ul#pinlist2 {
+  position: absolute;
+  right: 35px;
+  top: 95px;
+}
+.columns .rightSideBar ul#pinlist2a {
+  position: absolute;
+  right: 35px;
+  top: 238px;
+}
+.columns .rightSideBar li.pin,
+.columns .rightSideBar li.pin_on {
+  list-style: none;
+  margin: 2px;
+}
+.columns .rightSideBar li.pin a,
+.columns .rightSideBar li.pin_on a {
+  text-indent: -99999px;
+  display: block;
+  width: 34px;
+  height: 9px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.columns .rightSideBar li.pin a {
+  background-color: white;
+  border: 1px solid #CECECE;
+}
+.columns .rightSideBar li.pin a:hover {
+  background-color: #CECECE;
+}
+.columns .rightSideBar li.pin a:active {
+  background-color: #4ab5ce;
+  border-color: #4ab5ce;
+}
+.columns .rightSideBar li.pin_on a {
+  background-color: #4ab5ce;
+  border: 1px solid #4ab5ce;
+}
+.columns .rightSideBar li.pin_on a:hover {
+  background-color: #CECECE;
+  border: 1px solid #CECECE;
+}
+.columns .rightSideBar li.pin_on a:active {
+  background-color: #4ab5ce;
+  border-color: #4ab5ce;
+}
+.columns .rightSideBar #stats-pane {
+  padding: 40px 20px !important;
+}
+.columns .rightSideBar #cpuStrip {
+  margin-bottom: 20px !important;
+}
+.columns .rightSideBar .statBigNumbers {
+  font-size: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  margin-bottom: 5px;
+  margin-top: 15px;
+}
+.columns .rightSideBar .statGreen {
+  color: #B4F90B;
+}
+.columns .rightSideBar .statRed {
+  color: #f85c32;
+}
+.columns .rightSideBar .statBlue {
+  color: #3CDDF7;
+}
+.columns .rightSideBar .statBlack {
+  color: #383838;
+}
+.columns .rightSideBar .statTitle {
+  font-size: 14px;
+  color: #888;
+}
+.columns .rightSideBar .statMainTitle {
+  font-size: 22px;
+  color: #888;
+  margin-bottom: 5px;
+  margin-left: 24px;
+  background-color: transparent;
+}
+.columns .rightSideBar .statChartViz {
+  /*position:relative;*/
+
+  /*margin-top:33px !important;*/
+
+  margin-left: -22px !important;
+  width: 144px !important;
+  height: 71px !important;
+}
+.columns .rightSideBar #trashConsole {
+  display: none;
+  color: #222;
+  background: transparent;
+  border: 0;
+  position: relative;
+  top: 55px;
+  right: 13px;
+  float: right;
+  z-index: 1000;
+  opacity: 0.5;
+}
+.columns .rightSideBar #trashConsole:hover {
+  opacity: 1;
+}
+.columns .rightSideBar #rightSideBarButton {
+  position: absolute;
+  color: #000;
+  opacity: 0.5;
+  font-size: 14px;
+  width: 25px;
+  height: 25px;
+  padding: 6px;
+  background: transparent;
+  border: 0;
+  top: 50%;
+  right: -3px;
+  z-index: 1000;
+}
+.columns .rightSideBar #rightSideBarButton:hover {
+  opacity: 1;
+}
+/*/// CONSOLE tabs*/
+.nav-pills > .active > a,
+.nav-pills > .active > a:hover,
+.nav-pills > .active > a:focus {
+  color: #383838;
+  font-weight: bold;
+  background-color: transparent;
+  border-bottom: solid 3px #757575;
+  border-radius: 0px;
+  height: 18px;
+  font-size: 14px;
+}
+.nav-pills > li > a {
+  color: #757575;
+  font-size: 15px;
+}
+.nav-tabs > li,
+.nav-pills > li {
+  margin: 0 15px;
+}
+/*////////////////////////////*/
+/* ALERTS CONSOLE */
+.alert {
+  margin-bottom: 2px;
+}
+#codeEditorAce {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: none;
+}
+.accordion-inner {
+  min-height: 400px;
+  box-sizing: border-box;
+}
+/* CSS Tree menu styles */
+/* FILES */
+ul.jqtree-tree .jqtree-title {
+  padding-left: 18px;
+  vertical-align: middle;
+}
+li.jqtree_common {
+  background: url(../../img/document.png) 0 0 no-repeat;
+  margin-left: 0;
+}
+ul.jqtree-tree li.jqtree-folder {
+  padding-left: 9px;
+  background: url(../../img/folder-horizontal.png) 7px 4px no-repeat;
+}
+ul.jqtree-tree .jqtree-title {
+  /* TEXT COLOR */
+
+  color: #c8c8c8;
+  vertical-align: middle;
+}
+ul.jqtree-tree .jqtree-title:hover {
+  /* TEXT COLOR */
+
+  color: white;
+  vertical-align: middle;
+}
+ul.jqtree-tree .jqtree-toggler {
+  line-height: none;
+  top: 0%;
+  left: -0.8em;
+  line-height: 20px;
+  color: #c8c8c8;
+}
+ul.jqtree-tree .jqtree-toggler:hover {
+  color: #FFFFFF;
+  text-decoration: none;
+}
+ul.jqtree-tree li.jqtree-selected > .jqtree-element,
+ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
+  color: white;
+  background-color: none;
+  background: none;
+  text-shadow: none;
+}
+ol.tree {
+  padding: 8px 0;
+  width: 200px;
+  margin-left: 4px;
+  margin-top: 0px;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+li {
+  position: relative;
+  margin-left: 0px;
+  list-style: none;
+}
+li #deleteButton {
+  position: absolute;
+  margin-top: 7px;
+  right: 15px;
+  color: #c8c8c8;
+  /*display:none;*/
+
+}
+li #deleteButton:hover {
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+}

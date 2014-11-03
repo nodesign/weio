@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Welcome to WeIO first time login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="libs/jquery/jquery-2.0.2.min.js"> </script>
+    <script type="text/javascript" src="libs/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="libs/jqBootstrapValidation.js"></script>
+        
+    <script src="libs/weio/signin.js"> </script>
+  
+        
+    <style type="text/css">
+      body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+      }
+
+      .form-signin {
+        width: 360px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+
+      .form-signin .form-actions {
+        background-color: #fff;
+        border: none;
+      }
+
+    </style>
+    <link href="libs/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+     </head>
+
+  <body>
+
+    <div class="container">
+
+        <form id="signinForm" class="form-signin" action='' method="POST">
+            <h2 class="form-signin-heading">Setup admin account</h2>
+            <h5 id="error" style="color:red"></h5>
+            
+            <div class="control-group">
+            <label class="control-label" for="fullName">Full name</label>
+                <div class="controls">
+                <input  id="fullName"
+                        type="text"
+                        name="fullName"
+                        placeholder="Doe Joe"
+                        required
+                >
+                <p class="help-block"></p>
+                </div>
+            </div>
+
+            
+            <div class="control-group">
+            <label class="control-label" for="password">Developer password</label>
+                <div class="controls">
+                <input  id="password"
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        required
+                >
+                <p class="help-block"></p>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="controls">
+                <input  id="passwordAgain"
+                        type="password"
+                        placeholder="Re-type password"
+                        data-validation-matches-match="password"
+                        data-validation-matches-message=
+                            "Passwords must match"
+                >
+                <p class="help-block"></p>
+                </div>
+            </div>
+            
+
+            <div class="control-group">
+            <label class="control-label" for="hostname">WeIO board name</label>
+            <input  id="hostname"
+                    type="text"
+                    name="boardname"
+                    placeholder=""
+                    required
+                    data-validation-required-message="Please fill out this field"
+            >
+            <p class="help-block"></p>
+            </div>
+            
+            <!--
+            <label class="control-label" for="country">Choose country</label>
+            <select id="countries"></select>
+           -->
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-large btn-primary">Finish setup</button>
+            </div>
+
+        </form>
+        
+    </div> <!-- /container -->
+
+   
+  </body>
+
+</html>

@@ -1,0 +1,382 @@
+@import "../bootstrap/css/bootstrap.css";
+/* Import Twitter bootstrap
+ */
+/* 
+ * Header global parameters
+ */
+/* 
+ * Header CSS 
+ */
+body {
+  width: 100%;
+  overflow: hidden;
+}
+.navbar-inner {
+  position: absolute;
+  height: 60px;
+  width: 100%;
+  min-height: 60px;
+  background: #242424;
+  box-shadow: none;
+  border: 0px;
+  /* end container */
+
+}
+.navbar-inner .container {
+  width: 100%;
+  /* end brand */
+
+  /* project name definition */
+
+  /* end project name definition */
+
+  /* Scroll dropdown menus */
+
+  /* main preview & editor navigation */
+
+  /* status bar monitor */
+
+}
+.navbar-inner .container .brand {
+  margin-left: -8px;
+  margin-top: 4px;
+  height: 60px;
+  padding: 0px;
+  margin: 0px;
+  width: 199px;
+  border-right: 1px solid #494949;
+}
+.navbar-inner .container .brand #logo {
+  float: left;
+  margin-left: 12px;
+  margin-top: 20px;
+}
+.navbar-inner .container .brand h1 {
+  width: 100px;
+  height: 40px;
+  text-indent: -10000em;
+}
+.navbar-inner .container .brand #status.connected {
+  width: 0;
+  height: 0;
+  border: 7px solid transparent;
+  border-bottom-color: #84c657;
+  position: relative;
+  float: right;
+  top: -43px;
+  right: 15px;
+  text-indent: -10000em;
+}
+.navbar-inner .container .brand #status.connected:after {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 7px;
+  width: 0;
+  height: 0;
+  border: 7px solid transparent;
+  border-top-color: #84c657;
+}
+.navbar-inner .container .brand #status.disconnected {
+  width: 0;
+  height: 0;
+  border: 7px solid transparent;
+  border-bottom-color: red;
+  position: relative;
+  float: right;
+  top: -43px;
+  right: 15px;
+  text-indent: -10000em;
+}
+.navbar-inner .container .brand #status.disconnected:after {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 7px;
+  width: 0;
+  height: 0;
+  border: 7px solid transparent;
+  border-top-color: red;
+}
+.navbar-inner .container li a {
+  color: #eeeeee;
+  text-shadow: none;
+  line-height: 60px;
+  padding: 0 20px;
+}
+.navbar-inner .container li.dropdown {
+  height: 60px;
+}
+.navbar-inner .container .dropdown-menu {
+  font-size: 13px;
+  line-height: 18px;
+  /*overflow-y:scroll;*/
+
+  max-height: 400px;
+  min-width: 200px;
+  margin: -1px 0 0;
+}
+.navbar-inner .container .dropdown-menu a {
+  color: #333333;
+  text-shadow: none;
+  line-height: 40px;
+  padding: 0 18px;
+}
+.navbar-inner .container .dropdown-menu a:hover {
+  background: #2c2c2c;
+  color: white;
+}
+.navbar-inner .container .dropdown-menu .caret {
+  top: 5px;
+  position: relative;
+}
+.navbar-inner .container .dropdown-submenu > a:after {
+  margin-top: 14px;
+}
+.navbar-inner .container ul.scroll-menu {
+  position: relative;
+  display: inherit !important;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  -moz-overflow-scrolling: touch;
+  -ms-overflow-scrolling: touch;
+  -o-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+  top: -6px !important;
+  left: 0 !important;
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  margin: 0;
+  border-left: none;
+  border-right: none;
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  -ms-border-radius: 0 !important;
+  -o-border-radius: 0 !important;
+  border-radius: 0 !important;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -ms-box-shadow: none;
+  -o-box-shadow: none;
+  box-shadow: none;
+}
+.navbar-inner .container ul.scroll-menu-2x {
+  max-height: 230px;
+}
+.navbar-inner .container .dropdown-menu:after {
+  border: none !important;
+  content: "" !important;
+}
+.navbar-inner .container .modeBT {
+  height: 60px;
+  padding: 0;
+  border-radius: 2px;
+}
+.navbar-inner .container .modeBT .top_tab {
+  height: 49px;
+  padding: 0 4px;
+  margin-top: 11px;
+  border-radius: 2px 2px 0px 0px;
+}
+.navbar-inner .container .modeBT .top_tab a {
+  width: 23px;
+  height: 23px;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0;
+  margin: 9px 4px;
+  box-shadow: none !important;
+  background-repeat: no-repeat !important;
+}
+.navbar-inner .container .modeBT .top_tab a:hover {
+  background-position: 0px -20px !important;
+}
+.navbar-inner .container .modeBT .top_tab a:active {
+  background-position: 0px -40px !important;
+}
+.navbar-inner .container #editorButtonHeader a {
+  background: url(../../img/weioEdit.png);
+}
+.navbar-inner .container #previewButtonHeader a {
+  background: url(../../img/weioPreview.png);
+}
+.navbar-inner .container #playButton a {
+  background: url(../../img/weioPlay.png);
+}
+.navbar-inner .container #stopButton a {
+  background: url(../../img/weioStop.png);
+}
+.navbar-inner .container .top_tab .icn-btn {
+  width: 20px;
+  height: 20px;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0;
+  margin: 8px 4px;
+  box-shadow: none !important;
+  background-repeat: no-repeat !important;
+}
+.navbar-inner .container .top_tab .icn-btn:hover {
+  background-position: 0px -20px !important;
+}
+.navbar-inner .container .top_tab .icn-btn:active {
+  background-position: 0px -40px !important;
+}
+.navbar-inner .container .nav > .active > a {
+  background-position: 0px -40px !important;
+}
+.navbar-inner .container .nav > .selected {
+  background: #383838;
+}
+.navbar-inner .container .nav > .selected a {
+  background-position: 0px -40px !important;
+}
+.navbar-inner .container .serverBT {
+  position: relative;
+  background-color: #383838;
+  padding: 0 5px;
+  float: left;
+  height: 36px;
+  top: 11px;
+  left: -15px;
+  border-radius: 2px;
+}
+.navbar-inner .container #controlCenter {
+  color: #cccccc;
+  width: 300px;
+  height: 30px;
+  text-align: center;
+  position: fixed;
+  top: 11px;
+  left: 42%;
+}
+.navbar-inner .container #controlCenter #statusBar {
+  color: #cccccc;
+  float: left;
+  width: 287px;
+  height: 32px;
+  /*margin-top:-33px;*/
+
+  text-align: center;
+  border-radius: 2px;
+  background-color: #383838;
+}
+.navbar-inner .container #controlCenter #weioProgress {
+  position: relative;
+  float: left;
+  margin-top: -31px;
+  margin-left: -8px;
+  width: 60px !important;
+  height: 30px !important;
+}
+.navbar-inner .container #statusIcon {
+  margin-right: 8px;
+}
+.navbar-inner .container #statusBarText1 {
+  color: #999999;
+  margin: 0;
+  font-size: 11px;
+  font-weight: normal;
+}
+.navbar-inner .container #statusBarText2 {
+  margin: 2px 0;
+  font-weight: normal;
+  color: #CCCDCE;
+}
+.navbar .nav {
+  margin: 0px;
+}
+/* Definitions of buttons settings and wifi*/
+.navbar .btn,
+.navbar .btn-group {
+  display: inline-block;
+  margin: 0;
+  height: 60px;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.navbar .btn a,
+.navbar .btn-group a {
+  height: 60px;
+  padding: 0 20px;
+  line-height: 60px;
+  color: #eeeeee;
+  text-shadow: none;
+}
+.navbar .btn a:hover,
+.navbar .btn-group a:hover {
+  color: white;
+  background: #2c2c2c;
+}
+.navbar .btn li a,
+.navbar .btn-group li a {
+  color: #3c3c3c;
+  height: 40px;
+  line-height: 40px;
+}
+.navbar .btn li a:hover,
+.navbar .btn-group li a:hover {
+  background: #999;
+}
+.navbar-inner .container .dropdown-menu {
+  border-radius: 0px;
+}
+#wifiIcons {
+  margin-top: -7px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+#wifiPrefixIcons {
+  display: inline;
+  margin-left: -5px;
+}
+#wifiNetworks {
+  overflow-y: scroll;
+}
+/* IFRAME */
+.iframeContainer {
+  position: relative;
+  width: 100%;
+  border: 0px;
+  margin-top: 60px;
+}
+/* IFRAME */
+.iframeContainerIndex {
+  position: relative;
+  width: 100%;
+  border: 0px;
+  margin-top: 60px;
+}
+.navbar .btn-group .dropdown-toggle,
+li.dropdown .dropdown-toggle {
+  font-size: 13px;
+  height: 36px !important;
+  text-align: center;
+  top: 11px !important;
+  border-radius: 2px;
+  background-color: #383838;
+  padding: 0 20px;
+  line-height: 34px !important;
+  color: #eeeeee;
+  text-shadow: none;
+  margin-right: 10px;
+  position: relative;
+}
+.navbar .btn-group .dropdown-toggle:hover,
+li.dropdown .dropdown-toggle:hover {
+  background-color: #696969 !important;
+  color: #eeeeee !important;
+}
+li.dropdown .dropdown-toggle {
+  margin-left: 10px;
+}
+.btn-group.open .btn.dropdown-toggle {
+  color: #555;
+}
+#updateProgressChart {
+  margin-left: 110px;
+}

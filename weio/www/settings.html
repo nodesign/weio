@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+        <meta http-equiv="cache-control" content="max-age=0" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="0" />
+        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+        <meta http-equiv="pragma" content="no-cache" />
+        
+        
+        <title>WeIO Settings</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            
+        <link href="libs/css/settings.css" rel="stylesheet" />    
+        <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+            
+        <script src="libs/jquery/jquery-2.0.2.min.js"> </script>
+        <script src="libs/bootstrap/js/bootstrap.min.js"> </script>
+        <script src="libs/sockJS/sockjs-0.3.min.js"> </script>
+            
+            
+    </head>
+
+    <body>
+        
+        
+        <div class="columns">
+            <div class="leftSideBar">
+                <div class="well sidebar-nav">
+                    <ul class="nav nav-list">
+                        <li class="active"><a href="#">General</a></li>
+                        <li class><a href="#">Network</a></li>
+                        <li class><a href="#">Security</a></li>
+                        <li class><a href="#">Python</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="settingsContainer">
+                <div class="settingsBlock">
+                    <div class="generalSettings" >
+                        <fieldset>
+                            <legend>General Settings</legend>
+                            <br>
+                            <label>Name and surname</label>
+                            <input type="text" placeholder="Doe Joe" style="width:120px">
+                            <label>Administrator username and password</label>
+                            <form class="form-inline">
+                                <input type="text" placeholder="root" disabled style="width:120px">
+                                <input type="password" placeholder="Password" style="width:120px">
+                                <input type="password" placeholder="Re-type password" style="width:120px">
+                            </form>
+                                <span class="help-block" style="width:500px">Username and password are used
+                                    to acces and modify source codes. For example they are granting acces via
+                                    http on address http://weio.local/editor or via ssh on root@weio.local</span>
+                            <legend></legend>
+                            <label>Name to acces WeIO board via network (DNS name)</label>
+                            
+                            <form class="form-inline">
+                                <input type="text" placeholder="weio" style="width:120px">
+                                    
+                                    <span class="help-block" style="width:500px">
+                                    http://<span class="label label-important">weio</span>.local
+                        </fieldset>
+                        
+                        <button type="submit" class="btn btn-primary">Submit general settings</button>
+                        </form>
+
+                    </div> <!-- general settings-->
+                    
+                    
+                    <div class="networkSettings" >
+                        <fieldset>
+                            <legend>Network Settings</legend>
+                            <br>
+                            
+                            <form>
+                                
+                                <label>MAC address</label>
+                                <input type="text" placeholder="root" disabled style="width:120px">
+                                <label>IP address</label>
+                                <input type="text" placeholder="192.168.1.0" style="width:120px">
+                                <span class="help-block" style="width:500px">This is your local ip address,
+                                    however you can force another address here. If something goes wrong push AP
+                                    button on WeIO board to gain acces if you are in STA mode.</span>    
+                                <br>
+                                <label>Name to acces WeIO board via network (DNS name)</label>
+                                <input type="text" placeholder="weio" style="width:120px">
+                                <span class="help-block" style="width:500px">http://<span class="label label-important">weio</span>.local
+
+                            </form>
+                            <legend>Acces Point mode - AP mode Settings</legend>
+                            
+                                <form>
+                                <label>Acces point ESSID name</label>
+                                <input type="text" placeholder="WeIOrocks" style="width:120px">    
+                               
+                                    <label>Security</label>
+                                    <div class="btn-toolbar">
+                                        <div class="btn-group">
+                                            <button class="btn">Open acess</button>
+                                            <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="#">Open acces</a>
+                                                </li>
+                                                
+                                                <li>
+                                                    <a href="#">WPA</a>
+                                                </li>
+                                                
+                                                <!-- dropdown menu links -->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                <input type="password" placeholder="password" disabled style="width:120px">
+                                </fieldset>
+                        <button type="submit" class="btn btn-primary">Submit network settings</button>
+                                </form>
+                                                    
+                    </div> <!-- network settings-->
+
+                    
+                    
+                </div>
+            </div>
+            
+            
+        </div>
+                
+    </body>
+    
+</html>

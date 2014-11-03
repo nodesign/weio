@@ -1,0 +1,65 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+  
+<script data-main="weioLibs" src="../require.js"></script>
+<script src="gyro.js"></script>
+
+<head> 
+    <meta charset="utf-8" /> 
+    <title>My first Web app</title>
+</head>
+
+    <style>
+        
+      #logoContainer {
+        position:fixed;
+        top:0;
+        bottom:0;
+        width:100%;
+        height:100%;
+        text-indent:-9999em;
+        background:url("weioLogo.png") center center no-repeat;
+      }
+        
+    </style>
+    
+    
+<body>
+    
+    <div id="logoContainer"> 
+        weio logo goes here
+    </div>
+    
+    <script>
+
+        gyro.frequency = 50;
+        var beta_buff = 0;
+    	gyro.startTracking(function(o) {
+            var delta = Math.abs(beta_buff-o.beta);
+            if (delta > 2.0) {
+                genericMessage("message", o.beta);
+            }
+            beta_buff = o.beta;
+    	});
+
+        function onWeioReady() {
+          weioCallbacks.usrMsg = changeColorFromWeio;
+        }
+
+        function changeColorFromWeio(data) {
+            rgb = "rgb("+ 
+                  String(data.data.red) + "," + 
+                  String(data.data.green) + "," + 
+                  String(data.data.blue) + ")"; 
+            //console.log(data.data.red);
+            $("body").css("background-color", rgb);
+            //console.log(data);
+        }
+        
+    </script>
+    
+</body>
+</html>
+
+
+

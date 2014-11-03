@@ -58,6 +58,9 @@ from weioLib import weioConfig
 #IMPORT DASHBOARD HANDLER
 from handlers import dashboardHandler
 
+# Import user settings handler
+from handlers import userSettingsHandler
+
 #Import signin and login handler
 from handlers import loginHandler
 from handlers import signinHandler
@@ -153,6 +156,8 @@ if __name__ == '__main__':
     # DASHBOARD ROUTE websocket
     WeioDashboardRouter = SockJSRouter(dashboardHandler.WeioDashBoardHandler, '/dashboard')
 
+    # USER SETTINGS ROUTE websocket
+    WeioSettingsHandler = SockJSRouter(userSettingsHandler.WeioSettingsHandler, '/settings')    
     # WIFI DETECTION ROUTE
     WeioWifiRouter = SockJSRouter(wifiHandler.WeioWifiHandler, '/wifi')
 
@@ -179,6 +184,7 @@ if __name__ == '__main__':
 
     app = tornado.web.Application(list(WeioEditorRouter.urls) +
                             list(WeioDashboardRouter.urls) +
+                            list(WeioSettingsHandler.urls) +
                             list(WeioWifiRouter.urls) +
                             list(WeioUpdaterRouter.urls) +
                             list(WeioStatsRouter.urls)+
@@ -189,7 +195,7 @@ if __name__ == '__main__':
                             [(r"/", WeioEditorWebHandler),
                                 (r"/signin", signinHandler.WeioSigninHandler),
                                 (r"/login", loginHandler.WeioLoginHandler),
-                            (r"/(.*)", tornado.web.StaticFileHandler,{"path": "www"})],
+                           (r"/(.*)", tornado.web.StaticFileHandler,{"path": "www"})],
                             debug=debugMode, **settings
                           )
                           # DEBUG WILL DECREASE SPEED!!! HOW TO AVOID THIS??? see Watchers section down here
