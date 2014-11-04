@@ -144,6 +144,14 @@ class UPER1_GPIO(GPIO):
         """
         return self.board.decode_sfp(self.board.uper_io(1, self.board.encode_sfp(71, [port])))[1][1]
 
+    def dht_read(self):
+        """
+        Read the temperature and humidity info from a DHTxx sensor.
+
+        :return: An array containing the humidity, temperature and checksum info
+        """
+        return self.board.decode_sfp(self.board.uper_io(5, self.board.encode_sfp(200, [self.logical_pin])))[1][1:]
+
     def attach_irq(self, event, callback=None, user_object=None, debounce_time=50):
         """
         Attach (enable) or reconfigure GPIO interrupt event.

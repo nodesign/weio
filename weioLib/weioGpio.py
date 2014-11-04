@@ -136,6 +136,12 @@ class WeioGpio():
         adc = self.u.ADC(pin)
         return int(adc.read()*1023)
 
+    def dhtRead(self, pin) :
+        """Reads input on specified Analog to Digital Convertor. ADC is available on pins from 25 to 32 Output is 10bits resolution or from 0-1023"""
+        weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
+        gpio = self.mainGpio[pin]
+        return gpio.dht_read()
+
     def pwmWrite(self, pin, value) :
         """Pulse with modulation is available at 6 pins from 19-24 and has 16bits of precision. By default WeIO sets PWM frequency at 20000ms and 8bit precision or from 0-255. This setup is well situated for driving LED lighting. Precision and frequency can be changed separately by calling additional functions for other uses : setPwmPeriod and setPwmLimit. PWM can also drive two different frequencies on two separate banks of 3 pins. For this feature look functions : setPwmPeriod0, setPwmPeriod1, setPwmLimit0 and setPwmLimit1."""
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.OUTPUT

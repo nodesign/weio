@@ -93,6 +93,13 @@ def callPortRead(data) :
         bck["port"] = data[0] # pin
     return bck
 
+def callDHTRead(data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        dhtRead(data[0])
+    else :
+        print "dhtRead ON PC", data
+    return None
+
 def callAnalogRead(data) :
     bck = {}
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
@@ -236,6 +243,7 @@ weioSpells = {
     "digitalRead":callDigitalRead,
     "portWrite":callPortWrite,
     "portRead":callPortRead,
+    "dhtRead":callDHTRead,
     "analogRead":callAnalogRead,
     "pinMode":callPinMode,
     "portMode":callPortMode,

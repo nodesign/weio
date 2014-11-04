@@ -242,6 +242,11 @@ function portMode(port, value) {
     genericMessage("portMode", [port, value], null);
 };
 
+function dhtRead(pin, callback) {
+    var fName = callback.name;
+    weioCallbacks[fName] = callback
+    genericMessage("dhtRead", [pin], fname);
+};
 
 function analogRead(pin, callback) { 
     // create new callback call

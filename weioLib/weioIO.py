@@ -75,6 +75,13 @@ def portRead(port, mode=NONE) :
         print "portRead(", port,")"
         return -1
 
+def dhtRead(pin) :
+    try:
+        return gpio.dhtRead(pin)
+    except:
+        print "dhtRead(", pin,")"
+        return -1
+
 def analogRead(pin) :
     try:
         return gpio.analogRead(pin)
