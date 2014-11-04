@@ -18,17 +18,19 @@
     <div class="columns">
         <div class="leftSideBar">
             <div class="well sidebar-nav">
-                <ul class="nav nav-list">
+             <!--    <ul class="nav nav-list">
                     <li class="active"><a href="#">General</a></li>
-                    <li class><a href="#">Network</a></li>
-                </ul>
+                    <li><a href="#">Network</a></li>
+                </ul> -->
             </div>
         </div>
         <div class="settingsContainer">
             <div class="settingsBlock">
                 <div class="generalSettings" >
                     <fieldset>
-                        <legend>General Settings</legend>
+                        <legend>General Settings
+                            <button type="button" class="close page-close" onclick="javascript:history.back(1);" aria-hidden="true">×</button>
+                        </legend>
                         <div id="reponseMsg"></div>
                         <form id="userDataForm" class="form-horizontal">
                             <div class="control-group">
@@ -46,11 +48,11 @@
                                 http on address http://weio.local/editor or via ssh on root@weio.local</span>
                                 <br>
                                 <div class="control-group">
-                                 <label class="checkbox">
+                                   <label class="checkbox">
                                     <input type="checkbox" id="userLatestProjectOnBoot"> Run last project on boot
                                 </label>
                             </div>
-                            <a  onclick="updateUserData()" class="btn btn-primary">Submit general settings</a>
+                            <a  onclick="openModal('UserData')" class="btn btn-primary">Submit general settings</a>
                         </form>
                     </div>
                 </div> <!-- general settings-->
@@ -61,7 +63,7 @@
                             <label>Name to acces WeIO board via network (DNS name)</label>
                             <div class="control-group">
                                 <div class="input-append">
-                                    <input type="text" id="networkBoardName" id="networkBoardName" placeholder="weio">
+                                    <input type="text" id="networkBoardName" placeholder="weio">
                                     <span class="add-on">.local</span>
                                 </div>
                                 <span class="help-block" style="width:500px">http://<span class="label label-important">weio</span>.local
@@ -74,19 +76,34 @@
                             </div>
                             <br>
                             <br>
-                            <a  onclick="updateNetworkData()" class="btn btn-primary">Submit network settings</a>
+                            <a  onclick="openModal('NetworkData')" class="btn btn-primary">Submit network settings</a>
                         </form>
                     </div> 
                     <!-- network settings -->
                 </div>
-            </div>
-        </div>
-    </div>
-    <script src="libs/jquery/jquery-2.0.2.min.js"> </script>
-    <script src="libs/bootstrap/js/bootstrap.min.js"> </script>
-    <script src="libs/sockJS/sockjs-0.3.min.js"> </script>
-    <script src="libs/weio/settings.js?n=1"> </script>
+                <!-- Modal Updater process second screen -->
+                <div id="resetBoardModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                      <h3 id="myModalUpdateWeioLabel">Save changes and reset board</h3>
+                  </div>
+                  <div class="modal-body" id="updateWeioData">
+                    <p>WeIO need to reload for changes to take effect.</p>
 
-</body>
+                  </div>
+                  <div class="modal-footer">
+                      <button class="btn btn-primary" id="confirmAction">Reload</button>
+                  </div>
+              </div>
+              <!-- END Modal Updater process  -->
 
-</html>
+
+          </div>
+          <script src="libs/jquery/jquery-2.0.2.min.js"> </script>
+          <script src="libs/bootstrap/js/bootstrap.min.js"> </script>
+          <script src="libs/sockJS/sockjs-0.3.min.js"> </script>
+          <script src="libs/weio/settings.js?n=1"> </script>
+
+      </body>
+
+      </html>

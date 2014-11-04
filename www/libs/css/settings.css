@@ -30,3 +30,10 @@ body .columns .settingsContainer {
   height: 100%;
   margin-left: 15px;
 }
+.page-close {
+float: right;
+margin: 10px 20px 10px 10px;
+font-size: 40px;
+color: black;
+font-weight: 300;
+}

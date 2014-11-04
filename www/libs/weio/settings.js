@@ -42,6 +42,9 @@ var msg_success = "msg_success";
 var msg_fail = "msg_fail";
 /* UI elements state  */
 var ui_disabled = false;
+/* Client action , passed from submit settings button, each settings section has unique action.
+    We need this for modal dialog confirmation */
+var clientAction = null;
 
 
 $(document).ready(function () {
@@ -109,6 +112,32 @@ function currnetSettingsData(data) {
     $("body").find("#networkAutoApMode").prop("checked", auto_ap_mode);
 };
 
+
+/* Function will trigger modal dialog with reload message, 
+  after confirmation we trigger appropriate function and pass clientAction to execute command.
+*/
+
+function openModal(action) {
+    $("#resetBoardModal").modal("show");
+    clientAction = action;
+};
+
+    $("#resetBoardModal").on('click', '#confirmAction', function(e) {
+        $("#resetBoardModal").modal("hide");
+        settingsAction(clientAction);        
+    });
+
+function settingsAction(command) {
+    switch (command) {
+        case 'UserData':
+            updateUserData();
+            break;
+        case 'NetworkData':
+            updateNetworkData();
+            break;
+    }
+};
+
 /* Save new user data */
 function updateUserData() {
     if (!ui_disabled) {
@@ -116,8 +145,6 @@ function updateUserData() {
             password = $("body").find("#userDataForm #userPass").val();
             re_password = $("body").find("#userDataForm #reUserPass").val();
             latest_project_on_boot = $("body").find("#userDataForm #userLatestProjectOnBoot").is(':checked');
-       
-        console.log(latest_project_on_boot);
        
         if(latest_project_on_boot){
             latest_project_on_boot = "YES"
@@ -128,6 +155,7 @@ function updateUserData() {
         if(password != re_password){
             ui_disabled = true;
             $("body").find("#reponseMsg").append("<div class='alert alert-message alert-error'>Passwords do not match!</div>").hide().slideToggle( "slow" );
+            
         } else {
             updateData = {"request": "updateSettings", "data": {"user": user, "password": password, "play_composition_on_server_boot" : latest_project_on_boot}};
             console.log(updateData);
@@ -157,6 +185,7 @@ function updateNetworkData() {
     }
 };
 
+
 function reponse_msg(data) {
     if(data.data == msg_success){
         $("body").find("#reponseMsg").append("<div class='alert alert-message alert-success'>Bord settings successfully saved!</div>").hide().slideToggle( "slow" );
@@ -166,6 +195,7 @@ function reponse_msg(data) {
     ui_disabled = true; // Disable  settings saving, until alert message is present.
     $(".alert-message").delay(5000).slideToggle("slow", function () { $(this).remove(); ui_disabled = false });
 };
+
 
 //CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////x
 /**
