@@ -15,10 +15,12 @@ import Queue
 import types
 import platform
 import glob
+import time
 
 import serial
 
 from IoTPy.pyuper.utils import errmsg, IoTPy_APIError
+from weioLib import weioConfig
 
 
 class IoBoard:
@@ -34,6 +36,11 @@ class IoBoard:
     def __init__(self, pinout, serial_port=None):
         """__init__(self, pinout, serial_port=None)"""
         ser = serial_port
+        if weioConfig.getConfiguration()['weio_board'] == "UNO":
+            baudrate = 250000
+        else:
+            baudrate = 230400
+
         if serial_port is None:
             my_platform = platform.system()
             if my_platform == "Windows":
@@ -54,7 +61,7 @@ class IoBoard:
                 try:
                     port_to_try = serial.Serial(
                         port=my_port,
-                        baudrate=230400,  #virtual com port on USB is always max speed
+                        baudrate=baudrate,  #virtual com port on USB is always max speed
                         parity=serial.PARITY_ODD,
                         stopbits=serial.STOPBITS_ONE,
                         bytesize=serial.EIGHTBITS,
