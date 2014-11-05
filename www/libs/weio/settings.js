@@ -49,6 +49,10 @@ var clientAction = null;
 
 $(document).ready(function () {
 
+// Resize iframe, no need for this rigt now, it will be used later.
+// var iframeHeight = $(window).height();
+// window.parent.document.getElementById("weioIframe").style.height = iframeHeight + "px";
+
     $.getJSON('config.json', function(data) {
         confFile = data;
 /////////////////////////////// SOCK JS SETTINGS  /////////////////////

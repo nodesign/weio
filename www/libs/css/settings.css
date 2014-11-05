@@ -32,8 +32,8 @@ body .columns .settingsContainer {
 }
 .page-close {
 float: right;
-margin: 10px 20px 10px 10px;
-font-size: 40px;
+margin: 5px 15px;
+font-size: 32px;
 color: black;
 font-weight: 300;
 }
