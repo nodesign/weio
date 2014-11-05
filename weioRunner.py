@@ -263,7 +263,6 @@ def listenerThread():
                     else:
                         weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
 
-
 class WeioRemote():
     conn = None
     keepalive = None
