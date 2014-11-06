@@ -19,7 +19,7 @@ import glob
 import serial
 
 from IoTPy.pyuper.utils import errmsg, IoTPy_APIError
-from weioLib import weioConfig
+from IoTPy.pyuper.pinouts import WEIO_PINOUT 
 
 
 class IoBoard:
@@ -32,7 +32,7 @@ class IoBoard:
     :type serial_port: str
     """
 
-    def __init__(self, pinout=None, serial_port=None):
+    def __init__(self, pinout=WEIO_PINOUT, serial_port=None):
         """__init__(self, pinout=UPER1_PINOUT, serial_port=None)"""
         ser = None
         if serial_port is None:
@@ -84,9 +84,7 @@ class IoBoard:
 
         self.devicename = "uper"
         self.version = __version__
-        confFile = weioConfig.getConfiguration()
-        pinout = confFile['weio_board']+"_PINOUT"
-        self.pinout = eval(pinout)
+        self.pinout = pinout
 
     def get_info(self):
         """
