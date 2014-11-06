@@ -15,7 +15,6 @@ import Queue
 import types
 import platform
 import glob
-import time
 
 import serial
 
@@ -33,14 +32,9 @@ class IoBoard:
     :type serial_port: str
     """
 
-    def __init__(self, pinout, serial_port=None):
-        """__init__(self, pinout, serial_port=None)"""
-        ser = serial_port
-        if weioConfig.getConfiguration()['weio_board'] == "UNO":
-            baudrate = 250000
-        else:
-            baudrate = 230400
-
+    def __init__(self, pinout=None, serial_port=None):
+        """__init__(self, pinout=UPER1_PINOUT, serial_port=None)"""
+        ser = None
         if serial_port is None:
             my_platform = platform.system()
             if my_platform == "Windows":
@@ -56,29 +50,27 @@ class IoBoard:
                 ports_list = glob.glob("/dev/tty.usbmodem*")
             elif my_platform == "Linux":
                 ports_list = glob.glob("/dev/ttyACM*")
-
-            for my_port in ports_list:
-                try:
-                    port_to_try = serial.Serial(
-                        port=my_port,
-                        baudrate=baudrate,  #virtual com port on USB is always max speed
-                        parity=serial.PARITY_ODD,
-                        stopbits=serial.STOPBITS_ONE,
-                        bytesize=serial.EIGHTBITS,
-                        timeout=0.1
-                    )
-                    port_to_try.write(self.encode_sfp(255, []))
-                    uper_response = port_to_try.read(1)    # read one, blocking
-                    n = port_to_try.inWaiting()        # look if there is more
-                    if n:
-                        uper_response = uper_response + port_to_try.read(n)
-                        if self.decode_sfp(uper_response)[0] == -1:  # found port with UPER
-                            ser = port_to_try
-                            break
-                    port_to_try.close()
-                except:
-                    raise IoTPy_APIError("Unrecoverable serial port error.")
-
+        for my_port in ports_list:
+            try:
+                port_to_try = serial.Serial(
+                    port=my_port,
+                    baudrate=230400, #virtual com port on USB is always max speed
+                    parity=serial.PARITY_ODD,
+                    stopbits=serial.STOPBITS_ONE,
+                    bytesize=serial.EIGHTBITS,
+                    timeout=0.1
+                )
+                port_to_try.write(self.encode_sfp(255, []))
+                uper_response = port_to_try.read(1)    #read one, blocking
+                n = port_to_try.inWaiting()        #look if there is more
+                if n:
+                    uper_response = uper_response + port_to_try.read(n)
+                    if self.decode_sfp(uper_response)[0] == -1: # found port with UPER
+                        ser = port_to_try
+                        break
+                port_to_try.close()
+            except:
+                raise IoTPy_APIError("Unrecoverable serial port error.")
         if not ser:
             raise IoTPy_APIError("No UPER found on USB/serial ports.")
 
@@ -92,7 +84,9 @@ class IoBoard:
 
         self.devicename = "uper"
         self.version = __version__
-        self.pinout = pinout
+        confFile = weioConfig.getConfiguration()
+        pinout = confFile['weio_board']+"_PINOUT"
+        self.pinout = eval(pinout)
 
     def get_info(self):
         """
