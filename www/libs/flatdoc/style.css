@@ -14,3 +14,12 @@ body .content p img {
 body .level-2 {
     color:#505050 !important;
 }
+
+#flatdoc-container {
+    height: 800px;
+    overflow-y: scroll;
+    margin:22px 0 0 0;
+}
+#flatdoc-holder {
+    position: fixed;
+}
