@@ -18,8 +18,9 @@ body .level-2 {
 #flatdoc-container {
     height: 800px;
     overflow-y: scroll;
-    margin:22px 0 0 0;
+    
 }
 #flatdoc-holder {
     position: fixed;
+    margin:22px 0 0 0;
 }
