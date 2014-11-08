@@ -1,8 +1,6 @@
 ###
 # Authors : 
 # Uros PETREVSKI <uros@nodesign.net>
-# Ronan Yvergniaux <ronan@yvergniaux.fr
-#        7 May 2014
 ###
 
 ###
