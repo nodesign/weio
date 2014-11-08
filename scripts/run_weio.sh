@@ -77,6 +77,12 @@ avahi-daemon -k
 # The daemonize it
 avahi-daemon -D
 
+if grep -q '"first_time_run": "YES"' /weio/config.weio
+then
+    echo "===> FLASHING LPC FIRMWARE"
+    /weio/scripts/flash_lpc_fw.py
+fi
+
 echo "===> STARTING THE SERVER"
 
 # And start WeIO

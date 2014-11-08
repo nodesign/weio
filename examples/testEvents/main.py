@@ -1,5 +1,4 @@
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach, HIGH, LOW, shared
+from weioLib.weio import *
 
 import time
 

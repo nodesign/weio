@@ -414,19 +414,40 @@ $(document).ready(function () {
     //////////////// CONSOLE TABS
     $("#tabConsole").click(function(e) {
         stopDataViz();
+        // reset side bar size to default value
+        rightSideBarWidth = "495px";
+        resizeRightSideBar(rightSideBarWidth);
+        $(".editorContainer").animate( { right: rightSideBarWidth }, { queue: false, duration: 100 });
+
     });
 
     $("#tabBoard").click(function(e) {
         stopDataViz();
         connectToBoard();
+        // reset side bar size to default value
+        rightSideBarWidth = "495px";
+        resizeRightSideBar(rightSideBarWidth);
+        $(".editorContainer").animate( { right: rightSideBarWidth }, { queue: false, duration: 100 });
+
+  
     });
 
     $("#tabStats").click(function(e) {
         startDataViz();
+        // reset side bar size to default value
+        rightSideBarWidth = "495px";
+        resizeRightSideBar(rightSideBarWidth);
+        $(".editorContainer").animate( { right: rightSideBarWidth }, { queue: false, duration: 100 });
+
     });
 
     $("#tabDocumentation").click(function(e) {
         stopDataViz();
+        // resize side bar for documentatio preview
+        rightSideBarWidth = "800px";
+        resizeRightSideBar(rightSideBarWidth); 
+        $(".editorContainer").animate( { right: rightSideBarWidth }, { queue: false, duration: 100 });
+
     });
 
     ////////////////////// ADD FILES EVENT
@@ -968,7 +989,6 @@ function fileSaved(data) {
  * Attaches tree event listener
  */
 function updateFileTree(data) {
-
     $(".icon-remove.delButton").unbind("click");
     deleteButtonClicked = false;
     
@@ -1238,5 +1258,11 @@ function isMainExists() {
         }
     }
 }
+
+/* Resize right side bar for better documentation preview */
+function resizeRightSideBar(size) {
+    $(".rightSideBar").animate({width:size}, 100);
+  
+};
 
 

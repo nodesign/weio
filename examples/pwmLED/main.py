@@ -1,11 +1,9 @@
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach, shared
+from weioLib.weio import *
 
-def setup() :
+def setup():
     attach.process(loop)
     
-def loop() :
-    
+def loop():
     while True:
         print "fade in"
         # count from 0 to 255 by 5

@@ -1,7 +1,7 @@
 #!/usr/bin/python -u
 from tornado import web, ioloop, options, websocket, httpserver
 
-import sys,os,logging, platform, json, signal, datetime
+import sys, os, logging, platform, json, signal, datetime
 
 import multiprocessing
 import threading
@@ -9,13 +9,14 @@ import threading
 import functools
 import subprocess
 
-from weioLib import weioUserApi
-from weioLib import weioIO
+
+
+import pickle
 
 import pickle
 
 # JS to PYTHON handler
-from handlers.weioJSPYHandler import WeioHandler
+from handlers.weioJSPYHandler import WeioHandler, WeioHandlerRemote
 
 # IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
 from weioLib import weioConfig
@@ -34,6 +35,7 @@ from weioLib import weioParser
 userProcessList = []
 userEventList = []
 
+from weioLib import weioUserApi
 from weioLib import weioGpio
 from weioLib import weioIO
 
@@ -63,7 +65,7 @@ class WeioIndexHandler(web.RequestHandler):
 
 
 ###
-# WeIO User Even Handler
+# WeIO User Event Handler
 ###
 class UserControl():
     def __init__(self):
@@ -107,11 +109,8 @@ class UserControl():
         self.launcherProcess.start()
 
     def stop(self):
-        weioRunnerGlobals.running = False
-        fRunning = open('/weio/running.p', 'wb')
-        pickle.dump(weioRunnerGlobals.running, fRunning)
-        fRunning.close()
-        
+        weioRunnerGlobals.running.value = False
+
         # Removing all User Events
         weioParser.removeUserEvents()
 
@@ -133,7 +132,7 @@ class UserControl():
         weioUserApi.attach.procs = {}
         weioUserApi.attach.events = {}
         weioUserApi.attach.ints = {}
-        
+
         # Clear all connetions
         weioRunnerGlobals.weioConnections.clear()
         
@@ -141,9 +140,13 @@ class UserControl():
         while self.qIn.empty() == False:
             self.qIn.get()
 
+        # Empty the Queue of all messages
+        while self.qIn.empty() == False:
+            self.qIn.get()
+
         while self.qOut.empty() == False:
             self.qOut.get()
-            
+
 
     def userPlayer(self, fd, events):
         if (fd is not None):
@@ -215,6 +218,8 @@ class UserControl():
         pickle.dump(weioRunnerGlobals.running, fRunning)
         fRunning.close()
 
+        weioRunnerGlobals.running.value = True
+
         while (True):
             # Get the command from userTornado (blocking)
             msg = self.qIn.get()
@@ -254,9 +259,9 @@ def listenerThread():
     #print "*** Starting listenerThread"
     while (True):
         msg = weioRunnerGlobals.QIN.get()
-
+        #print "GOT MSG: ", msg
         if (msg.res is not None):
-            #print "MESSAGE",msg.req, msg.res, msg.data, msg.connUuid
+            #print "MESSAGE", msg.req, msg.res, msg.data, msg.connUuid
             if (msg.connUuid in weioRunnerGlobals.weioConnections):
                 result = {}
 
@@ -264,7 +269,62 @@ def listenerThread():
                     result["serverPush"] = msg.callbackJS
                     result["data"] = msg.res
                     #print "RESULT",result
-                    weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
+                    if (weioRunnerGlobals.remoteConnected.value == True):
+                        weioRunnerGlobals.weioConnections[msg.connUuid].write_message(json.dumps(result))
+                    else:
+                        weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
+
+class WeioRemote():
+    conn = None
+    keepalive = None
+
+    def __init__(self, uri, remoteHandler):
+        self.uri = uri
+        self.connectRemote()
+        self.rh = remoteHandler
+
+    def connectRemote(self):
+        w = websocket.websocket_connect(self.uri)
+        w.add_done_callback(self.wsConnectionCb)
+
+    def dokeepalive(self):
+        stream = self.conn.protocol.stream
+        #if not stream.closed():
+        #    self.keepalive = stream.io_loop.add_timeout(timedelta(seconds=PING_TIMEOUT), self.dokeepalive)
+        #    self.conn.protocol.write_ping("")
+        #else:
+        #self.keepalive = None # should never happen
+
+    def wsConnectionCb(self, conn):
+        self.conn = conn.result()
+
+        # Set this connection for WeioHandlerRemote
+        self.rh.setRemoteConn(self.conn)
+        weioRunnerGlobals.remoteConnected.value = True
+
+        self.conn.on_message = self.message
+        self.conn.write_message('Hello from WeIO')
+        #self.keepalive = IOLoop.instance().add_timeout(timedelta(seconds=PING_TIMEOUT), self.dokeepalive)
+
+    def message(self, message):
+        if message is not None:
+            #print('>> %s' % message)
+            self.rh.on_message(message)
+        else:
+            self.close()
+
+    def close(self):
+        weioRunnerGlobals.remoteConnected.value = False
+        self.rh.on_close()
+        print('conn closed')
+
+        #if self.keepalive is not None:
+        #    keepalive = self.keepalive
+        #    self.keepalive = None
+        #    IOLoop.instance().remove_timeout(keepalive)
+
+        #self.connectRemote()
+
 
 if __name__ == '__main__':
     ###
@@ -289,20 +349,28 @@ if __name__ == '__main__':
     ])
     #app.listen(options.options.port, "0.0.0.0")
 
-    if (confFile["https"] == "YES"):
-        http_server = httpserver.HTTPServer(app,
+    if (confFile["remote"] != ""):
+        rHdlr = WeioHandlerRemote()
+        print "Connecting to remote app..."
+        rUri = os.path.join("ws://", confFile['remote'], "weio")
+        #print rUri
+        r = WeioRemote(rUri, rHdlr)
+
+    else:
+        if (confFile["https"] == "YES"):
+            http_server = httpserver.HTTPServer(app,
                 ssl_options={
                     "certfile": os.path.join(confFile['absolut_root_path'], "weioSSL.crt"),
                     "keyfile": os.path.join(confFile['absolut_root_path'], "weioSSL.key"),
                 })
-    else:
-        # Plain ol' HTTP
-        http_server = httpserver.HTTPServer(app)
-    
-    http_server.listen(options.options.port, address=confFile['ip'])
+        else:
+            # Plain ol' HTTP
+            http_server = httpserver.HTTPServer(app)
 
-    logging.info(" [*] Listening on 0.0.0.0:" + str(options.options.port))
-    print "*SYSOUT* User API Websocket is created at localhost:" + str(options.options.port) + "/api"
+        http_server.listen(options.options.port, address=confFile['ip'])
+
+        logging.info(" [*] Listening on 0.0.0.0:" + str(options.options.port))
+        print "*SYSOUT* User API Websocket is created at localhost:" + str(options.options.port) + "/api"
 
     # Create a userControl object
     userControl = UserControl()

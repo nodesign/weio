@@ -41,9 +41,16 @@ import platform
 # WeIO API bindings from websocket to lower levels
 # Each data argument is array of data
 # Return value is dictionary
-def callPinMode(self, data) :
+def callPinMode(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         pinMode(data[0],data[1])
+    else :
+        print "pinMode ON PC", data
+    return None
+
+def callPortMode(data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        portMode(data[0],data[1])
     else :
         print "pinMode ON PC", data
     return None
@@ -66,6 +73,32 @@ def callDigitalRead(data) :
         bck["data"] = 1 # faked value
         bck["pin"] = data[0] # pin
     return bck
+
+def callPortWrite(data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        portWrite(data[0], data[1])
+    else :
+        print "portWrite ON PC", data
+    return None
+
+def callPortRead(data) :
+    bck = {}
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        value = portRead(data[0])
+        bck["data"] = value
+        bck["port"] = data[0]
+    else :
+        print "digitalRead ON PC", data
+        bck["data"] = 1 # faked value
+        bck["port"] = data[0] # pin
+    return bck
+
+def callDHTRead(data) :
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        dhtRead(data[0])
+    else :
+        print "dhtRead ON PC", data
+    return None
 
 def callAnalogRead(data) :
     bck = {}
@@ -208,8 +241,12 @@ def pinsInfo(data) :
 weioSpells = {
     "digitalWrite":callDigitalWrite,
     "digitalRead":callDigitalRead,
+    "portWrite":callPortWrite,
+    "portRead":callPortRead,
+    "dhtRead":callDHTRead,
     "analogRead":callAnalogRead,
     "pinMode":callPinMode,
+    "portMode":callPortMode,
     "setPwmPeriod":callSetPwmPeriod,
     "setPwmLimit":callSetPwmLimit,
     "pwmWrite":callPwmWrite,

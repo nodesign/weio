@@ -36,4 +36,6 @@
 
 
 # This is importator for user scripts it makes syntax more beautiful
+from weioLib.weioIO import *
 from weioUserApi import *
+

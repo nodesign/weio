@@ -4,20 +4,18 @@
 #                                     #
 #######################################
 
-#syntax = pwmWrite(pin, value) or analogWrite(pin, value)
+# syntax = pwmWrite(pin, value) or analogWrite(pin, value)
 # there are 6 pwm pins on weio (23, 22, 21, 20, 19, 18)
 # default value is between 0 and 255
 # pins 18, 19, 20 are connected on RGB LED on the board
 
 
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach, shared
+from weioLib.weio import *
 
-def setup() :
+def setup():
     attach.process(loop)
     
-def loop() :
-    
+def loop():
     while True:
         print "fade in"
         # count from 0 to 255 

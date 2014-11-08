@@ -39,18 +39,18 @@
 
     
     function fromAdc(data) {
-        //console.log("Hello from adc", data.data);
-        $(phrase).html(data.data);
+        //console.log("Hello from adc", data);
+        $(phrase).html(data);
         $("body").css("background","black");
         $("#phrase").css("color","white");
         
         pieData = [
         	{
-        		value: data.data,
+        		value: data,
         		color:"#5dddf6"
         	},
         	{
-        		value : 1023-data.data,
+        		value : 1023-data,
         		color : "#000000"
         	}
         ];

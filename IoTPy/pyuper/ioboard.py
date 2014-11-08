@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 # encoding: utf-8
+from IoTPy.core.spi import SPI
+from IoTPy.pyuper.adc import UPER1_ADC
+from IoTPy.pyuper.gpio import UPER1_GPIO
+from IoTPy.pyuper.i2c import UPER1_I2C
+from IoTPy.pyuper.pwm import UPER1_PWM
+from IoTPy.pyuper.spi import UPER1_SPI
 
 __version__ = "0.01"
 
@@ -15,11 +21,12 @@ import serial
 from IoTPy.pyuper.utils import errmsg, IoTPy_APIError
 from IoTPy.pyuper.pinouts import WEIO_PINOUT 
 
+
 class IoBoard:
     """
     Uper type board class.
 
-    :param pinout: A list describing physical board pin layout and capabilities. Optional, default is IoPinout.UPER1_PINOUT.
+    :param pinout: A list describing physical board pin layout and capabilities.
     :type pinout: :class:`IoTPy.pyuper.pinouts.IoPinout`
     :param serial_port: Name of SFP command serial communications port.
     :type serial_port: str
@@ -74,7 +81,6 @@ class IoBoard:
         self.ser.flush()
         self.outq = Queue.Queue()
         self.reader = Reader(self.ser, self.outq, self.internalCallBack, self.decode_sfp)
-        #self.reader = Reader(self.ser, self.outq, self.callbackdict, self.decode_sfp)
 
         self.devicename = "uper"
         self.version = __version__
@@ -106,18 +112,18 @@ class IoBoard:
 
     def _encode_int(self, intarg):
         if intarg < 64:
-            return (chr(intarg))
+            return chr(intarg)
         packedint = struct.pack('>I', intarg).lstrip('\x00')
-        return (chr(0xc0 | (len(packedint) - 1)) + packedint)
+        return chr(0xc0 | (len(packedint) - 1)) + packedint
 
     def _encode_bytes(self, bytestr):
         if len(bytestr) < 64:
-            return (chr(0x40 | len(bytestr)) + bytestr)
+            return chr(0x40 | len(bytestr)) + bytestr
         packedlen = struct.pack('>I', len(bytestr)).lstrip('\x00')
         if len(packedlen) == 1:
-            return ('\xc4' + packedlen + bytestr)
+            return '\xc4' + packedlen + bytestr
         elif len(packedlen) == 2:
-            return ('\xc5' + packedlen + bytestr)
+            return '\xc5' + packedlen + bytestr
         else:
             raise IoTPy_APIError("UPER API: - too long string passed to UPER, encode_bytes can't handle it.")
 
@@ -132,8 +138,12 @@ class IoBoard:
         :return: Binary SFP command.
         :rtype: str
         """
-        functions = {types.StringType: self._encode_bytes, types.IntType: self._encode_int}
-        sfp_command = chr(command) + ''.join(functions[type(arg)](arg) for arg in args)
+        functions = {
+            types.StringType: self._encode_bytes,
+            bytearray: self._encode_bytes,
+            types.IntType: self._encode_int
+        }
+        sfp_command = chr(command) + ''.join(str(functions[type(arg)](arg)) for arg in args)
         sfp_command = '\xd4' + struct.pack('>H', len(sfp_command)) + sfp_command
         return sfp_command
 
@@ -155,15 +165,15 @@ class IoBoard:
         while pointer < buflen:
             argtype = ord(buffer[pointer:pointer + 1])
             pointer += 1
-            if argtype < 64:                    #short int
+            if argtype < 64:                    # short int
                 args.append(argtype)
-            elif argtype < 128:                    #short str
+            elif argtype < 128:                    # short str
                 arglen = argtype & 0x3f
                 args.append(buffer[pointer:pointer + arglen])
                 pointer += arglen
             else:
                 arglen = argtype & 0x0f
-                if arglen < 4:            #decoding integers
+                if arglen < 4:            # decoding integers
                     if arglen == 0:
                         args.append(ord(buffer[pointer:pointer + 1]))
                     elif arglen == 1:
@@ -174,7 +184,7 @@ class IoBoard:
                         args.append(struct.unpack('>I', buffer[pointer:pointer + 4])[0])
                     pointer += arglen + 1
                 else:
-                    if argtype == 0xc4:        #decoding strings
+                    if argtype == 0xc4:        # decoding strings
                         arglen = ord(buffer[pointer:pointer + 1])
                     elif argtype == 0xc5:
                         arglen = struct.unpack('>H', buffer[pointer:pointer + 2])[0]
@@ -215,7 +225,7 @@ class IoBoard:
 
         interrupt_event = { 'id':interrupt_data[0], 'type':interrupt_data[1] & 0xFF, 'values':interrupt_data[1] >> 8 }
         callback_entry = self.callbackdict[self.interrupts[interrupt_event['id']]]
-			
+
         try:
             callback_entry['callback'](interrupt_event, callback_entry['userobject'])
         except Exception as e:
@@ -234,22 +244,16 @@ class IoBoard:
             errmsg("UPER error: get_device_info wrong code.")
             raise IoTPy_APIError("")
         result = result[1]
-        if result[0] >> 24 != 0x55: # 0x55 == 'U'
+        if result[0] >> 24 != 0x55:  # 0x55 == 'U'
             print "UPER error: getDeviceInfo unknown device/firmware type"
             return
-        device_info.append("UPER") # type
+        device_info.append("UPER")  # type
         device_info.append((result[0] & 0x00ff0000) >> 16) #fw major
         device_info.append(result[0] & 0x0000ffff) #fw minor
         device_info.append(result[1]) # 16 bytes long unique ID from UPER CPU
         device_info.append(result[2]) # UPER LPC CPU part number
         device_info.append(result[3]) # UPER LPC CPU bootload code version
         return device_info
-
-    def get_pin(self, pin_class, pin_no):
-        return pin_class(self, pin_no)
-
-    def get_port(self, port_class, port = 0, pins = []):
-        return port_class(self, port, pins)
 
     def reset(self):
         """
@@ -262,6 +266,61 @@ class IoBoard:
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.stop()
+
+    def ADC(self, name, *args, **kwargs):
+        _names = {"ADC0": 23, "ADC1": 24, "ADC2": 25, "ADC3": 26, "ADC4": 30, "ADC5": 31, "ADC6": 32, "ADC7": 33}
+        if isinstance(name, int):
+            pin = name
+        elif isinstance(name, str):
+            if _names.has_key(name):
+                pin = _names[name]
+            else:
+                raise IoTPy_APIError("Invalid ADC name %s. Must be one of %s." % (name, ", ".join(sorted(_names.keys()))))
+        else:
+            raise IoTPy_APIError("ADC name must be an integer or a string")
+
+        return UPER1_ADC(self, pin)
+
+    def GPIO(self, name, *args, **kwargs):
+        if not isinstance(name, int):
+            raise IoTPy_APIError("GPIO name must be an integer.")
+
+        return UPER1_GPIO(self, name)
+
+    def I2C(self, name, *args, **kwargs):
+        return UPER1_I2C(self)
+
+    def PWM(self, name, freq=100, polarity=1, *args, **kwargs):
+        _names = {"PWM0_0": 27, "PWM0_1": 28, "PWM0_2": 34, "PWM1_0": 10, "PWM1_1": 39, "PWM1_2": 3}
+        if isinstance(name, int):
+            pin = name
+        elif isinstance(name, str):
+            if _names.has_key(name):
+                pin = _names[name]
+            else:
+                raise IoTPy_APIError("Invalid PWM name %s. Must be one of %s." % (name, ", ".join(sorted(_names.keys()))))
+        else:
+            raise IoTPy_APIError("PWM name must be an integer or a string")
+
+        return UPER1_PWM(self, pin, freq, polarity)
+
+    def SPI(self, name, clock=1000000, mode=SPI.MODE_0, *args, **kwargs):
+        _names = {"SPI0": 0, "SPI1": 1}
+        if isinstance(name, int):
+            port = name
+        elif isinstance(name, str):
+            if _names.has_key(name):
+                port = _names[name]
+            else:
+                raise IoTPy_APIError("Invalid SPI name %s. Must be one of %s." % (name, ", ".join(sorted(_names.keys()))))
+        else:
+            raise IoTPy_APIError("PWM name must be an integer or a string")
+
+        divider = int(round(2.0e6/clock))
+
+        return UPER1_SPI(self, port, divider, mode)
+        
+
 
 
 class Reader:

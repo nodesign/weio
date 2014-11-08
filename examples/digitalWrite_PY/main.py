@@ -8,8 +8,7 @@
 #Value is 0 and 1, or LOW and HIGH 
 #pins 18, 19, 20 is connected with RGB LED
 
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach
+from weioLib.weio import *
 
 def setup():
     attach.process(myProcess)

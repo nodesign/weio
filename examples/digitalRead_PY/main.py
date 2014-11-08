@@ -9,16 +9,16 @@
 #it's possible to choose the mode with function pinMode(pin, mode)
 #mode is PULL_UP or PULL_DOWN
 
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach
+from weioLib.weio import *
+
 pin = 2
+
 def setup():
-    
     attach.process(myProcess)
     
 def myProcess():
     while True:
-        a=digitalRead(pin)
-        print "Value on the pin ",pin," = ",a
+        a = digitalRead(pin)
+        print "Value on the pin ", pin, " = ", a
         delay(100)
         

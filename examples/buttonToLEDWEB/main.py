@@ -1,9 +1,8 @@
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach
-
+from weioLib.weio import *
 
 def setup() :
     attach.event("webEvent", webEvent)
 
 def webEvent(data):
     print "web event"
+    

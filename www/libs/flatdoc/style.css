@@ -1,0 +1,26 @@
+@media (min-width: 500px) {
+    body .content p img {
+      float: right !important;
+      margin-right: -600px !important;
+    }
+}
+
+body .content p img {
+     margin-bottom:25px;
+     clear:both;
+     display:block;
+}
+
+body .level-2 {
+    color:#505050 !important;
+}
+
+#flatdoc-container {
+    height: 800px;
+    overflow-y: scroll;
+    
+}
+#flatdoc-holder {
+    position: fixed;
+    margin:22px 0 0 0;
+}

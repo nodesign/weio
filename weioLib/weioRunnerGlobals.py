@@ -35,6 +35,8 @@
 ###
 
 import multiprocessing
+import ctypes
+
 
 # Pins declared by the user program
 DECLARED_PINS = None
@@ -47,7 +49,10 @@ weioConnectionSet = set()
 weioConnections = {}
 
 # Running flag
-running = False
+running = multiprocessing.Value(ctypes.c_bool, False)
+
+# Is WeIO connected to remote App
+remoteConnected = multiprocessing.Value(ctypes.c_bool, False)
 
 # UserTornado-to-launcher communication queues
 # Direction In-Out related to User Tornado

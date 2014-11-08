@@ -2,7 +2,7 @@
 # sketch inside Arduino, File > examples > firmata > SimpleDigitalFirmata
 # It will blink Arduino's LED every second
 
-from weioLib.weioUserApi import attach
+from weioLib.weio import *
 import firmata
 
 LED_PIN = 13

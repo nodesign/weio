@@ -1,6 +1,4 @@
-
-from weioLib.weioUserApi import shared, attach
-from weioLib.weioIO import pwmWrite, analogRead
+from weioLib.weio import *
 
 import colorsys
 import time

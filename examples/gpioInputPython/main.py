@@ -1,5 +1,4 @@
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach, shared, INPUT_PULLDOWN
+from weioLib.weio import *
 import time
 
 def setup() :
