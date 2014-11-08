@@ -192,9 +192,6 @@ class WeioGpio():
         else:
             print "Only 8bit or 16bit precisions are allowed"
 
-    def proportion(self, value,istart,istop,ostart,ostop) :
-        return float(ostart) + (float(ostop) - float(ostart)) * ((float(value) - float(istart)) / (float(istop) - float(istart)))
-
     def attachInterrupt(self, pin, mode, callback, obj):
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
 
@@ -242,15 +239,6 @@ class WeioGpio():
         pwm = self.u.PWM(pin)
         pwm.set_period(10000)
         pwm.set_duty_cycle(0)
-
-    def constrain(self, x, a, b):
-        if(x > a):
-            if(x < b):
-                return a
-        if(x < a):
-            return a
-        if(x > b):
-            return b
 
     def millis(self):
         a = 1000*time.time()
