@@ -1,5 +1,5 @@
 {
-    "absolut_root_path": "/home/nmarcetic/PJ/Web/weio/weio", 
+    "absolut_root_path": "/home/drasko/weio", 
     "debug_mode": "True", 
     "dependencies_path": "www", 
     "dns_name": "weio.locale", 
@@ -20,7 +20,7 @@
     "password": "", 
     "play_composition_on_server_boot": "YES", 
     "port": 8080, 
-    "remote": "thingsmart.net:9090", 
+    "remote": "", 
     "user": "Nikola Marcetic", 
     "userAppPort": 8082, 
     "userApp_debug_mode": "True", 
