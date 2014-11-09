@@ -1,19 +1,16 @@
 # Stepper motor driver
 # Uros Petrevski, 2014
 # Implemented both full step and half-step control
-from IoTPy.pyuper.gpio import GPIO
+from weioLib.weio import *
 from time import sleep
 
 FULL_STEP = 0
 HALF_STEP = 1
 
-
 class Stepper:
     """
     Stepper motor class.
 
-    :param uperObj: Uper or similar IoBoard
-    :type uperObj: :class:`IoTPy.pyuper.ioboard.IoBoard`
     :param stepsIn360: The number of steps in full (360 degree) rotation.
     :type stepsIn360: int
     :param coilApin0: GPIO ID of coil A pin 0.
@@ -26,8 +23,8 @@ class Stepper:
     :type coilBpin1: int
     """
 
-    def __init__(self, uperObj, stepsIn360, coilApin0, coilApin1, coilBpin0, coilBpin1):
-        self.u = uperObj
+    def __init__(self, stepsIn360, coilApin0, coilApin1, coilBpin0, coilBpin1):
+
         self.totalSteps = stepsIn360
         self.delayLength = 0.01
 
@@ -42,19 +39,19 @@ class Stepper:
         self.stepperMode = FULL_STEP
 
         # declare pins
-        self.A0 = self.u.get_pin(GPIO, coilApin0)
-        self.A1 = self.u.get_pin(GPIO, coilApin1)
+        self.A0 = coilApin0
+        self.A1 = coilApin1
 
-        self.B0 = self.u.get_pin(GPIO, coilBpin0)
-        self.B1 = self.u.get_pin(GPIO, coilBpin1)
+        self.B0 = coilBpin0
+        self.B1 = coilBpin1
 
         # declare motor pins in output mode
-        self.A0.mode(GPIO.OUTPUT)
-        self.A1.mode(GPIO.OUTPUT)
-
-        self.B0.mode(GPIO.OUTPUT)
-        self.B1.mode(GPIO.OUTPUT)
-
+        pinMode(self.A0, OUTPUT)
+        pinMode(self.A1, OUTPUT)
+        
+        pinMode(self.B0, OUTPUT)
+        pinMode(self.B1, OUTPUT)
+        
     def setStepperMode(self, sMode):
         """
         Set stepper motor step mode.
@@ -74,14 +71,14 @@ class Stepper:
 
     def _fireSignal(self, pin0, pin1, data):
         if data == 0:
-            pin0.write(0)
-            pin1.write(0)
+            digitalWrite(pin0,LOW)
+            digitalWrite(pin1,LOW)
         elif data == 1:
-            pin0.write(1)
-            pin1.write(0)
+            digitalWrite(pin0,HIGH)
+            digitalWrite(pin1,LOW)
         elif data == -1:
-            pin0.write(0)
-            pin1.write(1)
+            digitalWrite(pin0,LOW)
+            digitalWrite(pin1,HIGH)
 
     def step(self, steps):
         """
