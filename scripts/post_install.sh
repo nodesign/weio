@@ -1,10 +1,8 @@
 #!/bin/sh
 echo "This is WeIO post install procedure"
-# Getting backup configuration file from /tmp and storing back to /weio directory
-cp /tmp/config.weio /weio
+# migrating old config file to the new one
+cd /weio/scripts/
+./migrateConfig.py
+cd /weio
+rm /tmp/config.weio
 
-#cd /
-#cp /weio/scripts/weio_run.sh .
-#pkill -f "./weio_run.sh"
-#pkill -f "python server.py"
-#./weio_run.sh&
