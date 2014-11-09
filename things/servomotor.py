@@ -49,8 +49,9 @@ class Servo:
         if (data<self.minangle):
             data = self.minangle
             print "Warning, min allowed angle is " , self.minangle , " value is set to " , self.minangle
-
-        self.angle = proportion(data, self.minangle, self.maxangle, 5.0, 10.0)
+        
+        self.angle = data
+        out = proportion(data, self.minangle, self.maxangle, 5.0, 10.0)
 
         pwmWrite(self.pin, self.angle)
 
