@@ -53,7 +53,7 @@ class Servo:
         self.angle = data
         out = proportion(data, self.minangle, self.maxangle, 5.0, 10.0)
 
-        pwmWrite(self.pin, self.angle)
+        pwmWrite(self.pin, out)
 
     def read(self):
         return self.angle
