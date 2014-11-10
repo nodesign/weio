@@ -172,8 +172,6 @@ class WeioGpio():
         pwm.set_period(period)
 
     def analogWrite(self, pin,value):
-        weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.OUTPUT
-        value = (1.0/self.pwmPrecision*value)*100.0
         self.pwmWrite(pin,value)
 
     def setPwmLimit(self, limit):
