@@ -11,4 +11,5 @@ config 'mount'
 	option 	device	'/dev/sda1'
 	option	uuid	'b689-9059'
 	option	enabled	'1'
+    option  enabled_fsck '0'
 
