@@ -387,7 +387,7 @@ CONFIG_OPKGSMIME_PASSPHRASE=y
 # Base system
 #
 CONFIG_PACKAGE_base-files=y
-# CONFIG_PACKAGE_block-mount is not set
+CONFIG_PACKAGE_block-mount=y
 CONFIG_PACKAGE_busybox=y
 # CONFIG_BUSYBOX_CUSTOM is not set
 CONFIG_BUSYBOX_DEFAULT_HAVE_DOT_CONFIG=y
@@ -1896,17 +1896,8 @@ CONFIG_PACKAGE_lua=y
 # Python
 #
 CONFIG_PACKAGE_python=y
-# CONFIG_PACKAGE_python-bzip2 is not set
-# CONFIG_PACKAGE_python-doc is not set
-CONFIG_PACKAGE_python-expat=y
-CONFIG_PACKAGE_python-full=y
-# CONFIG_PACKAGE_python-gdbm is not set
-CONFIG_PACKAGE_python-gzip=y
-# CONFIG_PACKAGE_python-ncurses is not set
-CONFIG_PACKAGE_python-openssl=y
-CONFIG_PACKAGE_python-shutil=y
+CONFIG_PACKAGE_python-base=y
 # CONFIG_PACKAGE_python-smbus is not set
-# CONFIG_PACKAGE_python-sqlite3 is not set
 
 #
 # Libraries
@@ -1944,14 +1935,15 @@ CONFIG_OPENSSL_WITH_EC=y
 #
 # database
 #
-# CONFIG_PACKAGE_libsqlite3 is not set
+CONFIG_PACKAGE_libsqlite3=y
 # CONFIG_PACKAGE_argp-standalone is not set
 CONFIG_PACKAGE_libavahi=y
 CONFIG_PACKAGE_libavahi-client=y
+# CONFIG_PACKAGE_libavahi-compat-libdnssd is not set
 CONFIG_PACKAGE_libavahi-dbus-support=y
 # CONFIG_PACKAGE_libblkid is not set
 CONFIG_PACKAGE_libblobmsg-json=y
-# CONFIG_PACKAGE_libbz2 is not set
+CONFIG_PACKAGE_libbz2=y
 CONFIG_PACKAGE_libcap=y
 # CONFIG_PACKAGE_libcharset is not set
 # CONFIG_PACKAGE_libconfig is not set
@@ -1982,7 +1974,7 @@ CONFIG_PACKAGE_liblua=y
 # CONFIG_PACKAGE_libmnl is not set
 # CONFIG_PACKAGE_libmount is not set
 CONFIG_PACKAGE_libncurses=y
-# CONFIG_PACKAGE_libncursesw is not set
+CONFIG_PACKAGE_libncursesw=y
 # CONFIG_PACKAGE_libnetfilter-conntrack is not set
 # CONFIG_PACKAGE_libnfnetlink is not set
 # CONFIG_PACKAGE_libnl is not set
