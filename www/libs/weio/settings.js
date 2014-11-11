@@ -49,6 +49,8 @@ var clientAction = null;
 
 $(document).ready(function () {
 
+    window.parent.document.getElementById("weioIframeIndex").style.display = "none";
+
 // Resize iframe, no need for this rigt now, it will be used later.
 // var iframeHeight = $(window).height();
 // window.parent.document.getElementById("weioIframe").style.height = iframeHeight + "px";
@@ -209,4 +211,12 @@ function reponse_msg(data) {
 var callbacks = {
     "updateSettings": reponse_msg,
     "updataNetwork": reponse_msg
+}
+
+
+// Tmp js
+
+function closeSettings() {
+    window.parent.document.getElementById("weioIframeIndex").style.display = "block";
+    history.back(1);
 }
