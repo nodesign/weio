@@ -273,9 +273,10 @@ $(document).ready(function () {
                                }    else {
                                    // tar archives
                                    if (path.indexOf(".tar") != -1) {
-                                        console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", path);
+                                        //console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", path);
                                         var target = path.split("www/")[1];
-                                       
+                                        console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", target);
+
                                         var _addr = location.host;
                                         var a = _addr.split(":");
 
@@ -297,8 +298,9 @@ $(document).ready(function () {
                                                 } else {
                                                     _addr = http_prefix + a[0] + ':' + userServerPort;
                                                 }
-
-                                                window.open(_addr +"/"+target);
+                                                //console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", _addr +"/"+target);
+                                                //window.open(_addr +"/"+target);
+                                                window.location.href = _addr +"/"+target;
                                         }); /** getJSON */  
                                     }
                                 }
