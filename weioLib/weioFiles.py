@@ -174,7 +174,7 @@ def saveRawContentToFile(path, data):
     try :
         inputFile = open(tmp, 'w')
         print(inputFile)
-        ret = inputFile.write(data)
+        ret = inputFile.write(data.encode('utf-8'))
         inputFile.close()
     except NameError:
         print NameError
