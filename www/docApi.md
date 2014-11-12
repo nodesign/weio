@@ -1,5 +1,7 @@
-Boilerplate
------------
+Javascript & Python
+===================
+Boilerplates
+------------
 ### HTML & JS boilerplates
 This is html boilerplate for WeIO. WeIO includes dependencies : jQuery, sockJS and weioApi.
 
@@ -15,29 +17,36 @@ This is html boilerplate for WeIO. WeIO includes dependencies : jQuery, sockJS a
   <body>
 
     <p>Hello world!</p>
+    
+    <script>
+        function onWeioReady() {
+            console.log("DOM is loaded, websocket is opened");
+        }
+    </script>
 
   </body>
 </html>
 ```
-
-To test easily these examples create a new JS file (awesomeProject.js) and add line to html file just after other libraries :
-```html
-<script data-main="weioLibs/weio" src="weioLibs/require.js"></script>
-<script src="awesomeProject.js"></script>
-```
-All examples below are written in awesomeProject.js file. For example this is "Hello world" in JS
-```javascript
-function onWeioReady() {
- console.log("Hello world");
-}
-```
 ### onWeioReady()
-This function is called when the DOM is fully loaded and websocket to WeIO is fully opened. Main difference between .ready() function from jQuery is that jQuery don't open websockets as they are not part of it's architecture. When using onWeioReady function, websocket communication with WeIO board is guaranteed, otherwise is possible to send messages to server before it fully opens it's websockets. It's recommended to use onWeioReady() instead .ready() from jQuery
+This function is called when the DOM is fully loaded and websocket to WeIO is fully opened. Main difference between .ready() function from jQuery is that jQuery don't open websockets as they are not part of it's architecture. When using onWeioReady function, websocket communication with WeIO board is guaranteed, otherwise is not possible to send messages to the server before it fully opens it's websockets. It's recommended to use onWeioReady() as a replacement for .ready() from jQuery
 ```javascript
 function onWeioReady() {
  console.log("DOM is loaded, websocket is opened");
 }
 ```
+### Python boilerplate
+This is "Hello world" program written in Python. It prints "hello world" on console and blinks LED.
+```python
+from weioLib.weio import *
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    print("Hello world")
+
+```
+
 Digital I/O
 -----------
 ### digitalWrite(pin, value)
@@ -84,32 +93,63 @@ function onWeioReady() {
 }
 ```
 
-### digitalRead(pin, callback)
-Reads actual voltage on corresponding pin. WeIO inputs are 5V TOLERANT. There are two possible answers : 0 if pin is connected to the Ground or 1 if positive voltage is detected. If only digitalRead function is provided, pin will be in HIGH Z state. See [inputMode(pin,mode)](http://github.com/nodesign/weio/wiki/Weio-GPIO-API-using-UPER-board#inputmodepin-mode) function for more options.
+The same example done in Python 
 
-DigitalRead asks to provide callback function that will be called when WeIO board finish reading state on the pin. Callback function arguments will be populated with dictionary that provides pin number and pin state as information. This example with setInterval pooling is useful to check time to time pin state, if immediate reaction is needed than see attachInterrupt function.
+```python
+from weioLib.weio import *
+
+def setup() :
+    attach.process(blinky)
+
+def blinky() :
+    while True:
+        digitalWrite(20, HIGH)
+        delay(500)
+        digitalWrite(20, LOW)
+        delay(500)
+```
+
+
+### digitalRead(pin, callback)
+Reads actual voltage on corresponding pin. WeIO inputs are 5V TOLERANT. There are two possible answers : 0 if pin is connected to the Ground or 1 if positive voltage is detected. If only digitalRead function is provided, pin will be in HIGH Z state. See pinMode(pin,mode) function for more options.
+
+In Javascript DigitalRead asks to provide callback function that will be called when WeIO board finish reading state on the pin. Callback function arguments will be populated with dictionary that provides pin number and pin state as information. This example with setInterval pooling is useful to check time to time pin state, if immediate reaction is needed than see attachInterrupt function.
 ```javascript
 function onWeioReady() {
-  setInterval(function() {
+    console.log("hello");
+    setInterval(function() {
     // Do something every 100ms
-        //pinCallback will be called when data arrives from server
-        digitalRead(13, pinCallback);
+    //pinCallback will be called when data arrives from server
+    digitalRead(0,pinCallback);
     }, 100);
 }
 
-function pinCallback(pinInput) {
-    console.log("Pin number " + String(pinInput.pin) + " is in state " +  String(pinInput.data));
-    if (pinInput.data===0) {
-        $('body').css('background', 'black');
-    } else {
-        $('body').css('background', 'white');
-    }
+function pinCallback(data) {
+    $("#phrase").html("DigitalRead Value on the pin 0 is "+ data.data);
+    $("body").css("background","white");
+    $("#phrase").css("color","black");
 }
 ```
 
-### inputMode(pin, mode)
-Sets input mode for digitalRead purpose. Available modes are : INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP
-This function activates pullups, pulldowns or high Z state on declared pins. If inputMode function is not called and digitalRead is performed pin state will be in high Z by default
+Here is Python example
+```python
+from weioLib.weio import *
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    pin = 0
+    while True:
+        a = digitalRead(pin)
+        print "Value on the pin ", pin, " = ", a
+        delay(100)
+```
+
+### pinMode(pin, mode)
+
+Sets state on the pin. Available modes are : PULL_UP, PULL_DOWN, INPUT, OUTPUT
+This function activates pullups, pulldowns or high Z state (only INPUT) on declared pins. If pinMode function is not called and digitalRead is performed pin state will be in high Z by default
 ```javascript
 function onWeioReady() {
   // sets pulldown resistor on pin 13
