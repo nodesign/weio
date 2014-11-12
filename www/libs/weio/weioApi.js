@@ -161,18 +161,21 @@ $(document).ready(function() {
 /* 
  * GLOBALS
  */
-var HIGH = 1;
-var LOW = 0;
+// GPIO directions
+var INPUT = 0
+var OUTPUT = 1
 
-var CHANGE = 2;
-var RISING = 3;
-var FALLING = 4;
+// GPIO resistors
+var NONE = 0
+var PULL_UP = 1
+var PULL_DOWN = 2
 
-var INPUT_PULLUP = 4;
-var INPUT_PULLDOWN = 2;
-var INPUT_HIGHZ = 0;
-var ADC_INPUT = 5;
-var OUTPUT = 1;
+// GPIO events
+var LOW = 0
+var HIGH = 1
+var CHANGE = 2
+var RISE = 3
+var FALL = 4
 
 /*
  * Unique UUID number of this session
