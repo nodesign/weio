@@ -13,7 +13,6 @@
 <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
 
   <head >
-  <link rel="stylesheet" type="text/css" href="mystyle.css">
 
     <title>My first Web app</title>
     <style>
@@ -37,18 +36,16 @@
 
     <script>
     
-    var light = 0;
-    
     function onWeioReady() {
+        console.log("hello");
         setInterval(function() {
         // Do something every 100ms
         //pinCallback will be called when data arrives from server
         digitalRead(0,pinCallback);
-    }, 100);
+        }, 100);
     }
     
     function pinCallback(data) {
-
         $("#phrase").html("DigitalRead Value on the pin 0 is "+ data.data);
         $("body").css("background","white");
         $("#phrase").css("color","black");
