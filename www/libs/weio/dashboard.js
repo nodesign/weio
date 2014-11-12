@@ -673,11 +673,15 @@ function updateProjects(data) {
         tag+='<a tabindex="-1" href="#">' + val.storageName + '</a>\n';
         tag+='<ul class="dropdown-menu">\n';
         tag+='<ul class="dropdown-menu scroll-menu" id="' + val.storageName + 'UserProjects">\n';
-        val.projects.forEach( function(p) {
-            var s = "'" + val.storageName + "/" + String(p) + "'\n";
-            console.log("DROP LIST ******************************************",s);
-            tag += '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + p + '</a></li>\n';
-        });
+        if (val.projects.length==0) {
+            tag += '<li><a class="cells" tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>\n';
+        } else {
+            val.projects.forEach( function(p) {
+                var s = "'" + val.storageName + "/" + String(p) + "'\n";
+                console.log("DROP LIST ******************************************",s);
+                tag += '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + p + '</a></li>\n';
+            });
+        }
         tag+='</ul></ul></li>\n';
     });
 
