@@ -1,5 +1,5 @@
 var nAdcs = 8;
-var pinStartNumber = 25;
+var pinStartNumber = 24;
 var adcs = {};
 
 function onWeioReady() {
