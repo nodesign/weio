@@ -50,6 +50,8 @@ var clientAction = null;
 $(document).ready(function () {
 
     window.parent.document.getElementById("weioIframeIndex").style.display = "none";
+    window.parent.document.getElementById("weioIframe").style.display = "block";
+
 
 // Resize iframe, no need for this rigt now, it will be used later.
 // var iframeHeight = $(window).height();
@@ -217,6 +219,5 @@ var callbacks = {
 // Tmp js
 
 function closeSettings() {
-    window.parent.document.getElementById("weioIframeIndex").style.display = "block";
     history.back(1);
 }
