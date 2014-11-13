@@ -326,6 +326,9 @@ function runEditor() {
     $(".iframeContainer").animate( { "margin-top": "60px" }, { queue: false, duration: 500 });
     $(".iframeContainerIndex").animate( { "margin-top": screen.height+60+"px" },
             { queue: false, duration: 500 });
+    $(".iframeContainerIndex").css("display","none");
+    $(".iframeContainer").css("display", "block");
+    
 
     //$(".iframeContainerIndex").hide();
 
@@ -370,13 +373,17 @@ function runPreview() {
     var path = projectName;
     $(".iframeContainerIndex").attr("src", _addr + "/" + path + "/index.html?" + randomNumber);
     // console.log(confFile.weio_lib_path);
-    $(".iframeContainerIndex").css("height", screen.height-60 + "px");
+    $(".iframeContainerIndex").css({
+        "display" : "block",
+        "height" : screen.height-60 + "px"
+        });
     $(".iframeContainerIndex").css("margin-top", screen.height+60 + "px");
-
+    
     //$(".iframeContainer").hide();
 
     //$(".iframeContainers").animate( { "margin-top": -screen.height }, { queue: false, duration: 500 });
     $(".iframeContainer").animate( { "margin-top": -screen.height }, { queue: false, duration: 500 });
+    $(".iframeContainer").css("display", "inline");
     $(".iframeContainerIndex").animate( { "margin-top": "40px" }, { queue: false, duration: 500 });
 
     $("#editorButtonHeader").attr("class", "top_tab");
@@ -392,8 +399,7 @@ function runPreview() {
 function runSettings() {
     console.log("=========>> runSettings() CALLED")
     updateIframeHeight();
-    //$(".iframeContainer").animate( { "margin-top": screen.height+60+"px" }, { queue: false, duration: 500 });
-
+    
     // generate random number to prevent loading page from cache
     var randomNumber = Math.random();
     $(".iframeContainer").attr("src", "settings.html?" + randomNumber);

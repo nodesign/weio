@@ -50,6 +50,11 @@ var clientAction = null;
 $(document).ready(function () {
 
     window.parent.document.getElementById("weioIframeIndex").style.display = "none";
+<<<<<<< HEAD
+=======
+    window.parent.document.getElementById("weioIframe").style.display = "block";
+
+>>>>>>> 98dc2b7158bf75fc28af33832d24f6b2ed70bd89
 
 // Resize iframe, no need for this rigt now, it will be used later.
 // var iframeHeight = $(window).height();
