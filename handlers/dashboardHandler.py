@@ -156,8 +156,10 @@ class WeioDashBoardHandler(SockJSConnection):
 
         # Examples
         examplesDir = "www/examples"
+
         if (os.path.exists(examplesDir)):
-            dirs = os.walk(examplesDir).next()[1]
+            #dirs = os.walk(examplesDir).next()[1]
+            dirs = get_directory_structure(examplesDir)
             a = {"storageName":"examples", "projects":dirs}
             allUserProjects.append(a)
 
@@ -183,7 +185,7 @@ class WeioDashBoardHandler(SockJSConnection):
             allUserProjects.append(a)
 
         data['data'] = allUserProjects
-
+        print json.dumps(data)
         self.broadcast(clients, json.dumps(data))
 
     def changeProject(self,rq):
@@ -472,3 +474,19 @@ class WeioDashBoardHandler(SockJSConnection):
         global clients
         # Remove client from the clients list and broadcast leave message
         clients.remove(self)
+
+
+## Get examples directory structure (folders with subfolders)
+def get_directory_structure(rootdir):
+    """
+    Creates a nested dictionary that represents the folder structure of rootdir
+    """
+    dir = {}
+    rootdir = rootdir.rstrip(os.sep)
+    start = rootdir.rfind(os.sep) + 1
+    for path, dirs, files in os.walk(rootdir):
+        folders = path[start:].split(os.sep)
+        subdir = dict.fromkeys(dirs)
+        parent = reduce(dict.get, folders[:-1], dir)
+        parent[folders[-1]] = subdir
+    return dir

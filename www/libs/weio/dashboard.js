@@ -666,6 +666,7 @@ function updateStatus(data){
  * Get project names and put it into dropbox menu
  */
 function updateProjects(data) {
+    
     var tag = "";
     tag+='<li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>';
     tag+='<li><a tabindex="-1" href="#importProject" role="button" data-toggle="modal">Import existing project</a></li>';
@@ -679,12 +680,27 @@ function updateProjects(data) {
         tag+='<a tabindex="-1" href="#">' + val.storageName + '</a>\n';
         tag+='<ul class="dropdown-menu">\n';
         tag+='<ul class="dropdown-menu scroll-menu" id="' + val.storageName + 'UserProjects">\n';
-        val.projects.forEach( function(p) {
-            var s = "'" + val.storageName + "/" + String(p) + "'\n";
-            console.log("DROP LIST ******************************************",s);
-            tag += '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + p + '</a></li>\n';
+        $.map(val.projects, function(examples, key) {
+            
+            // Get directory structure
+            $.each(examples, function(dir, idx){ 
+                tag+='<li class="dropdown-submenu scroll-menu">\n';
+                tag+='<a href="#">' + dir + '</a>\n';
+                tag+='<ul class="dropdown-menu">\n';
+                tag+='<ul class="dropdown-menu scroll-menu">\n';
+                
+                // Get subdirectory structure
+                $.each(idx, function(subdir){
+                    console.log("Subdir:" + " " + subdir);
+                    var s = "'" + val.storageName + "/" + String(subdir) + "'\n";
+                    tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+subdir+')">' + subdir + '</a></li>\n';
+                });
+            tag+= '</ul></ul></li>\n';
+           
+            });
+        
         });
-        tag+='</ul></ul></li>\n';
+      tag+='</ul></ul></li>\n';
     });
 
     console.log("storage", data.data);
@@ -777,5 +793,4 @@ function newProjectIsCreated(data) {
     reloadIFrame();
 
 }
-
 
