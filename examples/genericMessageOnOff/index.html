@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head >
+    <script data-main="www/libs/weioLibs" 
+            src="www/libs/require.js"></script>
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <link href="myStyle.css" rel="stylesheet">
+</head>
+
+<script>
+
+    function sendGenericMessage(val) {
+        genericMessage("myEvent",val);
+    }
+
+</script>
+
+<body>
+
+    <div style="background-color:white"
+         onclick="sendGenericMessage(0)"> CLICK HERE TO SEND myEvent(0) TO PYTHON
+    </div>
+    <div style="background-color:black"
+         onclick="sendGenericMessage(1)"> CLICK HERE TO SEND myEvent(1) TO PYTHON        
+    </div>
+
+</body>
+</html>
