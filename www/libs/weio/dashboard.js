@@ -676,10 +676,9 @@ function updateProjects(data) {
     tag+='<li class="divider"></li>';
 
     $.each( data.data, function( idx, val ) {
-        tag+='<li class="dropdown-submenu scroll-menu">\n';
+        tag+='<li class="dropdown-submenu">\n';
         tag+='<a tabindex="-1" href="#">' + val.storageName + '</a>\n';
-        tag+='<ul class="dropdown-menu">\n';
-        tag+='<ul class="dropdown-menu scroll-menu" id="' + val.storageName + 'UserProjects">\n';
+        tag+='<ul class="dropdown-menu" id="' + val.storageName + 'UserProjects">\n';
         $.map(val.projects, function(examples, key) {
             
             // Get directory structure
@@ -687,23 +686,21 @@ function updateProjects(data) {
                 tag+='<li class="dropdown-submenu scroll-menu">\n';
                 tag+='<a href="#">' + dir + '</a>\n';
                 tag+='<ul class="dropdown-menu">\n';
-                tag+='<ul class="dropdown-menu scroll-menu">\n';
+                tag+='<ul class="dropdown-menu scroll-menu id="' + dir + 'UserProjects"">\n';
                 
                 // Get subdirectory structure
                 $.each(idx, function(subdir){
-                    console.log("Subdir:" + " " + subdir);
                     var s = "'" + val.storageName + "/" + String(subdir) + "'\n";
-                    tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+subdir+')">' + subdir + '</a></li>\n';
+                    tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + subdir + '</a></li>\n';
                 });
             tag+= '</ul></ul></li>\n';
            
             });
         
         });
-      tag+='</ul></ul></li>\n';
+      tag+='</ul></li>\n';
     });
 
-    console.log("storage", data.data);
     //console.log(tag);
     $("#userProjectsList").empty();
     $("#userProjectsList").append(tag);
@@ -711,8 +708,9 @@ function updateProjects(data) {
     tag = "";
 
     tag+='<ul class="nav nav-pills">';
+
     for (var i=0; i<data.data.length; i++) {
-        if (i==0)
+        if (i==0) 
             tag+='<li class="active" id="' + data.data[i].storageName +
                     'StorageUnit'+'"><a href="#">' + data.data[i].storageName + '</a></li>';
         else
