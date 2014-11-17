@@ -7,28 +7,36 @@
 
 from weioLib.weio import *
 
-pin = 5
-
 def setup():
     attach.process(myProcess)
     
+    pin = 5
+
     # attach user-defined interrupt handler to pin 5
-    attach.interrupt(pin, RISING, testInt)
+    # in attachInterrupt parameters are :
+    # pin for interrupt,
+    # mode can be RISING, FALLING, EDGE, CHANGE
+    # callback that will be called on interrupt
+    # some object that will be returned in callback, this is useful to trace
+    # pin on which interrupt has been rised
+    attachInterrupt(pin, RISING, testInt, pin)
     
 def myProcess():
-    m = 0
+    # Make one infinite loop with blinking LED
     while True:
-        a=digitalRead(pin)
-        print "Value on the pin ",pin," = ",a, " Iteration ", m
+        digitalWrite(18,LOW)
         delay(200)
-        if (m==50):
-            print "detaching"
-            detachInterrupt(pin)
-        m = m+1
-    
+        digitalWrite(18,HIGH)
+        delay(200)
         
-def testInt(args1, args2):
+    
+# This is interrupt callback
+def testInt(event,obj):
     print "*** INTERRUPT ***"
-    print "ARGS1 = ", args1
-    print "ARGS2 = ", args2
-    print getInterruptType(args1["type"])
+    # event dictionary and function that brings in humain readable format 
+    # interrupt mode
+    # Passed object contains pin number of inetrrupt
+    eventType = getInterruptType(event["type"])
+    print eventType, "on pin", obj 
+    
+    
