@@ -15,7 +15,7 @@ def setup():
     # attach user-defined interrupt handler to pin 5
     # in attachInterrupt parameters are :
     # pin for interrupt,
-    # mode can be RISING, FALLING, EDGE, CHANGE
+    # mode can be RISING, FALLING, CHANGE
     # callback that will be called on interrupt
     # some object that will be returned in callback, this is useful to trace
     # pin on which interrupt has been rised
