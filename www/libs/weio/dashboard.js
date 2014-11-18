@@ -679,25 +679,32 @@ function updateProjects(data) {
         tag+='<li class="dropdown-submenu">\n';
         tag+='<a tabindex="-1" href="#">' + val.storageName + '</a>\n';
         tag+='<ul class="dropdown-menu" id="' + val.storageName + 'UserProjects">\n';
-        $.map(val.projects, function(examples, key) {
-            
-            // Get directory structure
-            $.each(examples, function(dir, idx){ 
-                tag+='<li class="dropdown-submenu scroll-menu">\n';
-                tag+='<a href="#">' + dir + '</a>\n';
-                tag+='<ul class="dropdown-menu">\n';
-                tag+='<ul class="dropdown-menu scroll-menu id="' + dir + 'UserProjects"">\n';
+        if (val.projects.length==0) {
+            tag += '<li><a class="cells" tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>\n';
+        } else {
+            $.map(val.projects, function(examples, key) {
                 
-                // Get subdirectory structure
-                $.each(idx, function(subdir){
-                    var s = "'" + val.storageName + "/" + String(subdir) + "'\n";
-                    tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + subdir + '</a></li>\n';
+                // Get directory structure
+                $.each(examples, function(dir, idx){ 
+                    tag+='<li class="dropdown-submenu scroll-menu">\n';
+                    tag+='<a href="#">' + dir + '</a>\n';
+                    tag+='<ul class="dropdown-menu">\n';
+                    tag+='<ul class="dropdown-menu scroll-menu id="' + dir + 'UserProjects"">\n';
+                    
+                    // Get subdirectory structure
+                    $.each(idx, function(subdir){
+                        if (dir == 'myProjects'){
+                            var s ="'" + val.storageName + "/" + "myProjects" + "/" + String(subdir) + "'\n"; 
+                        } else {
+                            var s = "'" + val.storageName + "/" + String(subdir) + "'\n";
+                        }
+                        tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + subdir + '</a></li>\n';
+                    });
+                tag+= '</ul></ul></li>\n';
+               
                 });
-            tag+= '</ul></ul></li>\n';
-           
             });
-        
-        });
+        }
       tag+='</ul></li>\n';
     });
 
