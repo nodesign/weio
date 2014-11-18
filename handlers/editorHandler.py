@@ -150,7 +150,7 @@ class WeioEditorHandler(SockJSConnection):
         #utfContents = urllib2.unquote(urllib2.quote(contents)).decode("utf8")
         #utfContents = urllib2.unquote(s).decode('utf8')
 
-        weioFiles.saveRawContentToFile(path, contents)
+        weioFiles.saveRawContentToFile(path, contents.encode('utf-8'))
 
         data['status'] = name + " saved!"
         self.broadcast(clients, json.dumps(data))
@@ -178,7 +178,7 @@ class WeioEditorHandler(SockJSConnection):
             (".md" in name) or (".svg" in name) or (".xml" in name) or
             (".less" in name) or (".coffee" in name)):
 
-            weioFiles.saveRawContentToFile(confFile["last_opened_project"] + "/" + name, contents)
+            weioFiles.saveRawContentToFile(confFile["last_opened_project"] + "/" + name, contents.encode('utf-8'))
         else :
 
             #decode from base64, file is binary
