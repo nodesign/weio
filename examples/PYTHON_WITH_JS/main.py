@@ -1,7 +1,7 @@
 #######################################
 #                                     #
 #      HOW TO SEND EVENTS FROM        #
-#        JAVASCRIPT TO PYTHON         #
+#    JAVASCRIPT TO PYTHON ON WEIO     #
 #                                     # 
 #######################################
 
