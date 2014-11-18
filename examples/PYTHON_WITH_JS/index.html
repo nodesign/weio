@@ -1,87 +1,72 @@
+<!--           HOW TO SEND EVENTS FROM        
+	 	    JAVASCRIPT TO PYTHON ON WEIO 
+
+Description: write digital values to PINS 18, 19 & 20 (connected to
+  			 RGB LED) when an event is emited from user interface.
+WeIO functions: genericMessage(eventName, message) 
+
+-->
 
 <!DOCTYPE html>
 <html lang="en">
-<script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
 
-  <head >
-  <link rel="stylesheet" type="text/css" href="mystyle.css">
+<head >
+    <link rel="stylesheet" type="text/css" href="myStyle.css">
+    <script data-main="www/libs/weioLibs" 
+            src="www/libs/require.js"></script>
+</head>
 
-    <title>My first Web app</title>
-    <style>
-        body {
-          background:black;
-        }
-        font {
-           font-family:Helvetica;
-           font-size:100px;
-           font-weight:bold;
-           text-transform:uppercase;
-        }
-        p {
-           cursor:pointer;
-           margin:0.2em;
-           line-height:1em;
-        }
-        
-        
-    </style>
-
+<body>
+    
     <script>
     
-    var light = false;
-    var a =0;
-
-    function onWeioReady() {
+        // This function is called when the DOM is fully 
+        // loaded and websocket to WeIO is fully opened
+        function onWeioReady() {
+            colors();
+        }
         
-        colors();
-
-    }
-
-    var color = 0;
-    function colors() {
-    
-
-        if (light==0) {
-
-            
-            $("#phrase").html("color is BLUE!");
-            $("body").css("background","blue");
-            $("#phrase").css("color","white");
-            genericMessage("colorled", 0);
-            light = light +1;
-            
-        } 
-        else if (light==1)  {
-           
-            $("#phrase").html("color is RED!");
-            $("body").css("background","red");
-            $("#phrase").css("color","white");
-            genericMessage("colorled", 1);
-            light = light +1;
-            
+        var light = 0;
+        
+        function colors() {
+            // Test color var to know current state
+            if (light==0) {
+                // Change phrase, background and font color
+                $("#phrase").html("color is BLUE!");
+                $("body").css("background","blue");
+                $("#phrase").css("color","white");
+                
+                // Send event "colorled" with message 1
+                genericMessage("colorled", 0);
+                light++;
+            } 
+            else if (light==1) {
+                // Change phrase, background and font color
+                $("#phrase").html("color is RED!");
+                $("body").css("background","red");
+                $("#phrase").css("color","white");
+                
+                // Send event "colorled" with message 1
+                genericMessage("colorled", 1);
+                light++;
+            }
+            else if (light==2) {
+                // Change phrase, background and font color
+                $("#phrase").html("color is GREEN!");
+                $("body").css("background","green");
+                $("#phrase").css("color","white");
+                
+                // Send event "colorled" with message 2
+                genericMessage("colorled", 2);
+                light = 0;
+            }
         }
-        else if (light==2)  {
-           
-            $("#phrase").html("color is GREEN!");
-            $("body").css("background","green");
-            $("#phrase").css("color","white");
-            genericMessage("colorled", 2);
-            light = 0;
-            
-        }
-        else{
-            light = 0;
-        }
-    }
-    
     </script>
-  </head>
-
-  <body>
-
+    
     <font>
         <p id="phrase" onclick="colors()"></p>
     </font>
+	
+</body>
 
-  </body>
 </html>
