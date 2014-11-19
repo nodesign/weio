@@ -54,9 +54,9 @@ def digitalWrite(pin, state):
         print "digitalWrite(", pin,",", state,")"
         return -1
 
-def digitalRead(pin, mode=NONE) :
+def digitalRead(pin) :
     try:
-        return gpio.digitalRead(pin, mode)
+        return gpio.digitalRead(pin)
     except:
         print "digitalRead(", pin,")"
         return -1

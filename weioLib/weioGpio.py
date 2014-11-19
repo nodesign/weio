@@ -107,11 +107,10 @@ class WeioGpio():
         #gpio.setup(GPIO.OUTPUT)
         gpio.write(state)
 
-    def digitalRead(self,pin, mode=GPIO.NONE) :
+    def digitalRead(self,pin) :
         """Reads actual voltage on corresponding pin. There are two possible answers : 0 if pin is connected to the Ground or 1 if positive voltage is detected"""
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
         gpio = self.mainGpio[pin]
-        gpio.setup(GPIO.INPUT, mode)
         return gpio.read()
 
     def portWrite(self, port, value) :

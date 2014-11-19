@@ -162,13 +162,16 @@ $(document).ready(function() {
  * GLOBALS
  */
 // GPIO directions
+
+
+// GPIO directions
 var INPUT = 0
 var OUTPUT = 1
 
 // GPIO resistors
-var NONE = 0
-var PULL_UP = 1
-var PULL_DOWN = 2
+var NONE = 2
+var PULL_UP = 3
+var PULL_DOWN = 4
 
 // GPIO events
 var LOW = 0
