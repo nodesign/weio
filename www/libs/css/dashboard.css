@@ -103,6 +103,9 @@ body {
   text-shadow: none;
   line-height: 60px;
   padding: 0 20px;
+  width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .navbar-inner .container li.dropdown {
   height: 60px;
