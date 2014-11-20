@@ -693,11 +693,9 @@ function updateProjects(data) {
                     
                     // Get subdirectory structure
                     $.each(idx, function(subdir){
-                        if (dir == 'myProjects'){
-                            var s ="'" + val.storageName + "/" + "myProjects" + "/" + String(subdir) + "'\n"; 
-                        } else {
-                            var s = "'" + val.storageName + "/" + String(subdir) + "'\n";
-                        }
+                        
+                        var s ="'" + val.storageName + "/" + String(dir) + '/' + String(subdir) + "'\n";
+                        
                         tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + subdir + '</a></li>\n';
                     });
                 tag+= '</ul></ul></li>\n';
