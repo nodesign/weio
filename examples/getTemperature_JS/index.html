@@ -1,74 +1,45 @@
 <!--###################################
 #                                     #
-#   how to have getTemperatur on WEIO #
+#  HOW TO HAVE getTemperatur ON WEIO  #
 #                                     #
 #######################################
 
-#syntax = getTemperature(callback) 
-#Value returned is in a callback function
+# syntax = getTemperature(callback) 
+# Value returned is in a callback function
 --> 
-
-
 
 <!DOCTYPE html>
 <html lang="en">
-<script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
 
-  <head >
-  <link rel="stylesheet" type="text/css" href="mystyle.css">
-
-    <title>My first Web app</title>
-    <style>
-        body {
-          background:black;
-        }
-        font {
-           font-family:Helvetica;
-           font-size:100px;
-           font-weight:bold;
-           text-transform:uppercase;
-        }
-        p {
-           cursor:pointer;
-           margin:0.2em;
-           line-height:1em;
-        }
-        
-    </style>
+<head >
+	<!-- import weioLibs and link css style --> 
+    <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+    <link rel="stylesheet" type="text/css" href="myStyle.css">
 
     <script>
 
-    
     var light = 0;
     
     function onWeioReady() {
+        // Do something every 200ms
         setInterval(function() {
-         // Do something every 1000ms
-        //pinCallback will be called when data arrives from server
+        // pinCallback will be called when data arrives from server
         getTemperature(pinCallback);
-        }, 1000);
-      
+        }, 200);
     }
     
-    function pinCallback(data) {
-
-        $("#phrase").html("temperature on the board is "+ data.data);
-        $("body").css("background","white");
-        $("#phrase").css("color","black");
-
+    function pinCallback(callback) {
+        // Update displayed phrase using callback data
+        $("#phrase").html("temperature on the board is "+ callback.data);
     }
     
-    function readA(data){
-        console.log("laaaaa", data);
-    }
     </script>
-  </head>
+</head>
 
-  <body>
-
+<body>
     <font>
         <p id="phrase" ></p>
     </font>
+</body>
 
-  </body>
 </html>
