@@ -10,62 +10,44 @@
 # pins 18, 19, 20 are connected on RGB LED on the board
 
 --> 
+
 <!DOCTYPE html>
 <html lang="en">
-<script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
 
-  <head >
-  <link rel="stylesheet" type="text/css" href="mystyle.css">
-
-    <title>My first Web app</title>
-    <style>
-        body {
-          background:black;
-        }
-        font {
-           font-family:Helvetica;
-           font-size:100px;
-           font-weight:bold;
-           text-transform:uppercase;
-        }
-        p {
-           cursor:pointer;
-           margin:0.2em;
-           line-height:1em;
-        }
-        
-        
-    </style>
+<head >
+	<!-- Import weioLibs and link your css style -->
+    <script data-main="www/libs/weioLibs" 
+            src="www/libs/require.js"></script>
+    <link rel="stylesheet" type="text/css" href="myStyle.css">
 
     <script>
     
-    var light = 0;
-    
+    // This function is called when DOM is loaded and websocket is opened
     function onWeioReady() {
-        lights();
+        myPwm();
     }
     
-    function lights() {
+    // init dutyCycle variable
+    var dutyCycle = 0;
 
-        $("#phrase").html("PWM value on pin 18 = "+ light);
-        $("body").css("background","white");
-        $("#phrase").css("color","black");
-        pwmWrite(18, light);
-        light = light+5;
-        if(light > 250){
-            light=0;
+    function myPwm() {
+        // Change displayed phrase
+        $("#phrase").html("CLICK HERE TO CHANGE PWM DUTY CYCLE ON PIN 18: "                             +dutyCycle+"%");
+        // write value of pwm dutyCyacle on pin 18
+        pwmWrite(18, dutyCycle);
+        // increment duty cycle
+        dutyCycle = dutyCycle+5;
+        // Reset counter when it reaches 100
+        if(dutyCycle > 100){
+            dutyCycle=0;
         }
-            
-
     }
+    
     </script>
-  </head>
+</head>
 
-  <body>
-
-    <font>
-        <p id="phrase" onclick="lights()"></p>
-    </font>
-
-  </body>
+<body>
+    <p id="phrase" onclick="myPwm()"></p>
+</body>
+  
 </html>
