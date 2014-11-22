@@ -360,6 +360,31 @@ function goSta() {
     
 };
 
+// Connect to other network /  Hidden AP
+function connectToNewWiFi(){
+    var ssid = $("#wifiSSID").val(),
+        pass = $("#wifiPassword").val(),
+        encryption = $("#encryption").val();
+    
+    // Checks for strings that are either empty or filled with whitespace
+    if ((/^\s*$/).test(pass)) { 
+        alert("Password field can't be empty!");
+    } else if (ssid == '') {
+        alert("SSID field can't be empty!");
+    
+    } else if (encryption == '') {
+        alert("Encryption field can't be empty!");    
+    } else {
+       
+        data = {'essid': ssid, 'passwd':pass, 'encryption': encryption};
+        changeWifi = { "request": "goSta", "data" : data};
+        wifiSocket.send(JSON.stringify(changeWifi));
+
+        var lostContact = "Browser lost connection with WeIO! That's normal because WeIO goes to STA mode now. Please connect to " + selectedCell.essid + " wifi network and then reload this page";
+        setTestament(lostContact);
+    }
+};
+
 
 //CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
