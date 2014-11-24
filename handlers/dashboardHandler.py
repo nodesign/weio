@@ -412,6 +412,11 @@ class WeioDashBoardHandler(SockJSConnection):
             data['status'] = "Error this projet already exists"
             self.broadcast(clients, json.dumps(data))
 
+    def clientPing(self, rq):
+        data = {}
+        data['requested'] = rq['request']
+        data['response'] = 'pong'
+        self.broadcast(clients, json.dumps(data))
 
 ##############################################################################################################################
     # DEFINE CALLBACKS IN DICTIONARY
@@ -437,7 +442,8 @@ class WeioDashBoardHandler(SockJSConnection):
         'archiveProject' : createTarForProject,
         'addNewProjectFromArchive' : decompressNewProject,
         'duplicateProject': duplicateProject,
-        'getPreviewPortNumber': sendPreviewPortNumber
+        'getPreviewPortNumber': sendPreviewPortNumber,
+        'ping': clientPing
 
     }
 

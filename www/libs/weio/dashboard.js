@@ -82,6 +82,14 @@ var selectedStorageUnit = null;
  */
 var confFile;
 
+/**
+ * Variable stores server state in order to provide ping/pong circle and 
+   detect when client lose connection with server and server not responding, e.g Network down etc...
+ */
+var serverChechIn = true;
+
+var serverChechInInterval = 10000;
+
 /*
  * When all DOM elements are fully loaded
  */
@@ -213,9 +221,27 @@ $(document).ready(function () {
     $('#importProjectUploader').change(function(evt){
             handleFileSelect(evt);
     });
+    
+    window.setInterval(function() {
+        if (serverChechIn != false) {
+            dashboard.send(JSON.stringify({'request': 'ping'}));
+            serverChechIn = false; // reset server checkin state
+        } else {
+            dashboard.close(); // Close connection
+        }
+    }, serverChechInInterval);
 
 }); /* end of document on ready event */
 
+
+ // Pong server callback from keep alive ping
+function pingServer(pong) {
+    if (!pong.response){
+        dashboard.close(); // Close connection
+    }else{
+        serverChechIn = true;
+    }
+};
 
 function updateProgress(evt) {
     // evt is an ProgressEvent.
@@ -589,7 +615,8 @@ var callbacks = {
     "errorObjects": updateError,
     "getPlayerStatus": playerStatus,
     "archiveProject": projectArchived,
-    "getPreviewPortNumber": setPreviewPort
+    "getPreviewPortNumber": setPreviewPort,
+    "ping": pingServer
 }
 
 /**
