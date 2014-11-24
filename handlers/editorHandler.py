@@ -178,7 +178,7 @@ class WeioEditorHandler(SockJSConnection):
             (".md" in name) or (".svg" in name) or (".xml" in name) or
             (".less" in name) or (".coffee" in name)):
 
-            weioFiles.saveRawContentToFile(confFile["last_opened_project"] + "/" + name, contents)
+            weioFiles.saveRawContentToFile(confFile["last_opened_project"] + "/" + name, contents.encode('utf-8'))
         else :
 
             #decode from base64, file is binary
@@ -233,7 +233,7 @@ class WeioEditorHandler(SockJSConnection):
 
         platformS += "WeIO version " + config["weio_version"] + " with Python " + \
                             platform.python_version() + " on " + platform.system() + "<br>"
-        platformS += "GPL 3, Nodesign.net 2013 Uros Petrevski & Drasko Draskovic <br>"
+        platformS += "GPL 3, Nodesign.net 2014 Uros Petrevski & Drasko Draskovic <br>"
 
         data['serverPush'] = 'sysConsole'
         data['data'] = platformS

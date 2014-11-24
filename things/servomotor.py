@@ -1,8 +1,6 @@
 ###
 # Authors : 
 # Uros PETREVSKI <uros@nodesign.net>
-# Ronan Yvergniaux <ronan@yvergniaux.fr
-#        7 May 2014
 ###
 
 ###
@@ -26,43 +24,36 @@
 # -->      <--2 ms = 10%
 #   <------- 20 ms ----->
 ###
-
-
-from IoTPy.pyuper.ioboard import IoBoard
-from IoTPy.pyuper.pwm import PWM
-from IoTPy.pyuper.utils import IoTPy_APIError, die
+from weioLib.weio import *
 
 class Servo:
-    def __init__(self, board, pin, msmin = 1,msmax = 2, minangle = 0, maxangle=180 ):
-        self.board = board
-        self.pwm = self.board.get_pin(PWM, pin)
-        self.msmin = float(msmin)
-        self.msmax = float(msmax)
-        self.minangle = minangle
-        self.maxangle = maxangle
-        self.pwm.period(20000)
+
+    def __init__(self, pin, minangle=0.0, maxangle=180.0):
+        self.minangle = float(minangle)
+        self.maxangle = float(maxangle)
+        self.pin = pin
+        # At first angle is unknown after first setting of angle this variable is updated
+        # This is just simple mechanism of tracking no real feedback
+        self.angle = None
+        # Set PWM period to fire every 20ms
+        setPwmPeriod(self.pin, 20000)
 
     def write(self, data):
-        """Move servo to n degrees"""
-        valmin = self.msmin/20.0
-        valmax = self.msmax/20.0
-        val = (data-self.minangle)*(valmax-valmin)/(self.maxangle-self.minangle)+valmin
-        self.pwm.write(1-val)
+        """Move servo to n degrees. Every 20ms variate signal from 5% - 10% with PWM"""
 
-    def writeMilliseconds(self, milli):
-        """Move servo expressed by pulses in ms"""
-        milli = milli/20.0
-        self.pwm.write(1-milli)
+        # Make proportion calculation here, map angle to percrents
+        if (data>self.maxangle):
+            data = self.maxangle
+            print "Warning, max allowed angle is ", self.maxangle , " value is set to " , self.maxangle
 
-    def readMilliseconds(self):
-        """Read servo in ms"""
-        val = 1 - self.pwm.read()
-        val = val*20
-        return val
+        if (data<self.minangle):
+            data = self.minangle
+            print "Warning, min allowed angle is " , self.minangle , " value is set to " , self.minangle
+        
+        self.angle = data
+        out = proportion(data, self.minangle, self.maxangle, 5.0, 10.0)
+
+        pwmWrite(self.pin, out)
 
     def read(self):
-        """Read servo in degree"""
-        val = 1 - self.pwm.read()
-        val = val*20
-        val = (val-self.msmin)*(self.maxangle-self.minangle)/(self.msmax-self.msmin)+self.minangle
-        return val
+        return self.angle

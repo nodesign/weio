@@ -7,9 +7,9 @@ class GPIO:
     OUTPUT = 1
 
     # GPIO resistors
-    NONE = 0
-    PULL_UP = 1
-    PULL_DOWN = 2
+    NONE = 2
+    PULL_UP = 3
+    PULL_DOWN = 4
 
     # GPIO events
     LOW = 0

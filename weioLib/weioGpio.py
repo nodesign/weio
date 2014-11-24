@@ -107,11 +107,10 @@ class WeioGpio():
         #gpio.setup(GPIO.OUTPUT)
         gpio.write(state)
 
-    def digitalRead(self,pin, mode=GPIO.NONE) :
+    def digitalRead(self,pin) :
         """Reads actual voltage on corresponding pin. There are two possible answers : 0 if pin is connected to the Ground or 1 if positive voltage is detected"""
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
         gpio = self.mainGpio[pin]
-        gpio.setup(GPIO.INPUT, mode)
         return gpio.read()
 
     def portWrite(self, port, value) :
@@ -172,8 +171,6 @@ class WeioGpio():
         pwm.set_period(period)
 
     def analogWrite(self, pin,value):
-        weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.OUTPUT
-        value = (1.0/self.pwmPrecision*value)*100.0
         self.pwmWrite(pin,value)
 
     def setPwmLimit(self, limit):
@@ -191,9 +188,6 @@ class WeioGpio():
             self.pwmPrecision = 65535.0
         else:
             print "Only 8bit or 16bit precisions are allowed"
-
-    def proportion(self, value,istart,istop,ostart,ostop) :
-        return float(ostart) + (float(ostop) - float(ostart)) * ((float(value) - float(istart)) / (float(istop) - float(istart)))
 
     def attachInterrupt(self, pin, mode, callback, obj):
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
@@ -242,15 +236,6 @@ class WeioGpio():
         pwm = self.u.PWM(pin)
         pwm.set_period(10000)
         pwm.set_duty_cycle(0)
-
-    def constrain(self, x, a, b):
-        if(x > a):
-            if(x < b):
-                return a
-        if(x < a):
-            return a
-        if(x > b):
-            return b
 
     def millis(self):
         a = 1000*time.time()

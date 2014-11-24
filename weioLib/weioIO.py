@@ -54,9 +54,9 @@ def digitalWrite(pin, state):
         print "digitalWrite(", pin,",", state,")"
         return -1
 
-def digitalRead(pin, mode=NONE) :
+def digitalRead(pin) :
     try:
-        return gpio.digitalRead(pin, mode)
+        return gpio.digitalRead(pin)
     except:
         print "digitalRead(", pin,")"
         return -1
@@ -118,10 +118,22 @@ def setPwmPulseTime(pin, t):
 
 def analogWrite(pin, value):
     """Defining idiom of pwmWrite to match arduino syntax"""
-    return gpio.pwmWrite(pin, value)
+    try:
+        return gpio.pwmWrite(pin, value)
+    except:
+        print "analogWrite(", pin, ",",value,")"
 
 def proportion(value, istart, istop, ostart, ostop):
-    return gpio.proportion(value, istart, istop, ostart, ostop)
+    return float(ostart) + (float(ostop) - float(ostart)) * ((float(value) - float(istart)) / (float(istop) - float(istart)))
+
+def constrain(x, a, b):
+    if(x > a):
+        if(x < b):
+            return a
+    if(x < a):
+        return a
+    if(x > b):
+        return b
 
 def attachInterrupt(pin, mode, callback, obj):
     try:
@@ -164,19 +176,13 @@ def notone(pin):
     except:
         print "tone(", pin, ")"
         return -1
-def constrain(self, x, a, b):
-    try:
-        return gpio.constrain(x,a,b)
-    except:
-        print "constrain(", x,",",a,",",b,")"
-        return -1
+
 def pulseIn(pin,level=GPIO.HIGH, timeout=100000):
     try:
         return gpio.pulseIn(pin,level,timeout)
     except:
         print "pulseIn(", pin,",",level,",",timeout,")"
         return -1
-    
 
 def millis():
     return gpio.millis()

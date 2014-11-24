@@ -103,6 +103,9 @@ body {
   text-shadow: none;
   line-height: 60px;
   padding: 0 20px;
+  width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .navbar-inner .container li.dropdown {
   height: 60px;
@@ -381,4 +384,23 @@ li.dropdown .dropdown-toggle {
 }
 #updateProgressChart {
   margin-left: 110px;
+}
+/* Custom css for 1024*768 resolution */
+@media (min-width: 980px) and (max-width: 1024px) {
+  #controlCenter {
+    width: auto !important;
+    top: 0 !important;
+    left: 0 !important;
+    display: block;
+    float: left;
+    position: relative !important;
+  }
+  #statusBar {
+    width: 100% !important;
+    float: none !important;
+    padding: 2px 6px;
+    margin: 11px 12px 0 0;
+  }
+
+
 }

@@ -326,6 +326,9 @@ function runEditor() {
     $(".iframeContainer").animate( { "margin-top": "60px" }, { queue: false, duration: 500 });
     $(".iframeContainerIndex").animate( { "margin-top": screen.height+60+"px" },
             { queue: false, duration: 500 });
+    $(".iframeContainerIndex").css("display","none");
+    $(".iframeContainer").css("display", "block");
+    
 
     //$(".iframeContainerIndex").hide();
 
@@ -370,13 +373,17 @@ function runPreview() {
     var path = projectName;
     $(".iframeContainerIndex").attr("src", _addr + "/" + path + "/index.html?" + randomNumber);
     // console.log(confFile.weio_lib_path);
-    $(".iframeContainerIndex").css("height", screen.height-60 + "px");
+    $(".iframeContainerIndex").css({
+        "display" : "block",
+        "height" : screen.height-60 + "px"
+        });
     $(".iframeContainerIndex").css("margin-top", screen.height+60 + "px");
-
+    
     //$(".iframeContainer").hide();
 
     //$(".iframeContainers").animate( { "margin-top": -screen.height }, { queue: false, duration: 500 });
     $(".iframeContainer").animate( { "margin-top": -screen.height }, { queue: false, duration: 500 });
+    $(".iframeContainer").css("display", "inline");
     $(".iframeContainerIndex").animate( { "margin-top": "40px" }, { queue: false, duration: 500 });
 
     $("#editorButtonHeader").attr("class", "top_tab");
@@ -392,8 +399,7 @@ function runPreview() {
 function runSettings() {
     console.log("=========>> runSettings() CALLED")
     updateIframeHeight();
-    //$(".iframeContainer").animate( { "margin-top": screen.height+60+"px" }, { queue: false, duration: 500 });
-
+    
     // generate random number to prevent loading page from cache
     var randomNumber = Math.random();
     $(".iframeContainer").attr("src", "settings.html?" + randomNumber);
@@ -673,11 +679,15 @@ function updateProjects(data) {
         tag+='<a tabindex="-1" href="#">' + val.storageName + '</a>\n';
         tag+='<ul class="dropdown-menu">\n';
         tag+='<ul class="dropdown-menu scroll-menu" id="' + val.storageName + 'UserProjects">\n';
-        val.projects.forEach( function(p) {
-            var s = "'" + val.storageName + "/" + String(p) + "'\n";
-            console.log("DROP LIST ******************************************",s);
-            tag += '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + p + '</a></li>\n';
-        });
+        if (val.projects.length==0) {
+            tag += '<li><a class="cells" tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>\n';
+        } else {
+            val.projects.forEach( function(p) {
+                var s = "'" + val.storageName + "/" + String(p) + "'\n";
+                console.log("DROP LIST ******************************************",s);
+                tag += '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + p + '</a></li>\n';
+            });
+        }
         tag+='</ul></ul></li>\n';
     });
 
