@@ -1,17 +1,33 @@
+<!--###################################
+#                                     #
+#  HOW TO HAVE DIGITAL WRITE ON WEIO  #
+#                                     #
+#######################################
+
+# Description: This example shows how to write digital values from user 
+# 			   interface to PIN's 18, 19 & 20 connected on the RGB LED 
+#              on the board.
+# syntax = digitalWrite(pin,value) 
+# Function available in all PIN's. Value is 0 and 1 or LOW and HIGH
+-->
+
 <!DOCTYPE html>
-
 <head >
-
-<script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
-<link href="myStyle.css" rel="stylesheet">
+	<!-- Import weioLibs and link css style -->
+    <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+    <link href="myStyle.css" rel="stylesheet">
+    <!-- Link Bootstrap 3.3.0 lib -->
+ 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+	
+</head>
 
 <script type="text/javascript">
     
+	// This function is called when DOM is loaded and web socket opened.
     function onWeioReady() {
         rgb(LOW,LOW,LOW); // white color
     }
-    
+    // This function is used to set color on the RGB LED on the board 
     function rgb(r,g,b) {
         digitalWrite(18, r); // red led
         digitalWrite(19, g); // green led
@@ -20,8 +36,7 @@
     
 </script>
 
-</head>
-
+<!--  User interface with 8 "buttons" and associated functions on click -->
 <body>
     <div class="col-xs-6" 
          style="background-color:white" 
