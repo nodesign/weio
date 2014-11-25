@@ -1,82 +1,65 @@
 <!--###################################
 #                                     #
-#   how to have digitalWrite on WEIO  #
+#  HOW TO HAVE DIGITAL WRITE ON WEIO  #
 #                                     #
 #######################################
 
-#syntax = digitalWrite(pin,value) 
-#Value is 0 and 1 or LOW and HIGH
+# This example shows how to write digital values to PIN's 18, 19 & 20 
+# (connected on RGB LED on the board)
+# syntax = digitalWrite(pin,value)
+# Function available in all PIN's. Value is 0 and 1 or LOW and HIGH
 --> 
-
 
 <!DOCTYPE html>
 <html lang="en">
-<script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
 
-  <head >
-  <link rel="stylesheet" type="text/css" href="mystyle.css">
-
-    <title>My first Web app</title>
-    <style>
-        body {
-          background:black;
-        }
-        font {
-           font-family:Helvetica;
-           font-size:200px;
-           font-weight:bold;
-           text-transform:uppercase;
-        }
-        p {
-           cursor:pointer;
-           margin:0.2em;
-           line-height:1em;
-        }
-        
-        
-    </style>
+<head >
+	<!-- Import weioLibs and link your css style -->
+    <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+    <link rel="stylesheet" type="text/css" href="myStyle.css">
 
     <script>
     
-    var light = false;
-    
-    function onWeioReady() {
-        lights();
-    }
-    
-    function lights() {
-
-        if (light) {
-            
-            $("#phrase").html("Turn OFF the light!");
-            $("body").css("background","white");
-            $("#phrase").css("color","black");
-            digitalWrite(18, LOW);
-            digitalWrite(19, LOW);
-            digitalWrite(20, LOW);
-            genericMessage("pera", null);
-            light = !light;
-        } else {
-           
-            $("#phrase").html("Turn ON the light!");
-            $("body").css("background","black");
-            $("#phrase").css("color","white");
-            digitalWrite(18, HIGH);
-            digitalWrite(19, HIGH);
-            digitalWrite(20, HIGH);
-            genericMessage("pera", null);
-            light = !light;
+		// init light variable
+        var light = false;
+        
+        // This function is called when DOM is loaded and web socket opened
+        function onWeioReady() {
+            lights();
         }
-    }
+        
+        function lights() {
+    
+            if (light) {
+                // Change displayed phrase, background and font color.
+                $("#phrase").html("TURN OFF THE LIGHT!");
+                $("body").css("background","white");
+                $("#phrase").css("color","black");
+				// write LOW on pins
+                digitalWrite(18, LOW);
+                digitalWrite(19, LOW);
+                digitalWrite(20, LOW);
+				// toggle light variable
+                light = !light;
+            } else {
+                // Change displayed phrase, background and font color.
+                $("#phrase").html("TURN ON THE LIGHT!");
+                $("body").css("background","black");
+                $("#phrase").css("color","white");
+				// write HIGH on pins
+                digitalWrite(18, HIGH);
+                digitalWrite(19, HIGH);
+                digitalWrite(20, HIGH);
+				// toggle light variable
+                light = !light;
+            }
+        }
     
     </script>
-  </head>
+</head>
 
-  <body>
+<body>
+    <p id="phrase" onclick="lights()"></p>
+</body>
 
-    <font>
-        <p id="phrase" onclick="lights()"></p>
-    </font>
-
-  </body>
 </html>
