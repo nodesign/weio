@@ -44,6 +44,7 @@ from weioLib import weioFiles
 
 # Import globals for main Tornado
 from weioLib import weioIdeGlobals
+from shutil import copyfile
 
 class WeioPlayer():
     def __init__(self):
@@ -121,7 +122,19 @@ class WeioPlayer():
         lp = config["last_opened_project"]
 
         # check if user project exists before launching
-        #if (weioFiles.checkIfFileExists(up+lp+"main.py")):
+        # if not create main.py from boilerplate and inform user about that
+
+        if not(weioFiles.checkIfFileExists(lp+"/main.py")):
+            boiler = "www/libs/weio/boilerPlate/main.py"
+            copyfile(boiler, lp+"/main.py")
+
+            consoleMsg = {}
+            consoleMsg['serverPush'] = "stderr"
+            consoleMsg['data'] = "WeIO cant work without main.py file. This file has been created for you. Please refresh IDE to see main.py"
+            if (weioIdeGlobals.CONSOLE != None):
+                weioIdeGlobals.CONSOLE.send(json.dumps(consoleMsg))
+
+        #recheck if file was nicely created
         if (weioFiles.checkIfFileExists(lp+"/main.py")):
             #print("weioMain indipendent process launching...")
 
@@ -144,15 +157,16 @@ class WeioPlayer():
 
             # send *start* command to user tornado
             self.weioPipe.stdin.write("*START*")
-            
+
 
         else : # FILE DON'T EXIST
             warning = {}
             warning['requested'] = rq['request']
             warning['status'] = "main.py don't exist!"
             warning['state'] = "error"
-            self.send(json.dumps(warning))
 
+
+            self.send(json.dumps(warning))
 
     def stop(self, rq={'request':'stop'}):
         """Stop running application"""
