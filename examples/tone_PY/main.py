@@ -1,24 +1,34 @@
 #######################################
 #                                     #
-#   how to have tone on WEIO          #
+#      HOW TO HAVE TONE ON WEIO       #
 #                                     #
 #######################################
 
-# syntax = tone(pin, hertz, duration) 
-# there are 6 pwm pins on weio (23, 22, 21, 20, 19, 18)
-# tone use pwm pin. 
-# duration is optionnal and is in milliseconds 
-# notone(pin) is function to detach tone of pin (you don't need this function if you use duration argument
 
-from weioLib.weio import *
+# Description: This example shows how to generates a square wave of the
+#              specified frequency (and 50% duty cycle) on a pin. There
+#              are 6 pwm pins on weio (23, 22, 21, 20, 19, 18).
+#              A duration can be specified, otherwise the wave continues 
+#              until a call to noTone(pin). The pin can be connected to a
+#              piezo buzzer or other speaker to play tones.
+# syntax = tone(pin, hertz, duration)  
+
+from weioLib.weio import * 
 
 def setup():
-    attach.process(myProcess)
+    # attaches myTone function to infinite loop
+    attach.process(myTone)
     
-def myProcess():
-    i = 0
+def myTone():
+    # init variable freq
+    freq = 0
+    # create infinite loop
     while True:
-        tone(23, i)
-        i = i +1
-        print "i = ", i
+        # get tone with "freq" frequency on pin 23
+        tone(23, freq)
+        # increment freq variable
+        freq = freq+1
+        # print frequency on the console
+        print "Frequency = ", freq , "Hz"
+        # wait 100ms
         delay(100)
