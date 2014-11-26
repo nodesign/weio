@@ -9,7 +9,7 @@
 #              specified frequency (and 50% duty cycle) on a pin. There
 #              are 6 pwm pins on weio (23, 22, 21, 20, 19, 18).
 #              A duration can be specified, otherwise the wave continues 
-#              until a call to noTone(pin). The pin can be connected to a
+#              until a call to notone(pin). The pin can be connected to a
 #              piezo buzzer or other speaker to play tones.
 # syntax = tone(pin, hertz, duration)  
 
