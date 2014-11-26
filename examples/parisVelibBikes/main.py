@@ -43,6 +43,7 @@ def myProcess():
         if (velib["available_bikes"]==0):
             digitalWrite(ledPinNo,LOW)
             delay(2000)
+            digitalWrite(ledPinNo,HIGH)
         else :
             # if bikes available blink number of times that express number of available bikes
             for i in range(velib["available_bikes"]):
