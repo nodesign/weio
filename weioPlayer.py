@@ -126,13 +126,23 @@ class WeioPlayer():
 
         if not(weioFiles.checkIfFileExists(lp+"/main.py")):
             boiler = "www/libs/weio/boilerPlate/main.py"
-            copyfile(boiler, lp+"/main.py")
+            try:
+                copyfile(boiler, lp+"/main.py")
 
-            consoleMsg = {}
-            consoleMsg['serverPush'] = "stderr"
-            consoleMsg['data'] = "WeIO cant work without main.py file. This file has been created for you. Please refresh IDE to see main.py"
-            if (weioIdeGlobals.CONSOLE != None):
-                weioIdeGlobals.CONSOLE.send(json.dumps(consoleMsg))
+                consoleMsg = {}
+                consoleMsg['serverPush'] = "stderr"
+                consoleMsg['data'] = "WeIO cant work without main.py file. This file has been created for you. Please refresh IDE to see main.py"
+                if (weioIdeGlobals.CONSOLE != None):
+                    weioIdeGlobals.CONSOLE.send(json.dumps(consoleMsg))
+
+            except :
+                warning = {}
+                warning['requested'] = rq['request']
+                warning['status'] = "main.py don't exist!"
+                warning['state'] = "error"
+
+
+                self.send(json.dumps(warning))
 
         #recheck if file was nicely created
         if (weioFiles.checkIfFileExists(lp+"/main.py")):
