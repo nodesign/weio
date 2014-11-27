@@ -217,15 +217,12 @@ class WeioGpio():
     def tone(self, pin, frequency, duration = 0):
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.OUTPUT
         pwm = self.u.PWM(pin)
-        if(frequency == 0):
-            frequency=1
-        val = (1.0/frequency)*1000000.0
-        pwm.set_period(int(val))
+        self.u.set_frequency(frequency)
         pwm.set_duty_cycle(50)
         if(duration > 0):
-            sleep(duration*0.001)
-            pwm.set_period(10000)
-            pwm.set_duty_cycle(0)
+           sleep(duration*0.001)
+           pwm.set_period(10000)
+           pwm.set_duty_cycle(0)
 
     def pulseIn(self, pin, level=GPIO.HIGH, timeout=100000):
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
