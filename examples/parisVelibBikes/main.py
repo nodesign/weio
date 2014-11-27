@@ -1,6 +1,6 @@
 ################################################################################################
 #                                                                                              #
-#   Check if Parisian Velib bikes are avaibile and blink a LED                                 #
+#   Check if Paris Velib bikes are available and blink a LED                                   #
 #                                                                                              #
 #   Made by Uros Petrevski, many thanks to Aurelien Fache for his WeIO project that            #
 #   I was inspired :                                                                           # 
