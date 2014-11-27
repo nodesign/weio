@@ -1,6 +1,6 @@
 #############################################
 #                                           #
-#   WeIO PowerModule    #
+#   WeIO PowerModule                        #
 #                                           #
 #############################################
 
@@ -10,7 +10,7 @@
 # Larch pin to HIGH to end communication and present outputs on chip pins
 
 from weioLib.weio import *
-from things.powerModule import PowerModule
+from things.output.power.powerModule import PowerModule
 
 def setup():
     attach.process(myProcess)
