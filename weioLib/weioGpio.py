@@ -39,7 +39,7 @@ from IoTPy.core.gpio import GPIO
 from IoTPy.core.adc import ADC
 from IoTPy.core.pwm import PWM
 from weioLib import weioRunnerGlobals
-import signal, time
+import signal, time,sys
 
 import os
 
@@ -187,7 +187,7 @@ class WeioGpio():
         elif (res==16):
             self.pwmPrecision = 65535.0
         else:
-            print "Only 8bit or 16bit precisions are allowed"
+            sys.stderr.write("Only 8bit or 16bit precisions are allowed")
 
     def attachInterrupt(self, pin, mode, callback, obj):
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
