@@ -36,11 +36,11 @@
 
 from weioLib.weio import *
 import struct
-
+import sys
 class PowerModule:
     def __init__(self, port):
         if (port>1):
-            print "Error! PowerModule can be only on ports 0 or 1"
+            sys.stderr.write("Error! PowerModule can be only on ports 0 or 1")
         else :
             self.spi = initSPI(port) # init SPI on port 0 (pins : 2,3,4)
 
