@@ -53,7 +53,7 @@ class PowerModule:
 
     def digitalWrite(self, pin, value):
         mask = value << (15-pin)
-        self.output = self.output | mask
+        self.output = self.output ^ mask
         self.fire()
 
     def portWrite(self, value): # 16 bit value here please
