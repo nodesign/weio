@@ -2,7 +2,7 @@ import platform
 import time
 from weioLib.weioLm75 import WeioLm75
 from IoTPy.core.gpio import GPIO
-from IoTPy.core.i2c import I2C as interfaceI2C
+from IoTPy.pyuper.i2c import UPER1_I2C as interfaceI2C
 from IoTPy.pyuper.spi import UPER1_SPI as interfaceSPI
 ###
 # Global interface
