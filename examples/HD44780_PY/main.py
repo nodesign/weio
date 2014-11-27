@@ -21,7 +21,7 @@
 # LCD pins 7 to 10 must not be connected
 
 from weioLib.weio import *
-from things.hd44780 import Hd44780
+from things.output.display.hd44780 import Hd44780
 
 def setup():
     attach.process(myProcess)
