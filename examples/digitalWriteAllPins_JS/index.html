@@ -1,0 +1,182 @@
+<!--###################################
+# 									  #
+#    HOW TO WRITE DIGITAL VALUES TO	  #
+#         ALL PINS ON WEIO            #
+# 									  #
+#######################################
+
+# Description: This example shows how to write digital values to all
+#              PIN's using user interface.
+# syntax = digitalWrite(pin,value)
+# Function available in all PIN's. Value is 0 and 1 or LOW and HIGH
+
+--> 
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head >
+	<!-- include weioLibs and liknk css style -->
+    <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+    <link href="myStyle.css" rel="stylesheet">
+	<!-- Link online library bootstrap 3.3.0 -->
+    <link rel="stylesheet" 		  	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+
+	<!-- Define JavaScript functions -->
+	<script>
+    
+	    // initialize array with pin values
+	    var pinFlags = 
+	    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    
+		// This function allows you to write digital value on selected pin and
+		// update corresponding displayed button
+	    function lights(pin, pinID) {
+			// If flag of this pin is 0 button is turned-on (green color)
+	        if( !pinFlags[pin] ) {
+				// change diaplayed pharse, background and font color
+	            $(pinID).html("PIN " + pin + ": HIGH");
+	            $(pinID).css( "background-color", "#33EE66" );
+	            $(pinID).css( "color", "black" );
+				// write HIGH to corresponding pin
+	            digitalWrite(pin, HIGH);
+				// invert pin flag
+	            pinFlags[pin] = 1;
+	        }
+			// else pin button is reseted
+	        else {
+				// change diaplayed pharse, background and font color
+	            $(pinID).html("PIN " + pin + ": LOW");
+	            $(pinID).css( "background-color", "#181818" );
+	            $(pinID).css( "color", "white" )
+				// write LOW to corresponding pin
+	            digitalWrite(pin, LOW);
+				// invert pin flag
+	            pinFlags[pin] = 0;
+	        }
+	    }
+    
+	</script>
+		
+</head>
+
+<body> 
+	
+<!-- Create buttons for all pins: define id for each one,
+	 onclick functions and displayed phrase on start  -->
+	
+    <!--------------- MODULE 1 ------------------>
+    <div class="row-xs-12">  
+        <div class="col-xs-3" id="pin0"   
+             onclick="lights(0, pin0)"> PIN 0: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin1" 
+             onclick="lights(1, pin1)"> PIN 1: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin2" 
+             onclick="lights(2, pin2)"> PIN 2: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin3" 
+             onclick="lights(3, pin3)"> PIN 3: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin4" 
+             onclick="lights(4, pin4)"> PIN 4: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin5" 
+             onclick="lights(5, pin5)"> PIN 5: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin6" 
+             onclick="lights(6, pin6)"> PIN 6: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin7" 
+             onclick="lights(7, pin7)"> PIN 7: LOW </p>
+        </div>
+    </div>
+    
+    <!--------------- MODULE 2 ------------------>
+    <div class="row-xs-12">
+        <div class="col-xs-3" id="pin8"   
+             onclick="lights(8, pin8)"> PIN 8: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin9" 
+             onclick="lights(9, pin9)"> PIN 9: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin10" 
+             onclick="lights(10, pin10)"> PIN 10: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin11" 
+             onclick="lights(11, pin11)"> PIN 11: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin12" 
+             onclick="lights(12, pin12)"> PIN 12: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin13" 
+             onclick="lights(13, pin13)"> PIN 13: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin14" 
+             onclick="lights(14, pin14)"> PIN 14: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin15" 
+             onclick="lights(15, pin15)"> PIN 15: LOW </p>
+        </div>
+    </div>
+    
+    <!--------------- MODULE 3 ------------------>
+    <div class="row-xs-12">
+        <div class="col-xs-3" id="pin16"   
+             onclick="lights(16, pin16)"> PIN 16: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin17" 
+             onclick="lights(17, pin17)"> PIN 17: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin18" 
+             onclick="lights(18, pin18)"> PIN 18: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin19" 
+             onclick="lights(19, pin19)"> PIN 19: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin20" 
+             onclick="lights(20, pin20)"> PIN 20: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin21" 
+             onclick="lights(21, pin21)"> PIN 21: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin22" 
+             onclick="lights(22, pin22)"> PIN 22: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin23" 
+             onclick="lights(23, pin23)"> PIN 23: LOW </p>
+        </div>
+    </div>
+    
+    <!--------------- MODULE 4 ------------------>
+    <div class="row-xs-12">
+        <div class="col-xs-3" id="pin24"   
+             onclick="lights(24, pin24)"> PIN 24: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin25" 
+             onclick="lights(25, pin25)"> PIN 25: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin26" 
+             onclick="lights(26, pin26)"> PIN 26: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin27" 
+             onclick="lights(27, pin27)"> PIN 27: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin28" 
+             onclick="lights(28, pin28)"> PIN 28: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin29" 
+             onclick="lights(29, pin29)"> PIN 29: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin30" 
+             onclick="lights(30, pin30)"> PIN 30: LOW </p>
+        </div>
+        <div class="col-xs-3" id="pin31" 
+             onclick="lights(31, pin31)"> PIN 31: LOW </p>
+        </div>
+    </div>
+
+</body> 
+
+</html>
