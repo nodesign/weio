@@ -1,5 +1,5 @@
 from weioLib.weio import *
-from things.stepper import Stepper, FULL_STEP, HALF_STEP
+from things.output.motor.stepper import Stepper, FULL_STEP, HALF_STEP
 
 
 def setup():

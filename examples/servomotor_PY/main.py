@@ -12,7 +12,7 @@
 # for greater precision
 
 from weioLib.weio import *
-from things.servomotor import Servo
+from things.output.motor.servomotor import Servo
 
 def setup():
     attach.process(myProcess)
