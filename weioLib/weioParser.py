@@ -36,7 +36,7 @@
 
 from weioLib.weioIO import *
 from weioLib import weioRunnerGlobals
-import platform
+import platform, sys
 
 # WeIO API bindings from websocket to lower levels
 # Each data argument is array of data
@@ -121,12 +121,12 @@ def callSetPwmPeriod(data) :
         print "setPwmPeriod ON PC", data
     return None
 
-def callSetPwmLimit(data) :
-    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
-        setPwmLimit(data[0])
-    else:
-        print "setPwmLimit ON PC", data
-    return None
+# def callSetPwmLimit(data) :
+#     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+#         setPwmLimit(data[0])
+#     else:
+#         print "setPwmLimit ON PC", data
+#     return None
 
 def callPwmWrite(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
@@ -140,7 +140,7 @@ def callProportion(data) :
     bck = {}
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         #print "From browser ", data
-        value = proportion(data[0],data[1],data[2],data[3],data[4]) # this is pin number
+        value = proportion(data[0],data[1],data[2],data[3],data[4])
         bck["data"] = value
     else :
         print "proportion ON PC", data
@@ -235,6 +235,33 @@ def pinsInfo(data) :
     #print("GET PIN INFO ASKED!", bck["data"])
     return bck
 
+def callListSerials(data):
+    bck = {}
+    bck["data"] = listSerials()
+    return bck
+
+# UART SECTION
+clientSerial = None
+def callInitSerial(data):
+    global clientSerial
+    if (clientSerial is None) :
+        clientSerial = initSerial(data[0], data[1])
+
+def callSerialWrite(data):
+    global clientSerial
+    if not(clientSerial is None) :
+        clientSerial.write(data)
+    else :
+        sys.stderr.write("Serial port is not initialized. Use initSerial function first")
+
+def callSerialRead(data):
+    global clientSerial
+    bck = {}
+    if not(clientSerial is None) :
+        bck["data"] = clientSerial.read()
+    else :
+        sys.stderr.write("Serial port is not initialized. Use initSerial function first")
+    return bck
 ###
 # WeIO native spells
 ###
@@ -248,7 +275,6 @@ weioSpells = {
     "pinMode":callPinMode,
     "portMode":callPortMode,
     "setPwmPeriod":callSetPwmPeriod,
-    "setPwmLimit":callSetPwmLimit,
     "pwmWrite":callPwmWrite,
     "proportion":callProportion,
     "attachInterrupt":callAttachInterrupt,
@@ -259,7 +285,10 @@ weioSpells = {
     "millis":callMillis,
     "getTemperature": callGetTemperature,
     "delay":callDelay,
-    "pinsInfo": pinsInfo
+    "pinsInfo": pinsInfo,
+    "listSerials": callListSerials,
+    "initSerial": callInitSerial,
+    "serialWrite": callSerialWrite
   # "message":callUserMesage
 }
 

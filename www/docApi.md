@@ -148,8 +148,10 @@ def myProcess():
 
 ### pinMode(pin, mode)
 
-Sets state on the pin. Available modes are : PULL_UP, PULL_DOWN, INPUT, OUTPUT
-This function activates pullups, pulldowns or high Z state (only INPUT) on declared pins. If pinMode function is not called and digitalRead is performed pin state will be in high Z by default
+Sets state on the pin. Available modes are : PULL_UP, PULL_DOWN, INPUT and OUTPUT
+This function activates pullups, pulldowns or high Z state (INPUT only) on declared pins. If pinMode function is not called and digitalRead is performed pin state will be in high Z by default
+
+PinMode is available directly form JavaScript
 ```javascript
 function onWeioReady() {
   // sets pulldown resistor on pin 13
@@ -166,10 +168,34 @@ function pinCallback(pinInput) {
     }
 }
 ```
+Here is Python example
+
+```python
+from weioLib.weio import *
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    
+    while True :
+        # setting pull up resistor, result will print 1
+        pinMode(0, PULL_UP)
+        for a in range(0,5):
+            print digitalRead(0)
+            delay(100)
+            
+        # setting pull down resistor, result will print 0
+        pinMode(0, PULL_DOWN)
+        for a in range(0,5):
+            print digitalRead(0)
+            delay(100)
+```
+
 Analog I/O
 ----------
 ### analogRead(pin, callback)
-Reads input on specified Analog to Digital Convertor. ADC is available on pins from 25 to 32 Output is 10bits resolution or from 0-1023.
+Reads input on specified Analog to Digital Convertor. 8 ADC are available on pins from 24 to 31. Output is 10bits resolution or expressed in decimal numbers from 0-1023.
 
 AnalogRead asks to provide callback function that will be called when WeIO board finish reading state on the pin. Callback function arguments will be populated with dictionary that provides pin number and ADC value as information.
 ```javascript
@@ -192,8 +218,23 @@ function analogCallback(pinInput) {
 }
 ```
 
+When reading analog inputs in Python there is no need for a callback because the result is returned immediately. Here is the example
+
+```python
+from weioLib.weio import *
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    pin = 31
+    while True:
+        print "analogRead pin ",pin," = ",analogRead(pin)
+        # give peace a chance and not push cpu to 100%
+        delay(100)
+```
 ### pwmWrite(pin, value)
-Pulse with modulation is available at 6 pins from 19-24 and has 16bits of precision. By default WeIO sets PWM frequency at 1000us and 8bit precision or from 0-255. This setup is well situated for driving LED lighting. Precision and frequency can be changed separately by calling additional functions for other uses : setPwmPeriod and setPwmLimit. PWM can also drive two different frequencies on two separate banks of 3 pins. For this feature please refer to functions : setPwmPeriod0, setPwmPeriod1, setPwmLimit0 and setPwmLimit1.
+Pulse with modulation is available at 6 pins from 18 to 23 and has 16bits of precision. By default WeIO sets PWM frequency at 1000us and it's value is expressed as percent of duty cycle from 0-100%. 
 ```javascript
 var count = 0;
 var mode = true; // fade in - true, fade out - false
@@ -206,7 +247,7 @@ function onWeioReady() {
 
 function fader() {
     if (mode) {
-        if (count < 255) {
+        if (count < 100) {
             count++;
         } else {
             mode = !mode;
@@ -222,8 +263,35 @@ function fader() {
 }
 ```
 
+Here is the same example for Python
+
+```python
+from weioLib.weio import *
+
+def setup():
+    # attaches "fadeInOut" fuction to infinite loop
+    attach.process(fadeInOut)
+    
+def fadeInOut():
+    # create infinite loop
+    while True:
+        
+        # print "fade in" in the console
+        print "fade in"
+        # count from 0 to 100 % 
+        for i in range(0,100):
+            # change PWM duty cycle to i
+            pwmWrite(20,i)
+            
+        # print "fade out" in the console
+        print "fade out"  
+        # count from 0 to 100 % 
+        for i in range(0,100):
+            # change PWM duty cycle to 100-i
+            pwmWrite(20,100-i)
+```
 ### setPwmPeriod(period)
-Overrides default value of 1000us to set new period value for whole 6 PWM pins. Period value must be superior than 0 and inferior than 65535.
+Overrides default value of 1000us to set new period frequency for whole 6 PWM pins.
 ```javascript
 var count = 0;
 var mode = true; // fade in - true, fade out - false
@@ -254,39 +322,6 @@ function fader() {
 }
 ```
 
-### setPwmLimit(limit)
-Overrides default limit of 8bits for PWM precision. This value sets PWM counting upper limit and it's expressed as decimal value. This limit will be applied to all 6 PWM pins.
-```javascript
-var count = 0;
-var mode = true; // fade in - true, fade out - false
-
-function onWeioReady() {
-  setPwmLimit(512);
-  setInterval(function() {
-    // Do something every 20ms
-    fader();
-    }, 20);
-}
-
-function fader() {
-    if (mode) {
-        if (count < 512) {
-            count++;
-        } else {
-            mode = !mode;
-        }
-    } else {
-        if (count > 0) {
-            count--;
-        } else {
-            mode = !mode;
-        }
-    }
-    pwmWrite(20,count);
-}
-```
-
-
 ### startPackaging() and stopPackage()
 Activate instruction buffering. In some cases it's more optimized to put a lot of instructions in one package and than send package. In that case for example instead sending 8 separate messages one packet will be send that contains 8 messages packed together. To start package buffering call startPackage() function. To send a package call sendPackage()
 ```javascript
@@ -300,6 +335,43 @@ for (var j=0; j<7; j++) {
 }
 sendPackage();
 ```
+
+Interfaces
+==========
+
+Serial port
+-----------
+### listSerials()
+List available serial ports on WeIO. By default there are 3 serial ports /dev/ttyACM1, /dev/ttyACM0, /dev/ttyATH0. Each of them has it's own function. ttyACM1 is WeIO serial port that is connected to pins 0-RX and 1-TX. ttyACM0 is reserved for communication with LPC processor and ttyATH0 is reserved for user console via micro USB (you should not touch these two ports).
+WeIO has integrated drivers for the most common USB to serial devices so It's perfectly possible to connect some serial device over USB and communicate with it.
+
+In Javascript call listSerials and provide callback function that will be called once data is ready and sent from the server.
+
+```javascript
+      function onWeioReady() {
+       console.log("DOM is loaded, websocket is opened");
+       listSerials(listPorts);
+      }
+      
+      function listPorts(ports) {
+          console.log(ports.data);
+      }
+```
+
+In Python the same example don't need callback as the result is immediately returned
+
+```python
+from weioLib.weio import *
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    print listSerials()
+```
+
+
+
 
 Client-server I/O
 -----------------

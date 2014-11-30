@@ -4,6 +4,11 @@ from weioLib.weioLm75 import WeioLm75
 from IoTPy.core.gpio import GPIO
 from IoTPy.pyuper.i2c import UPER1_I2C as interfaceI2C
 from IoTPy.pyuper.spi import UPER1_SPI as interfaceSPI
+
+import sys
+import glob
+import serial
+
 ###
 # Global interface
 ###
@@ -212,6 +217,36 @@ def initI2C():
 def initSPI(*args):
     return interfaceSPI(gpio.u, *args)
 
-# CALL FOR THING LIBRARIES
-def weioLib(lib, *args):
-    return lib(gpio.u,*args)
+# Serial ports
+def listSerials():
+    """Lists serial ports
+
+    :raises EnvironmentError:
+        On unsupported or unknown platforms
+    :returns:
+        A list of available serial ports
+    """
+    if sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+        # this is to exclude your current terminal "/dev/tty"
+        ports = glob.glob('/dev/tty[A-Za-z]*')
+
+    elif sys.platform.startswith('darwin'):
+        ports = glob.glob('/dev/tty.*')
+
+    elif sys.platform.startswith('win'):
+        ports = ['COM' + str(i + 1) for i in range(256)]
+
+    else:
+        raise EnvironmentError('Unsupported platform')
+
+    result = []
+    for port in ports:
+        try:
+            s = serial.Serial(port)
+            s.close()
+            result.append(port)
+        except (OSError, serial.SerialException):
+            pass
+    return result
+
+
