@@ -84,36 +84,36 @@ UPER1_PINOUT = IoPinout({
 })
 
 WEIO_PINOUT = IoPinout({
-    0 : IoParams(CAP_GPIO,              20, "PIO1_13"),
-    1 : IoParams(CAP_GPIO,              19, "PIO0_14"),
-    2 : IoParams(CAP_GPIO,              13, "PIO0_9"),
-    3 : IoParams(CAP_GPIO,              12, "PIO0_8"),
-    4 : IoParams(CAP_GPIO,              14, "PIO0_10"),
+    0 : IoParams(CAP_GPIO,              20, "PIO0_18"),
+    1 : IoParams(CAP_GPIO,              19, "PIO0_19"),
+    2 : IoParams(CAP_GPIO | CAP_SPI     13, "PIO0_9"),  #SPI0 MOSI
+    3 : IoParams(CAP_GPIO | CAP_SPI     12, "PIO0_8"),  #SPI0 MISO
+    4 : IoParams(CAP_GPIO | CAP_SPI     14, "PIO0_10"), #SPI0 SCK
     5 : IoParams(CAP_GPIO,              1,  "PIO0_2"),
     6 : IoParams(CAP_GPIO,              8,  "PIO0_7"),
-    7 : IoParams(CAP_GPIO,              21, "PIO1_14"),
-    8 : IoParams(CAP_GPIO,              5,  "PIO0_21"),
-    9 : IoParams(CAP_GPIO,              11, "PIO1_21"),
-    10: IoParams(CAP_GPIO,              4,  "PIO1_20"),
+    7 : IoParams(CAP_GPIO,              21, "PIO0_17"),
+    8 : IoParams(CAP_GPIO | CAP_SPI     5,  "PIO0_21"), #SPI1 MOSI
+    9 : IoParams(CAP_GPIO | CAP_SPI     11, "PIO1_21"), #SPI1 MISO
+    10: IoParams(CAP_GPIO | CAP_SPI     4,  "PIO1_20"), #SPI1 SCK
     11: IoParams(CAP_GPIO,              0,  "PIO0_20"),
-    12: IoParams(CAP_GPIO,              18, "PIO0_13"),
-    13: IoParams(CAP_GPIO,              16, "PIO0_11"),
-    14: IoParams(CAP_GPIO,              27, "PIO1_15"),
+    12: IoParams(CAP_GPIO,              18, "PIO1_16"),
+    13: IoParams(CAP_GPIO,              16, "PIO1_19"),
+    14: IoParams(CAP_GPIO,              27, "PIO1_22"),
     15: IoParams(CAP_GPIO,              6,  "PIO1_23"),
     16: IoParams(CAP_GPIO,              3,  "PIO1_27"),
     17: IoParams(CAP_GPIO,              9,  "PIO1_28"),
-    18: IoParams(CAP_GPIO | CAP_PWM,    29, "PIO0_18",  [0,0]),
-    19: IoParams(CAP_GPIO | CAP_PWM,    28, "PIO0_17",  [0,1]),
-    20: IoParams(CAP_GPIO | CAP_PWM,    22, "PIO1_22",  [0,2]),
+    18: IoParams(CAP_GPIO | CAP_PWM,    29, "PIO1_13",  [0,0]),
+    19: IoParams(CAP_GPIO | CAP_PWM,    28, "PIO1_14",  [0,1]),
+    20: IoParams(CAP_GPIO | CAP_PWM,    22, "PIO1_15",  [0,2]),
     21: IoParams(CAP_GPIO | CAP_PWM,    7,  "PIO1_24",  [1,0]),
-    22: IoParams(CAP_GPIO | CAP_PWM,    17, "PIO0_12",  [1,1]),
+    22: IoParams(CAP_GPIO | CAP_PWM,    17, "PIO1_25",  [1,1]),
     23: IoParams(CAP_GPIO | CAP_PWM,    2,  "PIO1_26",  [1,2]),
-    24: IoParams(CAP_GPIO | CAP_ADC,    33, "PIO1_19",  [0]),
-    25: IoParams(CAP_GPIO | CAP_ADC,    32, "PIO1_25",  [1]),
-    26: IoParams(CAP_GPIO | CAP_ADC,    31, "PIO1_16",  [2]),
-    27: IoParams(CAP_GPIO | CAP_ADC,    30, "PIO0_19",  [3]),
-    28: IoParams(CAP_GPIO | CAP_ADC,    26, "PIO0_23",  [4]),
-    29: IoParams(CAP_GPIO | CAP_ADC,    25, "PIO0_22",  [5]),
-    30: IoParams(CAP_GPIO | CAP_ADC,    24, "PIO0_16",  [6]),
-    31: IoParams(CAP_GPIO | CAP_ADC,    23, "PIO0_15",  [7])
+    24: IoParams(CAP_GPIO | CAP_ADC,    33, "PIO0_11",  [0]),
+    25: IoParams(CAP_GPIO | CAP_ADC,    32, "PIO0_12",  [1]),
+    26: IoParams(CAP_GPIO | CAP_ADC,    31, "PIO0_13",  [2]),
+    27: IoParams(CAP_GPIO | CAP_ADC,    30, "PIO0_14",  [3]),
+    28: IoParams(CAP_GPIO | CAP_ADC,    26, "PIO0_15",  [4]),
+    29: IoParams(CAP_GPIO | CAP_ADC,    25, "PIO0_16",  [5]),
+    30: IoParams(CAP_GPIO | CAP_ADC,    24, "PIO0_22",  [6]),
+    31: IoParams(CAP_GPIO | CAP_ADC,    23, "PIO0_23",  [7])
 })
