@@ -249,4 +249,6 @@ def listSerials():
             pass
     return result
 
+def initSerial(port, baudrate, timeout=1):
+    return serial.Serial(port, baudrate, timeout)
 

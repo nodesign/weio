@@ -368,6 +368,19 @@ function detachInterrupt(pin) {
 }
 
 /*
+ * UART SECTION
+ */
+function listSerials(callback) {
+    var fName = callback.name;
+    weioCallbacks[fName] = callback;
+    genericMessage("listSerials", [], fName);
+};
+
+function initSerial(port, baudrate) {
+    genericMessage("initSerial", [port, baudrate], null);
+}
+
+/*
  * Generic handler for sending messages to server
  */
 function genericMessage(instruction, data, clbck) {
