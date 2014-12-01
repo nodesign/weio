@@ -86,15 +86,15 @@ UPER1_PINOUT = IoPinout({
 WEIO_PINOUT = IoPinout({
     0 : IoParams(CAP_GPIO,              20, "PIO0_18"),
     1 : IoParams(CAP_GPIO,              19, "PIO0_19"),
-    2 : IoParams(CAP_GPIO | CAP_SPI     13, "PIO0_9"),  #SPI0 MOSI
-    3 : IoParams(CAP_GPIO | CAP_SPI     12, "PIO0_8"),  #SPI0 MISO
-    4 : IoParams(CAP_GPIO | CAP_SPI     14, "PIO0_10"), #SPI0 SCK
+    2 : IoParams(CAP_GPIO | CAP_SPI,    13, "PIO0_9"),  #SPI0 MOSI
+    3 : IoParams(CAP_GPIO | CAP_SPI,    12, "PIO0_8"),  #SPI0 MISO
+    4 : IoParams(CAP_GPIO | CAP_SPI,    14, "PIO0_10"), #SPI0 SCK
     5 : IoParams(CAP_GPIO,              1,  "PIO0_2"),
     6 : IoParams(CAP_GPIO,              8,  "PIO0_7"),
     7 : IoParams(CAP_GPIO,              21, "PIO0_17"),
-    8 : IoParams(CAP_GPIO | CAP_SPI     5,  "PIO0_21"), #SPI1 MOSI
-    9 : IoParams(CAP_GPIO | CAP_SPI     11, "PIO1_21"), #SPI1 MISO
-    10: IoParams(CAP_GPIO | CAP_SPI     4,  "PIO1_20"), #SPI1 SCK
+    8 : IoParams(CAP_GPIO | CAP_SPI,    5,  "PIO0_21"), #SPI1 MOSI
+    9 : IoParams(CAP_GPIO | CAP_SPI,    11, "PIO1_21"), #SPI1 MISO
+    10: IoParams(CAP_GPIO | CAP_SPI,    4,  "PIO1_20"), #SPI1 SCK
     11: IoParams(CAP_GPIO,              0,  "PIO0_20"),
     12: IoParams(CAP_GPIO,              18, "PIO1_16"),
     13: IoParams(CAP_GPIO,              16, "PIO1_19"),
