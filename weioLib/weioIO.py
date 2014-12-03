@@ -4,6 +4,7 @@ from weioLib.weioLm75 import WeioLm75
 from IoTPy.core.gpio import GPIO
 from IoTPy.pyuper.i2c import UPER1_I2C as interfaceI2C
 from IoTPy.pyuper.spi import UPER1_SPI as interfaceSPI
+from IoTPy.pyuper.uart import UPER1_UART as interfaceUART
 
 import sys
 import glob
@@ -249,6 +250,7 @@ def listSerials():
             pass
     return result
 
-def initSerial(port, baudrate, timeout=1):
-    return serial.Serial(port, baudrate, timeout)
+def initSerial(port, baudrate, timeout_=1):
+    interfaceUART(gpio.u)
+    return serial.Serial(port, baudrate, timeout=timeout_)
 
