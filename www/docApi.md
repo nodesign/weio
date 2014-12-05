@@ -336,6 +336,11 @@ for (var j=0; j<7; j++) {
 sendPackage();
 ```
 
+WeIO info
+=========
+### versionWeIO
+Gets actual version of WeIO software
+
 Interfaces
 ==========
 

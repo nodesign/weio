@@ -6,6 +6,9 @@ from IoTPy.pyuper.i2c import UPER1_I2C as interfaceI2C
 from IoTPy.pyuper.spi import UPER1_SPI as interfaceSPI
 from IoTPy.pyuper.uart import UPER1_UART as interfaceUART
 
+# IMPORT BASIC CONFIGURATION FILE
+from weioLib import weioConfig
+
 import sys
 import glob
 import serial
@@ -209,6 +212,12 @@ def listSerial():
             #print dirs[a]
             ser.append(dirs[a])
     return ser
+
+def versionWeIO():
+    # get configuration from file
+    config = weioConfig.getConfiguration()
+    # get WeIO version
+    return config["weio_version"]
 
 # NATIVE PROTOCOLES
 
