@@ -1,42 +1,66 @@
+<!--###################################
+#                                     #
+#      HOW TO HAVE ANGLES FROM        #
+#    SMARTPHONE GYROSCOPE ON WEIO     #
+#                                     #
+#######################################
+
+# Description: This example shows how track and display smartphone 
+#              gyroscope angles on user interface and console.
+# syntax: - genericMessage(<event name>,<angle>) is used to send values
+#           from JavaScript to python.
+#         - gyro.startTracking(function( <tracked angles object> )) is
+#           used to track gyroscope angles.
+#         - gyro.frequency is the refresh rate in milliseconds
+
+--> 
+
 <!DOCTYPE html> 
 <html lang="en"> 
-  
-   <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
-   <!-- This is gyro library that allow the access
-   to gyroscope of the smartphone/tablet from JS  
-   Find more info about this library here: http://tomg.co/gyrojs -->
-   <script src="gyro.js"></script>
 
-<head> 
+<head>
+    <!-- import weioLibs -->
+    <script data-main="www/libs/weioLibs" 
+            src="www/libs/require.js"></script>
+    <!-- This is gyro library that allow the access
+    to gyroscope of the smartphone/tablet from JS  
+    Find more info about this library here: http://tomg.co/gyrojs -->
+    <script src="gyro.js"></script>
     <meta charset="utf-8" /> 
-    <title>My first Web app</title>
-</head>
+    <link rel="stylesheet" type="text/css" href="myStyle.css">
     
-<body>
-    
-    <script>
-        
-        function onWeioReady() {
-            // nothing to do here            
-        }
+	<script>
         
         // Setting gyro refresh rate in milliseconds
-        gyro.frequency = 50;
+        gyro.frequency = 200;
         
-        // This is gyro callback that will be fired each time value is refreshed
+        // This is gyro callback that will be fired 
+        // each time value is refreshed
       	gyro.startTracking(function(o) {
-      	    // sending beta angle to python
-      	    var betaAngle = o.beta;
-            genericMessage("gyro", betaAngle);
-            $("#gyroValue").html(betaAngle);
+      	    
+      	    // get rounded gyroscope angles using parseInt()
+      	    var gyroAngles = [parseInt(o.alpha), 
+      	                      parseInt(o.beta), 
+      	                      parseInt(o.gamma)];
+      	                      
+      	    // sending angles to python
+            genericMessage("gyro", gyroAngles);
+			
+			// Update displayed values
+            $("#alpha").html("alpha :"+gyroAngles[0]);
+            $("#beta").html("beta :"+gyroAngles[1]);
+            $("#gamma").html("gamma :"+gyroAngles[2]);
     	});
-
-        
+    	
     </script>
-    <p>This is gyro beta angle :</p><br>
-    <p id="gyroValue"></p>
+</head>
+    
+<body>    
+    <p> GYROSCOPE ANGLES </p>
+    <p id="alpha"></p>
+    <p id="beta"></p>
+    <p id="gamma"></p>
+
 </body>
+
 </html>
-
-
-
