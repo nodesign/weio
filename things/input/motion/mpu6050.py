@@ -7,7 +7,7 @@ import math
 
 class Mpu6050:
     def __init__(self, address=0x68):
-        bus = smbus.SMBus()  
+        self.bus = smbus.SMBus()
         self.address = address
 
         # Power management registers
@@ -15,14 +15,14 @@ class Mpu6050:
         power_mgmt_2 = 0x6c
 
         # Now wake the 6050 up as it starts in sleep mode
-        bus.write_byte_data(self.address, power_mgmt_1, 0)
-    
+        self.bus.write_byte_data(self.address, power_mgmt_1, 0)
+
     def read_byte(self, adr):
-        return bus.read_byte_data(self.address, adr)
+        return self.bus.read_byte_data(self.address, adr)
 
     def read_word(self, adr):
-        high = bus.read_byte_data(self.address, adr)
-        low = bus.read_byte_data(self.address, adr+1)
+        high = self.bus.read_byte_data(self.address, adr)
+        low = self.bus.read_byte_data(self.address, adr+1)
         val = (high << 8) + low
         return val
 
@@ -37,29 +37,53 @@ class Mpu6050:
         return math.sqrt((a*a)+(b*b))
 
     def get_y_rotation(self, x,y,z):
-        radians = math.atan2(x, dist(y,z))
+        radians = math.atan2(x, self.dist(y,z))
         return -math.degrees(radians)
 
     def get_x_rotation(self, x,y,z):
-        radians = math.atan2(y, dist(x,z))
+        radians = math.atan2(y, self.dist(x,z))
         return math.degrees(radians)
+################################################# USER FUNCTIONS
+    def getRotationX(self):
+        accel = self.getAccelerometer()
+        x = accel["x"]
+        y = accel["y"]
+        z = accel["z"]
+        return self.get_x_rotation(x, y, z)
 
-    def rotationX(self):
+    def getRotationY(self):
+        accel = self.getAccelerometer()
+        x = accel["x"]
+        y = accel["y"]
+        z = accel["z"]
+        return self.get_y_rotation(x, y, z)
+
+    def getAccelerometer(self):
         accel_xout = self.read_word_2c(0x3b)
         accel_yout = self.read_word_2c(0x3d)
         accel_zout = self.read_word_2c(0x3f)
 
-        accel_xout_scaled = self.accel_xout / 16384.0
-        accel_yout_scaled = self.accel_yout / 16384.0
-        accel_zout_scaled = self.accel_zout / 16384.0
-        return self.get_x_rotation(accel_xout_scaled, accel_yout_scaled, accel_zout_scaled)
+        accel_xout_scaled = accel_xout / 16384.0
+        accel_yout_scaled = accel_yout / 16384.0
+        accel_zout_scaled = accel_zout / 16384.0
 
-    def rotationY(self):
-        accel_xout = self.read_word_2c(0x3b)
-        accel_yout = self.read_word_2c(0x3d)
-        accel_zout = self.read_word_2c(0x3f)
+        data = {}
+        data["x"] = accel_xout_scaled
+        data["y"] = accel_yout_scaled
+        data["z"] = accel_zout_scaled
+        return data
 
-        accel_xout_scaled = self.accel_xout / 16384.0
-        accel_yout_scaled = self.accel_yout / 16384.0
-        accel_zout_scaled = self.accel_zout / 16384.0
-        return self.get_y_rotation(accel_xout_scaled, accel_yout_scaled, accel_zout_scaled)
+    def getGyroscope(self):
+        gyro_xout = self.read_word_2c(0x43)
+        gyro_yout = self.read_word_2c(0x45)
+        gyro_zout = self.read_word_2c(0x47)
+
+        gyroScaledX = gyro_xout/131
+        gyroScaledY = gyro_yout/131
+        gyroScaledZ = gyro_zout/131
+
+        data = {}
+        data["x"] = gyroScaledX
+        data["y"] = gyroScaledY
+        data["z"] = gyroScaledZ
+        return data
