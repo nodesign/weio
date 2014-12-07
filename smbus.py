@@ -42,8 +42,7 @@ class SMBus(object):
     _compat = False
 
     def __init__(self, bus=-1):
-        if bus >= 0:
-            self.open(bus)
+        self.open(bus)
 
     def close(self):
         """close()
