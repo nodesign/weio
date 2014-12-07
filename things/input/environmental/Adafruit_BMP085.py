@@ -1,5 +1,5 @@
 import time
-from Adafruit_I2C import Adafruit_I2C
+from weioLib.Adafruit_I2C import Adafruit_I2C
 
 # ===========================================================================
 # BMP085 Class
