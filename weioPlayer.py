@@ -116,7 +116,8 @@ class WeioPlayer():
         config = weioConfig.getConfiguration()
 
         # stop if process is already running
-        self.stop()
+        if (self.playing is True):
+            self.stop()
 
         data = {}
         lp = config["last_opened_project"]
