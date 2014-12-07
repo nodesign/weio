@@ -368,6 +368,21 @@ function detachInterrupt(pin) {
 }
 
 /*
+ * SPI SECTION
+ */
+function initSPI(port) {
+    genericMessage("initSPI", [port], null);
+}
+
+function readSPI(count) {
+    genericMessage("readSPI", [count], null);
+}
+
+function writeSPI(data) {
+    genericMessage("writeSPI", [data], null);
+}
+
+/*
  * Generic handler for sending messages to server
  */
 function genericMessage(instruction, data, clbck) {
