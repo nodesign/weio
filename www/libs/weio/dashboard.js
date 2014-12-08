@@ -726,11 +726,11 @@ function updateProjects(data) {
                     });
                     tag+= '</ul></ul></li>\n';
                 });
-            
-                    $.each(examples, function(dir, idx){ 
-                        var s ="'" + val.storageName + "/" + String(dir) + "'\n";
-                        tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + dir + '</a></li>\n';
-                    });
+
+                    // $.each(examples, function(dir, idx){
+                    //     var s ="'" + val.storageName + "/" + String(dir) + "'\n";
+                    //     tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + dir + '</a></li>\n';
+                    // });
             });
         tag+='</ul></li>\n';
     });
