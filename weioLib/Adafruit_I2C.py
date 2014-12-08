@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from weioLib import smbus
+from weioLib import weioSmbus as smbus
 
 # ===========================================================================
 # Adafruit_I2C Class
