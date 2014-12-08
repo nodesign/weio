@@ -327,8 +327,6 @@ class WeioRemote():
 
 
 if __name__ == '__main__':
-    global httpServer
-
     ###
     # Initialize global USER API instances
     ###
