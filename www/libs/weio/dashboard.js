@@ -82,6 +82,14 @@ var selectedStorageUnit = null;
  */
 var confFile;
 
+/**
+ * Variable stores server state in order to provide ping/pong circle and 
+   detect when client lose connection with server and server not responding, e.g Network down etc...
+ */
+var serverChechIn = true;
+
+var serverChechInInterval = 10000;
+
 /*
  * When all DOM elements are fully loaded
  */
@@ -213,9 +221,27 @@ $(document).ready(function () {
     $('#importProjectUploader').change(function(evt){
             handleFileSelect(evt);
     });
+    
+    window.setInterval(function() {
+        if (serverChechIn != false) {
+            dashboard.send(JSON.stringify({'request': 'ping'}));
+            serverChechIn = false; // reset server checkin state
+        } else {
+            dashboard.close(); // Close connection
+        }
+    }, serverChechInInterval);
 
 }); /* end of document on ready event */
 
+
+ // Pong server callback from keep alive ping
+function pingServer(pong) {
+    if (!pong.response){
+        dashboard.close(); // Close connection
+    }else{
+        serverChechIn = true;
+    }
+};
 
 function updateProgress(evt) {
     // evt is an ProgressEvent.
@@ -589,7 +615,8 @@ var callbacks = {
     "errorObjects": updateError,
     "getPlayerStatus": playerStatus,
     "archiveProject": projectArchived,
-    "getPreviewPortNumber": setPreviewPort
+    "getPreviewPortNumber": setPreviewPort,
+    "ping": pingServer
 }
 
 /**
@@ -666,6 +693,7 @@ function updateStatus(data){
  * Get project names and put it into dropbox menu
  */
 function updateProjects(data) {
+    
     var tag = "";
     tag+='<li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>';
     tag+='<li><a tabindex="-1" href="#importProject" role="button" data-toggle="modal">Import existing project</a></li>';
@@ -674,33 +702,72 @@ function updateProjects(data) {
     tag+='<li><a tabindex="-1" href="#downloadProject" role="button" data-toggle="modal">Archive active project</a></li>';
     tag+='<li class="divider"></li>';
 
-    $.each( data.data, function( idx, val ) {
-        tag+='<li class="dropdown-submenu scroll-menu">\n';
+    // Parse example projects
+   $.each( data.examples, function( idx, val ) {
+        tag+='<li class="dropdown-submenu">\n';
         tag+='<a tabindex="-1" href="#">' + val.storageName + '</a>\n';
-        tag+='<ul class="dropdown-menu">\n';
-        tag+='<ul class="dropdown-menu scroll-menu" id="' + val.storageName + 'UserProjects">\n';
+        tag+='<ul class="dropdown-menu" id="' + val.storageName + 'UserProjects">\n';
+        
         if (val.projects.length==0) {
             tag += '<li><a class="cells" tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>\n';
-        } else {
-            val.projects.forEach( function(p) {
-                var s = "'" + val.storageName + "/" + String(p) + "'\n";
-                console.log("DROP LIST ******************************************",s);
-                tag += '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + p + '</a></li>\n';
-            });
         }
-        tag+='</ul></ul></li>\n';
+          $.map(val.projects, function(examples, key) {
+                // Get directory structure
+                $.each(examples, function(dir, idx){ 
+                    tag+='<li class="dropdown-submenu scroll-menu">\n';
+                    tag+='<a href="#">' + dir + '</a>\n';
+                    tag+='<ul class="dropdown-menu">\n';
+                    tag+='<ul class="dropdown-menu scroll-menu id="' + dir + 'UserProjects"">\n';
+                    
+                    // Get subdirectory structure
+                    $.each(idx, function(subdir){
+                        var s ="'" + val.storageName + "/" + String(dir) + '/' + String(subdir) + "'\n";
+                        tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + subdir + '</a></li>\n';
+                    });
+                    tag+= '</ul></ul></li>\n';
+                });
+            
+                    $.each(examples, function(dir, idx){ 
+                        var s ="'" + val.storageName + "/" + String(dir) + "'\n";
+                        tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + dir + '</a></li>\n';
+                    });
+            });
+        tag+='</ul></li>\n';
     });
+    
+    tag+='<li class="dropdown-submenu">\n';
+    tag+='<a tabindex="-1" href="#">myProjects</a>\n';
+    tag+='<ul class="dropdown-menu" id="UserProjects">\n';
+    
+    // Parse user projects structure
+    $.each( data.data, function( idx, val ) {
+             tag+='<li class="dropdown-submenu scroll-menu">\n';
+             tag+='<a href="#">' + val.storageName + '</a>\n';
 
-    console.log("storage", data.data);
-    //console.log(tag);
+            $.map(val.projects, function(examples, key) {
+                tag+='<ul class="dropdown-menu">\n';
+                tag+='<ul class="dropdown-menu scroll-menu id="' + val.storageName + 'UserProjects"">\n';
+                if (jQuery.isEmptyObject(examples)) {
+                    tag += '<li><a class="cells" tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>\n';
+                } 
+                $.each(examples, function(dir, idx){ 
+                    var s ="'" + val.storageName + "/" + String(dir) + "'\n";
+                    tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + dir + '</a></li>\n';
+                });
+            tag+= '</ul></ul></li>\n';
+            });
+    });
+    tag+='</ul></li>\n';
+
     $("#userProjectsList").empty();
     $("#userProjectsList").append(tag);
 
     tag = "";
 
     tag+='<ul class="nav nav-pills">';
+
     for (var i=0; i<data.data.length; i++) {
-        if (i==0)
+        if (i==0) 
             tag+='<li class="active" id="' + data.data[i].storageName +
                     'StorageUnit'+'"><a href="#">' + data.data[i].storageName + '</a></li>';
         else
@@ -781,5 +848,4 @@ function newProjectIsCreated(data) {
     reloadIFrame();
 
 }
-
 
