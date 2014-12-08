@@ -152,6 +152,7 @@ class WeioDashBoardHandler(SockJSConnection):
         data = {}
         data['requested'] = rq['request']
 
+        allExamples = []
         allUserProjects = []
 
         # Examples
@@ -160,30 +161,31 @@ class WeioDashBoardHandler(SockJSConnection):
         if (os.path.exists(examplesDir)):
             dirs = get_directory_structure(examplesDir)
             a = {"storageName":"examples", "projects":dirs}
-            allUserProjects.append(a)
+            allExamples.append(a)
 
         # Flash
         flashDir = "www/flash"
         if (os.path.exists(flashDir)):
-            dirs = os.walk(flashDir).next()[1]
+            dirs = get_directory_structure(flashDir)
             a = {"storageName":"flash", "projects":dirs}
             allUserProjects.append(a)
 
         # SD
         flashDir = "www/sd"
         if (os.path.exists(flashDir)):
-            dirs = os.walk(flashDir).next()[1]
-            a = {"storageName":"sd", "projects":dirs}
-            allUserProjects.append(a)
+           dirs = get_directory_structure(flashDir)
+           a = {"storageName":"sd", "projects":dirs}
+           allUserProjects.append(a)
 
         # USB flashDir
         flashDir = "www/usbFlash"
         if (os.path.exists(flashDir)):
-            dirs = os.walk(flashDir).next()[1]
-            a = {"storageName":"usbFlash", "projects":dirs}
-            allUserProjects.append(a)
+           dirs = get_directory_structure(flashDir)
+           a = {"storageName":"usbFlash", "projects":dirs}
+           allUserProjects.append(a)
 
         data['data'] = allUserProjects
+        data['examples'] = allExamples
         self.broadcast(clients, json.dumps(data))
 
     def changeProject(self,rq):
@@ -235,7 +237,7 @@ class WeioDashBoardHandler(SockJSConnection):
         path = ""
         storage = rq['storageUnit']
 
-        path = "www/" + rq['storageUnit'] + "/" + "myProjects" + "/" + rq['path']
+        path = "www/" + rq['storageUnit'] + "/" + rq['path']
 
         print "CREATE PROJECT", path
         if (len(path)>0):

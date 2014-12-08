@@ -702,15 +702,16 @@ function updateProjects(data) {
     tag+='<li><a tabindex="-1" href="#downloadProject" role="button" data-toggle="modal">Archive active project</a></li>';
     tag+='<li class="divider"></li>';
 
-    $.each( data.data, function( idx, val ) {
+    // Parse example projects
+   $.each( data.examples, function( idx, val ) {
         tag+='<li class="dropdown-submenu">\n';
         tag+='<a tabindex="-1" href="#">' + val.storageName + '</a>\n';
         tag+='<ul class="dropdown-menu" id="' + val.storageName + 'UserProjects">\n';
+        
         if (val.projects.length==0) {
             tag += '<li><a class="cells" tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>\n';
-        } else {
-            $.map(val.projects, function(examples, key) {
-                
+        }
+          $.map(val.projects, function(examples, key) {
                 // Get directory structure
                 $.each(examples, function(dir, idx){ 
                     tag+='<li class="dropdown-submenu scroll-menu">\n';
@@ -720,20 +721,44 @@ function updateProjects(data) {
                     
                     // Get subdirectory structure
                     $.each(idx, function(subdir){
-                        
                         var s ="'" + val.storageName + "/" + String(dir) + '/' + String(subdir) + "'\n";
-                        
                         tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + subdir + '</a></li>\n';
                     });
-                tag+= '</ul></ul></li>\n';
-               
+                    tag+= '</ul></ul></li>\n';
                 });
+            
+                    $.each(examples, function(dir, idx){ 
+                        var s ="'" + val.storageName + "/" + String(dir) + "'\n";
+                        tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + dir + '</a></li>\n';
+                    });
             });
-        }
-      tag+='</ul></li>\n';
+        tag+='</ul></li>\n';
     });
+    
+    tag+='<li class="dropdown-submenu">\n';
+    tag+='<a tabindex="-1" href="#">myProjects</a>\n';
+    tag+='<ul class="dropdown-menu" id="UserProjects">\n';
+    
+    // Parse user projects structure
+    $.each( data.data, function( idx, val ) {
+             tag+='<li class="dropdown-submenu scroll-menu">\n';
+             tag+='<a href="#">' + val.storageName + '</a>\n';
 
-    //console.log(tag);
+            $.map(val.projects, function(examples, key) {
+                tag+='<ul class="dropdown-menu">\n';
+                tag+='<ul class="dropdown-menu scroll-menu id="' + val.storageName + 'UserProjects"">\n';
+                if (jQuery.isEmptyObject(examples)) {
+                    tag += '<li><a class="cells" tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>\n';
+                } 
+                $.each(examples, function(dir, idx){ 
+                    var s ="'" + val.storageName + "/" + String(dir) + "'\n";
+                    tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + dir + '</a></li>\n';
+                });
+            tag+= '</ul></ul></li>\n';
+            });
+    });
+    tag+='</ul></li>\n';
+
     $("#userProjectsList").empty();
     $("#userProjectsList").append(tag);
 
