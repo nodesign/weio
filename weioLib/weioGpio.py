@@ -81,7 +81,7 @@ class WeioGpio():
             self.mainGpio.append(pin)
 
     def pinMode(self, pin, mode) :
-        """Sets input mode for digitalRead purpose. Available modes are : INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP"""
+        """Sets input mode for digitalRead purpose. Available modes are : INPUT, INPUT_PULLDOWN, INPUT_PULLUP"""
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
         gpio = self.mainGpio[pin]
         if (mode is GPIO.OUTPUT):
@@ -90,7 +90,7 @@ class WeioGpio():
             gpio.setup(GPIO.INPUT, mode)
 
     def portMode(self, port, mode) :
-        """Sets input mode for portRead purpose. Available modes are : INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP"""
+        """Sets input mode for portRead purpose. Available modes are : INPUT, INPUT_PULLDOWN, INPUT_PULLUP"""
         for i in range(8):
             pin = (8 * port) + i
             gpio = self.mainGpio[pin]
