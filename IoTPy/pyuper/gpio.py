@@ -40,15 +40,15 @@ class UPER1_GPIO(GPIO):
 
         :param direction: GPIO direction: GPIO.OUTPUT or GPIO.INPUT
         :param resistor: GPIO internal resistor mode. Used when direction is GPIO.INPUT. Should be GPIO.PULL_UP, \
-        GPIO.PULL_DOWN or GPIO.NONE.
+        GPIO.PULL_DOWN or GPIO.INPUT.
 
         :raise: IoTPy_APIError
         """
         if not direction in [GPIO.OUTPUT, GPIO.INPUT]:
             raise IoTPy_APIError("Invalid GPIO direction. Should be GPIO.INPUT or GPIO.OUTPUT")
 
-        if direction == GPIO.INPUT and not resistor in [GPIO.NONE, GPIO.PULL_UP, GPIO.PULL_DOWN]:
-            raise IoTPy_APIError("Invalid GPIO resistor setting. Should be GPIO.NONE, GPIO.PULL_UP or GPIO.PULL_DOWN")
+        if direction == GPIO.INPUT and not resistor in [GPIO.INPUT, GPIO.PULL_UP, GPIO.PULL_DOWN]:
+            raise IoTPy_APIError("Invalid GPIO resistor setting. Should be GPIO.INPUT, GPIO.PULL_UP or GPIO.PULL_DOWN")
 
         self.direction = direction
 
@@ -74,15 +74,15 @@ class UPER1_GPIO(GPIO):
         :param direction: GPIO direction: GPIO.OUTPUT or GPIO.INPUT
         :param port: PORT number (0...3)
         :param resistor: GPIO internal resistor mode. Used when direction is GPIO.INPUT. Should be GPIO.PULL_UP, \
-        GPIO.PULL_DOWN or GPIO.NONE.
+        GPIO.PULL_DOWN or GPIO.INPUT.
 
         :raise: IoTPy_APIError
         """
         if not direction in [GPIO.OUTPUT, GPIO.INPUT]:
             raise IoTPy_APIError("Invalid GPIO direction. Should be GPIO.INPUT or GPIO.OUTPUT")
 
-        if direction == GPIO.INPUT and not resistor in [GPIO.NONE, GPIO.PULL_UP, GPIO.PULL_DOWN]:
-            raise IoTPy_APIError("Invalid GPIO resistor setting. Should be GPIO.NONE, GPIO.PULL_UP or GPIO.PULL_DOWN")
+        if direction == GPIO.INPUT and not resistor in [GPIO.INPUT, GPIO.PULL_UP, GPIO.PULL_DOWN]:
+            raise IoTPy_APIError("Invalid GPIO resistor setting. Should be GPIO.INPUT, GPIO.PULL_UP or GPIO.PULL_DOWN")
 
         self.direction = direction
 
