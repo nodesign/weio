@@ -21,7 +21,7 @@ def setup():
     
 def myTone():
     # init variable freq
-    freq = 0
+    freq = 16
     # create infinite loop
     while True:
         # get tone with "freq" frequency on pin 23

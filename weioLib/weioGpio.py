@@ -217,7 +217,7 @@ class WeioGpio():
     def tone(self, pin, frequency, duration = 0):
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.OUTPUT
         pwm = self.u.PWM(pin)
-        self.u.set_frequency(frequency)
+        pwm.set_frequency(frequency)
         pwm.set_duty_cycle(50)
         if(duration > 0):
            sleep(duration*0.001)
