@@ -91,6 +91,11 @@ var serverChechIn = true;
 var serverChechInInterval = 10000;
 
 /*
+ * Time when last time stop or play has been pressed
+*/
+var stopTag;
+
+/*
  * When all DOM elements are fully loaded
  */
 $(document).ready(function () {
@@ -230,6 +235,8 @@ $(document).ready(function () {
             dashboard.close(); // Close connection
         }
     }, serverChechInInterval);
+
+    stopTag = new Date();
 
 }); /* end of document on ready event */
 
@@ -473,17 +480,41 @@ function prepareToPlay() {
     }
 }
 
-
+var doublePlayStop = false;
 function play(){
-    var rq = { "request": "play"};
-    dashboard.send(JSON.stringify(rq));
-    document.getElementById("weioIframe").contentWindow.clearConsole();
-    playCounter = setInterval(function(){countTillPlay()},4);
-    $( "#weioProgress" ).fadeTo( "fast", 100 );
+    var d = new Date();
+    var inTime = 1500;
+    var diff = d-stopTag;
+
+    if (diff > inTime) {
+        if (doublePlayStop==false) {
+            sendPlayToServer();
+            document.getElementById("weioIframe").contentWindow.clearConsole();
+            playCounter = setInterval(function(){countTillPlay()},4);
+            $( "#weioProgress" ).fadeTo( "fast", 100 );
+            doublePlayStop = true;
+        }
+    } else {
+        var delta = inTime-diff;
+        setTimeout(function(){sendPlayToServer();}, delta);
+        doublePlayStop = true;
+        document.getElementById("weioIframe").contentWindow.clearConsole();
+        playCounter = setInterval(function(){countTillPlay()},10);
+        $( "#weioProgress" ).fadeTo( "fast", 100 );
+    }
+
 }
 
+function sendPlayToServer() {
+    var rq = { "request": "play"};
+    dashboard.send(JSON.stringify(rq));
+    doublePlayStop  = false;
+    stopTag = new Date();
+}
 
 function stop(){
+    stopTag = new Date();
+
     var rq = { "request": "stop"};
     dashboard.send(JSON.stringify(rq));
     $( "#weioProgress" ).fadeTo( "slow", 0 );
