@@ -1,0 +1,19 @@
+html, body{
+    height: 100%;
+}
+
+.col-xs-9 {
+    height: 16.66%;
+    background-color: gray;
+}
+
+.col-xs-3{
+    height: 16.66%;
+    background-color: #0066FF;
+    color: white;
+    font-size: 160%;
+}
+
+input {
+    height: 100%;
+}
