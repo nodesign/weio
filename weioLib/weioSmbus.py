@@ -129,7 +129,7 @@ class SMBus(object):
         Perform SMBus Read Word Data transaction.
         """
         self._set_addr(addr)
-        result = self._i2c.transaction(self._addr, pack('BB', cmd, val), 2)
+        result = self._i2c.transaction(self._addr, pack('B', cmd), 2)
         return unpack('H', result[0])[0]
 
     def write_word_data(self, addr, cmd, val):
