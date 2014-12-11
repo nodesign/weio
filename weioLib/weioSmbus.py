@@ -73,6 +73,13 @@ class SMBus(object):
         """private helper method"""
         self._addr = addr
 
+    def scan(self):
+        """scan()
+
+        Perform SMBus devices discovery. Returns array of addresses
+        """
+        return self._i2c.scan()
+        
     def write_quick(self, addr):
         """write_quick(addr)
 
