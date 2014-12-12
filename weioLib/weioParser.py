@@ -262,6 +262,30 @@ def callSerialRead(data):
     else :
         sys.stderr.write("Serial port is not initialized. Use initSerial function first")
     return bck
+    
+# SPI SECTION
+SPI = None
+def callInitSPI(data):
+    global SPI
+    if (SPI is None) :
+        SPI = initSPI(data[0])
+
+def callWriteSPI(data):
+    global SPI
+    if not(SPI is None) :
+        SPI.write(data[0])
+    else :
+        sys.stderr.write("SPI port is not initialized. Use initSerial function first")
+
+def callReadSPI(data):
+    global SPI
+    bck = {}
+    if not(SPI is None) :
+        bck["data"] = SPI.read(data[0])
+    else :
+        sys.stderr.write("SPI port is not initialized. Use initSerial function first")
+    return bck
+        
 ###
 # WeIO native spells
 ###
@@ -288,7 +312,10 @@ weioSpells = {
     "pinsInfo": pinsInfo,
     "listSerials": callListSerials,
     "initSerial": callInitSerial,
-    "serialWrite": callSerialWrite
+    "serialWrite": callSerialWrite,
+    "initSPI": callInitSPI,
+    "readSPI": callReadSPI,
+    "writeSPI": callWriteSPI
   # "message":callUserMesage
 }
 

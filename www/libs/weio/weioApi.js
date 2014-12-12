@@ -378,6 +378,20 @@ function listSerials(callback) {
 
 function initSerial(port, baudrate) {
     genericMessage("initSerial", [port, baudrate], null);
+
+/*
+ * SPI SECTION
+ */
+function initSPI(port) {
+    genericMessage("initSPI", [port], null);
+}
+
+function readSPI(count) {
+    genericMessage("readSPI", [count], null);
+}
+
+function writeSPI(data) {
+    genericMessage("writeSPI", [data], null);
 }
 
 /*
