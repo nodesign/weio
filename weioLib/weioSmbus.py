@@ -163,7 +163,7 @@ class SMBus(object):
         Perform SMBus Read Block Data transaction.
         """
         self._set_addr(addr)
-        result = self._i2c.transaction(self._addr, pack('BB', cmd, val), I2C_FUNC_SMBUS_READ_BLOCK_DATA)
+        result = self._i2c.transaction(self._addr, pack('B', cmd), I2C_FUNC_SMBUS_READ_BLOCK_DATA)
         dataFlags = ""
         for flag in range(I2C_FUNC_SMBUS_READ_BLOCK_DATA):
             dataFlags+="B"
