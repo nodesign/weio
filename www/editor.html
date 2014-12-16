@@ -33,11 +33,7 @@
 <link  href='libs/flatdoc/style.css' rel='stylesheet'>
 <script src='libs/flatdoc/theme-white/script.js'></script>
 <!-- Initializer -->
-<script>
-    Flatdoc.run({
-      fetcher: Flatdoc.file('docApi.md')
-    });
-</script>
+
 
 </head>
 <body>
@@ -188,6 +184,8 @@
                     <li><a id="tabBoard" href="#board-pane" data-toggle="tab">Board</a></li>
                     <li><a id="tabStats" href="#stats-pane" data-toggle="tab">Stats</a></li>
                     <li><a id="tabDocumentation"href="#doc-pane" data-toggle="tab">Documentation</a></li>
+                    <li><a id="tabJavascript"href="#doc-js" data-toggle="tab">Javascript</a></li>
+                    <li><a id="tabPython"href="#doc-py" data-toggle="tab">Python</a></li>
                 </ul>
             </div>
             <div class="tab-content">
@@ -367,16 +365,31 @@
                 
             <div id="doc-pane" class="tab-pane">
                  <div role='flatdoc' id="flatdoc-holder" class='content-root'>
-              <div class='menubar'>
-                <div class='menu section' role='flatdoc-menu'></div>
-              </div>
-              <div role='flatdoc-content' id="flatdoc-container" class='content'></div>
+                  <div class='menubar'>
+                    <div class='menu section' role='flatdoc-menu'></div>
+                  </div>
+                  <div role='flatdoc-content' id="flatdoc-container" class='content'></div>
+                </div>
             </div>
-                
+
+            <div id="doc-js" class="tab-pane">
+                 <div role='flatdoc' id="flatdoc-holder" class='content-root'>
+                  <div class='menubar'>
+                    <div class='menu section' role='flatdoc-menu'></div>
+                  </div>
+                  <div role='flatdoc-content' id="flatdoc-container" class='content'></div>
+                </div>
             </div>
-            
-           
-            
+
+            <div id="doc-py" class="tab-pane">
+                 <div role='flatdoc' id="flatdoc-holder" class='content-root'>
+                  <div class='menubar'>
+                    <div class='menu section' role='flatdoc-menu'></div>
+                  </div>
+                  <div role='flatdoc-content' id="flatdoc-container" class='content'></div>
+                </div>
+            </div>
+ 
             </div>
             
         </div>

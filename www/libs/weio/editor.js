@@ -444,6 +444,10 @@ $(document).ready(function () {
     });
 
     $("#tabDocumentation").click(function(e) {
+        Flatdoc.run({
+          fetcher: Flatdoc.file('docApi.md')
+        });
+
         stopDataViz();
         // resize side bar for documentatio preview
         rightSideBarWidth = "800px";
@@ -451,6 +455,20 @@ $(document).ready(function () {
         $(".editorContainer").animate( { right: rightSideBarWidth }, { queue: false, duration: 100 });
 
     });
+    
+    $("#tabJavascript").click(function(e) {
+        Flatdoc.run({
+          fetcher: Flatdoc.file('weioJS.md')
+        });
+    });
+    
+    $("#tabPython").click(function(e) {
+        Flatdoc.run({
+          fetcher: Flatdoc.file('weioPY.md')
+        });
+    });
+    
+    
 
     ////////////////////// ADD FILES EVENT
     $('#updateFiles').change(function(evt){
