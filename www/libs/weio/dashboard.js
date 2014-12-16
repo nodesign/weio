@@ -480,27 +480,25 @@ function prepareToPlay() {
     }
 }
 
-var doublePlayStop = false;
 function play(){
     var d = new Date();
     var inTime = 1500;
     var diff = d-stopTag;
 
     if (diff > inTime) {
-        if (doublePlayStop==false) {
-            sendPlayToServer();
-            document.getElementById("weioIframe").contentWindow.clearConsole();
-            playCounter = setInterval(function(){countTillPlay()},4);
-            $( "#weioProgress" ).fadeTo( "fast", 100 );
-            doublePlayStop = true;
-        }
+        sendPlayToServer();
+        document.getElementById("weioIframe").contentWindow.clearConsole();
+        playCounter = setInterval(function(){countTillPlay()},4);
+        $( "#weioProgress" ).fadeTo( "fast", 100 );
+        console.log("play");
+
     } else {
         var delta = inTime-diff;
         setTimeout(function(){sendPlayToServer();}, delta);
-        doublePlayStop = true;
         document.getElementById("weioIframe").contentWindow.clearConsole();
         playCounter = setInterval(function(){countTillPlay()},10);
         $( "#weioProgress" ).fadeTo( "fast", 100 );
+        console.log("play differ");
     }
 
 }
@@ -508,7 +506,6 @@ function play(){
 function sendPlayToServer() {
     var rq = { "request": "play"};
     dashboard.send(JSON.stringify(rq));
-    doublePlayStop  = false;
     stopTag = new Date();
 }
 
