@@ -7,7 +7,7 @@
 # Example presents SPI communication with 74HC595 chip
 # Latch pin to LOW to start communication
 # Serial output in 8 bit format
-# Larch pin to HIGH to end communication and present outputs on chip pins
+# Latch pin to HIGH to end communication and present outputs on chip pins
 
 from weioLib.weio import *
 
