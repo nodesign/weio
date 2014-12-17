@@ -219,7 +219,7 @@ def versionWeIO():
     # get WeIO version
     return config["weio_version"]
 
-# NATIVE PROTOCOLES
+# NATIVE PROTOCOLES NOT FOR USERS THIS IS FOR DRIVERS ONLY
 
 def initI2C():
     return interfaceI2C(gpio.u)
@@ -227,39 +227,8 @@ def initI2C():
 def initSPI(*args):
     return interfaceSPI(gpio.u, *args)
 
-# Serial ports
-def listSerials():
-    """Lists serial ports
-
-    :raises EnvironmentError:
-        On unsupported or unknown platforms
-    :returns:
-        A list of available serial ports
-    """
-    if sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
-        # this is to exclude your current terminal "/dev/tty"
-        ports = glob.glob('/dev/tty[A-Za-z]*')
-
-    elif sys.platform.startswith('darwin'):
-        ports = glob.glob('/dev/tty.*')
-
-    elif sys.platform.startswith('win'):
-        ports = ['COM' + str(i + 1) for i in range(256)]
-
-    else:
-        raise EnvironmentError('Unsupported platform')
-
-    result = []
-    for port in ports:
-        try:
-            s = serial.Serial(port)
-            s.close()
-            result.append(port)
-        except (OSError, serial.SerialException):
-            pass
-    return result
-
 def initSerial(port, baudrate, timeout_=1):
+    # toggle RX and TX pins to secondary (UART) mode
     interfaceUART(gpio.u)
     return serial.Serial(port, baudrate, timeout=timeout_)
 
