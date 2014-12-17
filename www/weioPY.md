@@ -59,7 +59,7 @@ def setup():
     attach.process(myProcess)
     
 def myProcess():
-    
+    portMode(2, OUTPUT)
     while True:
         # this is direct port manipulation
         # instead calling digitalWrite for each pin
@@ -78,11 +78,28 @@ def setup():
     attach.process(myProcess)
     
 def myProcess():
-    
+    portMode(0, INPUT)
     while True:
         print(portRead(0))
         delay(20)
 ```
+### portMode(port, mode)
+Sets states on one port (8 pins) at the same time. There are 4 available ports on the board. Port 0 for pins 0-7, Port 1 for pins 8-15, Port 2 for pins 16-23 and Port 3 for pins 24-31 Available modes are : PULL_UP, PULL_DOWN, INPUT and OUTPUT
+This function activates pullups, pulldowns or high Z state (INPUT only) on declared ports. 
+
+```python
+from weioLib.weio import *
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    portMode(0, INPUT)
+    while True:
+        print(portRead(0))
+        delay(20)
+```
+
 
 ### pinMode(pin, mode)
 

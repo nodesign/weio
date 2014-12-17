@@ -109,6 +109,7 @@ This example will blink LEDs. There is only one instruction that is called inste
 var led = false; // false LOW, true HIGH
 
 function onWeioReady() {
+  portMode(2, OUTPUT);
   setInterval(function() {
     // Blinks all 3 LEDs every half second
     if (led)
@@ -126,6 +127,7 @@ In Javascript portRead needs to be provided with callback function where results
 ```javascript
 
 function onWeioReady() {
+    portMode(0, INPUT);
     console.log("DOM is loaded, websocket is opened");
     setInterval(function(){ portRead(0, read); }, 100);
 }
@@ -136,7 +138,24 @@ function read(rcv) {
 }
 
 ```
+### portMode(port, mode)
+Sets states on one port (8 pins) at the same time. There are 4 available ports on the board. Port 0 for pins 0-7, Port 1 for pins 8-15, Port 2 for pins 16-23 and Port 3 for pins 24-31 Available modes are : PULL_UP, PULL_DOWN, INPUT and OUTPUT
+This function activates pullups, pulldowns or high Z state (INPUT only) on declared ports. 
 
+```javascript
+
+function onWeioReady() {
+    portMode(0, INPUT);
+    console.log("DOM is loaded, websocket is opened");
+    setInterval(function(){ portRead(0, read); }, 100);
+}
+
+function read(rcv) {
+  //console.log(rcv.data);
+  $("#portReadHtml").html(rcv.data);
+}
+
+```
 
 ### pinMode(pin, mode)
 
