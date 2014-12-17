@@ -33,10 +33,9 @@ def blinky() :
         digitalWrite(20, LOW)
         delay(500)
 ```
-### digitalRead(pin, callback)
+### digitalRead(pin)
 Reads actual voltage on corresponding pin. WeIO inputs are 5V TOLERANT. There are two possible answers : 0 if pin is connected to the Ground or 1 if positive voltage is detected. If only digitalRead function is provided, pin will be in HIGH Z state. See pinMode(pin,mode) function for more options.
 
-In Javascript DigitalRead asks to provide callback function that will be called when WeIO board finish reading state on the pin. Callback function arguments will be populated with dictionary that provides pin number and pin state as information. This example with setInterval pooling is useful to check time to time pin state, if immediate reaction is needed than see attachInterrupt function.
 ```python
 from weioLib.weio import *
 
@@ -49,6 +48,40 @@ def myProcess():
         a = digitalRead(pin)
         print "Value on the pin ", pin, " = ", a
         delay(100)
+```
+### portWrite(port, value)
+PortWrite allows faster manipulation of the i/o pins of the microcontroller. That means that you can send one byte of data that will be directly exported on 8 pins in form of HIGH and LOW signals instead sending them one by one. There are 4 available ports on the board. Port 0 for pins 0-7, Port 1 for pins 8-15, Port 2 for pins 16-23 and Port 3 for pins 24-31
+This example will blink LEDs. There is only one instruction that is called instead calling digitalWrite for each pin separately 
+```python
+from weioLib.weio import *
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    
+    while True:
+        # this is direct port manipulation
+        # instead calling digitalWrite for each pin
+        portWrite(2, 227)
+        delay(500)
+        portWrite(2, 255)
+        delay(500)
+```
+
+### portRead(port)
+PortRead allows faster manipulation of the i/o pins of the microcontroller. That means that you can read one byte of data instead reading them one by one using digitalRead function. There are 4 available ports on the board. Port 0 for pins 0-7, Port 1 for pins 8-15, Port 2 for pins 16-23 and Port 3 for pins 24-31
+```python
+from weioLib.weio import *
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    
+    while True:
+        print(portRead(0))
+        delay(20)
 ```
 
 ### pinMode(pin, mode)

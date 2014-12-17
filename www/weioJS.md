@@ -102,6 +102,42 @@ function pinCallback(data) {
 }
 ```
 
+### portWrite(port, value)
+PortWrite allows faster manipulation of the i/o pins of the microcontroller. That means that you can send one byte of data that will be directly exported on 8 pins in form of HIGH and LOW signals instead sending them one by one. There are 4 available ports on the board. Port 0 for pins 0-7, Port 1 for pins 8-15, Port 2 for pins 16-23 and Port 3 for pins 24-31
+This example will blink LEDs. There is only one instruction that is called instead calling digitalWrite for each pin separately 
+```javascript
+var led = false; // false LOW, true HIGH
+
+function onWeioReady() {
+  setInterval(function() {
+    // Blinks all 3 LEDs every half second
+    if (led)
+        portWrite(2, 227)
+    else
+        portWrite(2, 255)
+    // inverts variable state
+    led = !led;
+    }, 500);
+```
+
+### portRead(port, callback)
+PortRead allows faster manipulation of the i/o pins of the microcontroller. That means that you can read one byte of data instead reading them one by one using digitalRead function. There are 4 available ports on the board. Port 0 for pins 0-7, Port 1 for pins 8-15, Port 2 for pins 16-23 and Port 3 for pins 24-31
+In Javascript portRead needs to be provided with callback function where results will be sent.
+```javascript
+
+function onWeioReady() {
+    console.log("DOM is loaded, websocket is opened");
+    setInterval(function(){ portRead(0, read); }, 100);
+}
+
+function read(rcv) {
+  //console.log(rcv.data);
+  $("#portReadHtml").html(rcv.data);
+}
+
+```
+
+
 ### pinMode(pin, mode)
 
 Sets state on the pin. Available modes are : PULL_UP, PULL_DOWN, INPUT and OUTPUT
