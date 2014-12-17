@@ -292,12 +292,8 @@ $(document).ready(function () {
                                                 else {
                                                     http_prefix = "http://";
                                                 }
-            
-                                                if (userServerPort==80) {
-                                                    _addr = http_prefix + a[0];
-                                                } else {
-                                                    _addr = http_prefix + a[0] + ':' + a[1];
-                                                }
+                                                _addr = http_prefix + a[0] + ':' + a[1];
+
                                                 //console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", _addr +"/"+target);
                                                 //window.open(_addr +"/"+target);
                                                 window.location.href = _addr +"/"+target;
