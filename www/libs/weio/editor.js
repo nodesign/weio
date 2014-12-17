@@ -273,13 +273,13 @@ $(document).ready(function () {
                                }    else {
                                    // tar archives
                                    if (path.indexOf(".tar") != -1) {
-                                        //console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", path);
+                                        console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", path);
                                         var target = path.split("www/")[1];
-                                        console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", target);
+                                        //console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", target);
 
                                         var _addr = location.host;
                                         var a = _addr.split(":");
-
+                                        //console.log("TAAAAAR", a);
                                         /** Get global configuration */
                                         $.getJSON('config.json', function(data) {
                                                 confFile = data;
@@ -296,7 +296,7 @@ $(document).ready(function () {
                                                 if (userServerPort==80) {
                                                     _addr = http_prefix + a[0];
                                                 } else {
-                                                    _addr = http_prefix + a[0] + ':' + userServerPort;
+                                                    _addr = http_prefix + a[0] + ':' + a[1];
                                                 }
                                                 //console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", _addr +"/"+target);
                                                 //window.open(_addr +"/"+target);
