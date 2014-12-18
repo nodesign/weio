@@ -298,8 +298,8 @@ function tone(pin, frequency, duration) {
 	}
 };
 
-function notone(pin) {
-	genericMessage("notone", [pin], null);
+function noTone(pin) {
+	genericMessage("noTone", [pin], null);
 };
 
 function constrain(x, a, b) {

@@ -179,9 +179,9 @@ def tone(pin, frequency, duration = 0):
         print "tone(", pin,",",frequency,",",duration,")"
         return -1
 
-def notone(pin):
+def noTone(pin):
     try:
-        return gpio.notone(pin)
+        return gpio.noTone(pin)
     except:
         print "tone(", pin, ")"
         return -1

@@ -229,7 +229,7 @@ class WeioGpio():
         gpio = self.mainGpio[pin]
         return gpio.read_pulse(level, timeout)
 
-    def notone(self, pin):
+    def noTone(self, pin):
         pwm = self.u.PWM(pin)
         pwm.set_period(10000)
         pwm.set_duty_cycle(0)

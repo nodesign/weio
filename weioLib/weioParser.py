@@ -181,7 +181,7 @@ def callTone(data) :
 
 def callNotone(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
-        notone(data[0])
+        noTone(data[0])
     else :
         print "notone ON PC", data
     return None
@@ -304,7 +304,7 @@ weioSpells = {
     "attachInterrupt":callAttachInterrupt,
     "detachInterrupt":callDetachInterrupt,
     "tone": callTone,
-    "notone": callNotone,
+    "noTone": callNotone,
     "constrain":callConstrain,
     "millis":callMillis,
     "getTemperature": callGetTemperature,

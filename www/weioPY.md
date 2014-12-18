@@ -175,6 +175,39 @@ def fadeInOut():
             pwmWrite(20,100-i)
 ```
 
+### tone(pin, frequency, duration=0)
+Generates a square wave of the specified frequency (and 50% duty cycle) on a pin. A duration can be specified, otherwise the wave continues until a call to noTone(). The pin can be connected to a piezo buzzer or other speaker to play tones. Tone function can be used only on PWM pins on WeIO (18,19,20,21,22,23)
+
+```python
+from weioLib.weio import *
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    f = 0
+    while True:
+        tone(23, f)
+        f+=1
+        print "freq = ", f
+        if (f>3000):
+            f = 0
+        delay(20)
+```
+
+### noTone(pin)
+Stops the generation of a square wave triggered by tone(). Has no effect if no tone is being generated.
+```python
+from weioLib.weio import *
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    tone(23, 1500)
+    delay(3000)
+    noTone(23)
+```
 ### setPwmPeriod(period)
 Overrides default value of 1000us to set new period frequency for whole 6 PWM pins.
 
