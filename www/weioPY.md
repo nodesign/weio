@@ -211,6 +211,75 @@ def myProcess():
 ### setPwmPeriod(period)
 Overrides default value of 1000us to set new period frequency for whole 6 PWM pins.
 
+Time
+====
+### millis()
+Returns the number of milliseconds since the user program began running on the WeIO board.
+
+
+### delay(milliseconds)
+Pauses the program for the amount of time (in miliseconds) specified as parameter. (There are 1000 milliseconds in a second.)
+from weioLib.weio import *
+```python
+def setup() :
+    
+    # Attaches blinky function to infinite loop
+    attach.process(blinky)
+
+def blinky() :
+    
+    while True:
+        
+        # write HIGH value to digital PINS 18, 19 & 20
+        digitalWrite(18, HIGH) # red led
+        digitalWrite(19, HIGH) # green led
+        digitalWrite(20, HIGH) # blue led
+        
+        # wait 100ms
+        delay(100)
+        
+        # write LOW value to digital PINS 18, 19 & 20
+        digitalWrite(18, LOW) # red led
+        digitalWrite(19, LOW) # green led
+        digitalWrite(20, LOW) # blue led
+        
+        # wait 100ms
+        delay(100)
+```
+Calculation
+===========
+
+### constrain(x, a, b)
+Constrains a number to be within a range.
+
+from weioLib.weio import *
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    val = analogRead(24)
+    # constrain values between 300 & 500
+    p = constrain(val, 300,500)
+    print p
+```
+
+### proportion(value, fromLow, fromHigh, toLow, toHigh)
+Re-maps a number from one range to another. That is, a value of fromLow would get mapped to toLow, a value of fromHigh to toHigh, values in-between to values in-between, etc. Does not constrain values to within the range, because out-of-range values are sometimes intended and useful. The constrain() function may be used either before or after this function, if limits to the ranges are desired. It returns floating point number. Proportion is called map() in Arduino jargon but as this word is already reserved in Python in WeIO is called proportion()
+
+```python
+from weioLib.weio import *
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    val = analogRead(24)
+    
+    p = proportion(val, 300,500, 0,255)
+    print p
+```
+
 WeIO info
 =========
 ### versionWeIO
