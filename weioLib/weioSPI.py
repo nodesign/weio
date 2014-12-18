@@ -97,7 +97,7 @@ class SPILib(object):
 
         Perform SPI Read Word Data transaction.
         """
-        result = self._spi.transaction(pack('BBH', cmd, val, 0), read_from_slave=True)
+        result = self._spi.transaction(pack('B', cmd), read_from_slave=True)
         return unpack('H', result[0])[0]
 
     def write_word_data(self, cmd, val):
@@ -118,7 +118,7 @@ class SPILib(object):
             sendFlags+="B"
             receiveFlags+="B"
 
-        result = self._spi.transaction(pack(sendFlags, cmd, char(0)*SPI_FUNC_READ_BLOCK_DATA), read_from_slave=True)
+        result = self._spi.transaction(pack(sendFlags, cmd, chr(0)*SPI_FUNC_READ_BLOCK_DATA), read_from_slave=True)
         return list(unpack(receiveFlags, result[0]))
 
     def write_block_data(self, cmd, vals):
