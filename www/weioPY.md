@@ -174,6 +174,8 @@ def fadeInOut():
             # change PWM duty cycle to 100-i
             pwmWrite(20,100-i)
 ```
+### setPwmPeriod(period)
+Overrides default value of 1000us to set new period frequency for whole 6 PWM pins.
 
 ### tone(pin, frequency, duration=0)
 Generates a square wave of the specified frequency (and 50% duty cycle) on a pin. A duration can be specified, otherwise the wave continues until a call to noTone(). The pin can be connected to a piezo buzzer or other speaker to play tones. Tone function can be used only on PWM pins on WeIO (18,19,20,21,22,23)
@@ -208,11 +210,9 @@ def myProcess():
     delay(3000)
     noTone(23)
 ```
-### setPwmPeriod(period)
-Overrides default value of 1000us to set new period frequency for whole 6 PWM pins.
 
 Time
-====
+----
 ### millis()
 Returns the number of milliseconds since the user program began running on the WeIO board.
 
@@ -220,6 +220,7 @@ Returns the number of milliseconds since the user program began running on the W
 ### delay(milliseconds)
 Pauses the program for the amount of time (in miliseconds) specified as parameter. (There are 1000 milliseconds in a second.)
 from weioLib.weio import *
+
 ```python
 def setup() :
     
@@ -247,11 +248,10 @@ def blinky() :
         delay(100)
 ```
 Calculation
-===========
-
+-----------
 ### constrain(x, a, b)
 Constrains a number to be within a range.
-
+```python
 from weioLib.weio import *
 
 def setup():
@@ -281,12 +281,12 @@ def myProcess():
 ```
 
 WeIO info
-=========
+---------
 ### versionWeIO
 Gets actual version of WeIO software
 
 Interfaces
-==========
+----------
 
 Serial port
 -----------
