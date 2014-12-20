@@ -87,6 +87,8 @@ class WeioSigninHandler(loginHandler.BaseHandler):
 
             # Change avahi name
             command = "sh scripts/change_boardname.sh " + boardname
+            confFile['dns_name'] = boardname + ".local"
+            weioConfig.saveConfiguration(confFile)
             print "EXEC : " + command
 
             try:

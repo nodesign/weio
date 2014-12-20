@@ -30,19 +30,14 @@
 #
 # Authors : 
 # Uros PETREVSKI <uros@nodesign.net>
-# Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 #
 ###
-
-from weioLib.weio import *
-import struct
-import sys
 class PowerModule:
     def __init__(self, port):
         if (port>1):
             sys.stderr.write("Error! PowerModule can be only on ports 0 or 1")
         else :
-            self.spi = initSPI(port) # init SPI on port 0 (pins : 2,3,4)
+            self.spi = SPILib(0) # init SPI on port 0 (pins : 2,3,4)
 
             if (port==0):
                 self.latchPin = 5
@@ -66,7 +61,7 @@ class PowerModule:
         second = (self.output>>8) & 0xFF
 
         digitalWrite(self.latchPin, LOW)
-        self.spi.transaction(struct.pack("BB", first,second))
+        self.spi.write_byte_data(first, second)
         digitalWrite(self.latchPin, HIGH)
 
     def reverseBits(self, x):

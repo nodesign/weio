@@ -2,7 +2,7 @@
 # Code originally was found on Bitify :
 # http://blog.bitify.co.uk/2013/11/reading-data-from-mpu-6050-on-raspberry.html
 
-from weioLib import smbus
+from weioLib import weioSmbus as smbus
 import math
 
 class Mpu6050:

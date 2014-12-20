@@ -298,8 +298,8 @@ function tone(pin, frequency, duration) {
 	}
 };
 
-function notone(pin) {
-	genericMessage("notone", [pin], null);
+function noTone(pin) {
+	genericMessage("noTone", [pin], null);
 };
 
 function constrain(x, a, b) {
@@ -376,23 +376,23 @@ function listSerials(callback) {
     genericMessage("listSerials", [], fName);
 };
 
-function initSerial(port, baudrate) {
-    genericMessage("initSerial", [port, baudrate], null);
-
+// function initSerial(port, baudrate) {
+//     genericMessage("initSerial", [port, baudrate], null);
+// }
 /*
  * SPI SECTION
  */
-function initSPI(port) {
-    genericMessage("initSPI", [port], null);
-}
-
-function readSPI(count) {
-    genericMessage("readSPI", [count], null);
-}
-
-function writeSPI(data) {
-    genericMessage("writeSPI", [data], null);
-}
+// function initSPI(port) {
+//     genericMessage("initSPI", [port], null);
+// }
+//
+// function readSPI(count) {
+//     genericMessage("readSPI", [count], null);
+// }
+//
+// function writeSPI(data) {
+//     genericMessage("writeSPI", [data], null);
+// }
 
 /*
  * Generic handler for sending messages to server

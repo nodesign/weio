@@ -5,6 +5,7 @@
 #######################################
 
 from weioLib.weio import *
+from weioLib.weioSerial import Serial, listSerials
 
 def setup():
     # making two indipendant processes. One that drives with pwm LEDs
@@ -35,7 +36,7 @@ def UART():
     # open WeIO serial port that is attached to pins 0-RX and 1-TX
     # initSerial function return python serial object (pyserial library)
     # it's defined with (path, baud rate, timeout-optional 1 by default)
-    ser = initSerial('/dev/ttyACM1', 115200, 1)
+    ser = Serial(115200)
     
     i = 0
     while True:

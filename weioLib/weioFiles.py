@@ -290,4 +290,5 @@ def symlinkExternalProjects():
             os.unlink(lastWww)
         except:
             print "Symlink don't exist. Will create new one for www"
-        os.symlink(config["absolut_root_path"] + "/www", lastWww)
+        if (len(config["last_opened_project"]) > 0):
+            os.symlink(config["absolut_root_path"] + "/www", lastWww)
