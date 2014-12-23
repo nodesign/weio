@@ -130,7 +130,7 @@ def analogWrite(pin, value):
     try:
         return gpio.pwmWrite(pin, value)
     except:
-        print "analogWrite(", pin, ",",value,")"
+        print "pwmWrite(", pin, ",",value,")"
 
 def proportion(value, istart, istop, ostart, ostop):
     return float(ostart) + (float(ostop) - float(ostart)) * ((float(value) - float(istart)) / (float(istop) - float(istart)))
