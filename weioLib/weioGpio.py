@@ -76,7 +76,7 @@ class WeioGpio():
 
         # This array represents all gpio objects they are keeping their last state that can be easily followed
         self.mainGpio = []
-        for i in range(32):
+        for i in range(len(self.u.pinout)):
             pin = self.u.GPIO(i)
             self.mainGpio.append(pin)
 
