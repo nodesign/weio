@@ -94,7 +94,7 @@ class UserControl():
         self.qIn = weioRunnerGlobals.QOUT
         self.qOut = weioRunnerGlobals.QIN
 
-        self.userMain = None
+        self.userMain = {}
 
     def setConnectionObject(self, connection):
         # captures only the last connection
