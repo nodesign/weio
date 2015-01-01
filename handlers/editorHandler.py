@@ -150,7 +150,7 @@ class WeioEditorHandler(SockJSConnection):
         #utfContents = urllib2.unquote(urllib2.quote(contents)).decode("utf8")
         #utfContents = urllib2.unquote(s).decode('utf8')
 
-        weioFiles.saveRawContentToFile(path, contents)
+        weioFiles.saveRawContentToFile(path, contents.encode('utf-8'))
 
         data['status'] = name + " saved!"
         self.broadcast(clients, json.dumps(data))

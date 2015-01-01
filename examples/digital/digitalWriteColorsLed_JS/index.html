@@ -1,0 +1,76 @@
+<!--###################################
+#                                     #
+#  HOW TO HAVE DIGITAL WRITE ON WEIO  #
+#                                     #
+#######################################
+
+# Description: This example shows how to write digital values from user 
+# 			   interface to PIN's 18, 19 & 20 connected on the RGB LED 
+#              on the board.
+# syntax = digitalWrite(pin,value) 
+# Function available in all PIN's. Value is 0 and 1 or LOW and HIGH
+-->
+
+<!DOCTYPE html>
+<head >
+	<!-- Import weioLibs and link css style -->
+    <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+    <link href="myStyle.css" rel="stylesheet">
+    <!-- Link Bootstrap 3.3.0 lib -->
+ 	<link href="www/libs/bootstrap-3.3.0/css/bootstrap.min.css" 
+ 	      rel="stylesheet" />
+	
+</head>
+
+<script type="text/javascript">
+    
+	// This function is called when DOM is loaded and web socket opened.
+    function onWeioReady() {
+        rgb(LOW,LOW,LOW); // white color
+    }
+    // This function is used to set color on the RGB LED on the board 
+    function rgb(r,g,b) {
+        digitalWrite(18, r); // red led
+        digitalWrite(19, g); // green led
+        digitalWrite(20, b); // blue led
+    }
+    
+</script>
+
+<!--  User interface with 8 "buttons" and associated functions on click -->
+<body>
+    <div class="col-xs-6" 
+         style="background-color:white" 
+         onclick="rgb(LOW,LOW,LOW)">
+    </div>
+    <div class="col-xs-6" 
+         style="background-color:yellow" 
+         onclick="rgb(LOW,LOW,HIGH)">
+    </div>
+    <div class="col-xs-6" 
+         style="background-color:violet" 
+         onclick="rgb(LOW,HIGH,LOW)"></div>
+         
+    <div class="col-xs-6" 
+         style="background-color:red" 
+         onclick="rgb(LOW,HIGH,HIGH)">
+    </div>
+    <div class="col-xs-6" 
+         style="background-color:#00FFFF" 
+         onclick="rgb(HIGH,LOW,LOW)">
+    </div>
+    <div class="col-xs-6" 
+         style="background-color:green" 
+         onclick="rgb(HIGH,LOW,HIGH)">
+    </div>
+    <div class="col-xs-6" 
+         style="background-color:blue" 
+         onclick="rgb(HIGH,HIGH,LOW)">
+    </div> 
+    <div class="col-xs-6"
+         style="background-color:black" 
+         onclick="rgb(HIGH,HIGH,HIGH)">
+    </div>                   
+</body>
+
+</html>

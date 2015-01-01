@@ -152,38 +152,40 @@ class WeioDashBoardHandler(SockJSConnection):
         data = {}
         data['requested'] = rq['request']
 
+        allExamples = []
         allUserProjects = []
 
         # Examples
         examplesDir = "www/examples"
+
         if (os.path.exists(examplesDir)):
-            dirs = os.walk(examplesDir).next()[1]
+            dirs = get_directory_structure(examplesDir)
             a = {"storageName":"examples", "projects":dirs}
-            allUserProjects.append(a)
+            allExamples.append(a)
 
         # Flash
         flashDir = "www/flash"
         if (os.path.exists(flashDir)):
-            dirs = os.walk(flashDir).next()[1]
+            dirs = get_directory_structure(flashDir)
             a = {"storageName":"flash", "projects":dirs}
             allUserProjects.append(a)
 
         # SD
         flashDir = "www/sd"
         if (os.path.exists(flashDir)):
-            dirs = os.walk(flashDir).next()[1]
-            a = {"storageName":"sd", "projects":dirs}
-            allUserProjects.append(a)
+           dirs = get_directory_structure(flashDir)
+           a = {"storageName":"sd", "projects":dirs}
+           allUserProjects.append(a)
 
         # USB flashDir
         flashDir = "www/usbFlash"
         if (os.path.exists(flashDir)):
-            dirs = os.walk(flashDir).next()[1]
-            a = {"storageName":"usbFlash", "projects":dirs}
-            allUserProjects.append(a)
+           dirs = get_directory_structure(flashDir)
+           a = {"storageName":"usbFlash", "projects":dirs}
+           allUserProjects.append(a)
 
         data['data'] = allUserProjects
-
+        data['examples'] = allExamples
         self.broadcast(clients, json.dumps(data))
 
     def changeProject(self,rq):
@@ -412,6 +414,11 @@ class WeioDashBoardHandler(SockJSConnection):
             data['status'] = "Error this projet already exists"
             self.broadcast(clients, json.dumps(data))
 
+    def clientPing(self, rq):
+        data = {}
+        data['requested'] = rq['request']
+        data['response'] = 'pong'
+        self.broadcast(clients, json.dumps(data))
 
 ##############################################################################################################################
     # DEFINE CALLBACKS IN DICTIONARY
@@ -437,7 +444,8 @@ class WeioDashBoardHandler(SockJSConnection):
         'archiveProject' : createTarForProject,
         'addNewProjectFromArchive' : decompressNewProject,
         'duplicateProject': duplicateProject,
-        'getPreviewPortNumber': sendPreviewPortNumber
+        'getPreviewPortNumber': sendPreviewPortNumber,
+        'ping': clientPing
 
     }
 
@@ -472,3 +480,19 @@ class WeioDashBoardHandler(SockJSConnection):
         global clients
         # Remove client from the clients list and broadcast leave message
         clients.remove(self)
+
+
+## Get examples directory structure (folders with subfolders)
+def get_directory_structure(rootdir):
+    """
+    Creates a nested dictionary that represents the folder structure of rootdir
+    """
+    dir = {}
+    rootdir = rootdir.rstrip(os.sep)
+    start = rootdir.rfind(os.sep) + 1
+    for path, dirs, files in os.walk(rootdir):
+        folders = path[start:].split(os.sep)
+        subdir = dict.fromkeys(dirs)
+        parent = reduce(dict.get, folders[:-1], dir)
+        parent[folders[-1]] = subdir
+    return dir

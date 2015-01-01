@@ -262,7 +262,9 @@ div {
   text-decoration: none;
 }
 .columns .rightSideBar #board-image {
-  margin: 34px 74px;
+  margin: -5px 59px;
+  width: 356px;
+  height: 600px;
 }
 .columns .rightSideBar ul#pinlist1 {
   position: absolute;
@@ -272,17 +274,17 @@ div {
 .columns .rightSideBar ul#pinlist1a {
   position: absolute;
   left: 12px;
-  top: 238px;
+  top: 244px;
 }
 .columns .rightSideBar ul#pinlist2 {
   position: absolute;
   right: 35px;
-  top: 95px;
+  top: 124px;
 }
 .columns .rightSideBar ul#pinlist2a {
   position: absolute;
   right: 35px;
-  top: 238px;
+  top: 275px;
 }
 .columns .rightSideBar li.pin,
 .columns .rightSideBar li.pin_on {
@@ -294,7 +296,7 @@ div {
   text-indent: -99999px;
   display: block;
   width: 34px;
-  height: 9px;
+  height: 10.5px;
   border-radius: 10px;
   cursor: pointer;
 }

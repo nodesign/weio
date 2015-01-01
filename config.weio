@@ -1,10 +1,10 @@
 {
-    "absolut_root_path": "/home/drasko/weio", 
+    "absolut_root_path": "/Users/uros/workNow/nodesign/WeIO/weio/weio", 
     "debug_mode": "True", 
     "dependencies_path": "www", 
     "dns_name": "weio.local", 
     "editor_html_path": "www/dashboard.html", 
-    "extern_projects_path_flash": "/weioUser/flash", 
+    "extern_projects_path_flash": "/Users/uros/workNow/nodesign/weIO/weio/weioUser/flash", 
     "extern_projects_path_sd": "/weioUser/sd", 
     "extern_projects_path_usbFlash": "", 
     "first_time_run": "NO", 
@@ -15,7 +15,7 @@
         "index.html", 
         "weioMain.py"
     ], 
-    "last_opened_project": "www/examples/test", 
+    "last_opened_project": "www/examples/processes/helloWorld", 
     "login_required": "NO", 
     "password": "", 
     "play_composition_on_server_boot": "YES", 
@@ -26,5 +26,6 @@
     "userApp_debug_mode": "True", 
     "weio_board": "WeIO", 
     "weio_lib_path": "weioLib", 
-    "weio_version": "336"
+    "weio_update_repository": "http://we-io.net/downloads", 
+    "weio_version": "408"
 }

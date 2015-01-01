@@ -1,0 +1,23 @@
+html, body {
+	height: 100%;
+}
+
+.row-xs-12 {
+    height: 25%;
+    padding:10px;
+    background-color:gray;
+}
+
+.col-xs-3 {
+    cursor:pointer;
+    text-align: center;
+    height: 50%;
+    font-size: 30px;
+    
+    border-radius: 20px;
+    border-color:black;
+    border: 2px solid;
+    color:white;
+    width: 50%;
+    background-color:#181818;
+}

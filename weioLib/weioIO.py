@@ -2,8 +2,17 @@ import platform
 import time
 from weioLib.weioLm75 import WeioLm75
 from IoTPy.core.gpio import GPIO
-from IoTPy.core.i2c import I2C as interfaceI2C
-from IoTPy.pyuper.spi import SPI as interfaceSPI
+from IoTPy.pyuper.i2c import UPER1_I2C as interfaceI2C
+from IoTPy.pyuper.spi import UPER1_SPI as interfaceSPI
+from IoTPy.pyuper.uart import UPER1_UART as interfaceUART
+
+# IMPORT BASIC CONFIGURATION FILE
+from weioLib import weioConfig
+
+import sys
+import glob
+import serial
+
 ###
 # Global interface
 ###
@@ -121,7 +130,7 @@ def analogWrite(pin, value):
     try:
         return gpio.pwmWrite(pin, value)
     except:
-        print "analogWrite(", pin, ",",value,")"
+        print "pwmWrite(", pin, ",",value,")"
 
 def proportion(value, istart, istop, ostart, ostop):
     return float(ostart) + (float(ostop) - float(ostart)) * ((float(value) - float(istart)) / (float(istop) - float(istart)))
@@ -170,9 +179,9 @@ def tone(pin, frequency, duration = 0):
         print "tone(", pin,",",frequency,",",duration,")"
         return -1
 
-def notone(pin):
+def noTone(pin):
     try:
-        return gpio.notone(pin)
+        return gpio.noTone(pin)
     except:
         print "tone(", pin, ")"
         return -1
@@ -204,7 +213,13 @@ def listSerial():
             ser.append(dirs[a])
     return ser
 
-# NATIVE PROTOCOLES
+def versionWeIO():
+    # get configuration from file
+    config = weioConfig.getConfiguration()
+    # get WeIO version
+    return config["weio_version"]
+
+# NATIVE PROTOCOLES NOT FOR USERS THIS IS FOR DRIVERS ONLY
 
 def initI2C():
     return interfaceI2C(gpio.u)
@@ -212,6 +227,8 @@ def initI2C():
 def initSPI(*args):
     return interfaceSPI(gpio.u, *args)
 
-# CALL FOR THING LIBRARIES
-def weioLib(lib, *args):
-    return lib(gpio.u,*args)
+def initSerial(port, baudrate, timeout_=1):
+    # toggle RX and TX pins to secondary (UART) mode
+    interfaceUART(gpio.u)
+    return serial.Serial(port, baudrate, timeout=timeout_)
+

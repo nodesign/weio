@@ -4,12 +4,22 @@
 START=14
 start() {
     echo "Setting MAC address"
-    # Detect MAC
+    # Detect hardware MAC wlan0
     MAC=`ifconfig -a | grep wlan0 | grep HWaddr | awk '{print $5}'`
 
     sed "s/option macaddr.*$/option macaddr \'${MAC}\'/" -i /etc/config/wireless.sta
     sed "s/option macaddr.*$/option macaddr \'${MAC}\'/" -i /etc/config/wireless.ap
     sed "s/option macaddr.*$/option macaddr \'${MAC}\'/" -i /etc/config/wireless.ap.rescue
-    
-    sed "s/option ssid.*$/option ssid \'WeIO ${MAC}\'/" -i /etc/config/wireless.ap.rescue
+
+    # Detect MAC address relative to sticker on cara2 module
+    # MAC on the sticker is Ethernet port's MAC.
+    # eth0 (LAN): MAC
+    # wifi0: MAC+1
+    # eth1 (WAN): MAC+2
+    # MAC address can be detected in eeprom inside the art block
+    # This address is used only for ssid to match address on the sticker
+
+    MACSTICKER=`hexdump -C /dev/mtdblock7 | head -n 1 | awk '{for (i=8; i<=12; i++) print $i ":"; print $13}' ORS=''`
+
+    sed "s/option ssid.*$/option ssid \'WeIO ${MACSTICKER}\'/" -i /etc/config/wireless.ap.rescue
 }
