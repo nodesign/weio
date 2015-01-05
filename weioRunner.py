@@ -94,6 +94,8 @@ class UserControl():
         self.qIn = weioRunnerGlobals.QOUT
         self.qOut = weioRunnerGlobals.QIN
 
+        self.userMain = {}
+
     def setConnectionObject(self, connection):
         # captures only the last connection
         self.connection = connection
@@ -191,15 +193,15 @@ class UserControl():
 
         # Import userMain from local module
         try :
-            userMain = __import__(projectModule, fromlist=[''])
+            self.userMain = __import__(projectModule, fromlist=[''])
         except :
             print "MODULE CAN'T BE LOADED. Maybe you have some errors in modules that you wish to import?"
             result = None
 
 
         # Calling user setup() if present
-        if "setup" in vars(userMain):
-            userMain.setup()
+        if "setup" in vars(self.userMain):
+            self.userMain.setup()
 
         # Add user events
         #print "ADDING USER EVENTS"
@@ -243,11 +245,10 @@ class UserControl():
 
 # User Tornado signal handler
 def signalHandler(userControl, sig, frame):
-        #logging.warning('Caught signal: %s', sig)
-        #print "CALLING STOP IF PRESENT"
-        #if "stop" in vars(userControl.userMain):
-        #    logging.warning('Calling user defined stop function')
-        #    userControl.userMain.stop()
+        # CALLING STOP IF PRESENT
+        if "stop" in vars(userControl.userMain):
+            userControl.userMain.stop()
+
         if (weioIO.gpio != None):
             if (weioRunnerGlobals.WEIO_SERIAL_LINKED == True):
                 weioIO.gpio.stopReader()

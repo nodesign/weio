@@ -12,7 +12,6 @@
 # In this case shared object is shared.val
 # In most of cases this usage will work. If sync problems are encountered use lock library to lock
 
-import time
 from weioLib.weioUserApi import attach, shared
 from weioLib.weioIO import *
 
@@ -41,7 +40,7 @@ def potentiometer() :
         print "VALUE ON PIN ",potentiometerPin,":  ", shared.val
         
         # Do nothing during 0.5 seconds
-        time.sleep(0.5)
+        delay(500)
 
 def blinky() :
     
@@ -49,7 +48,7 @@ def blinky() :
 
         # write HIGH value on ledPin
         digitalWrite(ledPin, HIGH)
-        
+
         # wait in this state during shared.val value
         delay(shared.val)
         
