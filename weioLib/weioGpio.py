@@ -39,6 +39,7 @@ from IoTPy.core.gpio import GPIO
 from IoTPy.core.adc import ADC
 from IoTPy.core.pwm import PWM
 from weioLib import weioRunnerGlobals
+from IoTPy.pyuper.utils import IoTPy_APIError, errmsg
 import signal, time,sys
 
 import os
