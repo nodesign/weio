@@ -1,0 +1,40 @@
+<!--###################################
+#                                     #
+#   how to have digitalRead on WEIO   #
+#                                     #
+#######################################
+
+# syntax = digitalread(pin,callback) 
+# Value returned is 0 and 1 in callback
+--> 
+
+<!DOCTYPE html>
+<html lang="en">
+<head >
+    <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+    <link rel="stylesheet" type="text/css" href="myStyle.css">
+    <script>
+	
+		// This function is called when DOM is loaded and websocket opened
+        function onWeioReady() {
+            // Do something every 100ms
+            setInterval(function() {
+            //pinCallback will be called when data arrives from server
+            digitalRead(31,pinCallback);
+            }, 100);
+        }
+        
+        function pinCallback(callback) {
+            // update displayed phrase with callback data
+            $("#phrase").html("DIGITALREAD VALUE ON THE PIN 31 IS "
+                              +callback.data);
+        } 
+		
+    </script>
+</head>
+
+<body>
+    <p id="phrase" ></p>
+</body>
+
+</html>

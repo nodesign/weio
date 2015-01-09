@@ -1,0 +1,16 @@
+html, body {
+	height: 100%;
+	background-color:gray;
+}
+
+div {
+	height: 50%;
+	cursor:pointer;
+	border-radius:20px;
+	color:gray;
+    text-align:center;
+    vertical-align: middle;
+    font-family: Helvetica; 
+    font-size: 50px;
+    }
+    

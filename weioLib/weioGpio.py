@@ -39,7 +39,7 @@ from IoTPy.core.gpio import GPIO
 from IoTPy.core.adc import ADC
 from IoTPy.core.pwm import PWM
 from weioLib import weioRunnerGlobals
-import signal, time
+import signal, time,sys
 
 import os
 
@@ -76,12 +76,12 @@ class WeioGpio():
 
         # This array represents all gpio objects they are keeping their last state that can be easily followed
         self.mainGpio = []
-        for i in range(32):
+        for i in range(len(self.u.pinout)):
             pin = self.u.GPIO(i)
             self.mainGpio.append(pin)
 
     def pinMode(self, pin, mode) :
-        """Sets input mode for digitalRead purpose. Available modes are : INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP"""
+        """Sets input mode for digitalRead purpose. Available modes are : INPUT, PULL_DOWN, PULL_UP"""
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
         gpio = self.mainGpio[pin]
         if (mode is GPIO.OUTPUT):
@@ -90,7 +90,7 @@ class WeioGpio():
             gpio.setup(GPIO.INPUT, mode)
 
     def portMode(self, port, mode) :
-        """Sets input mode for portRead purpose. Available modes are : INPUT_HIGHZ, INPUT_PULLDOWN, INPUT_PULLUP"""
+        """Sets input mode for portRead purpose. Available modes are : INPUT, PULL_DOWN, PULL_UP"""
         for i in range(8):
             pin = (8 * port) + i
             gpio = self.mainGpio[pin]
@@ -107,11 +107,10 @@ class WeioGpio():
         #gpio.setup(GPIO.OUTPUT)
         gpio.write(state)
 
-    def digitalRead(self,pin, mode=GPIO.NONE) :
+    def digitalRead(self,pin) :
         """Reads actual voltage on corresponding pin. There are two possible answers : 0 if pin is connected to the Ground or 1 if positive voltage is detected"""
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
         gpio = self.mainGpio[pin]
-        gpio.setup(GPIO.INPUT, mode)
         return gpio.read()
 
     def portWrite(self, port, value) :
@@ -188,7 +187,7 @@ class WeioGpio():
         elif (res==16):
             self.pwmPrecision = 65535.0
         else:
-            print "Only 8bit or 16bit precisions are allowed"
+            sys.stderr.write("Only 8bit or 16bit precisions are allowed")
 
     def attachInterrupt(self, pin, mode, callback, obj):
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
@@ -218,22 +217,19 @@ class WeioGpio():
     def tone(self, pin, frequency, duration = 0):
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.OUTPUT
         pwm = self.u.PWM(pin)
-        if(frequency == 0):
-            frequency=1
-        val = (1.0/frequency)*1000000.0
-        pwm.set_period(int(val))
+        pwm.set_frequency(frequency)
         pwm.set_duty_cycle(50)
         if(duration > 0):
-            sleep(duration*0.001)
-            pwm.set_period(10000)
-            pwm.set_duty_cycle(0)
+           sleep(duration*0.001)
+           pwm.set_period(10000)
+           pwm.set_duty_cycle(0)
 
     def pulseIn(self, pin, level=GPIO.HIGH, timeout=100000):
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
         gpio = self.mainGpio[pin]
         return gpio.read_pulse(level, timeout)
 
-    def notone(self, pin):
+    def noTone(self, pin):
         pwm = self.u.PWM(pin)
         pwm.set_period(10000)
         pwm.set_duty_cycle(0)

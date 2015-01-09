@@ -1,0 +1,54 @@
+<!--###################################
+#                                     #
+#     HOW TO HAVE TONE ON WEIO        #
+#                                     #
+#######################################
+
+# Description: This example shows how to generates a square wave of the
+#              specified frequency (and 50% duty cycle) on a pin. There
+#              are 6 pwm pins on weio (23, 22, 21, 20, 19, 18).
+#              A duration can be specified, otherwise the wave continues 
+#              until a call to notone(pin). The pin can be connected to a
+#              piezo buzzer or other speaker to play tones.
+# syntax = tone(pin, hertz, duration) 
+--> 
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head >
+    <!-- import weioLibs and link css style -->
+    <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+    <link rel="stylesheet" type="text/css" href="myStyle.css">
+
+    <script>
+    
+    // This fucntions is called when DOM is loaded and web socket opened
+    function onWeioReady() {
+        hertzs();
+    }
+    
+    // init variable hertz
+    var hertz = 0;
+    
+    function hertzs() {
+        // update displayed phrase with variable hertz
+        $("#phrase").html("FREQUENCY FOR TONE FUNCTION = "+ hertz);
+        // get tone with "hertz" frequency on pin 23
+        tone(23, hertz);
+        // increment hertz variable
+        hertz = hertz+50;
+        // Reset hertz variable at 18000
+        if(hertz > 18000){
+            hertz=0;
+        }
+    }
+    </script>
+
+</head>
+
+<body>
+    <p id="phrase" onclick="hertzs()"></p>
+</body>
+
+</html>

@@ -91,6 +91,11 @@ var serverChechIn = true;
 var serverChechInInterval = 10000;
 
 /*
+ * Time when last time stop or play has been pressed
+*/
+var stopTag;
+
+/*
  * When all DOM elements are fully loaded
  */
 $(document).ready(function () {
@@ -230,6 +235,8 @@ $(document).ready(function () {
             dashboard.close(); // Close connection
         }
     }, serverChechInInterval);
+
+    stopTag = new Date();
 
 }); /* end of document on ready event */
 
@@ -473,17 +480,38 @@ function prepareToPlay() {
     }
 }
 
-
 function play(){
-    var rq = { "request": "play"};
-    dashboard.send(JSON.stringify(rq));
-    document.getElementById("weioIframe").contentWindow.clearConsole();
-    playCounter = setInterval(function(){countTillPlay()},4);
-    $( "#weioProgress" ).fadeTo( "fast", 100 );
+    var d = new Date();
+    var inTime = 1500;
+    var diff = d-stopTag;
+
+    if (diff > inTime) {
+        sendPlayToServer();
+        document.getElementById("weioIframe").contentWindow.clearConsole();
+        playCounter = setInterval(function(){countTillPlay()},4);
+        $( "#weioProgress" ).fadeTo( "fast", 100 );
+        console.log("play");
+
+    } else {
+        var delta = inTime-diff;
+        setTimeout(function(){sendPlayToServer();}, delta);
+        document.getElementById("weioIframe").contentWindow.clearConsole();
+        playCounter = setInterval(function(){countTillPlay()},10);
+        $( "#weioProgress" ).fadeTo( "fast", 100 );
+        console.log("play differ");
+    }
+
 }
 
+function sendPlayToServer() {
+    var rq = { "request": "play"};
+    dashboard.send(JSON.stringify(rq));
+    stopTag = new Date();
+}
 
 function stop(){
+    stopTag = new Date();
+
     var rq = { "request": "stop"};
     dashboard.send(JSON.stringify(rq));
     $( "#weioProgress" ).fadeTo( "slow", 0 );
@@ -726,11 +754,11 @@ function updateProjects(data) {
                     });
                     tag+= '</ul></ul></li>\n';
                 });
-            
-                    $.each(examples, function(dir, idx){ 
-                        var s ="'" + val.storageName + "/" + String(dir) + "'\n";
-                        tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + dir + '</a></li>\n';
-                    });
+
+                    // $.each(examples, function(dir, idx){
+                    //     var s ="'" + val.storageName + "/" + String(dir) + "'\n";
+                    //     tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + dir + '</a></li>\n';
+                    // });
             });
         tag+='</ul></li>\n';
     });

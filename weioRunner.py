@@ -39,6 +39,9 @@ from weioLib import weioIO
 
 import time
 
+# Global httpServer
+httpServer = None
+
 ###
 # HTTP SERVER HANDLER
 ###
@@ -91,6 +94,8 @@ class UserControl():
         self.qIn = weioRunnerGlobals.QOUT
         self.qOut = weioRunnerGlobals.QIN
 
+        self.userMain = {}
+
     def setConnectionObject(self, connection):
         # captures only the last connection
         self.connection = connection
@@ -101,12 +106,19 @@ class UserControl():
             self.connection.send(data)
 
     def start(self, rq={'request':'play'}):
-        #print "STARTING USER PROCESSES"
+        if (httpServer is not None):
+            httpServer.listen(options.options.port, options.options.addr)
+            logging.info(" [*] Listening on 0.0.0.0:" + str(options.options.port))
+            #print "*SYSOUT* User API Websocket is created at localhost:" + str(options.options.port) + "/api"
 
+        #print "STARTING USER PROCESSES"
         self.launcherProcess = multiprocessing.Process(target=self.launcher)
         self.launcherProcess.start()
 
     def stop(self):
+        if (httpServer is not None):
+            httpServer.stop()
+
         weioRunnerGlobals.running.value = False
 
         # Removing all User Events
@@ -124,7 +136,8 @@ class UserControl():
                 os.kill(self.launcherProcess.pid, 9) # very violent
             except:
                 pass
-            self.launcherProcess = None
+
+        self.launcherProcess = None
 
         # Reset user attached elements
         weioUserApi.attach.procs = {}
@@ -152,7 +165,7 @@ class UserControl():
         if (cmd == "START"):
             # First stop all pending processes
             # and reset all pending events before re-loading new ones
-            if (self.launcherProcess != None):
+            if (self.launcherProcess is not None):
                 self.stop()
 
             # Then start processes from it
@@ -180,15 +193,15 @@ class UserControl():
 
         # Import userMain from local module
         try :
-            userMain = __import__(projectModule, fromlist=[''])
+            self.userMain = __import__(projectModule, fromlist=[''])
         except :
             print "MODULE CAN'T BE LOADED. Maybe you have some errors in modules that you wish to import?"
             result = None
 
 
         # Calling user setup() if present
-        if "setup" in vars(userMain):
-            userMain.setup()
+        if "setup" in vars(self.userMain):
+            self.userMain.setup()
 
         # Add user events
         #print "ADDING USER EVENTS"
@@ -232,11 +245,10 @@ class UserControl():
 
 # User Tornado signal handler
 def signalHandler(userControl, sig, frame):
-        #logging.warning('Caught signal: %s', sig)
-        #print "CALLING STOP IF PRESENT"
-        #if "stop" in vars(userControl.userMain):
-        #    logging.warning('Calling user defined stop function')
-        #    userControl.userMain.stop()
+        # CALLING STOP IF PRESENT
+        if "stop" in vars(userControl.userMain):
+            userControl.userMain.stop()
+
         if (weioIO.gpio != None):
             if (weioRunnerGlobals.WEIO_SERIAL_LINKED == True):
                 weioIO.gpio.stopReader()
@@ -329,6 +341,8 @@ if __name__ == '__main__':
     myPort = confFile["userAppPort"]
     options.define("port", default=myPort, type=int)
 
+    options.define("addr", default=confFile['ip'])
+
     apiRouter = SockJSRouter(WeioHandler, '/api')
 
     # Instantiate all handlers for user Tornado
@@ -347,19 +361,14 @@ if __name__ == '__main__':
 
     else:
         if (confFile["https"] == "YES"):
-            http_server = httpserver.HTTPServer(app,
+            httpServer = httpserver.HTTPServer(app,
                 ssl_options={
                     "certfile": os.path.join(confFile['absolut_root_path'], "weioSSL.crt"),
                     "keyfile": os.path.join(confFile['absolut_root_path'], "weioSSL.key"),
                 })
         else:
             # Plain ol' HTTP
-            http_server = httpserver.HTTPServer(app)
-
-        http_server.listen(options.options.port, address=confFile['ip'])
-
-        logging.info(" [*] Listening on 0.0.0.0:" + str(options.options.port))
-        print "*SYSOUT* User API Websocket is created at localhost:" + str(options.options.port) + "/api"
+            httpServer = httpserver.HTTPServer(app)
 
     # Create a userControl object
     userControl = UserControl()

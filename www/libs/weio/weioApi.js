@@ -137,7 +137,7 @@ $(document).ready(function() {
 
                     instruction = data.serverPush;  
                     if (instruction in weioCallbacks) 
-                        weioCallbacks[instruction](data.data.data);
+                        weioCallbacks[instruction](data.data);
 
                 }
             };
@@ -161,18 +161,24 @@ $(document).ready(function() {
 /* 
  * GLOBALS
  */
-var HIGH = 1;
-var LOW = 0;
+// GPIO directions
 
-var CHANGE = 2;
-var RISING = 3;
-var FALLING = 4;
 
-var INPUT_PULLUP = 4;
-var INPUT_PULLDOWN = 2;
-var INPUT_HIGHZ = 0;
-var ADC_INPUT = 5;
-var OUTPUT = 1;
+// GPIO directions
+var INPUT = 0
+var OUTPUT = 1
+
+// GPIO resistors
+var NONE = 2
+var PULL_UP = 3
+var PULL_DOWN = 4
+
+// GPIO events
+var LOW = 0
+var HIGH = 1
+var CHANGE = 2
+var RISE = 3
+var FALL = 4
 
 /*
  * Unique UUID number of this session
@@ -292,8 +298,8 @@ function tone(pin, frequency, duration) {
 	}
 };
 
-function notone(pin) {
-	genericMessage("notone", [pin], null);
+function noTone(pin) {
+	genericMessage("noTone", [pin], null);
 };
 
 function constrain(x, a, b) {
@@ -360,6 +366,33 @@ function detachInterrupt(pin) {
     weioInterrupts[pin] = "";
     genericMessage("detachInterrupt", [pin], null);
 }
+
+/*
+ * UART SECTION
+ */
+function listSerials(callback) {
+    var fName = callback.name;
+    weioCallbacks[fName] = callback;
+    genericMessage("listSerials", [], fName);
+};
+
+// function initSerial(port, baudrate) {
+//     genericMessage("initSerial", [port, baudrate], null);
+// }
+/*
+ * SPI SECTION
+ */
+// function initSPI(port) {
+//     genericMessage("initSPI", [port], null);
+// }
+//
+// function readSPI(count) {
+//     genericMessage("readSPI", [count], null);
+// }
+//
+// function writeSPI(data) {
+//     genericMessage("writeSPI", [data], null);
+// }
 
 /*
  * Generic handler for sending messages to server

@@ -94,13 +94,21 @@ def progressBar(block):
 
 # Check actual version on the server
 def checkVersionOnServer():
+    config = getConfigJson()
+    url = config["weio_update_repository"]
     opener = urllib.FancyURLopener({})
-    f = opener.open("http://www.we-io.net/downloads/update.weio")
+    f = opener.open(url+"/update.weio")
     ver = json.loads(f.read())
-    
+
     print "Actual version on the server is : ", ver['version']
     print
-    
+
+def getConfigJson():
+    inputFile = open("../config.weio", 'r')
+    rawData = inputFile.read()
+    inputFile.close()
+    return json.loads(rawData)
+
 # example of default configuration    
 weio_update = {}
 weio_update['description'] = 'Bug fixes in architecture and design'
@@ -127,10 +135,7 @@ if (len(sys.argv)>=nArguments) :
         pswd = getpass.getpass(prompt="Password :")
 
     print "Open config.weio"
-    inputFile = open("../config.weio", 'r')
-    rawData = inputFile.read()
-    inputFile.close()
-    config = json.loads(rawData)
+    config = getConfigJson()
     
     # Overwrite local configuration file
     config["weio_version"] = sys.argv[1]
@@ -164,15 +169,16 @@ if (len(sys.argv)>=nArguments) :
         
         weio_update['version'] = sys.argv[1]
         weio_update['description'] = sys.argv[2]
-        weio_update['url'] = 'http://www.we-io.net/downloads/' + packetFile
+        url = config["weio_update_repository"]
+        weio_update['url'] = url + '/' + packetFile
         weio_update['md5'] = md5sum(packetFile)
         weio_update['whatsnew'] = open('releases.weio', 'r').read()
         weio_update['kill_flag'] = "NO"
-        
-        if (len(sys.argv)>nArguments):
+
+        if (len(sys.argv)>=3):
             weio_update['install_duration'] = sys.argv[3]
         else:
-            weio_update['install_duration'] = 35
+            weio_update['install_duration'] = 75
 
         saveConfiguration(weio_update)
 

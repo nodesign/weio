@@ -53,6 +53,9 @@ import json
 import hashlib
 import tarfile
 
+# IMPORT BASIC CONFIGURATION FILE
+from weioLib import weioConfig
+
 clients = set()
 
 # Wifi detection route handler  
@@ -77,8 +80,11 @@ class WeioUpdaterHandler(SockJSConnection):
     # Put flag in current config.weio that tells to OS that old weio will be removed 
     # at next restart of system
     def checkForUpdates(self, rq):
+        config = weioConfig.getConfiguration()
+        repository = config["weio_update_repository"]
+
         http_client = httpclient.AsyncHTTPClient()
-        http_client.fetch("http://www.we-io.net/downloads/update.weio", callback=self.checkVersion)
+        http_client.fetch(repository+"/update.weio", callback=self.checkVersion)
 
     # checking version
     def checkVersion(self, response):

@@ -26,7 +26,7 @@ class Upgrader:
 		self._gpio("1",self.uper_reset)
 		self._gpio("0",self.uper_reset)
 
-	def upgrade_firmware(self, fwUrl = "https://github.com/8devices/UPER/raw/master/dist/UPER-Release.bin"):
+	def upgrade_firmware(self, fwUrl = "https://github.com/nodesign/weio/raw/master/firmware/UPER-Release.bin"):
 		uper_flash_pattern = "CRP DISABLD"
 
 		if not os.path.isfile(self.fw_file):
