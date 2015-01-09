@@ -92,6 +92,11 @@ var activeAutoSave = false;
  */
 var userServerPort = 0;
 
+/*
+ * Read only mode message in editor (example projects files)
+ */
+var readOnlyModeMsg = '';
+
 /**
  * Global configuration
  */
@@ -584,7 +589,7 @@ function createEditor(){
             var iOBJ = findObjectInArray($('#codeEditorAce').parents('.accordion-group').attr('id').split("_")[1]);
             editorsInStack[iOBJ].data = editor.getValue();
 
-            activeAutoSave = true;
+            //activeAutoSave = true;
           }
 
         });
@@ -746,7 +751,6 @@ function play() {
  */
 function autoSave() {
     if (activeAutoSave) {
-
         saveAll();
 
         for (var i=0; i<editorsInStack.length; i++){
@@ -1009,7 +1013,18 @@ function updateFileTree(data) {
     deleteButtonClicked = false;
     
     projectRoot = data.projectRoot;
-    console.log("TREE RELOAD!");
+    // If example project is loaded, disable editing! 
+    if(projectRoot.split("/")[1] === 'examples'){
+        console.log("This is example project, read only mode acitvated");
+        editor.setReadOnly(true);
+        activeAutoSave = false;
+        readOnlyModeMsg = 'Read only';
+    } else {
+        editor.setReadOnly(false);
+        activeAutoSave = true;
+        readOnlyModeMsg = '';
+    }
+
     //$("ul.jqtree_common.jqtree-tree").html("");
     $("#tree").html();
 
@@ -1149,7 +1164,7 @@ function insertNewStrip(data) {
 
     // Element
     var el = $('<div />').html('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" id="att_' +
-            idEl + '" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a role="button" id="closeButton"><i class="icon-remove"></i></a></div></div><div id="acc_'
+            idEl + '" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a class="read-only-msg">' + readOnlyModeMsg + '</a><a role="button" id="closeButton"><i class="icon-remove"></i></a></div></div><div id="acc_'
             + idEl + '" class="accordion-body collapse"><div class="accordion-inner"></div></div>').addClass('accordion-group').attr("id", "file_" + data.data.id);
 
     // Add new strip here
