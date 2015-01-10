@@ -509,3 +509,9 @@ li #deleteButton:hover {
   color: white;
   text-decoration: none;
 }
+.read-only-msg {
+  position:absolute;
+  top:9px; 
+  right:35px;
+  color:#0088cc !important;
+}
