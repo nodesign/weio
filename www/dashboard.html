@@ -85,6 +85,8 @@
                     <ul class="dropdown-menu">
                         <li><a href="#updateWeio" data-toggle="modal" id="needsUpdateStatus"><i class="icon-spinner icon-spin"></i> Checking updates...</a></li>
                         <li class="divider"></li>
+                        <li><a href="#reinstallFw" role="button" data-toggle="modal">Reinstall WeIO firmware</a></li>
+                        <li class="divider"></li>
                         <li><a href="#"  onclick="runSettings()">Settings</a></li>
                         <!--      <li><a href="#">Logout</a></li> -->    
                     </ul>
@@ -335,6 +337,24 @@
 
     <div class="modal-footer">
         <button class="btn btn-primary" onclick="location.reload()" data-dismiss="modal">Reload</button>
+    </div>
+</div>
+<!-- Modal Something bad happened - deconnexion -->
+
+<!-- Modal Something bad happened - deconnection -->
+<div id="reinstallFw" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3>Warning</h3>
+    </div>
+
+     <div class="modal-body" id="reinstallWeIOfw">
+        <p>This procedure will download latest WeIO firmware from Internet server and replace actual one. All data will be lost as flash memory will be formatted. Please backup all your important data before doing this</p>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button class="btn btn-primary" onclick="reinstallFw()" data-dismiss="modal">Continue</button>
     </div>
 </div>
 <!-- Modal Something bad happened - deconnexion -->
