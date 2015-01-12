@@ -122,7 +122,7 @@ body {
 .navbar-inner .container .dropdown-menu a {
   color: #333333;
   text-shadow: none;
-  line-height: 22px;
+  line-height: 40px;
   padding: 0 18px;
 }
 .navbar-inner .container .dropdown-menu a:hover {
@@ -134,7 +134,7 @@ body {
   position: relative;
 }
 .navbar-inner .container .dropdown-submenu > a:after {
-  /*margin-top: 14px;*/
+  margin-top: 14px;
 }
 .navbar-inner .container ul.scroll-menu {
   position: relative;
