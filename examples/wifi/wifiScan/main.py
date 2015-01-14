@@ -22,7 +22,7 @@ def myProcess():
     # list detected cells
     for n in cells:
         cell = cells[n]
-        print cell["ESSID"], cell["Quality"]
+        print "ESSID :",cell["ESSID"], "Quality :",cell["Quality"]
         # possible parameters :
         # Number, MAC, ESSID, Protocol, Mode, Frequecy, Channel, Signal, Quality,
         # Encryption, Bit Rates, Extra
