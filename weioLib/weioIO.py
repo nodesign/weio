@@ -136,13 +136,13 @@ def proportion(value, istart, istop, ostart, ostop):
     return float(ostart) + (float(ostop) - float(ostart)) * ((float(value) - float(istart)) / (float(istop) - float(istart)))
 
 def constrain(x, a, b):
-    if(x > a):
-        if(x < b):
+    if ((x<=b) and (x>=a)):
+        return x
+    else :
+        if (x>b):
+            return b
+        if (x<a):
             return a
-    if(x < a):
-        return a
-    if(x > b):
-        return b
 
 def attachInterrupt(pin, mode, callback, obj):
     try:
