@@ -672,6 +672,7 @@ body.no-literate .content pre > code:hover::-webkit-scrollbar-thumb {
 .menubar {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow: auto;
 }
 .menubar .section {
   padding: 30px 30px;
