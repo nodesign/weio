@@ -116,7 +116,6 @@ def callAnalogRead(data) :
 def callSetPwmPeriod(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         setPwmPeriod(data[0],data[1])
-        print data[0], data[1]
     else:
         print "setPwmPeriod ON PC", data
     return None
@@ -131,7 +130,6 @@ def callSetPwmPeriod(data) :
 def callPwmWrite(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         pwmWrite(data[0], data[1])
-        print data[0], data[1]
     else :
         print "pwmWrite ON PC", data
     return None
