@@ -1936,6 +1936,7 @@ CONFIG_OPENSSL_WITH_EC=y
 # database
 #
 CONFIG_PACKAGE_libsqlite3=y
+CONFIG_PACKAGE_alsa-lib=y
 # CONFIG_PACKAGE_argp-standalone is not set
 CONFIG_PACKAGE_libavahi=y
 CONFIG_PACKAGE_libavahi-client=y
@@ -1948,6 +1949,8 @@ CONFIG_PACKAGE_libcap=y
 # CONFIG_PACKAGE_libcharset is not set
 # CONFIG_PACKAGE_libconfig is not set
 CONFIG_PACKAGE_libdaemon=y
+CONFIG_PACKAGE_libdb47=y
+# CONFIG_PACKAGE_libdb47xx is not set
 CONFIG_PACKAGE_libdbus=y
 # CONFIG_PACKAGE_libevent2 is not set
 # CONFIG_PACKAGE_libevent2-core is not set
@@ -1961,6 +1964,7 @@ CONFIG_PACKAGE_libgdbm=y
 CONFIG_PACKAGE_libi2c=y
 # CONFIG_PACKAGE_libiconv is not set
 # CONFIG_PACKAGE_libiconv-full is not set
+CONFIG_PACKAGE_libid3tag=y
 # CONFIG_PACKAGE_libintl is not set
 # CONFIG_PACKAGE_libintl-full is not set
 # CONFIG_PACKAGE_libiw is not set
@@ -1971,6 +1975,7 @@ CONFIG_PACKAGE_libjson-c=y
 # CONFIG_PACKAGE_libltdl is not set
 CONFIG_PACKAGE_liblua=y
 # CONFIG_PACKAGE_liblzo is not set
+CONFIG_PACKAGE_libmad=y
 # CONFIG_PACKAGE_libmnl is not set
 # CONFIG_PACKAGE_libmount is not set
 CONFIG_PACKAGE_libncurses=y
@@ -1998,6 +2003,7 @@ CONFIG_PACKAGE_libuci-lua=y
 # CONFIG_PACKAGE_libustream-polarssl is not set
 # CONFIG_PACKAGE_libuuid is not set
 # CONFIG_PACKAGE_libv4l is not set
+CONFIG_PACKAGE_libxml2=y
 # CONFIG_PACKAGE_linux-atm is not set
 CONFIG_PACKAGE_terminfo=y
 # CONFIG_PACKAGE_uclibcxx is not set
@@ -2241,6 +2247,11 @@ CONFIG_DRIVER_11N_SUPPORT=y
 CONFIG_PACKAGE_wpad-mini=y
 
 #
+# Sound
+#
+CONFIG_PACKAGE_madplay=y
+
+#
 # Utilities
 #
 
@@ -2291,6 +2302,9 @@ CONFIG_PACKAGE_wpad-mini=y
 # CONFIG_PACKAGE_sfdisk is not set
 # CONFIG_PACKAGE_swap-utils is not set
 # CONFIG_PACKAGE_wipefs is not set
+CONFIG_PACKAGE_alsa-utils=y
+# CONFIG_PACKAGE_alsa-utils-seq is not set
+# CONFIG_PACKAGE_alsa-utils-tests is not set
 # CONFIG_PACKAGE_bzip2 is not set
 # CONFIG_PACKAGE_cal is not set
 CONFIG_PACKAGE_dbus=y
