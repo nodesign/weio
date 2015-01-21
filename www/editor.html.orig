@@ -1,0 +1,406 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WeIO</title>
+
+<meta http-equiv="cache-control" content="max-age=0" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+<meta http-equiv="pragma" content="no-cache" />
+
+<link href="libs/css/editor.css" rel="stylesheet" />
+<link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+
+<script src="libs/jquery/jquery-2.0.2.min.js"> </script>
+<script src="libs/bootstrap/js/bootstrap.min.js"> </script>
+<script src="libs/sockJS/sockjs-0.3.min.js"> </script>
+<script src="libs/chartJS/Chart.min.js"> </script>
+<script src="libs/jqtree/tree.jquery.js"> </script>
+
+<script src="libs/weio/editor.js?n=1"> </script>
+<script src="libs/weio/stats.js?n=1"> </script>
+<script src="libs/weio/board.js?n=1"> </script>
+
+<!-- Ace code editor -->
+<script src="libs/ace/ace.js"> </script>
+
+<!-- FlatDoc documentation -->
+<script src='libs/flatdoc/legacy.js'></script>
+<script src='libs/flatdoc/flatdoc.js'></script>
+<link  href='libs/flatdoc/theme-white/style.css' rel='stylesheet'>
+<link  href='libs/flatdoc/style.css' rel='stylesheet'>
+<script src='libs/flatdoc/theme-white/script.js'></script>
+<!-- Initializer -->
+
+
+</head>
+<body>
+    <div class="columns">
+        <div class="leftSideBar">
+            <button class="opened" id="leftSideBarButton"> <i class="icon-chevron-left"></i> </button>
+                
+
+            <!-- FILE TREE TEMPLATE STARTS HERE -->
+            <ol class="tree" id ="tree">
+                <a>Select project to load</a>
+            </ol>
+
+            <!-- FILE TREE TEMPLATE ENDS HERE --> 
+            
+            <!-- Bottom buttons start here -->
+            <div class="bottomButtons">
+                <button id="addNewFile" class="open" href="#createNewFile" role="button" data-toggle="modal"
+                    onmouseover="$(this).tooltip()" data-placement="top" title="Create new file"> <i class="icon-plus-sign icon-2x"></i> </button>
+                
+                <input type="file" id="updateFiles" name="upload" style="visibility: hidden; width: 1px; height: 1px" multiple />
+                <button id="addNewFile" onmouseover="$(this).tooltip()" data-placement="top" title="Upload files"
+                    onclick="document.getElementById('updateFiles').click(); return false"><i class="icon-circle-arrow-up icon-2x"></i></button>
+               
+                
+                <!--<button class="btn" type="button"> <i class="icon-remove-sign icon-2x"></i></button>-->
+            </div>
+            
+            <!-- Bottom buttons end here --> 
+            
+        </div>
+        
+        <!-- Modal Create new file -->
+        <div id="createNewFile" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalCreateNewFileLabel">Create new file</h3>
+            </div>
+            <div class="modal-body">
+                <p>Chose file name and it's type</p>
+                <div class="input-append" >
+                    <input type="text" value="myFile" id="newFileName"/>
+                    <div class="btn-group" data-toggle="buttons-radio">
+                        <button type="button" class="btn active" onclick="setFileType('html')" onmouseover="$(this).tooltip()"
+                            data-placement="bottom" title="Hypertext Markup Language">.html</button>
+
+                        <button type="button" class="btn" onclick="setFileType('css')" onmouseover="$(this).tooltip()"
+                            data-placement="bottom" title="Cascading Style Sheets">.css</button>
+
+                        <button type="button" class="btn" onclick="setFileType('js')" onmouseover="$(this).tooltip()"
+                            data-placement="bottom" title="Javascript">.js</button>
+
+                        <button type="button" class="btn" onclick="setFileType('py')" onmouseover="$(this).tooltip()"
+                            data-placement="bottom" title="Python">.py</button>
+
+                        <button type="button" class="btn" onclick="setFileType('txt')" onmouseover="$(this).tooltip()"
+                            data-placement="bottom" title="Text file">.txt</button>
+
+                        <button type="button" class="btn" onclick="setFileType('json')" onmouseover="$(this).tooltip()"
+                            data-placement="bottom" title="Javascript object notation">.json</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                <button class="btn btn-primary" onclick="createNewFile()" data-dismiss="modal">Continue</button>
+            </div>
+        </div>
+        <!-- END Modal Create new file --> 
+        
+        <!-- Modal DELETE FILE-->
+        <div id="deleteFile" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalDeleteFileLabel">Delete </h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure that you want to delete this file?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                <button class="btn btn-primary" onclick="deleteFile()" data-dismiss="modal">Delete</button>
+            </div>
+        </div>
+        <!-- END Modal DELETE FILE-->
+        
+        
+        <!-- Modal DELETE PROJECT-->
+        
+        <div id="windowTitleDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="windowTitleLabel" aria-hidden="true">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h3>Delete project</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are sure that you want to delete this project?</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+                <a href="#" class="btn btn-primary" onclick="deleteProject();">Delete</a>
+            </div>
+        </div>
+        
+        
+        
+        <!-- END Modal DELETE PROJECT-->
+        
+        <!-- Modal PREVIEW IMAGE FILE-->
+        <div id="previewImage" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="previewImageTitle">Image viewer</h3>
+            </div>
+            <div class="modal-body">
+                <img id="imageToPreview"></img>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- Modal PREVIEW IMAGE FILE -->
+        
+        
+        
+        <div class="editorContainer"> 
+            
+            <div class="alert alert-error" id="errorAlert">
+               <div id="errorAlertContent"></div>
+               <a role="button" id="closeButton"><i class="icon-remove" onclick="hideAlert()"></i></a>
+            </div>
+            
+            <!-- EDITOR TEMPLATE STARTS HERE -->
+            <div class="accordion" id="accordion2"> </div>
+            <!-- EDITOR TEMPLATE ENDS HERE --> 
+            
+        </div>
+        <!-- editor container-->
+        
+        <div class="rightSideBar">
+            <button class="closed" id="rightSideBarButton"> <i class="icon-chevron-left"></i> </button>
+            <button id="trashConsole" class="open" onclick="clearConsole()"> <i class="icon-trash"></i> </button>
+            
+            <div id="consoleTabs">
+                <ul class="nav nav-pills" id="consoleTabsElements">
+                    <li class="active">
+                        <a id="tabConsole" href="#console-pane" data-toggle="tab">Console</a>
+                    </li>
+                    <li><a id="tabBoard" href="#board-pane" data-toggle="tab">Board</a></li>
+                    <li><a id="tabStats" href="#stats-pane" data-toggle="tab">Stats</a></li>
+                    <li><a id="tabDocumentation"href="#doc-pane" data-toggle="tab">Documentation</a></li>
+                    <li><a id="tabJavascript"href="#doc-js" data-toggle="tab">Javascript</a></li>
+                    <li><a id="tabPython"href="#doc-py" data-toggle="tab">Python</a></li>
+                </ul>
+            </div>
+            <div class="tab-content">
+            
+            <div id="console-pane" class="tab-pane active"><p id="consoleOutput"></p></div>
+            <div id="board-pane" class="tab-pane">
+                <object type="image/svg+xml" data="img/WeIO.svg" id="board-image"></object>
+<<<<<<< HEAD
+            
+=======
+>>>>>>> upstream/next
+                <ul id="pinlist1">
+                    <li id ="pin0" class="pin"><a>pin</a></li>
+                    <li id ="pin1" class="pin"><a>pin</a></li>
+                    <li id ="pin2" class="pin"><a>pin</a></li>
+                    <li id ="pin3" class="pin"><a>pin</a></li>
+                    <li id ="pin4" class="pin"><a>pin</a></li>
+                    <li id ="pin5"class="pin"><a>pin</a></li>
+                    <li id ="pin6"class="pin"><a>pin</a></li>
+                    <li id ="pin7"class="pin"><a>pin</a></li>
+
+                </ul>
+
+                <ul id="pinlist1a">
+                    <li id ="pin8"class="pin"><a>pin</a></li>
+                    <li id ="pin9"class="pin"><a>pin</a></li>
+                    <li id ="pin10"class="pin"><a>pin</a></li>
+                    <li id ="pin11"class="pin"><a>pin</a></li>
+                    <li id ="pin12"class="pin"><a>pin</a></li>
+                    <li id ="pin13"class="pin"><a>pin</a></li>
+                    <li id ="pin14"class="pin"><a>pin</a></li>
+                    <li id ="pin15"class="pin"><a>pin</a></li>
+                </ul>
+
+                <ul id="pinlist2">
+
+                    <li id ="pin31" class="pin"><a>pin</a></li>
+                    <li id ="pin30" class="pin"><a>pin</a></li>
+                    <li id ="pin29" class="pin"><a>pin</a></li>
+                    <li id ="pin28" class="pin"><a>pin</a></li>
+                    <li id ="pin27" class="pin"><a>pin</a></li>
+                    <li id ="pin26"class="pin"><a>pin</a></li>
+                    <li id ="pin25"class="pin"><a>pin</a></li>
+                    <li id ="pin24"class="pin"><a>pin</a></li>
+
+                </ul>
+
+                <ul id="pinlist2a">
+                    <li id ="pin23"class="pin"><a>pin</a></li>
+                    <li id ="pin22"class="pin"><a>pin</a></li>
+                    <li id ="pin21"class="pin"><a>pin</a></li>
+                    <li id ="pin20"class="pin"><a>pin</a></li>
+                    <li id ="pin19"class="pin"><a>pin</a></li>
+                    <li id ="pin18"class="pin"><a>pin</a></li>
+                    <li id ="pin17"class="pin"><a>pin</a></li>
+                    <li id ="pin16"class="pin"><a>pin</a></li>
+                    
+
+                </ul>
+                    
+            
+            
+            </div>
+                
+            <div id="stats-pane" class="tab-pane">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="row-fluid">
+                            <div class="span9 statMainTitle">Cpu</div>
+                        </div>
+                        
+                        <div class="row-fluid">
+                            
+                            <div class="span3">
+                            <canvas id="cpuViz" class="statChartViz"></canvas>
+                            </div>
+                            <div class="span3">
+                                <li id ="cpuUser" class="statBigNumbers statRed">0%</li>
+                                <li id ="cpuUserTitre" class="statTitle">user</li>
+                            </div>
+                            <div class="span3">
+                                <li id ="cpuSystem" class="statBigNumbers statBlue">0%</li>
+                                <li id ="cpuSystemTitre" class="statTitle">system</li>
+                            </div>
+                            <div class="span3">
+                                <li id ="cpuIdle" class="statBigNumbers statBlack">0%</li>
+                                <li id ="cpuIdleTitre" class="statTitle">idle</li>
+                            </div>
+                        
+                        </div>
+                        <hr>
+                        
+                        
+                        <!-- ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+                        
+                        <div class="row-fluid">
+                            
+                            <div class="span9 statMainTitle">Ram</div>
+                        </div>
+                        
+                        <div class="row-fluid">
+                            
+                            <div class="span3">
+                                <canvas id="ramViz" class="statChartViz"></canvas>
+                            </div>
+                            <div class="span3">
+                                <li id ="ramUsed" class="statBigNumbers statRed">0Mb</li>
+                                <li class="statTitle">used</li>
+                            </div>
+                            <div class="span3">
+                                <li id ="ramFree" class="statBigNumbers statBlue">0Mb</li>
+                                <li class="statTitle">free</li>
+                            </div>
+                            
+                            <div class="span3">
+                               
+                            </div>
+                            
+                        </div>
+                        <hr>
+                        
+                        
+                        <!-- ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+                        
+                        
+                        <!-- ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+                        
+                        <div class="row-fluid">
+                            <div class="span9 statMainTitle">Flash</div>
+                        </div>
+                        
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <canvas id="flashViz" class="statChartViz"></canvas>
+                            </div>
+                            <div class="span3">
+                                <li id ="flashUsed" class="statBigNumbers statRed">0Mb</li>
+                                <li class="statTitle">used</li>
+                            </div>
+                            <div class="span3">
+                                <li id ="flashFree" class="statBigNumbers statBlue">0Mb</li>
+                                <li class="statTitle">free</li>
+                            </div>
+                            <div class="span3"></div>
+                            
+                        </div>
+                        <hr>
+                        
+                        
+                        <!-- ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+                        
+                        <div class="row-fluid">
+                            <div class="span9 statMainTitle">Tempeature</div>
+                        </div>
+                        
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <canvas id="tempViz" class="statChartViz"></canvas>
+                            </div>
+                            <div class="span3">
+                                <li id ="temperature" class="statBigNumbers statRed">0</li>
+                                <li class="statTitle">board</li>
+                            </div>
+                         
+                            <div class="span3"></div>
+                            
+                            <div class="span3"></div>
+                            
+                        </div>
+                        <hr>
+                        
+                        
+                        <!-- ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+                        
+
+                    </div>
+                </div>
+            
+            </div>
+                
+            <div id="doc-pane" class="tab-pane">
+                 <div role='flatdoc' id="flatdoc-holder" class='content-root'>
+                  <div class='menubar'>
+                    <div class='menu section' role='flatdoc-menu'></div>
+                  </div>
+                  <div role='flatdoc-content' id="flatdoc-container" class='content'></div>
+                </div>
+            </div>
+
+            <div id="doc-js" class="tab-pane">
+                 <div role='flatdoc' id="flatdoc-holder" class='content-root'>
+                  <div class='menubar'>
+                    <div class='menu section' role='flatdoc-menu'></div>
+                  </div>
+                  <div role='flatdoc-content' id="flatdoc-container" class='content'></div>
+                </div>
+            </div>
+
+            <div id="doc-py" class="tab-pane">
+                 <div role='flatdoc' id="flatdoc-holder" class='content-root'>
+                  <div class='menubar'>
+                    <div class='menu section' role='flatdoc-menu'></div>
+                  </div>
+                  <div role='flatdoc-content' id="flatdoc-container" class='content'></div>
+                </div>
+            </div>
+ 
+            </div>
+            
+        </div>
+    </div>
+    <!-- 3-columns -->
+    <div class="safeHome">
+        <div id="codeEditorAce"></div>
+    </div>
+</body>
+</html>
+

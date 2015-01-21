@@ -282,16 +282,71 @@ def myProcess():
 
 WeIO info
 ---------
-### versionWeIO
-Gets actual version of WeIO software
+### versionWeIO()
+Returns actual version of WeIO software
 
 Interfaces
 ----------
 
 Serial port
 -----------
+### Serial(baudrate, port='/dev/ttyACM1', timeout=1)
+This function initialize serial port interface on WeIO board and returns pySerial object. All documentation and code that is written for pySerial can be used directly inside WeIO. Reason why we are using our weioSerial module instead of pySerial is that WeIO needs to execute a few operations to put pins 0 - RX and 1 - TX into serial port mode before initializing pySerial. Complete pySerial documentation can be found here : http://pyserial.sourceforge.net/pyserial_api.html
+
 ### listSerials()
 List available serial ports on WeIO. By default there are 3 serial ports /dev/ttyACM1, /dev/ttyACM0, /dev/ttyATH0. Each of them has it's own function. ttyACM1 is WeIO serial port that is connected to pins 0-RX and 1-TX. ttyACM0 is reserved for communication with LPC processor and ttyATH0 is reserved for user console via micro USB (you should not touch these two ports).
 WeIO has integrated drivers for the most common USB to serial devices so It's perfectly possible to connect some serial device over USB and communicate with it.
 
+### read(size=1)
+Performs reading of one byte (size=1 by default) from serial port. Size argument (optional) express number of bytes to read. If a timeout is set (for example in constructor of serial object) it may return less characters as requested. With no timeout it will block until the requested number of bytes is read.
 
+### write(data)
+Performs writing the string data to the serial port. 
+
+
+I2C via SMBus
+-------------
+
+### SMBus()
+WeIO uses SMBus interface to talk to i2c devices. All SMbus instructions are supported and all drivers written in Python for SMBus can be directly used inside WeIO. Only the most commonly used instructions will be documented here for all SMBus features please refer to official Python SMBus documentation.
+
+As WeIO uses it's own port of SMBus interface SMBus is imported in your project by calling from weioLib.weioSmbus import SMBus. 
+```python
+from weioLib.weio import *
+# Comment this line below and use WeIO implementation
+# from smbus import SMBus
+from weioLib.weioSmbus import SMBus
+
+myI2C = SMBus()
+```
+As WeIO has only one i2c interface any argument that is passed to constructor regarding i2c port will be ignored.
+
+### scan()
+Scans i2c bus for all connected devices and returns their addresses inside an array. This function is not part of standard SMBus driver, it exists only in WeIO implementation.
+
+```python
+from weioLib.weio import *
+from weioLib.weioSmbus import SMBus
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    myI2C = SMBus()
+    
+    print "list i2c devices on the bus", myI2C.scan()
+```
+### read_byte(address)
+Perform i2c read byte from given address
+
+### write_byte(address, value)
+Perform write one byte of data to given device address
+
+### read_byte_data(address, command)
+Perform read byte operation from given address of device and given command
+
+### write_byte_data(address, command)
+Perform write byte operation to given address of device and given command
+
+SPI
+---
