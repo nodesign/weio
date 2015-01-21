@@ -47,10 +47,9 @@
 #
 ###
 
+import os, signal, sys, platform, subprocess, urllib2
 
-import os, signal, sys, platform
-
-from tornado import web, ioloop, iostream, gen, httpclient
+from tornado import web, ioloop, iostream, gen, httpclient, httputil
 sys.path.append(r'./');
 
 # pure websocket implementation
@@ -83,11 +82,15 @@ class WeioUpdaterHandler(SockJSConnection):
         self.callbacks = {
             'checkVersion' : self.checkForUpdates,
             'downloadUpdate' : self.downloadUpdate,
+            'reinstallFw' : self.reinstallFw
         }
         
         self.downloadTries = 0
-        self.estimatedInstallTime = 35
-    
+        self.estimatedInstallTime = 80
+
+        self.fwMd5 = None
+        self.downloadUpdateLink  = None
+
     # checkForUpdates is entering point for updater
     # First it will download only update.weio to check if there is need for an update
     # If yes than archive will be downloaded and decompressed
@@ -97,99 +100,93 @@ class WeioUpdaterHandler(SockJSConnection):
         config = weioConfig.getConfiguration()
         repository = config["weio_update_repository"]
 
+        h = httputil.HTTPHeaders({"Accept" : "application/vnd.github.v3+json","User-Agent" : "weio"})
+        req = httpclient.HTTPRequest(repository, headers=h)
+
         http_client = httpclient.AsyncHTTPClient()
-        http_client.fetch(repository+"/update.weio", callback=self.checkVersion)
+        http_client.fetch(req, callback=self.checkVersion)
 
     # checking version
     def checkVersion(self, response):
-        wifiMode = "ap"
-        if (platform.machine() == 'mips') :
-            wifiMode = weioIdeGlobals.WIFI.mode
-            print "WIFI MODE ", wifiMode
-        else :
-            wifiMode = "sta"
-        
-        rsp={}
-    
-        if (wifiMode=="sta") : # check Internet
-            global currentWeioConfigurator
-            
-            self.distantJsonUpdater = json.loads(str(response.body))
-            currentWeioConfigurator = weioConfig.getConfiguration()
+        config = weioConfig.getConfiguration()
 
-            print "My software version " + \
-                currentWeioConfigurator["weio_version"] + \
-                " Version on WeIO server " + \
-                self.distantJsonUpdater["version"] + \
-                " Needs " + str(self.distantJsonUpdater['install_duration']) + " seconds to install"
-        
-            # Send response to the browser
-            
-            rsp['requested'] = "checkVersion"
-            rsp['localVersion'] = currentWeioConfigurator["weio_version"]
-            rsp['distantVersion'] = self.distantJsonUpdater["version"]
-        
-            distantVersion = float(self.distantJsonUpdater["version"])
-            localVersion = float(currentWeioConfigurator["weio_version"])
-            if (distantVersion > localVersion) :
-                rsp['needsUpdate'] = "YES"
-                rsp['description'] = self.distantJsonUpdater['description']
-                rsp['whatsnew'] = self.distantJsonUpdater['whatsnew']
-                rsp['install_duration'] = self.distantJsonUpdater['install_duration']
-                self.estimatedInstallTime = self.distantJsonUpdater['install_duration']
-            else :
-                rsp['needsUpdate'] = "NO"
-        
-            
-        elif (wifiMode=="ap") :
+        data = json.loads(response.body)
+        #print json.dumps(data, indent=4, sort_keys=True)
+        lastUpdate = data[0]
+        distantVersion = float(lastUpdate["tag_name"].split("v")[1])
+
+        currentVersion = float(config["weio_version"])
+        print "current",currentVersion,"distant", distantVersion
+        rsp = {}
+
+        rsp['requested'] = "checkVersion"
+        rsp['localVersion'] = str(currentVersion)
+        rsp['distantVersion'] = str(distantVersion)
+
+        if (distantVersion > currentVersion): 
+            print "OK update is needed"
+            # OK we have to update weio version
+            rsp['needsUpdate'] = "YES"
+            rsp['description'] = lastUpdate["name"]
+            rsp['whatsnew'] = lastUpdate["body"]
+            rsp['install_duration'] = self.estimatedInstallTime
+            self.downloadUpdateLink = ""
+            for file in lastUpdate["assets"]:
+                if ("weio.tar.gz" in file["name"]):
+                    self.downloadUpdateLink = file["browser_download_url"]
+                    self.downloadSize = file["size"]
+                    print self.downloadUpdateLink, "size", file["size"]
+        else :
             rsp['needsUpdate'] = "NO"
-        
-        # Send connection information to the client
         self.send(json.dumps(rsp))
-        
+
     def downloadUpdate(self, rq):
         #self.progressInfo("5%", "Downloading WeIO Bundle " + self.distantJsonUpdater["version"])
-      
-        http_client = httpclient.AsyncHTTPClient()
-        http_client.fetch(self.distantJsonUpdater["url"], callback=self.downloadComplete)
+        if not(self.downloadUpdateLink is None):
+            http_client = httpclient.AsyncHTTPClient()
+            http_client.fetch(self.downloadUpdateLink, callback=self.downloadComplete)
         
     def downloadComplete(self, binary):
+        config = weioConfig.getConfiguration()
+
         # ok now save binary in /tmp (folder in RAM)
-        if (platform.machine()=="mips") :    
+        print "downloaded"
+
+        if (platform.machine()=="mips") :
             fileToStoreUpdate = "/tmp/weioUpdate.tar.gz"
             pathToDecompressUpdate = "/tmp"
         else :
             fileToStoreUpdate = "./weioUpdate.tar.gz"
             pathToDecompressUpdate = "./"
-            
+
         with open(fileToStoreUpdate, "w") as f:
                f.write(binary.body)
-               
-        # check file integrity with MD5 checksum
-        md5local = self.getMd5sum(fileToStoreUpdate)
-        
-        if (md5local == self.distantJsonUpdater["md5"]) :
-            print "MD5 checksum OK"
-            self.progressInfo("50%", "MD5 checksum OK")
+
+        # Check is file size is the same as on the server
+        sizeOnDisk = os.path.getsize(fileToStoreUpdate)
+
+        if (sizeOnDisk == self.downloadSize):
+            # OK
+            print "File size is OK"
+            self.progressInfo("50%", "File size OK")
             print "Bundle decompressing"
-            #self.progressInfo("52%", "WeIO Bundle decompressing")
             tar = tarfile.open(fileToStoreUpdate)
             tar.extractall(pathToDecompressUpdate)
             tar.close()
             print "Bundle decompressed"
             #self.progressInfo("80%", "WeIO Bundle decompressed")
-            
+
             # kill arhive that we don't need anymore to free RAM
             os.remove(fileToStoreUpdate)
             global currentWeioConfigurator
             print "Setting kill flag to YES in current config.weio"
             print "Now I'm ready to exit Tornado and install new version"
-            currentWeioConfigurator["kill_flag"] = "YES"
-            weioConfig.saveConfiguration(currentWeioConfigurator)
+            config["kill_flag"] = "YES"
+            weioConfig.saveConfiguration(config)
             #self.progressInfo("81%", "WeIO installing")
             # Now quit Tornado and leave script to do his job
             exit()
-            
+
         else :
             print "MD5 checksum is not OK, retrying..."
             if (self.downloadTries<2):
@@ -198,7 +195,7 @@ class WeioUpdaterHandler(SockJSConnection):
             else:
                 print "Something went wrong. Check Internet connection and try again later"
                 self.progressInfo("0%", "Something went wrong. Check Internet connection and try again later")
-            
+
             self.downloadTries+=1
     
     # Automatic status sender
@@ -217,6 +214,22 @@ class WeioUpdaterHandler(SockJSConnection):
             for chunk in iter(lambda: f.read(128*md5.block_size), b''): 
                  md5.update(chunk)
         return md5.hexdigest()
+
+    def reinstallFw(self, data):
+        wifiMode = "ap"
+        if (platform.machine() == 'mips') :
+            wifiMode = weioIdeGlobals.WIFI.mode
+            print "WIFI MODE ", wifiMode
+        else :
+            wifiMode = "sta"
+
+        if (wifiMode=="sta") : # check Internet
+
+            p = subprocess.Popen(["python", "/weio/scripts/flashWeioFw.py"])
+            print p.communicate()
+        else :
+            data = {}
+            data['serverPush'] = "noInternet"
 
     def on_open(self, info) :
         global clients
