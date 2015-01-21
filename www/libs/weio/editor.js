@@ -453,10 +453,7 @@ $(document).ready(function () {
     });
 
     $("#tabDocumentation").click(function(e) {
-        Flatdoc.run({
-          fetcher: Flatdoc.file('docApi.md')
-        });
-
+        flatdocInit('docApi.md');
         stopDataViz();
         // resize side bar for documentatio preview
         rightSideBarWidth = "800px";
@@ -466,18 +463,25 @@ $(document).ready(function () {
     });
     
     $("#tabJavascript").click(function(e) {
-        Flatdoc.run({
-          fetcher: Flatdoc.file('weioJS.md')
-        });
+        flatdocInit('weioJS.md');
     });
     
     $("#tabPython").click(function(e) {
-        Flatdoc.run({
-          fetcher: Flatdoc.file('weioPY.md')
-        });
+        flatdocInit('weioPY.md');
     });
     
-    
+   var flatdocInit = function(file){
+        Flatdoc.run({
+          fetcher: Flatdoc.file(file)
+        });
+    };
+  
+    // On flatdoc load, scroll to top of section
+   $(document).on('flatdoc:ready', function() {
+     $('#flatdoc-container').animate({
+        scrollTop: $('#flatdoc-container').offset().top
+        }, 500);
+    }); 
 
     ////////////////////// ADD FILES EVENT
     $('#updateFiles').change(function(evt){
