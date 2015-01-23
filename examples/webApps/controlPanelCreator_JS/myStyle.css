@@ -1,7 +1,6 @@
 /* Navbar Dropdown-submenu */
 .navbar{
     margin-bottom:0 !important;
-    height: 8%;
 }
 .dropdown-submenu {
     position: relative;
@@ -47,15 +46,15 @@
 
 /* Interface elements */
 .col-xs-4 {
-    height:18.4%;
+    height:16%;
     background-color: #FFCC66;
     border-radius: 20px;
-    font-size:30px;
+    font-size:25px;
     border: 2px solid white;
 }
 
 .col-xs-8 {
-    height: 18.4%;
+    height: 16%;
     color:white;
     background-color: gray;
     border-radius: 20px;
@@ -63,7 +62,7 @@
 }
 
 .col-xs-12 {
-    height: 18.4%;
+    height: 16%;
     font-size:30px;
     text-align: center;
     color: white;
