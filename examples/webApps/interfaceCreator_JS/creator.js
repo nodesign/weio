@@ -26,12 +26,14 @@ function fromDig(data) {
 
 // create button
 function creator(func, pin) {
-    $("#"+func+pin).css("background-color","red");
+    $("#"+func+pin).addClass('disabled');
+    $("#"+func+pin).off('click');
+    $("#"+func+pin).css('background-color','#E0E0E0');
     
     if(func=='digitalRead'){
         pinMode(parseInt(pin),PULL_DOWN);
         var dR = document.createElement('div');
-        dR.className = 'col-xs-6';
+        dR.className = 'col-xs-12 col-md-6';
         dR.id = "dR" + pin;
         dR.style.backgroundColor = "#FF6666";
         activeDigPins[activeDigPins.length] = parseInt(pin);
@@ -39,7 +41,7 @@ function creator(func, pin) {
     }    
     else if(func=='analogRead'){
         var aR = document.createElement('div');
-        aR.className = 'col-xs-6';
+        aR.className = 'col-xs-12 col-md-6';
         aR.id = "aR" + pin;
         aR.style.backgroundColor = "#3366FF";
         activePins[activePins.length] = parseInt(pin);
@@ -48,7 +50,7 @@ function creator(func, pin) {
     else if(func=='digitalWrite'){
         var button = document.createElement('div');
         button.innerHTML = func + " pin" + pin + ": LOW";
-        button.className = 'col-xs-6';
+        button.className = 'col-xs-12 col-md-6';
         button.onclick=function(){
             if( !pinFlags[pin] ) {
                 digitalWrite(parseInt(pin), HIGH);
@@ -70,12 +72,12 @@ function creator(func, pin) {
     else if(func=='pwmWrite'){
         // create div to display value, set class col-xs-1 and text
         var valDiv = document.createElement('div');
-        valDiv.className = 'col-xs-2';
+        valDiv.className = 'col-xs-4 col-md-2';
         valDiv.innerHTML = "PWM pin"+ pin +": 0%";
         
         // create div for range input
         var sliderDiv = document.createElement('div');
-        sliderDiv.className = 'col-xs-4';
+        sliderDiv.className = 'col-xs-8 col-md-4';
         
         // create range input
         var slider = document.createElement('input');
