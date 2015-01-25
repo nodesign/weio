@@ -5,10 +5,10 @@ var activeDigPins = [];
 var weioFunctions = ['digitalRead','digitalWrite','analogRead','pwmWrite']; 
 
 function onWeioReady() {
-    setInterval(function(){askForADC()}, 500);
+    setInterval(function(){getInputs()}, 500);
 }
 
-function askForADC() {
+function getInputs() {
     for (var pinA in activePins) {
         analogRead(activePins[pinA], fromAdc);
     }
