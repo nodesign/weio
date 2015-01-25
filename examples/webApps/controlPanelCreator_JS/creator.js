@@ -2,6 +2,7 @@ var pinFlags = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 var activePins = [];  
 var activeDigPins = []; 
+var weioFunctions = ['digitalRead','digitalWrite','analogRead','pwmWrite']; 
 
 function onWeioReady() {
     setInterval(function(){askForADC()}, 500);
@@ -26,9 +27,13 @@ function fromDig(data) {
 
 // create button
 function creator(func, pin) {
-    $("#"+func+pin).addClass('disabled');
-    $("#"+func+pin).off('click');
-    $("#"+func+pin).css('background-color','#E0E0E0');
+    
+    // Disable pin item in all functions menus
+    for (var i = 0; i < weioFunctions.length; i++) {
+        $("#"+weioFunctions[i]+pin).addClass('disabled');
+        $("#"+weioFunctions[i]+pin).off('click');
+        $("#"+weioFunctions[i]+pin).css('background-color','#E0E0E0');
+    }
     
     if(func=='digitalRead'){
         pinMode(parseInt(pin),PULL_DOWN);
@@ -70,7 +75,7 @@ function creator(func, pin) {
         document.body.appendChild(button);
     }
     else if(func=='pwmWrite'){
-        // create div to display value, set class col-xs-1 and text
+        // create div to display duty cycle value
         var valDiv = document.createElement('div');
         valDiv.className = 'col-xs-4 col-md-2';
         valDiv.innerHTML = "PWM pin"+ pin +": 0%";
