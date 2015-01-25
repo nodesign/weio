@@ -1,7 +1,14 @@
+#######################################
+#                                     #
+#      WEB APPLICATION ON WEIO:       #
+#       CONTROL PANEL CREATOR         #
+#                                     #
+#######################################
+
 from weioLib.weio import *
 
 def setup():
     attach.process(myProcess)
     
 def myProcess():
-    print("webCreator address: weio.local")
+    print("Web Creator address: weio.local")

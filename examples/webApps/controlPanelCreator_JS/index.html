@@ -1,10 +1,9 @@
 <!--###################################
 #                                     #
-#    HOW TO WRITE DIGITAL VALUES TO   #
-#         ALL PINS ON WEIO            #
+#      WEB APPLICATION ON WEIO:       #
+#       CONTROL PANEL CREATOR         #
 #                                     #
 ####################################-->
- 
   
 <!DOCTYPE html>
 <html lang="en">
@@ -26,55 +25,63 @@
 <body>
     <nav class="navbar navbar-inverse">
       <div class="container-fluid">
+     
+      <!-- add weio logo using navbar-header class -->
+       <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <img src="www/img/weioLogo.png" alt="">
+            </a>
+        </div>
+
         <!-- Collect the nav links, forms, and other content 
              for toggling -->
         <div class="collapse navbar-collapse" 
              id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav">
-        
-        <li class="dropdown">
-            <a href="#" 
-               class="dropdown-toggle" 
-               data-toggle="dropdown" 
-               role="button" 
-               aria-expanded="false"> digitalRead
-               <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu" id="drModules"></ul>
-        </li>
+            <ul class="nav navbar-nav">
           
-        <li class="dropdown">
-            <a href="#" 
-			   class="dropdown-toggle" 
-			   data-toggle="dropdown" 
-			   role="button" 
-			   aria-expanded="false"> digitalWrite
-			   <span class="caret"></span>
-			</a>
-            <ul class="dropdown-menu" id="dwModules"></ul>
-        </li>
+            <li class="dropdown">
+                <a href="#" 
+                   class="dropdown-toggle" 
+                   data-toggle="dropdown" 
+                   role="button" 
+                   aria-expanded="false"> digitalRead
+                   <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" id="drModules"></ul>
+            </li>
           
-        <li class="dropdown">
-            <a href="#" 
-               class="dropdown-toggle" 
-               data-toggle="dropdown" 
-               role="button" 
-               aria-expanded="false"> analogRead 
-               <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu" id="arModule"></ul>
-        </li>
+            <li class="dropdown">
+                <a href="#" 
+    			   class="dropdown-toggle" 
+    			   data-toggle="dropdown" 
+    			   role="button" 
+    			   aria-expanded="false"> digitalWrite
+    			   <span class="caret"></span>
+    			</a>
+                <ul class="dropdown-menu" id="dwModules"></ul>
+            </li>
           
-        <li class="dropdown">
-            <a href="#" 
-               class="dropdown-toggle" 
-               data-toggle="dropdown" 
-               role="button" 
-               aria-expanded="false"> pwmWrite
-               <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu" id="pwModule"></ul>
-        </li>
+            <li class="dropdown">
+                <a href="#" 
+                   class="dropdown-toggle" 
+                   data-toggle="dropdown" 
+                   role="button" 
+                   aria-expanded="false"> analogRead 
+                   <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" id="arModule"></ul>
+            </li>
+          
+            <li class="dropdown">
+                <a href="#" 
+                   class="dropdown-toggle" 
+                   data-toggle="dropdown" 
+                   role="button" 
+                   aria-expanded="false"> pwmWrite
+                   <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" id="pwModule"></ul>
+            </li>
           
         </div>
         <!-- /.navbar-collapse -->
