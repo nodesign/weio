@@ -125,7 +125,7 @@
         }
     }
     
-    // add all pins by module in digitalWrite dropdown-menu's
+    // add all pins by module in analogRead dropdown-menu's
     for (var k=24; k<32; k++) {
         var id = "analogRead" + String(k); 
         $("#arModule").append('<li id=' + id + '><a href="#">pin '+ 
@@ -135,7 +135,7 @@
         });
     }
     
-    // add all pins by module in digitalWrite dropdown-menu's
+    // add all pins by module in pwmWrite dropdown-menu's
     for (var k=18; k<24; k++) {
         var id = "pwmWrite" + String(k); 
         $("#pwModule").append('<li id=' + id + '><a href="#">pin '+ 
