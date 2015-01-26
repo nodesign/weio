@@ -17,3 +17,6 @@
 ./scripts/feeds install libi2c
 ./scripts/feeds install i2c-tools
 ./scripts/feeds install python-smbus
+./scripts/feeds install madplay
+./scripts/feeds install alsa-lib
+./scripts/feeds install alsa-utils
