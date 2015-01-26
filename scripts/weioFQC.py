@@ -134,15 +134,15 @@ if __name__ == "__main__":
     time.sleep(3)
 
     if res:    
-       	t = testUI(res)
-    	while config["first_time_run"] == "YES":    
-        	t.display_result()
-       	t.stop()
+        t = testUI(res)
+        while config["first_time_run"] == "YES":    
+            t.display_result()
+        t.stop()
     else:
-    	print "Failed"
+        print "LPC not found !"
         import ledBlink as led
-    	while config["first_time_run"] == "YES":    
-        	led.blink(.1)
+        while config["first_time_run"] == "YES":    
+            led.blink(.1)
 
     ### Second test : Test the GPIOs
     #gpio = GPIOTest()
