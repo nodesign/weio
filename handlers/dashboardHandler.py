@@ -60,7 +60,7 @@ import json
 from weioLib import weioIpAddress
 from weioLib import weioFiles
 
-from shutil import copyfile, copytree
+from shutil import copyfile, copytree, ignore_patterns
 
 # IMPORT BASIC CONFIGURATION FILE
 from weioLib import weioConfig
@@ -225,9 +225,9 @@ class WeioDashBoardHandler(SockJSConnection):
                 print "Symlink don't exist. Will create new one for www in this project"
             os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
         elif not os.path.exists(path + "/www"):
-            #print "COPYING TO ", path + "/www"
-            copytree(config['absolut_root_path'] + "/www", path + "/www")
-            #print "OK"
+            print "COPYING TO ", path + "/www"
+            copytree(config['absolut_root_path'] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples'))
+            print "OK"
         
 
 
@@ -269,11 +269,17 @@ class WeioDashBoardHandler(SockJSConnection):
             
             
             # make symlink to www/
-            try :
-                os.remove(path + "/www")
-            except:
-                print "Symlink don't exist. Will create new one for this project"
-            os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
+            if (storage == "sd"):
+                if not (os.path.exists(path + "/www")):
+                    print "COPYING TO ", path + "/www" 
+                    copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples'))
+                    print "OK"
+            else:
+                try:
+                    os.remove(path + "/www")
+                except:
+                    print "Symlink don't exist. Will create new one for this project"
+                os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
 
             # copy all files from directory boilerplate to destination
             mypath = "www/libs/weio/boilerPlate/"
@@ -303,14 +309,19 @@ class WeioDashBoardHandler(SockJSConnection):
         print "DUPLICATE PROJECT", path
         data = {}
         if (len(path)>0):
-
-            # Destroy symlink
-            os.remove(config["last_opened_project"]+"/www")
+	    if (storage != "sd"):
+                # Destroy symlink
+                os.remove(config["last_opened_project"]+"/www")
             # copy all files
             copytree(config["last_opened_project"], path)
-            # Recreate symlink
-            os.symlink(config["absolut_root_path"] + "/www/", config["last_opened_project"] + "/www")
-
+            
+            if (storage != "sd"):
+                # Recreate symlink
+                os.symlink(config["absolut_root_path"] + "/www/", config["last_opened_project"] + "/www")
+	    else:
+	        if not (os.path.exists(path + "/www")):                                                                              
+	            copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples'))
+	    
             config["last_opened_project"] = path
             weioConfig.saveConfiguration(config)
 
