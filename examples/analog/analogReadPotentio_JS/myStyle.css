@@ -1,0 +1,10 @@
+body {
+    background:black;
+}
+p {
+    font-family:Helvetica;
+    font-size:100px;
+    font-weight:bold;
+    color:#5dddf6;
+    text-align:center;
+}
