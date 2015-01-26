@@ -1895,8 +1895,10 @@ CONFIG_PACKAGE_lua=y
 #
 # Python
 #
+CONFIG_PACKAGE_cython=y
 CONFIG_PACKAGE_python=y
 CONFIG_PACKAGE_python-base=y
+CONFIG_PACKAGE_python-greenlet=y
 # CONFIG_PACKAGE_python-smbus is not set
 # CONFIG_PACKAGE_pyyaml is not set
 
@@ -1918,6 +1920,11 @@ CONFIG_PACKAGE_libip4tc=y
 CONFIG_PACKAGE_libip6tc=y
 # CONFIG_PACKAGE_libiptc is not set
 CONFIG_PACKAGE_libxtables=y
+
+#
+# Python
+#
+CONFIG_PACKAGE_gevent=y
 
 #
 # SSL
