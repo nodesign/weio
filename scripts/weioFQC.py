@@ -8,6 +8,7 @@ from weioLib import weioParser
 from weioLib import weioUserApi
 from weioLib import weioGpio
 from weioLib import weioIO
+from weioLib import weioConfig
 from IoTPy.pyuper.utils import IoTPy_APIError, errmsg
 
 import time
@@ -61,17 +62,15 @@ class Detector:
             except OSError:
                 pass
             if header == uper_flash_pattern: # "CRP DISABLD"
-                print "LPC found on USB"
                 block_device_name = try_device_name # found UPER
                 break;
         if block_device_name == '':
-            print "UPER firmware upgrade error, no UPER was found."
-            return
+            return 0
 
         # reset UPER
         self._reset_uper()
         time.sleep(.2)
-        return
+        return 1
         
 # This class will perform the test of all GPIOs
 class GPIOTest:
@@ -111,12 +110,39 @@ class GPIOTest:
                         print "Error : short between pin %d and %d" %(i, j)
             self.g.pinMode(i, GPIO.PULL_DOWN)
 
+# This class will perform the test of all GPIOs
+class testUI:
+    def __init__(self, result):
+        self.g = weioGpio.WeioGpio()
+    
+    def stop(self): 
+        self.g.stop()
+            
+    def display_result(self):
+        self.g.pinMode(19, GPIO.OUTPUT)
+        self.g.digitalWrite(19, GPIO.LOW)
+        time.sleep(.5)
+        self.g.digitalWrite(19, GPIO.HIGH)
+        time.sleep(.5)
+
 if __name__ == "__main__":
+    config = weioConfig.getConfiguration()                                             
 
     ### First test : Detect the LPC
     detect = Detector()
-    detect.detect()
+    res = detect.detect()
     time.sleep(3)
-        
+
+    if res:    
+       	t = testUI(res)
+    	while config["first_time_run"] == "YES":    
+        	t.display_result()
+       	t.stop()
+    else:
+    	print "Failed"
+        import ledBlink as led
+    	while config["first_time_run"] == "YES":    
+        	led.blink(.1)
+
     ### Second test : Test the GPIOs
-    gpio = GPIOTest()
+    #gpio = GPIOTest()
