@@ -297,11 +297,16 @@ def symlinkExternalProjects():
         os.symlink(config["extern_projects_path_usbFlash"], "www/usbFlash")
 
     # Re-link current project's www
+    lastStorage = os.path.basename(os.path.dirname(config["last_opened_project"]))
     lastWww = config["last_opened_project"] + '/' + 'www'
-    if os.path.lexists(lastWww):
-        try:
-            os.unlink(lastWww)
-        except:
-            print "Symlink don't exist. Will create new one for www"
-        if (len(config["last_opened_project"]) > 0):
-            os.symlink(config["absolut_root_path"] + "/www", lastWww)
+    #print "LS ", lastStorage
+    if (lastStorage != "sd"):
+        if os.path.lexists(lastWww):
+            try:
+                os.unlink(lastWww)
+            except:
+                print "Symlink don't exist. Will create new one for www"
+            if (len(config["last_opened_project"]) > 0):
+                os.symlink(config["absolut_root_path"] + "/www", lastWww)
+
+ 

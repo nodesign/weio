@@ -218,11 +218,18 @@ class WeioDashBoardHandler(SockJSConnection):
         weioConfig.saveConfiguration(config);
 
         # In this way we avoid migrations between pc and weio and other archs
-        try :
-            os.remove(path+"/www")
-        except:
-            print "Symlink don't exist. Will create new one for www in this project"
-        os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
+        if (storage != "sd"):
+            try:
+                os.remove(path+"/www")
+            except:
+                print "Symlink don't exist. Will create new one for www in this project"
+            os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
+        elif not os.path.exists(path + "/www"):
+            #print "COPYING TO ", path + "/www"
+            copytree(config['absolut_root_path'] + "/www", path + "/www")
+            #print "OK"
+        
+
 
         data = {}
         data['requested'] = rq['request']
