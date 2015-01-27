@@ -38,9 +38,10 @@ update_connected_devices()
 			else
 				DEVICES="$DEVICES $sd_name"
 			fi
-			
-			#mkdir -p /weioUser/sd
-			#mount /dev/sda1 /weioUser/sd
+
+			mkdir -p /weioUser/sd
+			mount /dev/$sd_name /weioUser/sd
+			touch /weioUser/sd/__init__.py
 		fi
 	done
 }
@@ -63,7 +64,8 @@ umount_disconnected_devices()
 			        echo "uSD: umounting $dev"
 				umount $dev
 			done
-			rmdir /mnt/$sd_name?
+			#rmdir /mnt/$sd_name?
+			rmdir /weioUser/sd
 			#post_auto_umount
 		fi
 	done
