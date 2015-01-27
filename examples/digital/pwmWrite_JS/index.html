@@ -15,7 +15,7 @@
 <html lang="en">
 
 <head >
-	<!-- Import weioLibs and link your css style -->
+    <!-- Import weioLibs and link your css style -->
     <script data-main="www/libs/weioLibs"
             src="www/libs/require.js"></script>
     <link rel="stylesheet" type="text/css" href="myStyle.css">
@@ -33,7 +33,7 @@
     function myPwm() {
         // Change displayed phrase
         $("#phrase").html("CLICK HERE TO CHANGE PWM DUTY CYCLE \
-						   ON PIN 18: " + dutyCycle + "%");
+							ON PIN 18: " + dutyCycle + "%");
         // write value of pwm dutyCyacle on pin 18
         pwmWrite(18, dutyCycle);
         // increment duty cycle
