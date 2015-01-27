@@ -1,6 +1,6 @@
 <!--###################################
 #                                     #
-#   how to have pwmWrite on WEIO      #
+#    HOW TO HAVE PWMWRITE ON WEIO     #
 #                                     #
 #######################################
 
@@ -32,7 +32,8 @@
 
     function myPwm() {
         // Change displayed phrase
-        $("#phrase").html("CLICK HERE TO CHANGE PWM DUTY CYCLE ON PIN 18: "+dutyCycle+"%");
+        $("#phrase").html("CLICK HERE TO CHANGE PWM DUTY CYCLE \
+						   ON PIN 18: " + dutyCycle + "%");
         // write value of pwm dutyCyacle on pin 18
         pwmWrite(18, dutyCycle);
         // increment duty cycle
