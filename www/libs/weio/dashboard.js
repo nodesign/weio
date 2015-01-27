@@ -879,13 +879,15 @@ function updateUserData(data) {
 
 function newProjectIsCreated(data) {
 
-    updateStatus(data);
-
-    var rq = { "request": "getUserProjetsFolderList"};
-    dashboard.send(JSON.stringify(rq));
-    rq = { "request": "getLastProjectName"};
-    dashboard.send(JSON.stringify(rq));
-    reloadIFrame();
-
+    if (data.error) {
+        $("#alreadyExists").modal("show");
+    } else {
+        updateStatus(data);
+        var rq = { "request": "getUserProjetsFolderList"};
+        dashboard.send(JSON.stringify(rq));
+        rq = { "request": "getLastProjectName"};
+        dashboard.send(JSON.stringify(rq));
+        reloadIFrame();
+    }
 }
 

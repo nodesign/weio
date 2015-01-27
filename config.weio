@@ -15,10 +15,10 @@
         "index.html", 
         "weioMain.py"
     ], 
-    "last_opened_project": "www/examples/processes/helloWorld", 
+    "last_opened_project": "www/examples/arduino/firmataPython", 
     "login_required": "NO", 
     "password": "", 
-    "play_composition_on_server_boot": "YES", 
+    "play_composition_on_server_boot": "NO", 
     "port": 8080, 
     "remote": "", 
     "user": "Drasko DRASKOVIC", 
@@ -26,6 +26,6 @@
     "userApp_debug_mode": "True", 
     "weio_board": "WeIO", 
     "weio_lib_path": "weioLib", 
-    "weio_update_repository": "http://we-io.net/downloads", 
-    "weio_version": "408"
+    "weio_update_repository": "https://api.github.com/repos/nodesign/weio/releases", 
+    "weio_version": "0.2"
 }

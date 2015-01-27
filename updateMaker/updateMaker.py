@@ -70,6 +70,7 @@ global filesize
 global prgs
 
 packetFile = "weio.tar.gz"
+noFTP = False
 
 # save update config file
 def saveConfiguration(conf):
@@ -107,14 +108,18 @@ def progressBar(block):
 
 # Check actual version on the server
 def checkVersionOnServer():
-    config = getConfigJson()
-    url = config["weio_update_repository"]
-    opener = urllib.FancyURLopener({})
-    f = opener.open(url+"/update.weio")
-    ver = json.loads(f.read())
+    try :
+        config = getConfigJson()
+        url = config["weio_update_repository"]
+        opener = urllib.FancyURLopener({})
+        f = opener.open(url+"/update.weio")
+        ver = json.loads(f.read())
 
-    print "Actual version on the server is : ", ver['version']
-    print
+        print "Actual version on the server is : ", ver['version']
+        print
+    except :
+        print "OFF LINE MODE, no Internet connection"
+        noFTP = True
 
 def getConfigJson():
     inputFile = open("../config.weio", 'r')
@@ -131,7 +136,7 @@ weio_update['url'] = 'http://www.we-io.net/downloads/weio' + weio_update['versio
 weio_update['md5'] = '995884813e29f06b71a940975b202398'
 
 nArguments = 4
-noFTP = False
+
 if (len(sys.argv)>=nArguments) :
     
     print

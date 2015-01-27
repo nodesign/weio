@@ -262,40 +262,47 @@ class WeioDashBoardHandler(SockJSConnection):
 
         print "CREATE PROJECT", path
         if (len(path)>0):
-            weioFiles.createDirectory(path)
-            # ADD HERE SOME DEFAULT FILES
-            # adding __init__.py
-            weioFiles.saveRawContentToFile(path + "/__init__.py", "")
-            
-            
-            # make symlink to www/
-            if (storage == "sd"):
-                if not (os.path.exists(path + "/www")):
-                    print "COPYING TO ", path + "/www" 
-                    copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples'))
-                    print "OK"
-            else:
-                try:
-                    os.remove(path + "/www")
-                except:
-                    print "Symlink don't exist. Will create new one for this project"
-                os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
+            if (weioFiles.checkIfDirectoryExists(path)):
+                print "ALREADY EXISTS"
+                data['status'] = "Can't create project"
+                data['error'] = "already exists"
+                data['path'] = path
+                self.broadcast(clients, json.dumps(data))
+            else :
+                weioFiles.createDirectory(path)
+                # ADD HERE SOME DEFAULT FILES
+                # adding __init__.py
+                weioFiles.saveRawContentToFile(path + "/__init__.py", "")
 
-            # copy all files from directory boilerplate to destination
-            mypath = "www/libs/weio/boilerPlate/"
-            onlyfiles = [ f for f in os.listdir(mypath) if isfile(join(mypath,f)) ]
-            for f in onlyfiles:
-                copyfile(mypath+f, path +"/"+f)
+                # make symlink to www/
+                if (storage == "sd"):
+                    if not (os.path.exists(path + "/www")):
+                        print "COPYING TO ", path + "/www" 
+                        copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples'))
+                        print "OK"
+                else:
+                    try:
+                        os.remove(path + "/www")
+                    except:
+                        print "Symlink don't exist. Will create new one for this project"
+                    os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
 
-            print "LASTOPENED new project", path
-            config["last_opened_project"] = path
-            weioConfig.saveConfiguration(config);
+                # copy all files from directory boilerplate to destination
+                mypath = "www/libs/weio/boilerPlate/"
+                onlyfiles = [ f for f in os.listdir(mypath) if isfile(join(mypath,f)) ]
+                for f in onlyfiles:
+                    copyfile(mypath+f, path +"/"+f)
 
-            data['status'] = "New project created"
-            data['path'] = path
-            self.broadcast(clients, json.dumps(data))
+                print "LASTOPENED new project", path
+                config["last_opened_project"] = path
+                weioConfig.saveConfiguration(config);
+
+                data['status'] = "New project created"
+                data['path'] = path
+                self.broadcast(clients, json.dumps(data))
         else:
             print "BAD PATHNAME"
+
 
     def duplicateProject(self, rq):
         config = weioConfig.getConfiguration()
@@ -309,19 +316,19 @@ class WeioDashBoardHandler(SockJSConnection):
         print "DUPLICATE PROJECT", path
         data = {}
         if (len(path)>0):
-	    if (storage != "sd"):
+            if (storage != "sd"):
                 # Destroy symlink
                 os.remove(config["last_opened_project"]+"/www")
             # copy all files
             copytree(config["last_opened_project"], path)
-            
+
             if (storage != "sd"):
                 # Recreate symlink
                 os.symlink(config["absolut_root_path"] + "/www/", config["last_opened_project"] + "/www")
-	    else:
-	        if not (os.path.exists(path + "/www")):                                                                              
-	            copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples'))
-	    
+            else:
+                if not (os.path.exists(path + "/www")):
+                    copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples'))
+
             config["last_opened_project"] = path
             weioConfig.saveConfiguration(config)
 
