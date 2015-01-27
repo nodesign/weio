@@ -110,6 +110,13 @@ var stopTag;
 /*
  * When all DOM elements are fully loaded
  */
+
+
+// play/stop buttons enable/disable (prevent double clicking etc..)
+var playButtonDisabled = false;
+var stopButtonDisabled = false;
+var disableTime = 3000;
+
 $(document).ready(function () {
     updateIframeHeight();
 
@@ -483,12 +490,18 @@ function setStatus(line, message) {
 
 
 function prepareToPlay() {
-    if (isEditorActive) {
-        document.getElementById("weioIframe").contentWindow.play();
-        document.getElementById("weioIframe").contentWindow.hideAlert();
-        document.getElementById("weioIframe").contentWindow.clearErrorAnnotations();
-    } else {
-        play();
+    if(!playButtonDisabled){
+        playButtonDisabled = true;
+        if (isEditorActive) {
+            document.getElementById("weioIframe").contentWindow.play();
+            document.getElementById("weioIframe").contentWindow.hideAlert();
+            document.getElementById("weioIframe").contentWindow.clearErrorAnnotations();
+        } else {
+            play();
+        }
+         setTimeout(function () { // Enable play after some time
+            playButtonDisabled = false;  
+        }, disableTime);
     }
 }
 
@@ -522,13 +535,20 @@ function sendPlayToServer() {
 }
 
 function stop(){
-    stopTag = new Date();
+    if(!stopButtonDisabled){
+        stopButtonDisabled = true;
+        stopTag = new Date();
 
-    var rq = { "request": "stop"};
-    dashboard.send(JSON.stringify(rq));
-    $( "#weioProgress" ).fadeTo( "slow", 0 );
-    clearInterval(playCounter);
-    readyToPlay = 0;
+        var rq = { "request": "stop"};
+        dashboard.send(JSON.stringify(rq));
+        $( "#weioProgress" ).fadeTo( "slow", 0 );
+        clearInterval(playCounter);
+        readyToPlay = 0;
+
+        setTimeout(function () { // Enable stop after some time
+            stopButtonDisabled = false;  
+        }, disableTime);
+    }
 }
 
 
@@ -879,15 +899,13 @@ function updateUserData(data) {
 
 function newProjectIsCreated(data) {
 
-    if (data.error) {
-        $("#alreadyExists").modal("show");
-    } else {
-        updateStatus(data);
-        var rq = { "request": "getUserProjetsFolderList"};
-        dashboard.send(JSON.stringify(rq));
-        rq = { "request": "getLastProjectName"};
-        dashboard.send(JSON.stringify(rq));
-        reloadIFrame();
-    }
+    updateStatus(data);
+
+    var rq = { "request": "getUserProjetsFolderList"};
+    dashboard.send(JSON.stringify(rq));
+    rq = { "request": "getLastProjectName"};
+    dashboard.send(JSON.stringify(rq));
+    reloadIFrame();
+
 }
 
