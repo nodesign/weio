@@ -1,9 +1,10 @@
-body{
-    background-color: gray
+body {
+    background:black;
 }
-
 p {
-    font-size:80px;
-    font-family:verdana;
-    color:yellow;
+    font-family:Helvetica;
+    font-size:100px;
+    font-weight:bold;
+    color:#5dddf6;
+    text-align:center;
 }
