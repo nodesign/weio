@@ -338,7 +338,7 @@ class WeioDashBoardHandler(SockJSConnection):
                             copytree(config["last_opened_project"], path, ignore=ignore_patterns('www'))
                         except:
                             print sys.exc_info()[0]
-                else
+                else:
                     # copy all files
                     try:
                         copytree(config["last_opened_project"], path, ignore=ignore_patterns('www'))
