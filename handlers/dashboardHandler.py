@@ -320,10 +320,16 @@ class WeioDashBoardHandler(SockJSConnection):
                 # Destroy symlink
                 os.remove(config["last_opened_project"]+"/www")
                 # copy all files
-                copytree(config["last_opened_project"], path)
+                try:
+                    copytree(config["last_opened_project"], path)
+                except:
+                    print sys.exc_info()[0]
             else:
                 # copy all files
-                copytree(config["last_opened_project"], path, ignore=ignore_patterns('www'))
+                try:
+                    copytree(config["last_opened_project"], path, ignore=ignore_patterns('www'))
+                except:
+                    print sys.exc_info()[0]
 
             if (storage != "sd" and storage != "usbFlash"):
                 # Recreate symlink
