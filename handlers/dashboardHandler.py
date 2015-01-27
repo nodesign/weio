@@ -218,7 +218,7 @@ class WeioDashBoardHandler(SockJSConnection):
         weioConfig.saveConfiguration(config);
 
         # In this way we avoid migrations between pc and weio and other archs
-        if (storage != "sd"):
+        if (storage != "sd" and storage != "usbFlash"):
             try:
                 os.remove(path+"/www")
             except:
@@ -226,7 +226,7 @@ class WeioDashBoardHandler(SockJSConnection):
             os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
         elif not os.path.exists(path + "/www"):
             print "COPYING TO ", path + "/www"
-            copytree(config['absolut_root_path'] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples'))
+            copytree(config['absolut_root_path'] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples', 'usbFlash'))
             print "OK"
         
 
@@ -275,10 +275,10 @@ class WeioDashBoardHandler(SockJSConnection):
                 weioFiles.saveRawContentToFile(path + "/__init__.py", "")
 
                 # make symlink to www/
-                if (storage == "sd"):
+                if (storage == "sd" or storage == "usbFlash"):
                     if not (os.path.exists(path + "/www")):
                         print "COPYING TO ", path + "/www" 
-                        copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples'))
+                        copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples', 'usbFlash'))
                         print "OK"
                 else:
                     try:
@@ -316,18 +316,21 @@ class WeioDashBoardHandler(SockJSConnection):
         print "DUPLICATE PROJECT", path
         data = {}
         if (len(path)>0):
-            if (storage != "sd"):
+            if (storage != "sd" and storage != "usbFlash"):
                 # Destroy symlink
                 os.remove(config["last_opened_project"]+"/www")
-            # copy all files
-            copytree(config["last_opened_project"], path)
+                # copy all files
+                copytree(config["last_opened_project"], path)
+            else:
+                # copy all files
+                copytree(config["last_opened_project"], path, ignore=ignore_patterns('www'))
 
-            if (storage != "sd"):
+            if (storage != "sd" and storage != "usbFlash"):
                 # Recreate symlink
                 os.symlink(config["absolut_root_path"] + "/www/", config["last_opened_project"] + "/www")
             else:
                 if not (os.path.exists(path + "/www")):
-                    copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples'))
+                    copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples', 'usbFlash'))
 
             config["last_opened_project"] = path
             weioConfig.saveConfiguration(config)
