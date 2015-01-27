@@ -300,7 +300,7 @@ def symlinkExternalProjects():
     lastStorage = os.path.basename(os.path.dirname(config["last_opened_project"]))
     lastWww = config["last_opened_project"] + '/' + 'www'
     #print "LS ", lastStorage
-    if (lastStorage != "sd"):
+    if (lastStorage != "sd" and lastStorage != "usbFlash"):
         if os.path.lexists(lastWww):
             try:
                 os.unlink(lastWww)
