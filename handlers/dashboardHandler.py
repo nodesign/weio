@@ -276,10 +276,17 @@ class WeioDashBoardHandler(SockJSConnection):
 
                 # make symlink to www/
                 if (storage == "sd" or storage == "usbFlash"):
-                    if not (os.path.exists(path + "/www")):
-                        print "COPYING TO ", path + "/www" 
-                        copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples', 'usbFlash'))
-                        print "OK"
+                    if (storage == "sd"):
+                        if os.path.isdir(path):
+                            if not (os.path.exists(path + "/www")):
+                                print "COPYING TO ", path + "/www"
+                                copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples', 'usbFlash'))
+                                print "OK"
+                    else:
+                        if not (os.path.exists(path + "/www")):
+                            print "COPYING TO ", path + "/www"
+                            copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples', 'usbFlash'))
+                            print "OK"
                 else:
                     try:
                         os.remove(path + "/www")
@@ -325,11 +332,18 @@ class WeioDashBoardHandler(SockJSConnection):
                 except:
                     print sys.exc_info()[0]
             else:
-                # copy all files
-                try:
-                    copytree(config["last_opened_project"], path, ignore=ignore_patterns('www'))
-                except:
-                    print sys.exc_info()[0]
+                if (storage == "sd"):
+                    if os.path.isdir(path):
+                        try:
+                            copytree(config["last_opened_project"], path, ignore=ignore_patterns('www'))
+                        except:
+                            print sys.exc_info()[0]
+                else
+                    # copy all files
+                    try:
+                        copytree(config["last_opened_project"], path, ignore=ignore_patterns('www'))
+                    except:
+                        print sys.exc_info()[0]
 
             if (storage != "sd" and storage != "usbFlash"):
                 # Recreate symlink
