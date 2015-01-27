@@ -65,7 +65,7 @@ umount_disconnected_devices()
 				umount $dev
 			done
 			#rmdir /mnt/$sd_name?
-			rmdir /weioUser/sd
+			rm -rf /weioUser/sd
 			#post_auto_umount
 		fi
 	done
