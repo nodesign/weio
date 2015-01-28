@@ -105,6 +105,16 @@ $(document).ready(function () {
     };
 
  }); /** getJSON */
+     // Get timezone list
+    $.getJSON('data/timezones.json', function(data) {
+            var confFile = data;
+            
+            $("#timezones").empty();
+            for (var i=0; i<confFile.length; i++) {
+                $("#timezones").append('<option value="'+confFile[i].value+'">'+confFile[i].name+'</option>');
+            }
+    });
+
 
 }); 
 
@@ -113,6 +123,7 @@ function currnetSettingsData(data) {
     var dns_name = data.dns_name.split(".")[0]; //split string to remove domain name.
         play_composition_on_server_boot = "";
         auto_to_ap = "";
+        timezone = data.timezone
 
     $("body").find("#userName").val(data.user);
     $("body").find("#networkBoardName").val(dns_name);
@@ -130,6 +141,7 @@ function currnetSettingsData(data) {
         auto_ap_mode = false
     }
     $("body").find("#networkAutoApMode").prop("checked", auto_ap_mode);
+    $("body").find("#timezones").val(timezone);
 };
 
 
@@ -191,6 +203,7 @@ function updateNetworkData() {
     if(!ui_disabled){
         var board_name = $("body").find("#networkBoardName").val().split(".")[0]; // split string to avoid domain name (e.g avoid .locale)
             auto_ap_mode = $("body").find("#networkAutoApMode").is(":checked");
+            timezone = $("body").find("#timezones").find(":selected").text();
 
         if(auto_ap_mode) {
             auto_ap_mode = "YES"
@@ -198,7 +211,7 @@ function updateNetworkData() {
             auto_ap_mode = "NO"
         }
         
-            updateData = {"request": "updataNetwork", "data": {"dns_name": board_name, "auto_to_ap": auto_ap_mode }};
+            updateData = {"request": "updataNetwork", "data": {"dns_name": board_name, "auto_to_ap": auto_ap_mode, "timezone": timezone }};
             console.log(updateData);
         
         settingsSocket.send(JSON.stringify(updateData));
@@ -215,6 +228,11 @@ function reponse_msg(data) {
     ui_disabled = true; // Disable  settings saving, until alert message is present.
     $(".alert-message").delay(5000).slideToggle("slow", function () { $(this).remove(); ui_disabled = false });
 };
+
+// Inform user about timezone (changes will be applayed after system reboot) when they change selectbox
+$('#timezones').on('change', function() {
+   $("#timezone-msg").show();
+});
 
 
 //CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////x
