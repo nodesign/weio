@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# Detect new cards 
+for sd in `ls -d /sys/bus/scsi/drivers/sd/*/block/sd?`
+do
+	block detect > /dev/null
+	sd_name=`basename $sd`"1"
+	size=$(cat $sd/size)
+	if [ "$size" != 0 -a "$size" != "" ]; then
+		if !(mount |grep -q $sd_name); then
+			# SD card not mounted
+			mkdir -p /weioUser/sd
+			mount /dev/$sd_name /weioUser/sd
+			touch /weioUser/sd/__init__.py
+ 			logger -t DEBUG "hotplug:weio : Mounted SD Card into /dev/$sd_name "
+		fi
+	fi
+done
+
+# Unmount ejected cards
+for sd in `ls -d /sys/bus/scsi/drivers/sd/*/block/sd?`
+do
+	block detect > /dev/null
+	sd_name=`basename $sd`
+	size=$(cat /sys/bus/scsi/drivers/sd/*/block/$sd_name/size)
+	if [ "$size" == "0" -o "$size" == "" ]; then
+		if (mount |grep -q $sd_name"1"); then
+			for dev in $(ls /dev/$sd_name?); do
+				umount $dev
+			done
+			rm -rf /weioUser/sd
+			logger -t DEBUG "hotplug:weio : Unmounted SD Card /dev/$sd_name "
+		fi
+	fi
+done
