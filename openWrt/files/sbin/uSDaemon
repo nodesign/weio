@@ -6,7 +6,7 @@ TIME=2
 while [ true ]; do
 	case $(ar71xx_board_name) in
 	weio)
-		/sbin/hotplug-call sd
+		/sbin/hotplug-call weio
 	;;
 	esac
 	sleep $TIME
