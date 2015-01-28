@@ -60,6 +60,10 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 from weioLib import weioFiles
 from weioLib import weioConfig
 from weioLib import weioIdeGlobals
+from weioLib import weioUnblock
+
+from threading import Thread
+from time import sleep
 
 import functools
 import json
@@ -91,26 +95,48 @@ class WeioUpdaterHandler(SockJSConnection):
         self.fwMd5 = None
         self.downloadUpdateLink  = None
 
+        self.fwDownloadLink = None
+        self.fwDownloadSize = None
+        self.fwSizeWatcherThread = None
+        
+        if (platform.machine()=="mips") :
+            self.fwPath = "/tmp/weio_recovery.bin"
+        else :
+            self.fwPath = "./weio_recovery.bin"
+
     # checkForUpdates is entering point for updater
     # First it will download only update.weio to check if there is need for an update
     # If yes than archive will be downloaded and decompressed
     # Put flag in current config.weio that tells to OS that old weio will be removed 
     # at next restart of system
     def checkForUpdates(self, rq):
-        config = weioConfig.getConfiguration()
-        repository = config["weio_update_repository"]
+        wifiMode = "ap"
+        if (platform.machine() == 'mips') :
+            wifiMode = weioIdeGlobals.WIFI.mode
+            print "WIFI MODE ", wifiMode
+        else :
+            wifiMode = "sta" # local setting
 
-        h = httputil.HTTPHeaders({"Accept" : "application/vnd.github.v3+json","User-Agent" : "weio"})
-        req = httpclient.HTTPRequest(repository, headers=h)
+        if (wifiMode=="sta"):
 
-        http_client = httpclient.AsyncHTTPClient()
-        http_client.fetch(req, callback=self.checkVersion)
+            config = weioConfig.getConfiguration()
+            repository = config["weio_update_repository"]
+
+            h = httputil.HTTPHeaders({"Accept" : "application/vnd.github.v3+json","User-Agent" : "weio"})
+            req = httpclient.HTTPRequest(repository, headers=h)
+
+            http_client = httpclient.AsyncHTTPClient()
+            http_client.fetch(req, callback=self.checkVersion)
 
     # checking version
     def checkVersion(self, response):
+
         config = weioConfig.getConfiguration()
 
         data = json.loads(response.body)
+        f = open("github.json", "w")
+        f.write(json.dumps(data, indent=4, sort_keys=True))
+        f.close()
         #print json.dumps(data, indent=4, sort_keys=True)
         lastUpdate = data[0]
         distantVersion = float(lastUpdate["tag_name"].split("v")[1])
@@ -131,11 +157,17 @@ class WeioUpdaterHandler(SockJSConnection):
             rsp['whatsnew'] = lastUpdate["body"]
             rsp['install_duration'] = self.estimatedInstallTime
             self.downloadUpdateLink = ""
+
             for file in lastUpdate["assets"]:
                 if ("weio.tar.gz" in file["name"]):
                     self.downloadUpdateLink = file["browser_download_url"]
                     self.downloadSize = file["size"]
                     print self.downloadUpdateLink, "size", file["size"]
+
+                if ("weio_recovery.bin" in file["name"]):
+                    print "found weio_recovery"
+                    self.fwDownloadLink = file["browser_download_url"]
+                    self.fwDownloadSize = file["size"]
         else :
             rsp['needsUpdate'] = "NO"
         self.send(json.dumps(rsp))
@@ -215,21 +247,43 @@ class WeioUpdaterHandler(SockJSConnection):
                  md5.update(chunk)
         return md5.hexdigest()
 
+    @weioUnblock.unblock
     def reinstallFw(self, data):
-        wifiMode = "ap"
-        if (platform.machine() == 'mips') :
-            wifiMode = weioIdeGlobals.WIFI.mode
-            print "WIFI MODE ", wifiMode
-        else :
-            wifiMode = "sta"
-
-        if (wifiMode=="sta") : # check Internet
-
-            p = subprocess.Popen(["python", "/weio/scripts/flashWeioFw.py"])
+        if not(self.fwDownloadLink is None):
+            self.fwSizeWatcherThread = Thread(target = self.sizeWatcher)
+            self.fwSizeWatcherThread.start()
+            a = {}
+            a['serverPush'] = "readyToReinstallFw"
+            a['data'] = ""
+            self.send(json.dumps(a))
+            p = subprocess.Popen(["curl", "-k", "-L", "-o", self.fwPath, self.fwDownloadLink])
             print p.communicate()
-        else :
-            data = {}
-            data['serverPush'] = "noInternet"
+            self.fwSizeWatcherThread.join()
+            sizeOnDisk = os.path.getsize(self.fwPath)
+            print "Size matching", self.fwDownloadSize, sizeOnDisk
+            if (self.fwDownloadSize == sizeOnDisk):
+                p = subprocess.Popen(["sysupgrade", "-v", "-n", self.fwPath])
+                print p.communicate()
+            else :
+                a = {}
+                a['serverPush'] = "errorDownloading"
+                a['data'] = ""
+                self.send(json.dumps(data))
+
+    def sizeWatcher(self):
+        sizeOnDisk = 0
+        while (sizeOnDisk<self.fwDownloadSize):
+            if os.path.exists(self.fwPath):
+                sizeOnDisk = os.path.getsize(self.fwPath)
+            else :
+                break
+            progress = int((100.0/self.fwDownloadSize)*sizeOnDisk)
+            print "SIZEEEEEE", sizeOnDisk, self.fwDownloadSize, "percent", progress
+            a = {}
+            a['serverPush'] = "downloadingFw"
+            a['data'] = progress
+            self.send(json.dumps(a))
+            sleep(1)
 
     def on_open(self, info) :
         global clients
