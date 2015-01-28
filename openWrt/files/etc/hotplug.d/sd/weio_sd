@@ -6,7 +6,7 @@
 for sd in `ls -d /sys/bus/scsi/drivers/sd/*/block/sda`
 do
 	block detect > /dev/null
-	sd_name=`basename $sd`"1"
+	sd_name=`basename $sd`1
 	size=$(cat $sd/size)
 	if [ "$size" != 0 -a "$size" != "" ]; then
 		if !(mount |grep -q $sd_name); then
@@ -23,13 +23,11 @@ done
 for sd in `ls -d /sys/bus/scsi/drivers/sd/*/block/sda`
 do
 	block detect > /dev/null
-	sd_name=`basename $sd`
-	size=$(cat /sys/bus/scsi/drivers/sd/*/block/$sd_name/size)
+	sd_name=`basename $sd`1
+	size=$(cat $sd/size)
 	if [ "$size" == "0" -o "$size" == "" ]; then
-		if (mount |grep -q $sd_name"1"); then
-			for dev in $(ls /dev/$sd_name?); do
-				umount $dev
-			done
+		if (mount |grep -q $sd_name); then
+			umount /dev/$sd_name
 			rm -rf /weioUser/sd
 			logger -t DEBUG "hotplug:weio : Unmounted SD Card /dev/$sd_name "
 		fi
