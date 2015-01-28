@@ -1,7 +1,9 @@
 #!/bin/sh
+# Due to the hardware architecture, the SD card is always mounted as /dev/sda.
+# This allow to easily differentiate SD and usbFlash
 
 # Detect new cards 
-for sd in `ls -d /sys/bus/scsi/drivers/sd/*/block/sd?`
+for sd in `ls -d /sys/bus/scsi/drivers/sd/*/block/sda`
 do
 	block detect > /dev/null
 	sd_name=`basename $sd`"1"
@@ -18,7 +20,7 @@ do
 done
 
 # Unmount ejected cards
-for sd in `ls -d /sys/bus/scsi/drivers/sd/*/block/sd?`
+for sd in `ls -d /sys/bus/scsi/drivers/sd/*/block/sda`
 do
 	block detect > /dev/null
 	sd_name=`basename $sd`
