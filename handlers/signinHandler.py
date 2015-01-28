@@ -68,7 +68,7 @@ class WeioSigninHandler(loginHandler.BaseHandler):
         fullName = self.get_argument("fullName", "")
         passwd = self.get_argument("password", "")
         boardname = self.get_argument("boardname", "")
-
+        timezone = self.get_argument("timezone", "UTC+1")
         # This is two letters country code to be used to setup wifi region
         countryCode = self.get_argument("countryCode", "")
 
@@ -78,7 +78,7 @@ class WeioSigninHandler(loginHandler.BaseHandler):
         # OK now is time to setup username and password
         confFile['user'] = fullName
         weioConfig.saveConfiguration(confFile)
-
+        confFile['timezone'] = timezone
         output = "OK PASSWD"
         #echo -e "weio\nweio" | passwd
 
@@ -109,7 +109,15 @@ class WeioSigninHandler(loginHandler.BaseHandler):
                 subprocess.call(command, shell=True)
             except:
                 output = "ERR_CMD BRDNAME"
-
+            # Change user time zone
+            if timezone:
+                commandConfig = "uci set system.@system[0].timezone=" + timezone  # Set timezone on openwrt config (required for system reboot)
+                commandCommitConfig = "uci commit system.@system[0].timezone"
+                try:
+                    subprocess.call(commandConfig, shell=True)
+                    subprocess.call(commandCommitConfig, shell=True)
+                except:
+                    output = "ERR_CMD TIMEZONE"
         else:
             # On PC
             firstTimeSwitch = "NO"
