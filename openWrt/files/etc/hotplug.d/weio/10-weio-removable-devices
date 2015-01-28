@@ -1,0 +1,63 @@
+#!/bin/sh
+# Due to the hardware architecture, the SD card is always mounted as /dev/sda.
+# This allow to easily differentiate SD and usbFlash
+
+# Detect new cards or usb flash devices
+for sd in `ls -d /sys/bus/scsi/drivers/sd/*/block/sd?`
+do
+    block detect > /dev/null
+    sd_name=`basename $sd`1
+    size=$(cat $sd/size)
+    if [ "$size" != 0 -a "$size" != "" ]; then
+        if !(mount |grep -q $sd_name); then
+            logger -t DEBUG $sd
+            if [ `ls -d $sd |grep 0:0:0:0` ]; then
+                # SD card not mounted
+                mkdir -p /weioUser/sd
+                mount /dev/$sd_name /weioUser/sd
+                touch /weioUser/sd/__init__.py
+                logger -t DEBUG "hotplug:weio : $sd"
+                 logger -t DEBUG "hotplug:weio : Mounted SD Card /dev/$sd_name "
+             else
+                 # usbFlash not mounted
+                 mkdir -p /weioUser/usbFlash
+                 mount /dev/$sd_name /weioUser/usbFlash
+                 touch /weioUser/usbFlash/__init__.py
+                logger -t DEBUG "hotplug:weio : $sd"
+                 logger -t DEBUG "hotplug:weio : Mounted usb Flash /dev/$sd_name"
+             fi
+        fi
+    fi
+done
+
+# Unmount ejected SD cards
+for sd in `ls -d /sys/bus/scsi/drivers/sd/*/block/sd?`
+do
+    block detect > /dev/null
+    sd_name=`basename $sd`1
+    size=$(cat $sd/size)
+    if [ "$size" == "0" -o "$size" == "" ]; then
+        if [ "$sd_name"="/dev/sda" ]; then
+            if (mount |grep -q $sd_name); then
+                # SD card
+                umount /dev/$sd_name
+                rm -rf /weioUser/sd
+                logger -t DEBUG "hotplug:weio : Unmounted SDCard /dev/$sd_name"
+            fi
+        fi
+    fi
+done
+
+# Clean the usbFlash mount point if the usbFlash has been removed
+devices_idx=0
+for dev in `ls /dev/sd?`;
+do
+	if [ "$dev" != "/dev/sda" ]; then
+		devices_idx=$((devices_idx+1))
+	fi
+done
+if [ $devices_idx == 0 ]; then
+	rm -rf /weioUser/usbFlash
+	logger -t DEBUG "hotplug:weio : Cleaned /weioUser/usbFlash"
+fi
+
