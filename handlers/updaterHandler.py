@@ -134,9 +134,9 @@ class WeioUpdaterHandler(SockJSConnection):
         config = weioConfig.getConfiguration()
 
         data = json.loads(response.body)
-        f = open("github.json", "w")
-        f.write(json.dumps(data, indent=4, sort_keys=True))
-        f.close()
+        # f = open("github.json", "w")
+        # f.write(json.dumps(data, indent=4, sort_keys=True))
+        # f.close()
         #print json.dumps(data, indent=4, sort_keys=True)
         lastUpdate = data[0]
         distantVersion = float(lastUpdate["tag_name"].split("v")[1])
