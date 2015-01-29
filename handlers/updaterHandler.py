@@ -120,24 +120,33 @@ class WeioUpdaterHandler(SockJSConnection):
         if (wifiMode=="sta"):
 
             config = weioConfig.getConfiguration()
-            repository = config["weio_update_repository"]
+            repository = ""
+            print "REPO", config["weio_use_official_repository"]
+            if (config["weio_use_official_repository"] == "YES") :
+                repository = config["weio_update_official_repository"]
+            else :
+                repository = config["weio_update_alternate_repository"]
 
             h = httputil.HTTPHeaders({"Accept" : "application/vnd.github.v3+json","User-Agent" : "weio"})
-            req = httpclient.HTTPRequest(repository, headers=h)
+            req = None
+            if (config["weio_use_official_repository"] == "YES"):
+                req = httpclient.HTTPRequest(repository, headers=h)
+            else :
+                req = httpclient.HTTPRequest(repository)
 
             http_client = httpclient.AsyncHTTPClient()
             http_client.fetch(req, callback=self.checkVersion)
 
     # checking version
     def checkVersion(self, response):
-
+        print response.body
         config = weioConfig.getConfiguration()
 
         data = json.loads(response.body)
-        # f = open("github.json", "w")
-        # f.write(json.dumps(data, indent=4, sort_keys=True))
-        # f.close()
-        #print json.dumps(data, indent=4, sort_keys=True)
+        f = open("github.json", "w")
+        f.write(json.dumps(data, indent=4, sort_keys=True))
+        f.close()
+        print json.dumps(data, indent=4, sort_keys=True)
         lastUpdate = data[0]
         distantVersion = float(lastUpdate["tag_name"].split("v")[1])
 
@@ -271,6 +280,7 @@ class WeioUpdaterHandler(SockJSConnection):
                 self.send(json.dumps(data))
 
     def sizeWatcher(self):
+        print "sizeeee"
         sizeOnDisk = 0
         while (sizeOnDisk<self.fwDownloadSize):
             if os.path.exists(self.fwPath):
