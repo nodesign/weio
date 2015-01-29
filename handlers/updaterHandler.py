@@ -70,6 +70,8 @@ import json
 import hashlib
 import tarfile
 
+import socket
+
 # IMPORT BASIC CONFIGURATION FILE
 from weioLib import weioConfig
 
@@ -104,6 +106,19 @@ class WeioUpdaterHandler(SockJSConnection):
         else :
             self.fwPath = "./weio_recovery.bin"
 
+    def isConnected(self, address):
+        try:
+          # see if we can resolve the host name -- tells us if there is
+          # a DNS listening
+          host = socket.gethostbyname(address)
+          # connect to the host -- tells us if the host is actually
+          # reachable
+          s = socket.create_connection((host, 80), 2)
+          return True
+        except:
+           pass
+        return False
+
     # checkForUpdates is entering point for updater
     # First it will download only update.weio to check if there is need for an update
     # If yes than archive will be downloaded and decompressed
@@ -119,23 +134,29 @@ class WeioUpdaterHandler(SockJSConnection):
 
         if (wifiMode=="sta"):
 
-            config = weioConfig.getConfiguration()
-            repository = ""
-            print "REPO", config["weio_use_official_repository"]
-            if (config["weio_use_official_repository"] == "YES") :
-                repository = config["weio_update_official_repository"]
-            else :
-                repository = config["weio_update_alternate_repository"]
+            if (self.isConnected("we-io.net") or self.isConnected("www.github.com")):
+                config = weioConfig.getConfiguration()
+                repository = ""
+                print "REPO", config["weio_use_official_repository"]
+                if (config["weio_use_official_repository"] == "YES") :
+                    repository = config["weio_update_official_repository"]
+                else :
+                    repository = config["weio_update_alternate_repository"]
 
-            h = httputil.HTTPHeaders({"Accept" : "application/vnd.github.v3+json","User-Agent" : "weio"})
-            req = None
-            if (config["weio_use_official_repository"] == "YES"):
-                req = httpclient.HTTPRequest(repository, headers=h)
-            else :
-                req = httpclient.HTTPRequest(repository)
+                h = httputil.HTTPHeaders({"Accept" : "application/vnd.github.v3+json","User-Agent" : "weio"})
+                req = None
+                if (config["weio_use_official_repository"] == "YES"):
+                    req = httpclient.HTTPRequest(repository, headers=h)
+                else :
+                    req = httpclient.HTTPRequest(repository)
 
-            http_client = httpclient.AsyncHTTPClient()
-            http_client.fetch(req, callback=self.checkVersion)
+                http_client = httpclient.AsyncHTTPClient()
+                http_client.fetch(req, callback=self.checkVersion)
+            else :
+                # not connected to the internet
+                print "NO INTERNET CONNECTION"
+        else :
+            print "NO INTERNET CONNECTION"
 
     # checking version
     def checkVersion(self, response):
@@ -143,10 +164,10 @@ class WeioUpdaterHandler(SockJSConnection):
         config = weioConfig.getConfiguration()
 
         data = json.loads(response.body)
-        f = open("github.json", "w")
-        f.write(json.dumps(data, indent=4, sort_keys=True))
-        f.close()
-        print json.dumps(data, indent=4, sort_keys=True)
+        #f = open("github.json", "w")
+        #f.write(json.dumps(data, indent=4, sort_keys=True))
+        #f.close()
+        #print json.dumps(data, indent=4, sort_keys=True)
         lastUpdate = data[0]
         distantVersion = float(lastUpdate["tag_name"].split("v")[1])
 
@@ -186,7 +207,7 @@ class WeioUpdaterHandler(SockJSConnection):
         if not(self.downloadUpdateLink is None):
             http_client = httpclient.AsyncHTTPClient()
             http_client.fetch(self.downloadUpdateLink, callback=self.downloadComplete)
-        
+
     def downloadComplete(self, binary):
         config = weioConfig.getConfiguration()
 
