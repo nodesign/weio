@@ -313,20 +313,18 @@ class WeioUpdaterHandler(SockJSConnection):
             self.checkForUpdates()
 
     def sizeWatcher(self):
-        print "sizeeee"
-        sizeOnDisk = 0
+        print "sizeeee", self.fwDownloadSize
+        sizeOnDisk = -1
         while (sizeOnDisk<self.fwDownloadSize):
             if os.path.exists(self.fwPath):
                 sizeOnDisk = os.path.getsize(self.fwPath)
-            else :
-                break
-            progress = int((100.0/self.fwDownloadSize)*sizeOnDisk)
-            print "SIZEEEEEE", sizeOnDisk, self.fwDownloadSize, "percent", progress
-            a = {}
-            a['serverPush'] = "downloadingFw"
-            a['data'] = progress
-            self.send(json.dumps(a))
-            sleep(1)
+                progress = int((100.0/self.fwDownloadSize)*sizeOnDisk)
+                print "SIZEEEEEE", sizeOnDisk, self.fwDownloadSize, "percent", progress
+                a = {}
+                a['serverPush'] = "downloadingFw"
+                a['data'] = progress
+                self.send(json.dumps(a))
+                sleep(1)
 
     def on_open(self, info) :
         global clients
