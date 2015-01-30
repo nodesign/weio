@@ -133,7 +133,7 @@ class WeioUpdaterHandler(SockJSConnection):
             wifiMode = "sta" # local setting
 
         if (wifiMode=="sta"):
-
+            data = {}
             if (self.isConnected("we-io.net") or self.isConnected("www.github.com")):
                 config = weioConfig.getConfiguration()
                 repository = ""
@@ -155,8 +155,14 @@ class WeioUpdaterHandler(SockJSConnection):
             else :
                 # not connected to the internet
                 print "NO INTERNET CONNECTION"
+                data['serverPush'] = "noInternetConnection"
+                data['data'] = "Can't reach Internet servers"
+                self.send(json.dumps(data))
         else :
             print "NO INTERNET CONNECTION"
+            data['serverPush'] = "noInternetConnection"
+            data['data'] = "Can't reach Internet servers"
+            self.send(json.dumps(data))
 
     # checking version
     def checkVersion(self, response):
@@ -193,16 +199,20 @@ class WeioUpdaterHandler(SockJSConnection):
                     self.downloadUpdateLink = file["browser_download_url"]
                     self.downloadSize = file["size"]
                     print self.downloadUpdateLink, "size", file["size"]
-
-                if ("weio_recovery.bin" in file["name"]):
-                    print "found weio_recovery"
-                    self.fwDownloadLink = file["browser_download_url"]
-                    self.fwDownloadSize = file["size"]
         else :
             rsp['needsUpdate'] = "NO"
+
+        # You can always reflash with last version even if there are no new updates
+        for file in lastUpdate["assets"]:
+            if ("weio_recovery.bin" in file["name"]):
+                print "found weio_recovery"
+                self.fwDownloadLink = file["browser_download_url"]
+                self.fwDownloadSize = file["size"]
+
         self.send(json.dumps(rsp))
 
     def downloadUpdate(self, rq):
+
         #self.progressInfo("5%", "Downloading WeIO Bundle " + self.distantJsonUpdater["version"])
         if not(self.downloadUpdateLink is None):
             http_client = httpclient.AsyncHTTPClient()
@@ -226,7 +236,7 @@ class WeioUpdaterHandler(SockJSConnection):
 
         # Check is file size is the same as on the server
         sizeOnDisk = os.path.getsize(fileToStoreUpdate)
-
+        print "comparing sizes", sizeOnDisk, self.downloadSize
         if (sizeOnDisk == self.downloadSize):
             # OK
             print "File size is OK"
@@ -299,6 +309,8 @@ class WeioUpdaterHandler(SockJSConnection):
                 a['serverPush'] = "errorDownloading"
                 a['data'] = ""
                 self.send(json.dumps(data))
+        else :
+            self.checkForUpdates()
 
     def sizeWatcher(self):
         print "sizeeee"
