@@ -52,6 +52,8 @@ import os, signal, sys, platform, subprocess, urllib2
 from tornado import web, ioloop, iostream, gen, httpclient, httputil
 sys.path.append(r'./');
 
+import functools
+
 # pure websocket implementation
 #from tornado import websocket
 
@@ -62,7 +64,6 @@ from weioLib import weioConfig
 from weioLib import weioIdeGlobals
 from weioLib import weioUnblock
 
-from threading import Thread
 from time import sleep
 
 import functools
@@ -74,6 +75,8 @@ import socket
 
 # IMPORT BASIC CONFIGURATION FILE
 from weioLib import weioConfig
+
+import urllib2, urllib
 
 clients = set()
 
@@ -197,8 +200,8 @@ class WeioUpdaterHandler(SockJSConnection):
             for file in lastUpdate["assets"]:
                 if ("weio.tar.gz" in file["name"]):
                     self.downloadUpdateLink = file["browser_download_url"]
-                    self.downloadSize = file["size"]
-                    print self.downloadUpdateLink, "size", file["size"]
+                    self.updateDownloadSize = file["size"]
+                    print self.updateDownloadSize, "size", file["size"]
         else :
             rsp['needsUpdate'] = "NO"
 
@@ -211,19 +214,14 @@ class WeioUpdaterHandler(SockJSConnection):
 
         self.send(json.dumps(rsp))
 
-    def downloadUpdate(self, rq):
-
-        #self.progressInfo("5%", "Downloading WeIO Bundle " + self.distantJsonUpdater["version"])
-        if not(self.downloadUpdateLink is None):
-            http_client = httpclient.AsyncHTTPClient()
-            http_client.fetch(self.downloadUpdateLink, callback=self.downloadComplete)
-
-    def downloadComplete(self, binary):
+    @weioUnblock.unblock
+    def downloadUpdate(self, data):
         config = weioConfig.getConfiguration()
 
         # ok now save binary in /tmp (folder in RAM)
         print "downloaded"
 
+        fileToStoreUpdate = ""
         if (platform.machine()=="mips") :
             fileToStoreUpdate = "/tmp/weioUpdate.tar.gz"
             pathToDecompressUpdate = "/tmp"
@@ -231,13 +229,18 @@ class WeioUpdaterHandler(SockJSConnection):
             fileToStoreUpdate = "./weioUpdate.tar.gz"
             pathToDecompressUpdate = "./"
 
-        with open(fileToStoreUpdate, "w") as f:
-               f.write(binary.body)
+        if not(self.downloadUpdateLink is None):
+
+            sw = functools.partial(self.sizeWatcher, fileToStoreUpdate, self.updateDownloadSize)
+            sizeCheckerCallback = ioloop.PeriodicCallback(sw, 500)
+            sizeCheckerCallback.start()
+            self.startDownload(self.downloadUpdateLink, fileToStoreUpdate)
+            sizeCheckerCallback.stop()
 
         # Check is file size is the same as on the server
         sizeOnDisk = os.path.getsize(fileToStoreUpdate)
-        print "comparing sizes", sizeOnDisk, self.downloadSize
-        if (sizeOnDisk == self.downloadSize):
+        print "comparing sizes", sizeOnDisk, self.updateDownloadSize
+        if (sizeOnDisk == self.updateDownloadSize):
             # OK
             print "File size is OK"
             self.progressInfo("50%", "File size OK")
@@ -278,53 +281,84 @@ class WeioUpdaterHandler(SockJSConnection):
         data['info'] = info
         data['estimatedInstallTime'] = self.estimatedInstallTime
         self.send(json.dumps(data))
-        
-    # Get MD5 checksum from file    
+
+    @weioUnblock.unblock
+    def reinstallFw(self, data):
+        if not(self.fwDownloadLink is None):
+            if (self.isConnected("we-io.net") or self.isConnected("www.github.com")):
+                print "will download fw from", self.fwDownloadLink
+
+                sw = functools.partial(self.sizeWatcher, self.fwPath, self.fwDownloadSize)
+                sizeCheckerCallback = ioloop.PeriodicCallback(sw, 1000)
+                sizeCheckerCallback.start()
+                self.startDownload(self.fwDownloadLink, self.fwPath)
+                sizeCheckerCallback.stop()
+                a = {}
+                a['serverPush'] = "downloadingFw"
+                a['data'] = 100
+                self.send(json.dumps(a))
+
+                a = {}
+                a['serverPush'] = "readyToReinstallFw"
+                a['data'] = ""
+                self.send(json.dumps(a))
+
+                sizeOnDisk = os.path.getsize(self.fwPath)
+                print "Size matching", self.fwDownloadSize, sizeOnDisk
+                if (self.fwDownloadSize == sizeOnDisk):
+                    p = subprocess.Popen(["sysupgrade", "-v", "-n", self.fwPath])
+                    print p.communicate()
+                else :
+                    a = {}
+                    a['serverPush'] = "errorDownloading"
+                    a['data'] = ""
+                    self.send(json.dumps(data))
+            else :
+                data = {}
+                data['serverPush'] = "noInternetConnection"
+                data['data'] = "Can't reach Internet servers"
+                self.send(json.dumps(data))
+        else :
+            self.checkForUpdates()
+
+    def startDownload(self, fwUrl, targetFile):
+        print "download init"
+        try:
+            req = urllib2.Request(fwUrl)
+            handle = urllib2.urlopen(req)
+        except urllib2.HTTPError, e:
+            print "Can't download firmware, error code - %s." % e.code
+            return
+        except urllib2.URLError:
+            print "Bad URL for firmware file: %s" % fwUrl
+            return
+        else:
+            print "download starts"
+            urllib.urlretrieve(fwUrl, targetFile)
+            print "download finished"
+
+    def sizeWatcher(self,targetFile, targetSize):
+        sizeOnDisk = 0
+        if os.path.exists(targetFile):
+            sizeOnDisk = os.path.getsize(targetFile)
+            progress = int((100.0/targetSize)*sizeOnDisk)
+            print "percent downloaded", progress
+            a = {}
+            a['serverPush'] = "downloadingFw"
+            a['data'] = progress
+            self.send(json.dumps(a))
+
+    def downloadProgress(self,data):
+        print "progress", data
+
+    # MD5 is not used at this moment
+    # Get MD5 checksum from file
     def getMd5sum(self, filename):
         md5 = hashlib.md5()
         with open(filename,'rb') as f: 
             for chunk in iter(lambda: f.read(128*md5.block_size), b''): 
                  md5.update(chunk)
         return md5.hexdigest()
-
-    @weioUnblock.unblock
-    def reinstallFw(self, data):
-        if not(self.fwDownloadLink is None):
-            self.fwSizeWatcherThread = Thread(target = self.sizeWatcher)
-            self.fwSizeWatcherThread.start()
-            a = {}
-            a['serverPush'] = "readyToReinstallFw"
-            a['data'] = ""
-            self.send(json.dumps(a))
-            p = subprocess.Popen(["curl", "-k", "-L", "-o", self.fwPath, self.fwDownloadLink])
-            print p.communicate()
-            self.fwSizeWatcherThread.join()
-            sizeOnDisk = os.path.getsize(self.fwPath)
-            print "Size matching", self.fwDownloadSize, sizeOnDisk
-            if (self.fwDownloadSize == sizeOnDisk):
-                p = subprocess.Popen(["sysupgrade", "-v", "-n", self.fwPath])
-                print p.communicate()
-            else :
-                a = {}
-                a['serverPush'] = "errorDownloading"
-                a['data'] = ""
-                self.send(json.dumps(data))
-        else :
-            self.checkForUpdates()
-
-    def sizeWatcher(self):
-        print "sizeeee", self.fwDownloadSize
-        sizeOnDisk = -1
-        while (sizeOnDisk<self.fwDownloadSize):
-            if os.path.exists(self.fwPath):
-                sizeOnDisk = os.path.getsize(self.fwPath)
-                progress = int((100.0/self.fwDownloadSize)*sizeOnDisk)
-                print "SIZEEEEEE", sizeOnDisk, self.fwDownloadSize, "percent", progress
-                a = {}
-                a['serverPush'] = "downloadingFw"
-                a['data'] = progress
-                self.send(json.dumps(a))
-                sleep(1)
 
     def on_open(self, info) :
         global clients
@@ -349,4 +383,3 @@ class WeioUpdaterHandler(SockJSConnection):
         global clients
         # Remove client from the clients list and broadcast leave message
         clients.remove(self)
-
