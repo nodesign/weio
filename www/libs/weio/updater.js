@@ -209,7 +209,7 @@ function reinstallFw() {
     var rq = { "request": "reinstallFw"};
     updaterSocket.send(JSON.stringify(rq));
     console.log("reinstall rq sent to server");
-    $("#updaterMessage").html("WeIO is downloading firmware right now. Please don't touch a thing. Once finished application will be closed and installation process will start. Be patient because this procedure can take up to 5 minutes");
+    $("#updaterMessage").html("WeIO is downloading firmware right now. Please don't touch a thing. Once finished downloading, application will be closed and installation process will start. Be patient because this procedure can take up to 5 minutes");
     $("#reloadMeButton").hide();
     $("#updateWeioProcedure").modal("show");
 
