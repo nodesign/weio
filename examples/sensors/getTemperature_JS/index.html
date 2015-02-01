@@ -1,6 +1,7 @@
 <!--###################################
 #                                     #
-#  HOW TO HAVE getTemperatur ON WEIO  #
+#       HOW TO HAVE TEMPERATURE       #
+#        ON THE BOARD ON WEIO         #
 #                                     #
 #######################################
 
@@ -11,35 +12,31 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head >
-	<!-- import weioLibs and link css style --> 
-    <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+<head>
+    <!-- import weioLibs and link css style --> 
+    <script data-main="www/libs/weioLibs" 
+            src="www/libs/require.js"></script>
     <link rel="stylesheet" type="text/css" href="myStyle.css">
 
     <script>
-
-    var light = 0;
-    
-    function onWeioReady() {
-        // Do something every 200ms
-        setInterval(function() {
-        // pinCallback will be called when data arrives from server
-        getTemperature(pinCallback);
-        }, 200);
-    }
-    
-    function pinCallback(callback) {
-        // Update displayed phrase using callback data
-        $("#phrase").html("temperature on the board is "+ callback.data);
-    }
-    
+        function onWeioReady() {
+            // Do something every 200ms
+            setInterval(function() {
+            // pinCallback will be called when data arrives from server
+            getTemperature(pinCallback);
+            }, 200);
+        }
+        
+        function pinCallback(callback) {
+            // Update displayed phrase using callback data
+            $("#phrase").html("TEMPERATURE ON THE BOARD IS "+ 
+                               callback.data);
+        }
     </script>
 </head>
 
 <body>
-    <font>
-        <p id="phrase" ></p>
-    </font>
+    <p id="phrase" ></p>
 </body>
 
 </html>

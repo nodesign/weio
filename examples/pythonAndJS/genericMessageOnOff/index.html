@@ -1,3 +1,15 @@
+<!--###################################
+#                                     #
+#       HOW TO SEND EVENTS FROM       #
+#    JAVASCRIPT TO PYTHON ON WEIO     #
+#                                     #
+#######################################
+
+# Description: write digital values to PINS 18, 19 & 20 (connected to
+  			   RGB LED) when an event is emited from user interface.
+# WeIO functions: genericMessage(eventName, message) 
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,21 +21,15 @@
     <link href="myStyle.css" rel="stylesheet">
 </head>
 
-<script>
-
-    function sendGenericMessage(val) {
-        genericMessage("myEvent",val);
-    }
-
-</script>
-
 <body>
 
-    <div style="background-color:white"
-         onclick="sendGenericMessage(0)"> CLICK HERE TO SEND myEvent(0) TO PYTHON
+    <div style="background-color:white" 
+         onclick='genericMessage("msgFromJStoPy",1)'>             
+         CLICK HERE TO SEND EVENT WITH MESSAGE 1 TO PYTHON
     </div>
-    <div style="background-color:black"
-         onclick="sendGenericMessage(1)"> CLICK HERE TO SEND myEvent(1) TO PYTHON        
+    <div style="background-color:black" 
+         onclick='genericMessage("msgFromJStoPy",0)'>             
+         CLICK HERE TO SEND EVENT WITH MESSAGE 0 TO PYTHON        
     </div>
 
 </body>
