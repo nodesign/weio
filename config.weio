@@ -16,7 +16,7 @@
         "weioMain.py"
     ], 
     "last_opened_project": "www/examples/digital/digitalWrite_JS", 
-    "login_required": "NO", 
+    "login_required": "YES", 
     "password": "weio", 
     "play_composition_on_server_boot": "NO", 
     "port": 8080, 
