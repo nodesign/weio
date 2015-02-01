@@ -133,12 +133,7 @@ if __name__ == "__main__":
     res = detect.detect()
     time.sleep(3)
 
-    if res:    
-        t = testUI(res)
-        while config["first_time_run"] == "YES":    
-            t.display_result()
-        t.stop()
-    else:
+    if not res:
         print "LPC not found !"
         import ledBlink as led
         while config["first_time_run"] == "YES":    
