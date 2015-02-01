@@ -121,6 +121,7 @@
             <h5 id="error" style="color:red"></h5>
             
             <div class="control-group">
+            <h6 style="color:gray"><p>These informations will be stored on your WeIO board and will never be sent to any extern server</p> </h6>
             <label class="control-label" for="fullName">Full name</label>
                 <div class="controls">
                 <input  id="fullName"
@@ -135,7 +136,9 @@
 
             
             <div class="control-group">
-            <label class="control-label" for="password">Developer password</label>
+            
+            <label class="control-label" for="password">Password</label>
+            <h6 style="color:gray"><p>This will be your main password for all WeIO services (login, ssh and samba)</p></h6>
                 <div class="controls">
                 <input  id="password"
                         type="password"
@@ -162,7 +165,8 @@
             
 
             <div class="control-group">
-            <label class="control-label" for="hostname">WeIO board name</label>
+            <label class="control-label" for="hostname">WeIO network board name</label>
+            <h6 style="color:gray"><p>This will be name of your WeIO board in the network (Bonjour service). Example name "weio" will be called with http://weio.local in your browser</p></h6>
             <input  id="hostname"
                     type="text"
                     name="boardname"
@@ -175,8 +179,9 @@
 
             <div class="control-group">
             <label class="control-label" for="hostname">Time zone</label>
+            <h6 style="color:gray"><p>WeIO gets accurate time from the Internet services but needs to know for your time zone</p></h6>
+            <p class="help-block"><a href="http://en.wikipedia.org/wiki/List_of_UTC_time_offsets" target="_blank">What   is my time zone ?</a></p>
             <select id="timezones" name="timezone"></select>
-            <p class="help-block"><a href="http://en.wikipedia.org/wiki/List_of_UTC_time_offsets" target="_blank">What   is my time zone ?</1></p>
             <small id="timezone-msg" style="display:none;color:red">Timezone will be changed on next system boot.</small>
             </div>
             
@@ -184,8 +189,8 @@
             <label class="control-label" for="country">Choose country</label>
             <select id="countries"></select>
            -->
-
-            <div class="form-actions">
+                <label class="control-label" for="hostname">We are almost there</label>
+                <h6 style="color:gray"><p>Now you will be redirected to WeIO IDE. Remember you will find WeIO IDE on port 8080 (example : http://weio.local:8080). All your applications will be served on standard http port 80 (example : http://weio.local)</p></h6>
                 <button type="submit" class="btn btn-large btn-primary">Finish setup</button>
             </div>
 
