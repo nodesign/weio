@@ -260,6 +260,7 @@ class WeioUpdaterHandler(SockJSConnection):
             weioConfig.saveConfiguration(config)
             #self.progressInfo("81%", "WeIO installing")
             # Now quit Tornado and leave script to do his job
+            ioloop.IOLoop.instance().stop()
             exit()
 
         else :
