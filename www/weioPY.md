@@ -217,6 +217,56 @@ def myProcess():
     noTone(23)
 ```
 
+Interrupts
+----
+Interrupts allow to execute code when the state of an IO is changed without the need to continuously watch its state. WeIO allows upto eight, user defined, interrupts sources.
+Interrupts can be trigged on levels (HIGH or LOW) or transitions (RISING, FALLING, CHANGE). 
+
+### attachInterrupt(pin, mode, callback, obj)
+*attachInterrupt* register and configure the interrupts. This function takes four parameters :
+* pin : The pin number which will generate an interrupt
+* mode : The mode : LOW; HIGH; CHANGE; RISING or FALLING
+* callback : The callback function to execute when an interrupt occurs
+* obj : A user defined object which will be passed to the callback function.
+
+```python
+from weioLib.weio import *
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    attachInterrupt(5, RISING, myCallback, "myObj")
+    while True: delay(100)
+    
+def myCallback(event,obj):
+    print "* INTERRUPT *"
+    eventType = getInterruptType(event["type"])
+    print eventType, "User object : ", obj
+```
+
+### detachInterrupt(pin)
+This function detach the interrupt on the specified *pin*.
+```python
+from weioLib.weio import *
+
+def setup():
+    attach.process(myProcess)
+    
+def myProcess():
+    pin = 5
+    attachInterrupt(pin, RISING, myCallback, "myObj")
+    print "An interrupt is attached on pin ", pin
+    detachInterrupt(pin)
+    print "and is now detached from pin ", pin
+    while True: delay(100)
+
+def myCallback(event,obj):
+    print "* INTERRUPT *"
+    eventType = getInterruptType(event["type"])
+    print eventType, "User object : ", obj
+```
+
 Time
 ----
 ### millis()
