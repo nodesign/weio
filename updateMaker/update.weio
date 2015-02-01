@@ -1,9 +1,9 @@
 {
-    "description": "75", 
+    "description": "80", 
     "install_duration": "local", 
     "kill_flag": "NO", 
-    "md5": "09193e69fb51db9888e17b4e216fdb52", 
+    "md5": "fb631e5f41cf733aed493b0f9a60a359", 
     "url": "https://api.github.com/repos/nodesign/weio/releases/weio.tar.gz", 
-    "version": "0.2", 
+    "version": "0.0", 
     "whatsnew": "<h3>WeIO Releases :</h3>\n<br>\n0.12 Bug fixes in architecture and design<br>\n<br>\n0.11 Bug fixes in architecture and design<br>\n"
 }

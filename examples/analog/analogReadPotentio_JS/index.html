@@ -1,102 +1,88 @@
+<!--###################################
+#                                     #
+#     DISPLAY ANALOGREAD VALUE AS     #
+#       A POTENTIOMETER ON WEIO       # 
+#           USER INTERFACE            #
+#                                     #
+#######################################
+
+# syntax = analogRead(pin,callback)
+# Value returned is in callback function
+# the value is between 0 and 1023
+# analog pin are between pin 31 and pin 24
+--> 
+
 <!DOCTYPE html>
 <html lang="en">
 
-<script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
-<script src="www/libs/chartJS/Chart.min.js"></script>
-
-
-  <head >
-    <title>My first Web app</title>
-    <style>
-        body {
-          background:black;
-        }
-        font {
-           font-family:Helvetica;
-           font-size:100px;
-           font-weight:bold;
-           text-transform:uppercase;
-           color:white;
-        }
-        p {
-           color:#5dddf6;
-           cursor:pointer;
-           margin-left:100px;
-           line-height:1em;
-        }
-        
-    </style>
-
+<head>
+	<!-- Import weioLibs and Chart lib -->
+    <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+    <script src="www/libs/chartJS/Chart.min.js"></script>
+    <!-- Link css style -->
+    <link rel="stylesheet" type="text/css" href="myStyle.css">
+	
     <script>
+    
+        var potar;
+		
+		// Function called when the DOM and websocket to WeIO are fully opened
+        function onWeioReady() {
+            // Create potentiometer
+            potar = new Chart(document.getElementById("potar")
+                                      .getContext("2d"));
+            setInterval(function(){analogRead(25, fromAdc)}, 100);
+        }
+    
+        function fromAdc(data) {
+            // update displayed data
+            $("#phrase").html(data.data);
+            // update potentiometer value
+            var pieData = [
+            	{
+            		value: data.data,
+            		color:"#5dddf6"
+            	},
+            	{
+            		value : 1023-data.data,
+            		color : "#000000"
+            	}
+            ];
+            // set potentiometer value
+            potar.Pie(pieData,potarDefs);
+        }
         
-    var potar;
-    var chartPotar;
-    
-    function onWeioReady() {
-       potar = new Chart(document.getElementById("potar").getContext("2d"));
-       setInterval(function(){analogRead(25, fromAdc)}, 100);
-    }
-
-    
-    function fromAdc(data) {
-        //console.log("Hello from adc", data);
-        $(phrase).html(data);
-        $("body").css("background","black");
-        $("#phrase").css("color","white");
-        
-        pieData = [
-        	{
-        		value: data,
-        		color:"#5dddf6"
-        	},
-        	{
-        		value : 1023-data,
-        		color : "#000000"
-        	}
-        ];
-        
-        chartPotar = potar.Pie(pieData,potarDefs);
-    }
-    
-    var potarDefs = {
-    	//Boolean - Whether we should show a stroke on each segment
-    	segmentShowStroke : true,
-    	
-    	//String - The colour of each segment stroke
-    	segmentStrokeColor : "#fff",
-    	
-    	//Number - The width of each segment stroke
-    	segmentStrokeWidth : 1,
-    	
-    	//Boolean - Whether we should animate the chart	
-    	animation : false,
-    	
-    	//Number - Amount of animation steps
-    	animationSteps : 100,
-    	
-    	//String - Animation easing effect
-    	animationEasing : "easeOutBounce",
-    	
-    	//Boolean - Whether we animate the rotation of the Pie
-    	animateRotate : true,
-    
-    	//Boolean - Whether we animate scaling the Pie from the centre
-    	animateScale : false,
-    	
-    	//Function - Will fire on animation completion.
-    	onAnimationComplete : null
-    }
+        // Define potentiometer parameters
+        var potarDefs = {
+        	//Boolean - Whether we should show a stroke on each segment
+        	segmentShowStroke : true,
+        	//String - The colour of each segment stroke
+        	segmentStrokeColor : "#fff",
+        	//Number - The width of each segment stroke
+        	segmentStrokeWidth : 1,
+        	//Boolean - Whether we should animate the chart	
+        	animation : false,
+        	//Number - Amount of animation steps
+        	animationSteps : 100,
+        	//String - Animation easing effect
+        	animationEasing : "easeOutBounce",
+        	//Boolean - Whether we animate the rotation of the Pie
+        	animateRotate : true,
+        	//Boolean - Whether we animate scaling the Pie from the centre
+        	animateScale : false,
+        	//Function - Will fire on animation completion.
+        	onAnimationComplete : null
+        }
     
     </script>
-  </head>
+    
+</head>
 
-  <body>
-
-    <font>
+<body>
+    <div style="text-align: center">
         <canvas id="potar" width="400" height="400"></canvas>
         <p id="phrase"></p>
-    </font>
-
-  </body>
+    </div>
+</body>
+  
 </html>
-   
