@@ -15,9 +15,9 @@
         "index.html", 
         "weioMain.py"
     ], 
-    "last_opened_project": "www/flash/pyToJs", 
+    "last_opened_project": "www/examples/digital/digitalWrite_JS", 
     "login_required": "NO", 
-    "password": "", 
+    "password": "weio", 
     "play_composition_on_server_boot": "NO", 
     "port": 8080, 
     "remote": "", 
@@ -28,6 +28,6 @@
     "weio_lib_path": "weioLib", 
     "weio_update_alternate_repository": "http://we-io.net/downloads/updates.json", 
     "weio_update_official_repository": "https://api.github.com/repos/nodesign/weio/releases", 
-    "weio_use_official_repository": "NO", 
-    "weio_version": "0.0"
+    "weio_update_use_official_repository": "YES", 
+    "weio_version": "0.3"
 }

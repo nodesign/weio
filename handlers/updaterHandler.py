@@ -140,15 +140,15 @@ class WeioUpdaterHandler(SockJSConnection):
             if (self.isConnected("we-io.net") or self.isConnected("www.github.com")):
                 config = weioConfig.getConfiguration()
                 repository = ""
-                print "REPO", config["weio_use_official_repository"]
-                if (config["weio_use_official_repository"] == "YES") :
+                print "REPO", config["weio_update_use_official_repository"]
+                if (config["weio_update_use_official_repository"] == "YES") :
                     repository = config["weio_update_official_repository"]
                 else :
                     repository = config["weio_update_alternate_repository"]
 
                 h = httputil.HTTPHeaders({"Accept" : "application/vnd.github.v3+json","User-Agent" : "weio"})
                 req = None
-                if (config["weio_use_official_repository"] == "YES"):
+                if (config["weio_update_use_official_repository"] == "YES"):
                     req = httpclient.HTTPRequest(repository, headers=h)
                 else :
                     req = httpclient.HTTPRequest(repository)
