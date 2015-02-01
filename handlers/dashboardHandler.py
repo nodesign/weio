@@ -381,7 +381,7 @@ class WeioDashBoardHandler(SockJSConnection):
         folders = weioFiles.listOnlyFolders("www/examples")
 
         if len(folders) > 0 :
-         config["last_opened_project"] = "www/examples/" + folders[0]
+         config["last_opened_project"] = ""
          weioConfig.saveConfiguration(config)
 
          data['data'] = "reload page"
