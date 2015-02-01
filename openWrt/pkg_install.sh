@@ -20,4 +20,6 @@
 ./scripts/feeds install madplay
 ./scripts/feeds install alsa-lib
 ./scripts/feeds install alsa-utils
-./scripts/feeds install curl
+./scripts/feeds install cython
+./scripts/feeds install gevent
+

@@ -1900,7 +1900,6 @@ CONFIG_PACKAGE_python=y
 CONFIG_PACKAGE_python-base=y
 CONFIG_PACKAGE_python-greenlet=y
 # CONFIG_PACKAGE_python-smbus is not set
-# CONFIG_PACKAGE_pyyaml is not set
 
 #
 # Libraries
@@ -1957,6 +1956,8 @@ CONFIG_PACKAGE_libcap=y
 # CONFIG_PACKAGE_libcharset is not set
 # CONFIG_PACKAGE_libconfig is not set
 CONFIG_PACKAGE_libdaemon=y
+CONFIG_PACKAGE_libdb47=y
+# CONFIG_PACKAGE_libdb47xx is not set
 CONFIG_PACKAGE_libdbus=y
 # CONFIG_PACKAGE_libevent2 is not set
 # CONFIG_PACKAGE_libevent2-core is not set
@@ -2009,6 +2010,7 @@ CONFIG_PACKAGE_libuci-lua=y
 # CONFIG_PACKAGE_libustream-polarssl is not set
 # CONFIG_PACKAGE_libuuid is not set
 # CONFIG_PACKAGE_libv4l is not set
+CONFIG_PACKAGE_libxml2=y
 # CONFIG_PACKAGE_linux-atm is not set
 CONFIG_PACKAGE_terminfo=y
 # CONFIG_PACKAGE_uclibcxx is not set
