@@ -1,15 +1,6 @@
 #!/usr/bin/python -u
 import sys, os, glob, logging, platform, json, signal, datetime
 sys.path.append(os.getcwd())
-from IoTPy.core.gpio import GPIO
-from weioLib import weioGpio
-from weioLib import weioRunnerGlobals
-from weioLib import weioParser
-from weioLib import weioUserApi
-from weioLib import weioGpio
-from weioLib import weioIO
-from weioLib import weioConfig
-from IoTPy.pyuper.utils import IoTPy_APIError, errmsg
 import time
 
 # This class detect if the LPC is shown on the USB bus
