@@ -221,7 +221,7 @@ function updateNetworkData() {
 
 function reponse_msg(data) {
     if(data.data == msg_success){
-        $("body").find("#reponseMsg").append("<div class='alert alert-message alert-success'>Bord settings successfully saved!</div>").hide().slideToggle( "slow" );
+        $("body").find("#reponseMsg").append("<div class='alert alert-message alert-success'>Board settings successfully saved!</div>").hide().slideToggle( "slow" );
     } else {
         $("body").find("#reponseMsg").append("<div class='alert alert-message alert-error'>Oops something went wrong!</div>").hide().slideToggle( "slow" );
     }
