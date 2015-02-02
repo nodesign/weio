@@ -10,7 +10,6 @@ from weioLib import weioGpio
 from weioLib import weioIO
 from weioLib import weioConfig
 from IoTPy.pyuper.utils import IoTPy_APIError, errmsg
-
 import time
 
 # This class detect if the LPC is shown on the USB bus
@@ -72,63 +71,8 @@ class Detector:
         time.sleep(.2)
         return 1
         
-# This class will perform the test of all GPIOs
-class GPIOTest:
-    def __init__(self):
-        self.g = weioGpio.WeioGpio()
-        
-        self.test_gpio()
-        
-        self.g.stop()
-            
-    def test_gpio(self):
-        # Put all the GPIO to 1 via their pullup resistor
-        # and control that they are read as 1
-        for i in range(32):
-            self.g.pinMode(i, GPIO.PULL_UP)
-            a = self.g.digitalRead(i)
-            if not a:
-                print "Error : short with the ground on pin %d"%i
-        
-        # Put all the GPIO to 0 via their pulldown resistor
-        # and control that they are read as 0
-        for i in range(32):
-            self.g.pinMode(i, GPIO.PULL_DOWN)
-            # The RGB LED will give inacurate results here, so pin 18, 19 and 20 are skipped
-            if not i in [18, 19, 20]: 
-                a = self.g.digitalRead(i)
-                if a:
-                    print "Error : short with a supply on pin %d"%i
-                
-        # Turn all the GPIO, one by one, to 1 and control tht the other pins stays to 0
-        for i in range(32):
-            self.g.pinMode(i, GPIO.PULL_UP)
-            for j in range(32):
-                if not j in [i, 18, 19, 20]:
-                    a = self.g.digitalRead(j)
-                    if a:
-                        print "Error : short between pin %d and %d" %(i, j)
-            self.g.pinMode(i, GPIO.PULL_DOWN)
-
-# This class will perform the test of all GPIOs
-class testUI:
-    def __init__(self, result):
-        self.g = weioGpio.WeioGpio()
-    
-    def stop(self): 
-        self.g.stop()
-            
-    def display_result(self):
-        self.g.pinMode(19, GPIO.OUTPUT)
-        self.g.digitalWrite(19, GPIO.LOW)
-        time.sleep(.5)
-        self.g.digitalWrite(19, GPIO.HIGH)
-        time.sleep(.5)
-
 if __name__ == "__main__":
-    config = weioConfig.getConfiguration()                                             
-
-    ### First test : Detect the LPC
+    ### Detect the LPC
     detect = Detector()
     res = detect.detect()
     time.sleep(3)
@@ -136,8 +80,6 @@ if __name__ == "__main__":
     if not res:
         print "LPC not found !"
         import ledBlink as led
-        while config["first_time_run"] == "YES":    
+        while True:
             led.blink(.1)
 
-    ### Second test : Test the GPIOs
-    #gpio = GPIOTest()
