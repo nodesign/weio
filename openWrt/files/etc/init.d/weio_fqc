@@ -1,0 +1,28 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006 OpenWrt.org
+
+START=99
+
+start() {
+    echo "Launching WeIO FQC"
+    cd /weio
+    python scripts/weioFQC.py&
+}
+
+stop() {
+    echo "Stopping WeIO FQC"
+
+    # Trick for avoiding grep to show in ps command:
+    # http://stackoverflow.com/questions/9375711/more-elegant-ps-aux-grep-v-grep
+    # http://www.perlmonks.org/bare/?node_id=203760
+    if [ -n "$(ps | grep  "[w]eioFQC.py")" ]; then
+        PID=`ps | grep  "[w]eioFQC.py" | awk '{print $1}'`
+        kill -9 $PID
+    fi
+}
+
+restart() {
+    stop
+    start
+}
+
