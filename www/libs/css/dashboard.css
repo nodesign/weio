@@ -173,7 +173,7 @@ body {
 .navbar-inner .container .dropdown-menu a {
   color: #333333;
   text-shadow: none;
-  line-height: 22px;
+  line-height: 40px;
   padding: 0 18px;
 }
 .navbar-inner .container .dropdown-menu a:hover {
