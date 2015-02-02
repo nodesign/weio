@@ -7,24 +7,25 @@ There are two ways to bring electricity to the board : using wires from DC trans
 Choose from available networks on your computer "WeIO MACADDRESSNUMBER" and type inside your web browser http://weio.local:8080 address. This will prompt you the signup screen. If this address don't work it's possible that you don't have support for Bonjour on your machine. However you can always type http://10.0.0.1:8080 and get in WeIO.
 After initial sign up into WeIO, everything is ready. WeIO application is always on port 8080 and user application will be on the stantard http port 80.
 
+### Connect to WeIO and First Time Setup
+After WeIO has been plugged to electricity and AP LED diode is lit up it's possible to connect to it's own WiFi.
+Choose from available networks on your computer "WeIO rescue" and type inside your web browser http://weio.local:8080 address.
+This will prompt you the signup screen. If this address don't work it's possible that you don't have support for Bonjour on your machine.
+However you can always type http://10.0.0.1:8080 and get in WeIO. If this problem persists, just click on the button "Soft Reset" on the board.
+
+Please fill in all fields. After setting up root password two additional services will be created : SSH access and SAMBA access. 
+
+WeIO IDE environnement is now present on the screen. The next thing to do is to connect WeIO to your local WiFi network or so called STA network.
+
+Feel free to explore WeIO WiFi configurator and try to create your own networks or to connect to existants. Once WeIO connected to Internet it will update it's local time and date, updates will be accessibles and other objects or services on the network can be directly accessed.
+
 WeIO in the network
 -------------------
-
-### Bonjour
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-### Access point
-10.0.0.1 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-### SSH access
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-### SAMBA sharing
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-WeIO applications
------------------
-### WeIO IDE
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-### WeIO user App
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+### SSH server
+WeIO is available over ssh connection using root as username. Password is the same one provided during signup procedure
+```shell
+ssh root@weio.local
+```
+### Samba server
+WeIO is available over SMB or Samba sharing. This is used to explore contents of your projects or sources of WeIO platform. This is also  useful for transfering or backuping data between PC and WeIO board. Those who prefer using their own developement tools are welcome using SMB so they can edit codes externally from their prefered IDE.
+SAMBA sharing can be accesed using "weio" as username and password is the same one provided during signup procedure.

@@ -10,7 +10,6 @@
 ./scripts/feeds install python
 ./scripts/feeds install avahi-daemon
 ./scripts/feeds install ntpd
-./scripts/feeds install motion
 ./scripts/feeds install mjpg-streamer
 ./scripts/feeds install fswebcam
 ./scripts/feeds install libv4l
@@ -20,3 +19,6 @@
 ./scripts/feeds install madplay
 ./scripts/feeds install alsa-lib
 ./scripts/feeds install alsa-utils
+./scripts/feeds install cython
+./scripts/feeds install gevent
+

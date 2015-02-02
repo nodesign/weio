@@ -1,8 +1,6 @@
 p {
-    cursor:pointer;
-    margin:0.2em;
-    line-height:1em;
-    font-family:Helvetica;
-    font-size:100px;
+    font-family: Helvetica;
+    font-size: 15vmin;
     font-weight:bold;
+    text-align: center
 }
