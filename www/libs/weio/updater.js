@@ -61,6 +61,7 @@ var estimatedInstallTime = 0;
 
 var updaterChart;
 
+var connectedToInternet = false;
 /**
  * Global configuration
  */
@@ -206,12 +207,17 @@ function reloadMe() {
 }
 
 function reinstallFw() {
-    var rq = { "request": "reinstallFw"};
-    updaterSocket.send(JSON.stringify(rq));
-    console.log("reinstall rq sent to server");
-    $("#updaterMessage").html("WeIO is downloading firmware right now. Please don't touch a thing. Once finished downloading, application will be closed and installation process will start. Be patient because this procedure can take up to 5 minutes");
-    $("#reloadMeButton").hide();
-    $("#updateWeioProcedure").modal("show");
+
+    if (connectedToInternet) {
+        var rq = { "request": "reinstallFw"};
+        updaterSocket.send(JSON.stringify(rq));
+        console.log("reinstall rq sent to server");
+        $("#updaterMessage").html("WeIO is downloading firmware right now. Please don't touch a thing. Once finished downloading, application will be closed and installation process will start. Be patient because this procedure can take up to 5 minutes");
+        $("#reloadMeButton").hide();
+        $("#updateWeioProcedure").modal("show");
+    } else {
+        $("#noInternet").modal("show");
+    }
 
 }
 
@@ -237,6 +243,11 @@ function reinstallFwCounter() {
     console.log("go to black!");
 }
 
+function noInternet() {
+    connectedToInternet = false;
+    //$("#noInternet").modal("show");
+}
+
 //CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * Define callbacks here and request keys
@@ -246,19 +257,22 @@ var callbacksUpdater = {
     "checkVersion": checkVersion,
     "updateProgress" : updateProgressBar,
     "readyToReinstallFw" : reinstallFwCounter,
-    "downloadingFw": downloadProgressFw
+    "downloadingFw": downloadProgressFw,
+    "noInternetConnection": noInternet
 };
 
+var modalIsPopulated = false;
 function checkVersion(data) { 
     
     console.log("Local version is : " + data.localVersion);
     console.log("WeIO repository version is : " + data.distantVersion); 
     console.log("WeIO needs un update : " + data.needsUpdate);
     
-    
+    modalIsPopulated = true;
+    connectedToInternet = true;
     if (data.needsUpdate=="YES") {
         console.log("WeIO install duration in s will be : " + data.install_duration);
-        
+        needsUpdate = true;
         $("#needsUpdateStatus").html("Install new update");
         
         $("#updateButton").html("Update WeIO");
@@ -277,7 +291,7 @@ function checkVersion(data) {
         estimatedInstallTime = data.install_duration;
         
     } else {
-        
+        needsUpdate = false;
         $("#needsUpdateStatus").html("WeIO version is up to date");
         $("#updateButton").html("OK");
         $("#updateWeioData").html("Your current version " + data.localVersion + " is up to date!");
@@ -285,6 +299,13 @@ function checkVersion(data) {
     }
     
 };
+
+function bringUpdater(){
+    if (modalIsPopulated) {
+        $("#updateWeio").modal("show");
+    }
+}
+
 
 var defs = {
     //Boolean - Whether we should show a stroke on each segment

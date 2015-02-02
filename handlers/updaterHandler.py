@@ -93,7 +93,7 @@ class WeioUpdaterHandler(SockJSConnection):
             'downloadUpdate' : self.downloadUpdate,
             'reinstallFw' : self.reinstallFw
         }
-        
+
         self.downloadTries = 0
         self.estimatedInstallTime = 80
 
