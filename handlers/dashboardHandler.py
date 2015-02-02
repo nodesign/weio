@@ -48,7 +48,7 @@
 ###
 
 
-import os, signal, sys, platform, subprocess, datetime
+import os, signal, sys, platform, subprocess, datetime, shutil
 from os.path import isfile, join
 
 from tornado import web, ioloop, iostream, gen
@@ -325,7 +325,10 @@ class WeioDashBoardHandler(SockJSConnection):
         if (len(path)>0):
             if (storage != "sd" and storage != "usbFlash"):
                 # Destroy symlink
-                os.remove(config["last_opened_project"]+"/www")
+                if os.path.islink(config["last_opened_project"]+"/www"):
+                    os.remove(config["last_opened_project"]+"/www")
+                else:
+                    shutil.rmtree(config["last_opened_project"]+"/www")
                 # copy all files
                 try:
                     copytree(config["last_opened_project"], path)
@@ -340,7 +343,7 @@ class WeioDashBoardHandler(SockJSConnection):
 
             if (storage != "sd" and storage != "usbFlash"):
                 # Recreate symlink
-                os.symlink(config["absolut_root_path"] + "/www/", config["last_opened_project"] + "/www")
+                os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
             else:
                 if not (os.path.exists(path + "/www")):
                     copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples', 'usbFlash'))
