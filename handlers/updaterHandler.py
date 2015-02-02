@@ -103,7 +103,7 @@ class WeioUpdaterHandler(SockJSConnection):
         self.fwDownloadLink = None
         self.fwDownloadSize = None
         self.fwSizeWatcherThread = None
-        
+
         if (platform.machine()=="mips") :
             self.fwPath = "/tmp/weio_recovery.bin"
         else :
@@ -231,11 +231,11 @@ class WeioUpdaterHandler(SockJSConnection):
 
         if not(self.downloadUpdateLink is None):
 
-            #sw = functools.partial(self.sizeWatcher, fileToStoreUpdate, self.updateDownloadSize)
-            #sizeCheckerCallback = ioloop.PeriodicCallback(sw, 500)
-            #sizeCheckerCallback.start()
+            sw = functools.partial(self.sizeWatcher, fileToStoreUpdate, self.updateDownloadSize)
+            sizeCheckerCallback = ioloop.PeriodicCallback(sw, 500)
+            sizeCheckerCallback.start()
             self.startDownload(self.downloadUpdateLink, fileToStoreUpdate)
-            #sizeCheckerCallback.stop()
+            sizeCheckerCallback.stop()
 
         # Check is file size is the same as on the server
         sizeOnDisk = os.path.getsize(fileToStoreUpdate)

@@ -222,8 +222,8 @@ function reinstallFw() {
 }
 
 function downloadProgressFw(data) {
-
     var percent = parseInt(data.data);
+
     var updateData = [
                    // Chart
                    {
@@ -237,6 +237,7 @@ function downloadProgressFw(data) {
                    ];
 
     updaterChart.Doughnut(updateData, defs);
+    $("#progressStatus").html("Downloading WeIO " + String(percent) + "%");
 }
 
 function reinstallFwCounter() {
