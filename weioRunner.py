@@ -1,20 +1,20 @@
 #!/usr/bin/python -u
 
-### 
+###
 #
 # WEIO Web Of Things Platform
 # Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
 # All rights reserved
 #
-#               ##      ## ######## ####  #######  
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ######    ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
+#               ##      ## ######## ####  #######
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ######    ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
 #                ###  ###  ######## ####  #######
 #
-#                    Web Of Things Platform 
+#                    Web Of Things Platform
 #
 # This file is part of WEIO and is published under BSD license.
 #
@@ -43,7 +43,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Authors : 
+# Authors :
 # Uros PETREVSKI <uros@nodesign.net>
 # Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 #
@@ -105,14 +105,15 @@ class WeioIndexHandler(web.RequestHandler):
         #print firstTimeSwitch
 
         if (firstTimeSwitch=="YES") :
-           path = "www/firstTime.html"
+            path = "www/signin.html"
         else :
-            if (weioFiles.checkIfFileExists(confFile['last_opened_project'] + "/index.html")):
-                path = "www/userIndex.html"
+            path = "www/userIndex.html"
+            
+            #if (weioFiles.checkIfFileExists(confFile['last_opened_project'] + "/index.html")):
+            #    path = "www/userIndex.html"
 
-            else :
-                path = "www/error404.html"
-
+            #else :
+            #    path = "www/error404.html"
         #path = confFile['last_opened_project'] + "index.html"
 
         self.render(path, error="")
@@ -287,9 +288,7 @@ class UserControl():
         while (True):
             # Get the command from userTornado (blocking)
             msg = self.qIn.get()
-
             #print "*** GOT THE COMMAND: ", msg.req
-
             # Execute the command
             msg.res = None
             if msg.req in weioParser.weioSpells or msg.req in weioParser.weioUserSpells:
@@ -325,7 +324,7 @@ def listenerThread():
         #print "GOT MSG: ", msg
         if (msg.res is not None):
             #print "MESSAGE", msg.req, msg.res, msg.data, msg.connUuid
-            if (msg.connUuid in weioRunnerGlobals.weioConnections):
+            if (msg.connUuid in weioRunnerGlobals.weioConnections or msg.connUuid == "all"):
                 result = {}
 
                 if (msg.callbackJS is not None):
@@ -333,9 +332,17 @@ def listenerThread():
                     result["data"] = msg.res
                     #print "RESULT",result
                     if (weioRunnerGlobals.remoteConnected.value == True):
-                        weioRunnerGlobals.weioConnections[msg.connUuid].write_message(json.dumps(result))
+                        if (msg.connUuid == "all"):
+                            for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
+                                weioRunnerGlobals.weioConnections[connUuid].send(json.dumps(result))
+                        else:
+                            weioRunnerGlobals.weioConnections[msg.connUuid].write_message(json.dumps(result))
                     else:
-                        weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
+                        if (msg.connUuid == "all"):
+                            for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
+                                weioRunnerGlobals.weioConnections[connUuid].send(json.dumps(result))
+                        else:
+                            weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
 
 class WeioRemote():
     conn = None
@@ -393,9 +400,20 @@ if __name__ == '__main__':
     ###
     # Initialize global USER API instances
     ###
+    m = multiprocessing.Manager()
     weioUserApi.attach =  weioUserApi.WeioAttach()
-    weioUserApi.shared =  weioUserApi.WeioSharedVar()
+    #weioUserApi.shared =  weioUserApi.WeioSharedVar()
     weioUserApi.console =  weioUserApi.WeioPrint()
+
+    manager = multiprocessing.Manager()
+    weioUserApi.sharedVar = manager.dict()
+
+    # weioMsg
+    weioUserApi.weioServerMsg = weioUserApi.WeioServerMsg(weioRunnerGlobals.QIN, weioRunnerGlobals.userAgentMessage())
+
+    # weioConnUuids
+    weioRunnerGlobals.weioConnUuids = manager.list()
+    weioUserApi.weioConns = weioRunnerGlobals.weioConnUuids
 
     confFile = weioConfig.getConfiguration()
     # set python working directory

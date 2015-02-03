@@ -1,0 +1,151 @@
+<!--###################################
+#                                     #
+#      WEB APPLICATION ON WEIO:       #
+#       CONTROL PANEL CREATOR         #
+#                                     #
+####################################-->
+  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- include weioLibs and link css style -->
+    <script data-main="www/libs/weioLibs" 
+            src="www/libs/require.js"></script>
+    <link href="myStyle.css"
+          rel="stylesheet" />
+    <!-- include jquery-2.0.2 -->
+    <script src="www/libs/jquery/jquery-2.0.2.min.js"></script>
+    <!-- include bootstrap 3.3.0 css & js -->
+    <link href="www/libs/bootstrap-3.3.0/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <script src="www/libs/bootstrap-3.3.0/js/bootstrap.min.js"></script>
+    <!-- Define JavaScript functions -->
+    <script src="creator.js" ></script>
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+     
+      <!-- add weio logo using navbar-header class -->
+       <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <img src="www/img/weioLogo.png" alt="">
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content 
+             for toggling -->
+        <div class="collapse navbar-collapse" 
+             id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+          
+            <li class="dropdown">
+                <a href="#" 
+                   class="dropdown-toggle" 
+                   data-toggle="dropdown" 
+                   role="button" 
+                   aria-expanded="false"> digitalRead
+                   <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" id="drModules"></ul>
+            </li>
+          
+            <li class="dropdown">
+                <a href="#" 
+    			   class="dropdown-toggle" 
+    			   data-toggle="dropdown" 
+    			   role="button" 
+    			   aria-expanded="false"> digitalWrite
+    			   <span class="caret"></span>
+    			</a>
+                <ul class="dropdown-menu" id="dwModules"></ul>
+            </li>
+          
+            <li class="dropdown">
+                <a href="#" 
+                   class="dropdown-toggle" 
+                   data-toggle="dropdown" 
+                   role="button" 
+                   aria-expanded="false"> analogRead 
+                   <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" id="arModule"></ul>
+            </li>
+          
+            <li class="dropdown">
+                <a href="#" 
+                   class="dropdown-toggle" 
+                   data-toggle="dropdown" 
+                   role="button" 
+                   aria-expanded="false"> pwmWrite
+                   <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" id="pwModule"></ul>
+            </li>
+          
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container-fluid -->
+    </nav>
+    
+<script>
+
+    // Create digitalRead dropdown-submenu 
+    for (var i=0; i<4; i++) {
+        var id = 'drModule' + String(i);
+        $("#drModules").append('<li class="dropdown-submenu"><a tabindex="-1" href="#">Module '+String(i)+'</a><ul class="dropdown-menu" id='+id+'></ul></li>');
+    }
+
+    // Create digitalRead dropdown-submenu 
+    for (var i=0; i<4; i++) {
+        var id = 'dwModule' + String(i);
+        $("#dwModules").append('<li class="dropdown-submenu"><a tabindex="-1" href="#">Module '+String(i)+'</a><ul class="dropdown-menu" id='+id+'></ul></li>');
+    }
+    
+    // add all pins by module in digitakRead dropdown-menu's
+    for (var j=0; j<4; j++) {
+        for (var i=0; i<8; i++) {
+            var id = "digitalRead" + String(i+(j*8)); 
+            $("#drModule"+j).append('<li id='+ id +'><a href="#">pin '+                                          String(i+(j*8)) +'</a></li>');
+            $("#"+id).click(function() {
+                creator('digitalRead',this.id.split("digitalRead")[1]);
+            });
+        }
+    }
+    
+    // add all pins by module in digitalWrite dropdown-menu's
+    for (var n=0; n<4; n++) {
+        for (var k=0; k<8; k++) {
+            var id = "digitalWrite" + String(k+(n*8)); 
+            $("#dwModule"+n).append('<li id='+ id +'><a href="#">pin '+                                          String(k+(n*8)) +'</a></li>');
+            $("#"+id).click(function() {
+                creator('digitalWrite',this.id.split("digitalWrite")[1]);
+            });
+        }
+    }
+    
+    // add all pins by module in analogRead dropdown-menu's
+    for (var k=24; k<32; k++) {
+        var id = "analogRead" + String(k); 
+        $("#arModule").append('<li id=' + id + '><a href="#">pin '+ 
+                              String(k) +'</a></li>');
+        $("#"+id).click(function() {
+            creator('analogRead',this.id.split("analogRead")[1]);
+        });
+    }
+    
+    // add all pins by module in pwmWrite dropdown-menu's
+    for (var k=18; k<24; k++) {
+        var id = "pwmWrite" + String(k); 
+        $("#pwModule").append('<li id=' + id + '><a href="#">pin '+ 
+                              String(k) +'</a></li>');
+        $("#"+id).click(function() {
+            creator('pwmWrite',this.id.split("pwmWrite")[1]);
+        });
+    }
+    </script>  
+
+</body>
+
+</html>

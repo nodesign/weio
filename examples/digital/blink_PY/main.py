@@ -8,9 +8,7 @@
 # Description: write digital values HIGH and LOW to PINS 18, 19 & 20 (connecteds to RGB LED). Use delay() functions to do blinking the led.
 # WeIO functions: digitalWrite(pin, state) - Available in all PINS
 
-from weioLib.weioIO import *
-from weioLib.weioUserApi import attach
-
+from weioLib.weio import *
 
 def setup() :
     

@@ -1,18 +1,18 @@
-### 
+###
 #
 # WEIO Web Of Things Platform
 # Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
 # All rights reserved
 #
-#               ##      ## ######## ####  #######  
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ######    ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
+#               ##      ## ######## ####  #######
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ######    ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
 #                ###  ###  ######## ####  #######
 #
-#                    Web Of Things Platform 
+#                    Web Of Things Platform
 #
 # This file is part of WEIO and is published under BSD license.
 #
@@ -41,7 +41,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Authors : 
+# Authors :
 # Uros PETREVSKI <uros@nodesign.net>
 # Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 #
@@ -75,6 +75,7 @@ class WeioHandler(SockJSConnection):
         # Add the connection to the connections dictionary
         connUuid = uuid.uuid4()
         weioRunnerGlobals.weioConnections[connUuid] = self
+        weioRunnerGlobals.weioConnUuids.append(connUuid)
 
         # collect client ip address and user machine info
         # print self.request to see all available info on user connection
@@ -134,8 +135,8 @@ class WeioHandler(SockJSConnection):
                         elif key == "callback":
                             msg.callbackJS = data["callback"]
 
-            # Send message to launcher process
-            weioRunnerGlobals.QOUT.put(msg)
+                # Send message to launcher process
+                weioRunnerGlobals.QOUT.put(msg)
 
 
     def on_close(self):
@@ -146,11 +147,12 @@ class WeioHandler(SockJSConnection):
         for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
             if (conn == self):
                 weioRunnerGlobals.weioConnections.pop(connUuid)
+                weioRunnerGlobals.weioConnUuids.remove(connUuid)
 
 
 ###
 # This is used for remote apps - Tornado User opens __client__ socket
-# and puths everything that comes from this socket to WeioHandlerRemote() 
+# and puths everything that comes from this socket to WeioHandlerRemote()
 ###
 class WeioHandlerRemote():
     def __init__(self):
@@ -184,8 +186,8 @@ class WeioHandlerRemote():
                 elif key == "callback":
                     msg.callbackJS = data["callback"]
 
-        # Send message to launcher process
-        weioRunnerGlobals.QOUT.put(msg)
+            # Send message to launcher process
+            weioRunnerGlobals.QOUT.put(msg)
 
     def on_close(self):
         self.remoteConn = None
@@ -193,4 +195,3 @@ class WeioHandlerRemote():
         # Remove client from the clients list and broadcast leave message
         weioRunnerGlobals.weioConnections.pop(self.connUuid)
         self.connUuid = None
-

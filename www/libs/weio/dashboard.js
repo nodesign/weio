@@ -110,6 +110,15 @@ var stopTag;
 /*
  * When all DOM elements are fully loaded
  */
+
+// Message about low flash space (show one time per session)
+var lowFashSpaceMsg = false;
+
+// play/stop buttons enable/disable (prevent double clicking etc..)
+var playButtonDisabled = false;
+var stopButtonDisabled = false;
+var disableTime = 3000;
+
 $(document).ready(function () {
     updateIframeHeight();
 
@@ -254,12 +263,20 @@ $(document).ready(function () {
 
 
  // Pong server callback from keep alive ping
+
 function pingServer(pong) {
     if (!pong.response){
         dashboard.close(); // Close connection
-    }else{
+
+    } else if (pong.low_disk_space && !lowFashSpaceMsg) { // Check for low flash space notification
+        serverChechIn = true;
+        setTestament("You are running out of free space on flash memory, only " + pong.low_disk_space + "MB is available. Clear flash space and use sd card as storage device.");
+        lowFashSpaceMsg = true;
+
+    } else{
         serverChechIn = true;
     }
+    console.log(pong);
 };
 
 function updateProgress(evt) {
@@ -323,7 +340,6 @@ function handleFileSelect(evt) {
                             data.name = theFile.name;
                             data.data = e.target.result;
                             addNewProjectFromArchive(data);
-                            console.log("FILEEEEEEEEEEEEEEEEE");
                             };
                             })(f);
 
@@ -483,12 +499,18 @@ function setStatus(line, message) {
 
 
 function prepareToPlay() {
-    if (isEditorActive) {
-        document.getElementById("weioIframe").contentWindow.play();
-        document.getElementById("weioIframe").contentWindow.hideAlert();
-        document.getElementById("weioIframe").contentWindow.clearErrorAnnotations();
-    } else {
-        play();
+    if(!playButtonDisabled){
+        playButtonDisabled = true;
+        if (isEditorActive) {
+            document.getElementById("weioIframe").contentWindow.play();
+            document.getElementById("weioIframe").contentWindow.hideAlert();
+            document.getElementById("weioIframe").contentWindow.clearErrorAnnotations();
+        } else {
+            play();
+        }
+         setTimeout(function () { // Enable play after some time
+            playButtonDisabled = false;  
+        }, disableTime);
     }
 }
 
@@ -522,13 +544,20 @@ function sendPlayToServer() {
 }
 
 function stop(){
-    stopTag = new Date();
+    if(!stopButtonDisabled){
+        stopButtonDisabled = true;
+        stopTag = new Date();
 
-    var rq = { "request": "stop"};
-    dashboard.send(JSON.stringify(rq));
-    $( "#weioProgress" ).fadeTo( "slow", 0 );
-    clearInterval(playCounter);
-    readyToPlay = 0;
+        var rq = { "request": "stop"};
+        dashboard.send(JSON.stringify(rq));
+        $( "#weioProgress" ).fadeTo( "slow", 0 );
+        clearInterval(playCounter);
+        readyToPlay = 0;
+
+        setTimeout(function () { // Enable stop after some time
+            stopButtonDisabled = false;  
+        }, disableTime);
+    }
 }
 
 

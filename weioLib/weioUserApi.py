@@ -1,18 +1,18 @@
-### 
+###
 #
 # WEIO Web Of Things Platform
 # Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
 # All rights reserved
 #
-#               ##      ## ######## ####  #######  
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ######    ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
-#               ##  ##  ## ##        ##  ##     ## 
+#               ##      ## ######## ####  #######
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ######    ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
+#               ##  ##  ## ##        ##  ##     ##
 #                ###  ###  ######## ####  #######
 #
-#                    Web Of Things Platform 
+#                    Web Of Things Platform
 #
 # This file is part of WEIO and is published under BSD license.
 #
@@ -41,7 +41,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Authors : 
+# Authors :
 # Uros PETREVSKI <uros@nodesign.net>
 # Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 #
@@ -86,7 +86,7 @@ def lockedMethod(method):
 class WeioPrint():
     def __init__(self, *args, **kwargs):
         self._lock = Lock()
-    
+
     @lockedMethod
     def output(self, *args, **kwargs):
         print(*args, **kwargs)
@@ -99,6 +99,10 @@ class WeioPrint():
 
 
 class WeioSharedVar(object):
+    def __init__ (self, procFnc, procArgs) :
+        self.dict = None
+        self.Val = None
+        self.Array = None
     pass
 
 class WeioApiProcess():
@@ -141,13 +145,48 @@ class WeioClient():
         self.info = info
         self.connection = connection
 
+class WeioServerMsg():
+    def __init__(self, qout, msg):
+        # Create userAgentMessage and send it to the launcher process
+        self.qout = qout
+        self.msg = msg
+
+    def send(self, callback, data, connUuid):
+        self.msg.connUuid = connUuid
+        self.msg.req = "serverPush"
+        self.msg.res = data
+        self.msg.callbackJS = callback
+
+        # Send message to launcher process
+        self.qout.put(self.msg)
+
+    def broadcast(self, callback, data):
+        self.msg.connUuid = "all"
+        self.msg.req = "serverPush"
+        self.msg.res = data
+        self.msg.callbackJS = callback
+
+        # Send message to launcher process
+        self.qout.put(self.msg)
+
+def serverPush(callback, data):
+    weioServerMsg.broadcast(callback, data)
+
+
 ###
 # Global instances
 ###
 attach = None
-shared = None
 console = None
+
+# Global shared dict
+sharedVar = None
+
+# Global connections
+weioConns = None
 
 # Global WeIO gpio object
 gpio = None
 
+# serverPush variable
+weioServerMsg = None

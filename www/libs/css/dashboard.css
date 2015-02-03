@@ -391,6 +391,10 @@ body {
 #wifiNetworks {
   overflow-y: scroll;
 }
+#wifiNetworks li a {
+  line-height: 40px;
+  
+}
 /* IFRAME */
 .iframeContainer {
   position: relative;

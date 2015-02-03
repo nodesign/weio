@@ -61,6 +61,7 @@ var estimatedInstallTime = 0;
 
 var updaterChart;
 
+var connectedToInternet = false;
 /**
  * Global configuration
  */
@@ -205,6 +206,48 @@ function reloadMe() {
     window.location.href = url;
 }
 
+function reinstallFw() {
+
+    if (connectedToInternet) {
+        var rq = { "request": "reinstallFw"};
+        updaterSocket.send(JSON.stringify(rq));
+        console.log("reinstall rq sent to server");
+        $("#updaterMessage").html("WeIO is downloading firmware right now. Please don't touch a thing. Once finished downloading, application will be closed and installation process will start. Be patient because this procedure can take up to 5 minutes");
+        $("#reloadMeButton").hide();
+        $("#updateWeioProcedure").modal("show");
+    } else {
+        $("#noInternet").modal("show");
+    }
+
+}
+
+function downloadProgressFw(data) {
+    var percent = parseInt(data.data);
+
+    var updateData = [
+                   // Chart
+                   {
+                   value: percent,
+                   color :"#0088cc"
+                   },
+                   {
+                   value : 100.0-percent,
+                   color:"#666"
+                   }
+                   ];
+
+    updaterChart.Doughnut(updateData, defs);
+    $("#progressStatus").html("Downloading WeIO " + String(percent) + "%");
+}
+
+function reinstallFwCounter() {
+    console.log("go to black!");
+}
+
+function noInternet() {
+    connectedToInternet = false;
+    //$("#noInternet").modal("show");
+}
 
 //CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
@@ -213,19 +256,24 @@ function reloadMe() {
  */
 var callbacksUpdater = {
     "checkVersion": checkVersion,
-    "updateProgress" : updateProgressBar
+    "updateProgress" : updateProgressBar,
+    "readyToReinstallFw" : reinstallFwCounter,
+    "downloadingFw": downloadProgressFw,
+    "noInternetConnection": noInternet
 };
 
+var modalIsPopulated = false;
 function checkVersion(data) { 
     
     console.log("Local version is : " + data.localVersion);
     console.log("WeIO repository version is : " + data.distantVersion); 
     console.log("WeIO needs un update : " + data.needsUpdate);
     
-    
+    modalIsPopulated = true;
+    connectedToInternet = true;
     if (data.needsUpdate=="YES") {
         console.log("WeIO install duration in s will be : " + data.install_duration);
-        
+        needsUpdate = true;
         $("#needsUpdateStatus").html("Install new update");
         
         $("#updateButton").html("Update WeIO");
@@ -244,7 +292,7 @@ function checkVersion(data) {
         estimatedInstallTime = data.install_duration;
         
     } else {
-        
+        needsUpdate = false;
         $("#needsUpdateStatus").html("WeIO version is up to date");
         $("#updateButton").html("OK");
         $("#updateWeioData").html("Your current version " + data.localVersion + " is up to date!");
@@ -253,37 +301,42 @@ function checkVersion(data) {
     
 };
 
+function bringUpdater(){
+    if (modalIsPopulated) {
+        $("#updateWeio").modal("show");
+    }
+}
+
+
 var defs = {
-	//Boolean - Whether we should show a stroke on each segment
-	segmentShowStroke : true,
-	
-	//String - The colour of each segment stroke
-	segmentStrokeColor : "#fff",
-	
-	//Number - The width of each segment stroke
-	segmentStrokeWidth : 2,
-	
-	//The percentage of the chart that we cut out of the middle.
-	percentageInnerCutout : 70,
-	
-	//Boolean - Whether we should animate the chart	
-	animation : false,
-	
-	//Number - Amount of animation steps
-	animationSteps : 100,
-	
-	//String - Animation easing effect
-	animationEasing : "easeOutBounce",
-	
-	//Boolean - Whether we animate the rotation of the Doughnut
-	animateRotate : true,
+    //Boolean - Whether we should show a stroke on each segment
+    segmentShowStroke : true,
     
-	//Boolean - Whether we animate scaling the Doughnut from the centre
-	animateScale : false,
-	
-	//Function - Will fire on animation completion.
-	onAnimationComplete : null
+    //String - The colour of each segment stroke
+    segmentStrokeColor : "#fff",
+    
+    //Number - The width of each segment stroke
+    segmentStrokeWidth : 2,
+    
+    //The percentage of the chart that we cut out of the middle.
+    percentageInnerCutout : 70,
+    
+    //Boolean - Whether we should animate the chart
+    animation : false,
+    
+    //Number - Amount of animation steps
+    animationSteps : 100,
+    
+    //String - Animation easing effect
+    animationEasing : "easeOutBounce",
+    
+    //Boolean - Whether we animate the rotation of the Doughnut
+    animateRotate : true,
+    
+    //Boolean - Whether we animate scaling the Doughnut from the centre
+    animateScale : false,
+    
+    //Function - Will fire on animation completion.
+    onAnimationComplete : null
 };
-
-
 

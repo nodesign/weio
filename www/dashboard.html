@@ -134,7 +134,7 @@
                 <div class="btn-group pull-right">
                     <a class="btn dropdown-toggle" data-toggle="dropdown" id="user" onclick="updateCheck()"></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#updateWeio" data-toggle="modal" id="needsUpdateStatus"><i class="icon-spinner icon-spin"></i> Checking updates...</a></li>
+                        <li><a onclick="bringUpdater()" id="needsUpdateStatus"><i class="icon-spinner icon-spin"></i> Checking updates...</a></li>
                         <li class="divider"></li>
                         <li><a href="#reinstallFw" role="button" data-toggle="modal">Reinstall WeIO firmware</a></li>
                         <li class="divider"></li>
@@ -271,7 +271,7 @@
               <h4 id="progressStatus"></h4>
 
               <canvas id="updateProgressChart"></canvas>
-              <p>WeIO is updating now. Please don't touch anything. If program stucks after progress
+              <p id="updaterMessage">WeIO is updating now. Please don't touch anything. If program stucks after progress
                 bar is done try to reload this page or to reset hardware</p>
 
             </div>
@@ -410,6 +410,39 @@
 </div>
 <!-- Modal Something bad happened - deconnexion -->
 
+<!-- Project already exists please change name -->
+<div id="alreadyExists" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3>Project already exists</h3>
+    </div>
+
+     <div class="modal-body">
+        <p>Project with this name already exists. Please choose another name for the project</p>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">OK</button>
+    </div>
+</div>
+<!-- Project already exists please change name -->
+
+<!-- NoInternet -->
+<div id="noInternet" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3>There is no Internet connection</h3>
+    </div>
+
+     <div class="modal-body">
+        <p>There is no Internet connection. Try to connect to the Internet or try again later</p>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">OK</button>
+    </div>
+</div>
+<!-- NoInternet -->
 
 
 <iframe class="iframeContainer" src="" id="weioIframe"></iframe>

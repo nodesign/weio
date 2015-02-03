@@ -247,7 +247,7 @@ class WeioEditorHandler(SockJSConnection):
 
         platformS += "WeIO version " + config["weio_version"] + " with Python " + \
                             platform.python_version() + " on " + platform.system() + "<br>"
-        platformS += "GPL 3, Nodesign.net 2014 Uros Petrevski & Drasko Draskovic <br>"
+        platformS += "BSD, Nodesign.net 2015 Uros Petrevski & Drasko Draskovic <br>"
 
         data['serverPush'] = 'sysConsole'
         data['data'] = platformS

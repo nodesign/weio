@@ -48,7 +48,7 @@
 ###
 
 
-import os, signal, sys, platform, subprocess, datetime
+import os, signal, sys, platform, subprocess, datetime, shutil
 from os.path import isfile, join
 
 from tornado import web, ioloop, iostream, gen
@@ -60,7 +60,7 @@ import json
 from weioLib import weioIpAddress
 from weioLib import weioFiles
 
-from shutil import copyfile, copytree
+from shutil import copyfile, copytree, ignore_patterns
 
 # IMPORT BASIC CONFIGURATION FILE
 from weioLib import weioConfig
@@ -153,7 +153,7 @@ class WeioDashBoardHandler(SockJSConnection):
 
         platformS += "WeIO version " + config["weio_version"] + " with Python " + \
                             platform.python_version() + " on " + platform.system() + "<br>"
-        platformS += "GPL 3, Nodesign.net 2013-2014 Uros Petrevski & Drasko Draskovic <br>"
+        platformS += "GPL 3, Nodesign.net 2013-2015 Uros Petrevski & Drasko Draskovic <br>"
 
         data['serverPush'] = 'sysConsole'
         data['data'] = platformS
@@ -218,11 +218,18 @@ class WeioDashBoardHandler(SockJSConnection):
         weioConfig.saveConfiguration(config);
 
         # In this way we avoid migrations between pc and weio and other archs
-        try :
-            os.remove(path+"/www")
-        except:
-            print "Symlink don't exist. Will create new one for www in this project"
-        os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
+        if (storage != "sd" and storage != "usbFlash"):
+            try:
+                os.remove(path+"/www")
+            except:
+                print "Symlink don't exist. Will create new one for www in this project"
+            os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
+        elif not os.path.exists(path + "/www"):
+            print "COPYING TO ", path + "/www"
+            copytree(config['absolut_root_path'] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples', 'usbFlash'))
+            print "OK"
+        
+
 
         data = {}
         data['requested'] = rq['request']
@@ -255,34 +262,54 @@ class WeioDashBoardHandler(SockJSConnection):
 
         print "CREATE PROJECT", path
         if (len(path)>0):
-            weioFiles.createDirectory(path)
-            # ADD HERE SOME DEFAULT FILES
-            # adding __init__.py
-            weioFiles.saveRawContentToFile(path + "/__init__.py", "")
-            
-            
-            # make symlink to www/
-            try :
-                os.remove(path + "/www")
-            except:
-                print "Symlink don't exist. Will create new one for this project"
-            os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
+            if (weioFiles.checkIfDirectoryExists(path)):
+                print "ALREADY EXISTS"
+                data['status'] = "Can't create project"
+                data['error'] = "already exists"
+                data['path'] = path
+                self.broadcast(clients, json.dumps(data))
+            else :
+                weioFiles.createDirectory(path)
+                # ADD HERE SOME DEFAULT FILES
+                # adding __init__.py
+                weioFiles.saveRawContentToFile(path + "/__init__.py", "")
 
-            # copy all files from directory boilerplate to destination
-            mypath = "www/libs/weio/boilerPlate/"
-            onlyfiles = [ f for f in os.listdir(mypath) if isfile(join(mypath,f)) ]
-            for f in onlyfiles:
-                copyfile(mypath+f, path +"/"+f)
+                # make symlink to www/
+                if (storage == "sd" or storage == "usbFlash"):
+                    if (storage == "sd"):
+                        if os.path.isdir(path):
+                            if not (os.path.exists(path + "/www")):
+                                print "COPYING TO ", path + "/www"
+                                copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples', 'usbFlash'))
+                                print "OK"
+                    else:
+                        if not (os.path.exists(path + "/www")):
+                            print "COPYING TO ", path + "/www"
+                            copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples', 'usbFlash'))
+                            print "OK"
+                else:
+                    try:
+                        os.remove(path + "/www")
+                    except:
+                        print "Symlink don't exist. Will create new one for this project"
+                    os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
 
-            print "LASTOPENED new project", path
-            config["last_opened_project"] = path
-            weioConfig.saveConfiguration(config);
+                # copy all files from directory boilerplate to destination
+                mypath = "www/libs/weio/boilerPlate/"
+                onlyfiles = [ f for f in os.listdir(mypath) if isfile(join(mypath,f)) ]
+                for f in onlyfiles:
+                    copyfile(mypath+f, path +"/"+f)
 
-            data['status'] = "New project created"
-            data['path'] = path
-            self.broadcast(clients, json.dumps(data))
+                print "LASTOPENED new project", path
+                config["last_opened_project"] = path
+                weioConfig.saveConfiguration(config);
+
+                data['status'] = "New project created"
+                data['path'] = path
+                self.broadcast(clients, json.dumps(data))
         else:
             print "BAD PATHNAME"
+
 
     def duplicateProject(self, rq):
         config = weioConfig.getConfiguration()
@@ -296,13 +323,30 @@ class WeioDashBoardHandler(SockJSConnection):
         print "DUPLICATE PROJECT", path
         data = {}
         if (len(path)>0):
+            if (storage != "sd" and storage != "usbFlash"):
+                # Destroy symlink
+                if os.path.islink(config["last_opened_project"]+"/www"):
+                    os.remove(config["last_opened_project"]+"/www")
+                else:
+                    shutil.rmtree(config["last_opened_project"]+"/www")
+                # copy all files
+                try:
+                    copytree(config["last_opened_project"], path)
+                except:
+                    print sys.exc_info()[0]
+            else:
+                if os.path.isdir("www/"+rq['storageUnit']):
+                    try: 
+                        copytree(config["last_opened_project"], path, ignore=ignore_patterns('www'))
+                    except:
+                        print sys.exc_info()[0]
 
-            # Destroy symlink
-            os.remove(config["last_opened_project"]+"/www")
-            # copy all files
-            copytree(config["last_opened_project"], path)
-            # Recreate symlink
-            os.symlink(config["absolut_root_path"] + "/www/", config["last_opened_project"] + "/www")
+            if (storage != "sd" and storage != "usbFlash"):
+                # Recreate symlink
+                os.symlink(config["absolut_root_path"] + "/www/", path + "/www")
+            else:
+                if not (os.path.exists(path + "/www")):
+                    copytree(config["absolut_root_path"] + "/www/", path + "/www", ignore=ignore_patterns('sd', 'flash', 'examples', 'usbFlash'))
 
             config["last_opened_project"] = path
             weioConfig.saveConfiguration(config)
@@ -340,7 +384,7 @@ class WeioDashBoardHandler(SockJSConnection):
         folders = weioFiles.listOnlyFolders("www/examples")
 
         if len(folders) > 0 :
-         config["last_opened_project"] = "www/examples/" + folders[0]
+         config["last_opened_project"] = ""
          weioConfig.saveConfiguration(config)
 
          data['data'] = "reload page"
@@ -432,8 +476,13 @@ class WeioDashBoardHandler(SockJSConnection):
         data = {}
         data['requested'] = rq['request']
         data['response'] = 'pong'
+        ## Check disk space on flash 
+        ## if board is out of space, inform user
+        free_space = check_flash_space('/')
+        if free_space < '0.2':
+            data['low_disk_space'] = '0.2'
         self.broadcast(clients, json.dumps(data))
-
+        
 ##############################################################################################################################
     # DEFINE CALLBACKS IN DICTIONARY
     # Second, associate key with right function to be called
@@ -510,3 +559,12 @@ def get_directory_structure(rootdir):
         parent = reduce(dict.get, folders[:-1], dir)
         parent[folders[-1]] = subdir
     return dir
+
+## Check free space on flash and return value in Megabytes
+
+def check_flash_space(path):
+    st = os.statvfs(path)
+    free = float(st.f_bavail * st.f_frsize)/1000000.0
+    free = "%.1f" % free
+
+    return free

@@ -6,7 +6,7 @@
     "editor_html_path": "www/dashboard.html", 
     "extern_projects_path_flash": "/Users/uros/workNow/nodesign/weIO/weio/weioUser/flash", 
     "extern_projects_path_sd": "/weioUser/sd", 
-    "extern_projects_path_usbFlash": "", 
+    "extern_projects_path_usbFlash": "/weioUser/usbFlash", 
     "first_time_run": "NO", 
     "https": "NO", 
     "ip": "0.0.0.0", 
@@ -15,10 +15,10 @@
         "index.html", 
         "weioMain.py"
     ], 
-    "last_opened_project": "www/examples/processes/helloWorld", 
-    "login_required": "NO", 
-    "password": "", 
-    "play_composition_on_server_boot": "YES", 
+    "last_opened_project": "www/examples/digital/digitalWrite_JS", 
+    "login_required": "YES", 
+    "password": "weio", 
+    "play_composition_on_server_boot": "NO", 
     "port": 8080, 
     "remote": "", 
     "user": "Drasko DRASKOVIC", 
@@ -26,6 +26,8 @@
     "userApp_debug_mode": "True", 
     "weio_board": "WeIO", 
     "weio_lib_path": "weioLib", 
-    "weio_update_repository": "http://we-io.net/downloads", 
-    "weio_version": "408"
+    "weio_update_alternate_repository": "http://we-io.net/downloads/updates.json", 
+    "weio_update_official_repository": "https://api.github.com/repos/nodesign/weio/releases", 
+    "weio_update_use_official_repository": "YES", 
+    "weio_version": "0.3"
 }

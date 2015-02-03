@@ -1,4 +1,3 @@
-
 config 'samba' 'samba'
 	option 'name' 'WeIO'
 	option 'workgroup' 'WEIO'
@@ -8,11 +7,19 @@ config 'samba' 'samba'
 	option 'wan' '0'
 	option 'allow_unauth' '1'
 
-config 'sambashare' 'sambashare'
+config 'sambashare' 'WeIOroot'
 	option 'name' 'WeIOroot'
 	option 'path' '/weio'
 	option 'read_only' 'no'
 	option 'guest_ok' 'no'
 	option 'create_mask' '0700'
 	option 'dir_mask' '0700'
+
+config 'sambashare' 'WeIOuser'
+	option 'name' 'WeIOuser'
+	option 'path' '/weioUser'
+	option 'read_only' 'no'
+	option 'guest_ok' 'no'
+	option 'create_mask' '0766'
+	option 'dir_mask' '0766'
 
