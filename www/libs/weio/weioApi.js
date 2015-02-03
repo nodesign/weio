@@ -53,7 +53,7 @@ var weioCallbacks = {
 /**
  * This is where callback names are stored behind pin numbers
 */
-var  s = [];
+var weioInterrupts = [];
 
 $(document).ready(function() {
 
