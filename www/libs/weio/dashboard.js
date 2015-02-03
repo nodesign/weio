@@ -111,6 +111,8 @@ var stopTag;
  * When all DOM elements are fully loaded
  */
 
+// Message about low flash space (show one time per session)
+var lowFashSpaceMsg = false;
 
 // play/stop buttons enable/disable (prevent double clicking etc..)
 var playButtonDisabled = false;
@@ -261,12 +263,20 @@ $(document).ready(function () {
 
 
  // Pong server callback from keep alive ping
+
 function pingServer(pong) {
     if (!pong.response){
         dashboard.close(); // Close connection
-    }else{
+
+    } else if (pong.low_disk_space && !lowFashSpaceMsg) { // Check for low flash space notification
+        serverChechIn = true;
+        setTestament("You are running out of free space on flash memory, only " + pong.low_disk_space + "MB is available. Clear flash space and use sd card as storage device.");
+        lowFashSpaceMsg = true;
+
+    } else{
         serverChechIn = true;
     }
+    console.log(pong);
 };
 
 function updateProgress(evt) {
@@ -330,7 +340,6 @@ function handleFileSelect(evt) {
                             data.name = theFile.name;
                             data.data = e.target.result;
                             addNewProjectFromArchive(data);
-                            console.log("FILEEEEEEEEEEEEEEEEE");
                             };
                             })(f);
 
