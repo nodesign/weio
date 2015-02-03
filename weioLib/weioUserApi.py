@@ -145,6 +145,34 @@ class WeioClient():
         self.info = info
         self.connection = connection
 
+class WeioServerMsg():
+    def __init__(self, qout, msg):
+        # Create userAgentMessage and send it to the launcher process
+        self.qout = qout
+        self.msg = msg
+
+    def send(self, callback, data, connUuid):
+        self.msg.connUuid = connUuid
+        self.msg.req = "serverPush"
+        self.msg.res = data
+        self.msg.callbackJS = callback
+
+        # Send message to launcher process
+        self.qout.put(self.msg)
+
+    def broadcast(self, callback, data):
+        self.msg.connUuid = "all"
+        self.msg.req = "serverPush"
+        self.msg.res = data
+        self.msg.callbackJS = callback
+
+        # Send message to launcher process
+        self.qout.put(self.msg)
+
+def serverPush(callback, data):
+    weioServerMsg.broadcast(callback, data)
+
+
 ###
 # Global instances
 ###
@@ -154,5 +182,11 @@ console = None
 # Global shared dict
 sharedVar = None
 
+# Global connections
+weioConns = None
+
 # Global WeIO gpio object
 gpio = None
+
+# serverPush variable
+weioServerMsg = None

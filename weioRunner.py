@@ -277,9 +277,7 @@ class UserControl():
         while (True):
             # Get the command from userTornado (blocking)
             msg = self.qIn.get()
-
             #print "*** GOT THE COMMAND: ", msg.req
-
             # Execute the command
             msg.res = None
             if msg.req in weioParser.weioSpells or msg.req in weioParser.weioUserSpells:
@@ -315,7 +313,7 @@ def listenerThread():
         #print "GOT MSG: ", msg
         if (msg.res is not None):
             #print "MESSAGE", msg.req, msg.res, msg.data, msg.connUuid
-            if (msg.connUuid in weioRunnerGlobals.weioConnections):
+            if (msg.connUuid in weioRunnerGlobals.weioConnections or msg.connUuid == "all"):
                 result = {}
 
                 if (msg.callbackJS is not None):
@@ -323,9 +321,17 @@ def listenerThread():
                     result["data"] = msg.res
                     #print "RESULT",result
                     if (weioRunnerGlobals.remoteConnected.value == True):
-                        weioRunnerGlobals.weioConnections[msg.connUuid].write_message(json.dumps(result))
+                        if (msg.connUuid == "all"):
+                            for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
+                                weioRunnerGlobals.weioConnections[connUuid].send(json.dumps(result))
+                        else:
+                            weioRunnerGlobals.weioConnections[msg.connUuid].write_message(json.dumps(result))
                     else:
-                        weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
+                        if (msg.connUuid == "all"):
+                            for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
+                                weioRunnerGlobals.weioConnections[connUuid].send(json.dumps(result))
+                        else:
+                            weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
 
 class WeioRemote():
     conn = None
@@ -390,6 +396,13 @@ if __name__ == '__main__':
 
     manager = multiprocessing.Manager()
     weioUserApi.sharedVar = manager.dict()
+
+    # weioMsg
+    weioUserApi.weioServerMsg = weioUserApi.WeioServerMsg(weioRunnerGlobals.QIN, weioRunnerGlobals.userAgentMessage())
+
+    # weioConnUuids
+    weioRunnerGlobals.weioConnUuids = manager.list()
+    weioUserApi.weioConns = weioRunnerGlobals.weioConnUuids
 
     confFile = weioConfig.getConfiguration()
     # set python working directory
