@@ -350,11 +350,10 @@ function callInbox(data) {
     }
 };
 
-function attachInterrupt(pin, mode, callback) {
+function attachInterrupt(pin, mode, callback, obj) {
     var fName = callback.name;
     weioInterrupts[pin] = fName;
-    weioCallbacks[fName] = callback;
-    genericMessage("attachInterrupt", [pin, mode], null);
+    genericMessage("attachInterrupt", [pin, mode,fName,obj], null);
 }
 
 function weioExecuteInterrupt(data) {
