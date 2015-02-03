@@ -473,8 +473,13 @@ class WeioDashBoardHandler(SockJSConnection):
         data = {}
         data['requested'] = rq['request']
         data['response'] = 'pong'
+        ## Check disk space on flash 
+        ## if board is out of space, inform user
+        free_space = check_flash_space('/')
+        if free_space < '0.2':
+            data['low_disk_space'] = '0.2'
         self.broadcast(clients, json.dumps(data))
-
+        
 ##############################################################################################################################
     # DEFINE CALLBACKS IN DICTIONARY
     # Second, associate key with right function to be called
@@ -551,3 +556,12 @@ def get_directory_structure(rootdir):
         parent = reduce(dict.get, folders[:-1], dir)
         parent[folders[-1]] = subdir
     return dir
+
+## Check free space on flash and return value in Megabytes
+
+def check_flash_space(path):
+    st = os.statvfs(path)
+    free = float(st.f_bavail * st.f_frsize)/1000000.0
+    free = "%.1f" % free
+
+    return free
