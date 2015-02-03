@@ -6,7 +6,7 @@
     "editor_html_path": "www/dashboard.html", 
     "extern_projects_path_flash": "/Users/uros/workNow/nodesign/weIO/weio/weioUser/flash", 
     "extern_projects_path_sd": "/weioUser/sd", 
-    "extern_projects_path_usbFlash": "", 
+    "extern_projects_path_usbFlash": "/weioUser/usbFlash", 
     "first_time_run": "NO", 
     "https": "NO", 
     "ip": "0.0.0.0", 
