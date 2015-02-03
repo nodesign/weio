@@ -53,7 +53,7 @@ var weioCallbacks = {
 /**
  * This is where callback names are stored behind pin numbers
 */
-var weioInterrupts = [];
+var  s = [];
 
 $(document).ready(function() {
 
@@ -177,8 +177,8 @@ var PULL_DOWN = 4
 var LOW = 0
 var HIGH = 1
 var CHANGE = 2
-var RISE = 3
-var FALL = 4
+var RISING = 3
+var FALLING = 4
 
 /*
  * Unique UUID number of this session
