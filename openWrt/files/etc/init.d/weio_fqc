@@ -1,7 +1,8 @@
 #!/bin/sh /etc/rc.common
 # Copyright (C) 2006 OpenWrt.org
 
-START=99
+START=80
+STOP=91
 
 start() {
     echo "Launching WeIO FQC"
