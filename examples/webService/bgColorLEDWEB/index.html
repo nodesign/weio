@@ -1,7 +1,7 @@
 <!DOCTYPE html> 
 <html lang="en"> 
   
-<script data-main="weioLibs" src="../require.js"></script>
+<script data-main="weioLibs" src="www/libs/require.js"></script>
 <script src="gyro.js"></script>
 
 <head> 
@@ -48,9 +48,9 @@
 
         function changeColorFromWeio(data) {
             rgb = "rgb("+ 
-                  String(data.data.red) + "," + 
-                  String(data.data.green) + "," + 
-                  String(data.data.blue) + ")"; 
+                  String(data.red) + "," + 
+                  String(data.green) + "," + 
+                  String(data.blue) + ")"; 
             //console.log(data.data.red);
             $("body").css("background-color", rgb);
             //console.log(data);
