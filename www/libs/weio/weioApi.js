@@ -189,8 +189,8 @@ var PULL_DOWN = 4
 var LOW = 0
 var HIGH = 1
 var CHANGE = 2
-var RISE = 3
-var FALL = 4
+var RISING = 3
+var FALLING = 4
 
 /*
  * Unique UUID number of this session
@@ -362,11 +362,10 @@ function callInbox(data) {
     }
 };
 
-function attachInterrupt(pin, mode, callback) {
+function attachInterrupt(pin, mode, callback, obj) {
     var fName = callback.name;
     weioInterrupts[pin] = fName;
-    weioCallbacks[fName] = callback;
-    genericMessage("attachInterrupt", [pin, mode], null);
+    genericMessage("attachInterrupt", [pin, mode,fName,obj], null);
 }
 
 function weioExecuteInterrupt(data) {
