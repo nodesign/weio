@@ -160,7 +160,7 @@ def callProportion(data) :
 
 def callAttachInterrupt(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
-        attachInterrupt(data[0], data[1])
+        attachInterrupt(data[0], data[1], data[2], data[3])
     else:
         print "attachInterrupt ON PC", data
     return None

@@ -1,12 +1,13 @@
 #!/bin/sh /etc/rc.common
 # Copyright (C) 2006 OpenWrt.org
 
-START=99
+START=80
+STOP=91
 
 start() {
     echo "Launching WeIO FQC"
     cd /weio
-    python scripts/weioFQC.py&
+    python scripts/weioFQC.py
 }
 
 stop() {
@@ -18,6 +19,12 @@ stop() {
     if [ -n "$(ps | grep  "[w]eioFQC.py")" ]; then
         PID=`ps | grep  "[w]eioFQC.py" | awk '{print $1}'`
         kill -9 $PID
+    fi
+    if [ -n "$(ps | grep  "[l]edBlinkSanity")" ]; then
+        killall ledBlinkSanity.py
+    fi
+    if [ -h /weio/scripts/ledBlinkSanity.py ]; then
+        rm /weio/scripts/ledBlinkSanity.py
     fi
 }
 
