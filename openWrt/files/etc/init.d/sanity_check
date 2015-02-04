@@ -7,7 +7,7 @@ STOP=91
 start() {
     echo "Launching WeIO FQC"
     cd /weio
-    python scripts/weioFQC.py&
+    python scripts/weioFQC.py
 }
 
 stop() {

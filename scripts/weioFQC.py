@@ -139,6 +139,6 @@ if __name__ == "__main__":
         if not os.path.islink("/weio/scripts/ledBlinkSanity.py"): 
             os.symlink("/weio/scripts/ledBlink.py", "/weio/scripts/ledBlinkSanity.py")
         print "LPC not found !"
-        subprocess.call(["/weio/scripts/ledBlinkSanity.py", '0.1'])
+        subprocess.Popen(["/weio/scripts/ledBlinkSanity.py", '0.1'])
     else:
         print "LPC found with a functionnal firmware"
