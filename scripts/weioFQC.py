@@ -4,6 +4,8 @@
 import struct
 import types
 import glob
+import subprocess
+import os
 
 import serial
 
@@ -34,10 +36,8 @@ class detectFW:
                         break
                 port_to_try.close()
             except:
-                print "Exception"
                 return False
         if not ser:
-            print "Not found"
             return False
 
         return True
@@ -131,9 +131,14 @@ if __name__ == "__main__":
     res = fw.detector()
 
     if not res:
+        '''
+        weioRunner.py, just before ioloop.start(), send a command to stop the led_blink init script.
+        The command will 'killall ledBlink.py'.
+        To avoid weioRunner to kill this process, ledBlink.py is symlinked with a different name
+	    '''
+        if not os.path.islink("/weio/scripts/ledBlinkSanity.py"): 
+            os.symlink("/weio/scripts/ledBlink.py", "/weio/scripts/ledBlinkSanity.py")
         print "LPC not found !"
-        import ledBlink as led
-        while True:
-            led.blink(.1)
+        subprocess.call(["/weio/scripts/ledBlinkSanity.py", '0.1'])
     else:
         print "LPC found with a functionnal firmware"
