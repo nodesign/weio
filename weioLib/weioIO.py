@@ -252,6 +252,10 @@ def getPinInfo():
     print "INFO", gpio
     return gpio.getPinInfo()
 
+def getCurrentPath():
+    config = weioConfig.getConfiguration()
+    return config["last_opened_project"]
+
 # LIST SERIAL PORTS ON THE MACHINE
 def listSerial():
     ser = []

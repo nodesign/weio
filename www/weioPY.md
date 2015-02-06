@@ -341,6 +341,9 @@ WeIO info
 ### versionWeIO()
 Returns actual version of WeIO software
 
+### getCurrentPath()
+Returns path to opened project. This is useful when importing or calling files in the current project directory.
+
 Interfaces
 ----------
 
