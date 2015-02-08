@@ -1,6 +1,7 @@
 WeIO - Connected. Smart. Simple.
 ================================
 
+[![PyPI](https://img.shields.io/pypi/l/Django.svg)]()
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nodesign/weio?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ![Alt text](http://we-io.net/img/weioBack.jpg "WeIO Board")
