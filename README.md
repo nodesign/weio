@@ -1,6 +1,8 @@
 WeIO - Connected. Smart. Simple.
 ================================
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nodesign/weio?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ![Alt text](http://we-io.net/img/weioBack.jpg "WeIO Board")
 
 WeIO is an innovative open source hardware and software platform for rapid prototyping and creation of wirelessly connected interactive objects using only popular web languages such as HTML5 or Python.
