@@ -6,8 +6,12 @@ import types
 import glob
 import subprocess
 import os
+import time
 
 import serial
+import sys
+sys.path.append(os.getcwd())
+from weioLib import weioConfig
 
 class detectFW:
     def __init__(self):
@@ -126,10 +130,22 @@ class detectFW:
         return result
 
 if __name__ == "__main__":
+    config = weioConfig.getConfiguration()
     ### Detect the LPC
     fw = detectFW()
     res = fw.detector()
 
+
+    # Special case for production : if no firmware is found, try first to reflash it
+    if not res:
+        if config["first_time_run"] == "YES":
+            print "Reflashing firmware"
+            subprocess.call(["/weio/scripts/flash_lpc_fw.py"])
+            time.sleep(5) # Leave enough time to LPC to reboot
+            res = fw.detector()
+
+
+    # Normal case
     if not res:
         '''
         weioRunner.py, just before ioloop.start(), send a command to stop the led_blink init script.
