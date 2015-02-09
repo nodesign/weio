@@ -193,11 +193,11 @@ def constrain(x, a, b):
         if (x<a):
             return a
 
-def attachInterrupt(pin, mode, callback, obj):
+def attachInterrupt(pin, mode, callback, obj=None, debounceTime=50):
     try:
-        return gpio.attachInterrupt(pin, mode, callback, obj)
+        return gpio.attachInterrupt(pin, mode, callback, obj, debounceTime)
     except:
-        print "attachInterrupt(", pin,",",mode,",",callback,",",obj,")"
+        print "attachInterrupt(", pin,",",mode,",",callback,",",obj, "debounce time", debounceTime,")"
         return -1
 
 def getInterruptType(mode):
