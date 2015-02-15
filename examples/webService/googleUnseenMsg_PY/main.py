@@ -16,7 +16,6 @@
 from weioLib.weio import *
 
 import imaplib
-import email
 
 def setup():
     attach.process(myProcess)
