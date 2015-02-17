@@ -21,4 +21,8 @@
 ./scripts/feeds install alsa-utils
 ./scripts/feeds install cython
 ./scripts/feeds install gevent
+./scripts/feeds install bluez-libs
+./scripts/feeds install bluez-utils
+./scripts/feeds install python-bluez
+./scripts/feeds install bluez-hcidump
 
