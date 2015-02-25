@@ -280,7 +280,7 @@ def initI2C():
 def initSPI(*args):
     return interfaceSPI(gpio.u, *args)
 
-def initSerial(port, baudrate, timeout_=1):
+def initSerial(port='/dev/ttyACM1', baudrate=9600, timeout_=1):
     # toggle RX and TX pins to secondary (UART) mode
     interfaceUART(gpio.u)
     return serial.Serial(port, baudrate, timeout=timeout_)
