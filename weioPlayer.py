@@ -125,44 +125,15 @@ class WeioPlayer():
             so that Tornado can simply transfer subprocess's `stdout` and `stderr`
             to the client via WebSockets. """
 
-        # get configuration from file
-        config = weioConfig.getConfiguration()
-
         # stop if process is already running
         if (self.playing is True):
             self.stop()
 
-        data = {}
-        lp = config["last_opened_project"]
-
-        # check if user project exists before launching
-        # if not create main.py from boilerplate and inform user about that
-
-        if not(weioFiles.checkIfFileExists(lp+"/main.py")):
-            boiler = "www/libs/weio/boilerPlate/main.py"
-            try:
-                copyfile(boiler, lp+"/main.py")
-
-                consoleMsg = {}
-                consoleMsg['serverPush'] = "stderr"
-                consoleMsg['data'] = "WeIO cant work without main.py file. This file has been created for you. Please refresh IDE to see main.py"
-                if (weioIdeGlobals.CONSOLE != None):
-                    weioIdeGlobals.CONSOLE.send(json.dumps(consoleMsg))
-
-            except :
-                warning = {}
-                warning['requested'] = rq['request']
-                warning['status'] = "main.py don't exist!"
-                warning['state'] = "error"
-
-
-                self.send(json.dumps(warning))
-
-        #recheck if file was nicely created
-        if (weioFiles.checkIfFileExists(lp+"/main.py")):
-            #print("weioMain indipendent process launching...")
+        # check if default main exists before launching
+        if (weioFiles.checkIfFileExists("www/defaultMain/main.py")):
 
             # Inform client the we run subprocess
+            data = {}
             data['requested'] = rq['request']
             data['status'] = "Warming up the engines..."
             self.send(json.dumps(data))
