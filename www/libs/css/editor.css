@@ -302,6 +302,7 @@ div {
   line-height: 16px;
   margin-left: 5px;
   margin-top: 19px;
+  word-wrap: break-word;
 }
 .columns .rightSideBar #consoleOutput #stderr {
   color: #ff0000;
