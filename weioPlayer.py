@@ -128,40 +128,28 @@ class WeioPlayer():
         # stop if process is already running
         if (self.playing is True):
             self.stop()
+            
+        # Inform client the we run subprocess
+        data = {}
+        data['requested'] = rq['request']
+        data['status'] = "Warming up the engines..."
+        self.send(json.dumps(data))
 
-        # check if default main exists before launching
-        if (weioFiles.checkIfFileExists("www/defaultMain/main.py")):
+        consoleWelcome = {}
+        consoleWelcome['data'] = "WeIO user program started"
+        consoleWelcome['serverPush'] = "sysConsole"
 
-            # Inform client the we run subprocess
-            data = {}
-            data['requested'] = rq['request']
-            data['status'] = "Warming up the engines..."
-            self.send(json.dumps(data))
+        self.lastLaunched = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            consoleWelcome = {}
-            consoleWelcome['data'] = "WeIO user program started"
-            consoleWelcome['serverPush'] = "sysConsole"
+        consoleWelcome['data'] = 'WeIO user server launched ' + self.lastLaunched
+        if (weioIdeGlobals.CONSOLE != None):
+            #weioIdeGlobals.CONSOLE.send(json.dumps(data))
+            weioIdeGlobals.CONSOLE.send(json.dumps(consoleWelcome))
+        self.playing = True
 
-            self.lastLaunched = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-            consoleWelcome['data'] = 'WeIO user server launched ' + self.lastLaunched
-            if (weioIdeGlobals.CONSOLE != None):
-                #weioIdeGlobals.CONSOLE.send(json.dumps(data))
-                weioIdeGlobals.CONSOLE.send(json.dumps(consoleWelcome))
-            self.playing = True
-
-            # send *start* command to user tornado
-            self.weioPipe.stdin.write("*START*")
-
-
-        else : # FILE DON'T EXIST
-            warning = {}
-            warning['requested'] = rq['request']
-            warning['status'] = "main.py don't exist!"
-            warning['state'] = "error"
-
-
-            self.send(json.dumps(warning))
+        # send *start* command to user tornado
+        self.weioPipe.stdin.write("*START*")
+            
 
     def stop(self, rq={'request':'stop'}):
         """Stop running application"""
