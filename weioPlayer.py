@@ -125,31 +125,72 @@ class WeioPlayer():
             so that Tornado can simply transfer subprocess's `stdout` and `stderr`
             to the client via WebSockets. """
 
+        # get configuration from file
+        config = weioConfig.getConfiguration()
+
         # stop if process is already running
         if (self.playing is True):
             self.stop()
-            
-        # Inform client the we run subprocess
+
         data = {}
-        data['requested'] = rq['request']
-        data['status'] = "Warming up the engines..."
-        self.send(json.dumps(data))
+        lp = config["last_opened_project"]
 
-        consoleWelcome = {}
-        consoleWelcome['data'] = "WeIO user program started"
-        consoleWelcome['serverPush'] = "sysConsole"
+        # check if user project exists before launching
+        # if not create main.py from boilerplate and inform user about that
 
-        self.lastLaunched = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        if not(weioFiles.checkIfFileExists(lp+"/main.py")):
+            boiler = "www/libs/weio/boilerPlate/main.py"
+            try:
+                copyfile(boiler, lp+"/main.py")
 
-        consoleWelcome['data'] = 'WeIO user server launched ' + self.lastLaunched
-        if (weioIdeGlobals.CONSOLE != None):
-            #weioIdeGlobals.CONSOLE.send(json.dumps(data))
-            weioIdeGlobals.CONSOLE.send(json.dumps(consoleWelcome))
-        self.playing = True
+                consoleMsg = {}
+                consoleMsg['serverPush'] = "stderr"
+                consoleMsg['data'] = "WeIO cant work without main.py file. This file has been created for you. Please refresh IDE to see main.py"
+                if (weioIdeGlobals.CONSOLE != None):
+                    weioIdeGlobals.CONSOLE.send(json.dumps(consoleMsg))
 
-        # send *start* command to user tornado
-        self.weioPipe.stdin.write("*START*")
-            
+            except :
+                warning = {}
+                warning['requested'] = rq['request']
+                warning['status'] = "main.py don't exist!"
+                warning['state'] = "error"
+
+
+                self.send(json.dumps(warning))
+
+        #recheck if file was nicely created
+        if (weioFiles.checkIfFileExists(lp+"/main.py")):
+            #print("weioMain indipendent process launching...")
+
+            # Inform client the we run subprocess
+            data['requested'] = rq['request']
+            data['status'] = "Warming up the engines..."
+            self.send(json.dumps(data))
+
+            consoleWelcome = {}
+            consoleWelcome['data'] = "WeIO user program started"
+            consoleWelcome['serverPush'] = "sysConsole"
+
+            self.lastLaunched = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            consoleWelcome['data'] = 'WeIO user server launched ' + self.lastLaunched
+            if (weioIdeGlobals.CONSOLE != None):
+                #weioIdeGlobals.CONSOLE.send(json.dumps(data))
+                weioIdeGlobals.CONSOLE.send(json.dumps(consoleWelcome))
+            self.playing = True
+
+            # send *start* command to user tornado
+            self.weioPipe.stdin.write("*START*")
+
+
+        else : # FILE DON'T EXIST
+            warning = {}
+            warning['requested'] = rq['request']
+            warning['status'] = "main.py don't exist!"
+            warning['state'] = "error"
+
+
+            self.send(json.dumps(warning))
 
     def stop(self, rq={'request':'stop'}):
         """Stop running application"""

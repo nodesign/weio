@@ -229,22 +229,11 @@ class UserControl():
 
     def launcher(self):
         #print "======>>> LAUNCHING..."
-        
-        # get configuration from file       
+        # Re-load user main (in case it changed)
         confFile = weioConfig.getConfiguration()
-        # get location of last opened project
-        lp = confFile["last_opened_project"]
-        
-         # check if main.py exists in current user project
-        if (weioFiles.checkIfFileExists(lp+"/main.py")):
-            # set the location of current project main.py
-            projectModule = lp.replace('/', '.') + ".main"
-            
-        else :
-            # Use the location of default main.py
-            projectModule = "www.defaultMain.main"
-            print "WARNING: Using WeIO default main.py (www/defaultMain/main.py)"
-              
+
+        # Get the last name of project and run it
+        projectModule = confFile["last_opened_project"].replace('/', '.') + ".main"
         #print "CALL", projectModule
         # Init GPIO object for uper communication
         if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
