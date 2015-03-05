@@ -431,18 +431,14 @@ function runPreview() {
         _addr = http_prefix + a[0] + ':' + userServerPort;
     }
     
-    var path = projectName;
-    $(".iframeContainerIndex").attr("src", _addr + "/" + path + "/index.html?" + randomNumber);
-    // console.log(confFile.weio_lib_path);
-    $(".iframeContainerIndex").css({
-        "display" : "block",
-        "height" : screen.height-60 + "px"
-        });
+    $(".iframeContainerIndex").attr("src", _addr + "/" + projectName + "/index.html?" + randomNumber);
+    /*$(".iframeContainerIndex").css({ "display" : "block","height" : screen.height-60 + "px" });*/
+	$(".iframeContainerIndex").css({ "display" : "block","height" : screen.height-190 + "px" });
     $(".iframeContainerIndex").css("margin-top", screen.height+60 + "px");
     
     //$(".iframeContainer").hide();
 
-    //$(".iframeContainers").animate( { "margin-top": -screen.height }, { queue: false, duration: 500 });
+    /*$(".iframeContainers").animate( { "margin-top": -screen.height }, { queue: false, duration: 500 });*/
     $(".iframeContainer").animate( { "margin-top": -screen.height }, { queue: false, duration: 500 });
     $(".iframeContainer").css("display", "inline");
     $(".iframeContainerIndex").animate( { "margin-top": "40px" }, { queue: false, duration: 500 });
@@ -917,4 +913,3 @@ function newProjectIsCreated(data) {
     reloadIFrame();
 
 }
-
