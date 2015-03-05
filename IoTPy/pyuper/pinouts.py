@@ -1,4 +1,4 @@
-from IoTPy.pyuper.utils import IoTPy_APIError
+from IoTPy.pyuper.utils import errmsg, IoTPy_APIError
 
 CAP_RESERVED = 0x0
 CAP_GPIO     = 0x1
@@ -31,13 +31,13 @@ class IoPinout(dict):
         super(IoPinout,self).__init__(*args, **kw)
         for key in self:
             if not isinstance(key, int) or not isinstance(self[key], IoParams):
-                raise IoTPy_APIError("IoPinout must consist of integer keys and IoParams values.")
+                errmsg("UPER API: IoPinout must consist of integer keys and IoParams values.")
 
     def __delitem__(self, key):
-        raise IoTPy_APIError("IoPinout can not be modified.")
+        errmsg("UPER API: IoPinout can not be modified.")
 
     def __setitem__(self, key, value):
-        raise IoTPy_APIError("IoPinout can not be modified.")
+        errmsg("UPER API: IoPinout can not be modified.")
 
 
 UPER1_PINOUT = IoPinout({

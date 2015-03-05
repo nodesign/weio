@@ -20,7 +20,6 @@ class UPER1_ADC(ADC):
             self.logical_pin = self.board.pinout[pin].pinID
         else:
             errmsg("UPER API: Pin No:%d is not an ADC pin.", pin)
-            raise IoTPy_APIError("Trying to assign ADC function to non ADC pin.")
         self.adc_pin = self.board.pinout[pin].extra[0]
         self.board.uper_io(0, self.board.encode_sfp(3, [self.logical_pin, 0]))  # set GPIO to HIGH_Z
         self.board.uper_io(0, self.board.encode_sfp(2, [self.logical_pin]))  # set secondary pin function

@@ -11,7 +11,6 @@ class UPER1_GPIO(GPIO):
     :type board: :class:`IoTPy.pyuper.ioboard.IoBoard`
     :param pin: GPIO pin number.
     :type pin: int
-    :raise: IoTPy_APIError
     """
 
     def __init__(self, board, pin):
@@ -20,7 +19,6 @@ class UPER1_GPIO(GPIO):
             self.logical_pin = self.board.pinout[pin].pinID
         else:
             errmsg("UPER API: Pin No:%d is not GPIO pin.", pin)
-            raise IoTPy_APIError("Trying to assign GPIO function to non GPIO pin.")
 
         # Configure default state to be input with pull-up resistor
         self.direction = GPIO.INPUT
@@ -42,13 +40,12 @@ class UPER1_GPIO(GPIO):
         :param resistor: GPIO internal resistor mode. Used when direction is GPIO.INPUT. Should be GPIO.PULL_UP, \
         GPIO.PULL_DOWN or GPIO.INPUT.
 
-        :raise: IoTPy_APIError
         """
         if not direction in [GPIO.OUTPUT, GPIO.INPUT]:
-            raise IoTPy_APIError("Invalid GPIO direction. Should be GPIO.INPUT or GPIO.OUTPUT")
+            errmsg("UPER API: Invalid GPIO direction. Should be GPIO.INPUT or GPIO.OUTPUT")
 
         if direction == GPIO.INPUT and not resistor in [GPIO.INPUT, GPIO.PULL_UP, GPIO.PULL_DOWN]:
-            raise IoTPy_APIError("Invalid GPIO resistor setting. Should be GPIO.INPUT, GPIO.PULL_UP or GPIO.PULL_DOWN")
+            errmsg("UPER API: Invalid GPIO resistor setting. Should be GPIO.INPUT, GPIO.PULL_UP or GPIO.PULL_DOWN")
 
         self.direction = direction
 
@@ -76,13 +73,12 @@ class UPER1_GPIO(GPIO):
         :param resistor: GPIO internal resistor mode. Used when direction is GPIO.INPUT. Should be GPIO.PULL_UP, \
         GPIO.PULL_DOWN or GPIO.INPUT.
 
-        :raise: IoTPy_APIError
         """
         if not direction in [GPIO.OUTPUT, GPIO.INPUT]:
-            raise IoTPy_APIError("Invalid GPIO direction. Should be GPIO.INPUT or GPIO.OUTPUT")
+            errmsg("UPER API: Invalid GPIO direction. Should be GPIO.INPUT or GPIO.OUTPUT")
 
         if direction == GPIO.INPUT and not resistor in [GPIO.INPUT, GPIO.PULL_UP, GPIO.PULL_DOWN]:
-            raise IoTPy_APIError("Invalid GPIO resistor setting. Should be GPIO.INPUT, GPIO.PULL_UP or GPIO.PULL_DOWN")
+            errmsg("UPER API: Invalid GPIO resistor setting. Should be GPIO.INPUT, GPIO.PULL_UP or GPIO.PULL_DOWN")
 
         self.direction = direction
 
@@ -170,7 +166,6 @@ class UPER1_GPIO(GPIO):
 
         :return: Logical interrupt ID
         :rtype: int
-        :raise: IoTPy_APIError
         """
         try:
             irq_id = self.board.interrupts.index(self.logical_pin)
@@ -181,7 +176,6 @@ class UPER1_GPIO(GPIO):
                 self.board.interrupts[irq_id] = self.logical_pin
             except ValueError:
                 errmsg("UPER API: more than 8 interrupts requested")
-                raise IoTPy_APIError("Too many interrupts.")
         self.board.callbackdict[self.logical_pin] = {'mode': event, 'callback': callback, 'userobject': user_object}
         self.board.uper_io(0, self.board.encode_sfp(6, [irq_id, self.logical_pin, event, debounce_time]))
         return irq_id
@@ -191,7 +185,6 @@ class UPER1_GPIO(GPIO):
         Detach (disable) GPIO interrupt.
 
         :return: True on success, False otherwise
-        :raise: IoTPy_APIError
         """
 
         try:
@@ -204,10 +197,10 @@ class UPER1_GPIO(GPIO):
         return True
 
     def get_irq_count(self):
-        raise NotImplementedError()
+        errmsg("UPER API: Not implemented")
 
     def clear_irq_count(self, clear_to=0):
-        raise NotImplementedError()
+        errmsg("UPER API: Not implemented")
 
     def read_pulse(self, level=GPIO.HIGH, timeout=100000):
         if self.direction != self.INPUT:

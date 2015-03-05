@@ -70,9 +70,9 @@ class IoBoard:
                         break
                 port_to_try.close()
             except:
-                raise IoTPy_APIError("Unrecoverable serial port error.")
+                errmsg("UPER API: Unrecoverable serial port error.")
         if not ser:
-            raise IoTPy_APIError("No UPER found on USB/serial ports.")
+            errmsg("UPER API: No UPER found on USB/serial ports.")
 
         self.interrupts = [None] * 8
         self.callbackdict = {}
@@ -98,7 +98,6 @@ class IoBoard:
         """
         Stop all communications with the board and close serial communication port.
 
-        :raise: IoTPy_APIError
         """
 
         #for i in range(7):
@@ -108,7 +107,7 @@ class IoBoard:
             self.ser.flush()
             self.ser.close()
         except:
-            raise IoTPy_APIError("UPER API: Serial/USB port disconnected.")
+            errmsg("UPER API: Serial/USB port disconnected.")
 
     def _encode_int(self, intarg):
         if intarg < 64:
@@ -125,7 +124,7 @@ class IoBoard:
         elif len(packedlen) == 2:
             return '\xc5' + packedlen + bytestr
         else:
-            raise IoTPy_APIError("UPER API: - too long string passed to UPER, encode_bytes can't handle it.")
+            errmsg("UPER API: - too long string passed to UPER, encode_bytes can't handle it.")
 
     def encode_sfp(self, command, args):
         """
@@ -190,7 +189,7 @@ class IoBoard:
                         arglen = struct.unpack('>H', buffer[pointer:pointer + 2])[0]
                         pointer += 1
                     else:
-                        raise IoTPy_APIError("UPER API: Bad parameter type in decodeSFP method.")
+                        errmsg("UPER API: Bad parameter type in decodeSFP method.")
                     pointer += 1
                     args.append(buffer[pointer:pointer + arglen])
                     pointer += arglen
@@ -207,13 +206,13 @@ class IoBoard:
         try:
             self.ser.write(output_buf)
         except:
-            raise IoTPy_APIError("Unrecoverable serial port writing error, dying.")
+            errmsg("UPER API: Unrecoverable serial port writing error, dying.")
         data = None
         if ret != 0:
             try:
                 data = self.outq.get(True, 1)
             except Queue.Empty:
-                raise IoTPy_APIError("Nothing to read on serial port exception.")
+                errmsg("UPER API: Nothing to read on serial port exception.")
         return data
 
     def internalCallBack(self, interrupt_data):
@@ -229,7 +228,7 @@ class IoBoard:
         try:
             callback_entry['callback'](interrupt_event, callback_entry['userobject'])
         except Exception as e:
-            errmsg("[UPER API] Interrupt callback exception: %s" % e)
+            errmsg("UPER API: Interrupt callback exception: %s" % e)
         return
 
     def get_device_info(self):
@@ -241,8 +240,7 @@ class IoBoard:
         device_info = []
         result = self.decode_sfp(self.uper_io(1, self.encode_sfp(255, [])))
         if result[0] != -1:
-            errmsg("UPER error: get_device_info wrong code.")
-            raise IoTPy_APIError("")
+            errmsg("UPER API: get_device_info wrong code.")
         result = result[1]
         if result[0] >> 24 != 0x55:  # 0x55 == 'U'
             print "UPER error: getDeviceInfo unknown device/firmware type"
@@ -275,15 +273,15 @@ class IoBoard:
             if _names.has_key(name):
                 pin = _names[name]
             else:
-                raise IoTPy_APIError("Invalid ADC name %s. Must be one of %s." % (name, ", ".join(sorted(_names.keys()))))
+                errmsg("UPER API: Invalid ADC name %s. Must be one of %s." % (name, ", ".join(sorted(_names.keys()))))
         else:
-            raise IoTPy_APIError("ADC name must be an integer or a string")
+            errmsg("UPER API: ADC name must be an integer or a string")
 
         return UPER1_ADC(self, pin)
 
     def GPIO(self, name, *args, **kwargs):
         if not isinstance(name, int):
-            raise IoTPy_APIError("GPIO name must be an integer.")
+            errmsg("UPER API: GPIO name must be an integer.")
 
         return UPER1_GPIO(self, name)
 
@@ -298,9 +296,9 @@ class IoBoard:
             if _names.has_key(name):
                 pin = _names[name]
             else:
-                raise IoTPy_APIError("Invalid PWM name %s. Must be one of %s." % (name, ", ".join(sorted(_names.keys()))))
+                errmsg("UPER API: Invalid PWM name %s. Must be one of %s." % (name, ", ".join(sorted(_names.keys()))))
         else:
-            raise IoTPy_APIError("PWM name must be an integer or a string")
+            errmsg("UPER API: PWM name must be an integer or a string")
 
         return UPER1_PWM(self, pin, freq, polarity)
 
@@ -312,9 +310,9 @@ class IoBoard:
             if _names.has_key(name):
                 port = _names[name]
             else:
-                raise IoTPy_APIError("Invalid SPI name %s. Must be one of %s." % (name, ", ".join(sorted(_names.keys()))))
+                errmsg("UPER API: Invalid SPI name %s. Must be one of %s." % (name, ", ".join(sorted(_names.keys()))))
         else:
-            raise IoTPy_APIError("PWM name must be an integer or a string")
+            errmsg("UPER API: PWM name must be an integer or a string")
 
         divider = int(round(2.0e6/clock))
 
@@ -371,7 +369,6 @@ class Reader:
                         self.outq.put(data)
             except:
                 errmsg("UPER API: serial port reading error.")
-                #raise APIError("Serial port reading error.")
                 break
         self.alive = False
 

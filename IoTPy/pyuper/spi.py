@@ -36,7 +36,6 @@ class UPER1_SPI(SPI):
             self.board.uper_io(0, self.board.encode_sfp(20, [self.divider, self.mode]))
         else:
             errmsg("UPER API: Wrong SPI port number.", self.port)
-            raise IoTPy_APIError("SPI port must be 0 or 1, trying to assign something else.")
 
     def __enter__(self):
         return self
