@@ -16,16 +16,15 @@
 from weioLib.weio import *
 
 import imaplib
-import email
 
 def setup():
-    attach.process(myProcess)
+    attach.process(googleInbox)
     
-def myProcess():
+def googleInbox():
     # define imap server, username and password
     server   = 'imap.gmail.com'
-    username = 'USERNAME'
-    password = 'PASSWORD'
+    username = 'manu.devialet@gmail.com'
+    password = 'Marleycito'
 
     # connect to server
     account = imaplib.IMAP4_SSL(server, 993)
@@ -45,4 +44,4 @@ def myProcess():
         else :
             digitalWrite(18,HIGH)
         # wait 2 seconds    
-        delay(2000)    
+        delay(2000)

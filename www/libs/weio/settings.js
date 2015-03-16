@@ -111,7 +111,17 @@ $(document).ready(function () {
             
             $("#timezones").empty();
             for (var i=0; i<confFile.length; i++) {
-                $("#timezones").append('<option value="'+confFile[i].value+'">'+confFile[i].name+'</option>');
+                var value2 = '';
+                var value3 = '';
+                if(confFile[i].value2){
+                    value2 =  ','+confFile[i].value2;
+                }  
+                if(confFile[i].value3){
+                    value3 = ','+confFile[i].value3;
+                }
+                $("#timezones").append('<option value="'
+                        +confFile[i].value1+value2+value3+'">'
+                        +confFile[i].region+' / '+confFile[i].city+'</option>');
             }
     });
 
@@ -123,7 +133,7 @@ function currnetSettingsData(data) {
     var dns_name = data.dns_name.split(".")[0]; //split string to remove domain name.
         play_composition_on_server_boot = "";
         auto_to_ap = "";
-        timezone = data.timezone
+        timezone_region = data.timezone_region
 
     $("body").find("#userName").val(data.user);
     $("body").find("#networkBoardName").val(dns_name);
@@ -141,8 +151,9 @@ function currnetSettingsData(data) {
         auto_ap_mode = false
     }
     $("body").find("#networkAutoApMode").prop("checked", auto_ap_mode);
-    $("body").find("#timezones").val(timezone);
-};
+    // TODO: Bind user timezone region to select box
+   
+   };
 
 
 /* Function will trigger modal dialog with reload message, 
@@ -203,7 +214,7 @@ function updateNetworkData() {
     if(!ui_disabled){
         var board_name = $("body").find("#networkBoardName").val().split(".")[0]; // split string to avoid domain name (e.g avoid .locale)
             auto_ap_mode = $("body").find("#networkAutoApMode").is(":checked");
-            timezone = $("body").find("#timezones").find(":selected").text();
+            timezone = $("body").find("#timezones").find(":selected").val();
 
         if(auto_ap_mode) {
             auto_ap_mode = "YES"
