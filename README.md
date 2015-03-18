@@ -18,3 +18,12 @@ One more advantage of WeIO is that it can create real standalone applications - 
 WeIO consists of the development board and WeIO IDE, locally served (not from the cloud) web application that lets you program and control all inputs and outputs on the board from any browser. Programming of WeIO is easy and fun, as it is done with HTML5 or Python - languages that are loved by designers.
 
 WeIO project opens the doors to creating new and original objects that never existed before. And it will be available to the whole community - as an Open Source and Open Hardware. Possibility for everyone to quickly make industry-grade smart and connected objects that are practically ready for production and market is amazing! In the new era of specialized fablabs for innovative enterprises and DIY production tool like WeIO will find a significant place. 
+
+## Links
+- Official site: http://we-io.net
+- Code: https://github.com/nodesign/weio
+- Documentation: http://we-io.net/doc/gettingStarted.html
+- IRC: https://gitter.im/nodesign/weio
+- Forum: http://we-io.net/forum
+- Twitter: @weionet, https://twitter.com/weionet
+- G+ Community: https://plus.google.com/communities/110133397127955432081

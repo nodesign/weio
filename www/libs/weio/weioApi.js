@@ -58,8 +58,7 @@ var _weio = null;
  * Each key is binded to coresponding function
  */
 var weioCallbacks = {
-    "inbox":callInbox,
-    "attachInterrupt":weioExecuteInterrupt
+    "inbox":callInbox
 };
 
 /**
@@ -139,18 +138,19 @@ $(document).ready(function() {
                 data = JSON.parse(e.data);
                 console.log(data);
                 
-                if ("requested" in data) {
+                    if ("requested" in data) {
+                        // this is instruction that was echoed from server + data as response
+                        instruction = data.requested;  
+                        if (instruction in weioCallbacks) 
+                            weioCallbacks[instruction](data);
+                    } else if ("serverPush" in data) {
                     // this is instruction that was echoed from server + data as response
-                    instruction = data.requested;  
-                    if (instruction in weioCallbacks) 
-                        weioCallbacks[instruction](data);
-                } else if ("serverPush" in data) {
-                    // this is instruction that was echoed from server + data as response
-
-                    instruction = data.serverPush;  
-                    if (instruction in weioCallbacks) 
-                        weioCallbacks[instruction](data.data);
-
+                        instruction = data.serverPush;  
+                        if (instruction in weioCallbacks) {
+                            weioCallbacks[instruction](data.data);
+                            
+                        } 
+                    
                 }
             };
         
@@ -317,14 +317,14 @@ function noTone(pin) {
 function constrain(x, a, b) {
     if(x > a){
         if(x < b){
-            return a
+            return a;
 		}
 	}
     if(x < a){
-        return a
+        return a;
 	}
     if(x > b){
-        return b
+        return b;
 	}
 };
 
@@ -362,14 +362,11 @@ function callInbox(data) {
     }
 };
 
-function attachInterrupt(pin, mode, callback, obj) {
+function attachInterrupt(pin, mode, callback) {
     var fName = callback.name;
+    weioCallbacks[fName] = callback;
     weioInterrupts[pin] = fName;
-    genericMessage("attachInterrupt", [pin, mode,fName,obj], null);
-}
-
-function weioExecuteInterrupt(data) {
-    console.log("INTERRUPR",data);
+    genericMessage("attachInterrupt", [pin, mode,fName], null);
 }
 
 function detachInterrupt(pin) {

@@ -48,6 +48,8 @@
 ###
 
 from weioLib.weioIO import *
+from weioUserApi import serverPush
+
 from weioLib import weioRunnerGlobals
 import platform, sys
 
@@ -160,7 +162,8 @@ def callProportion(data) :
 
 def callAttachInterrupt(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
-        attachInterrupt(data[0], data[1], data[2], data[3])
+        iObj = {"pin" : data[0], "jsCallbackString" : data[2]}
+        attachInterrupt(data[0], data[1], genericInterrupt, iObj)
     else:
         print "attachInterrupt ON PC", data
     return None
@@ -171,6 +174,12 @@ def callDetachInterrupt(data) :
     else:
         print "detachInterrupt ON PC", data
     return None
+
+def genericInterrupt(event, obj):
+    bck = {}
+    bck["data"] = obj["pin"]
+    bck["eventType"] = getInterruptType(event["type"])
+    serverPush(obj["jsCallbackString"], bck)
 
 def callDelay(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
@@ -227,14 +236,6 @@ def callGetTemperature(data):
         print "getTemperature ON PC", data
         bck["data"] = 0 # faked value
     return bck
-
-def genericInterrupt(data):
-    #type = data["type"]
-    #data = {}
-    #data["requested"] = 'analogRead'
-    #data["data"] = value
-    #self.write_message(json.dumps(data))
-    pass
 
 def callUserMesage(data):
     print "USER TALKS", data
