@@ -29,7 +29,6 @@ class UPER1_PWM(PWM):
             self.logical_pin = self.board.pinout[pin].pinID
         else:
             errmsg("UPER API: Pin No:%d is not a PWM pin.", pin)
-            raise IoTPy_APIError("Trying to assign PWM function to non PWM pin.")
         self.pwm_port = self.board.pinout[pin].extra[0]
         self.pwm_pin = self.board.pinout[pin].extra[1]
         self.primary = True
@@ -59,7 +58,6 @@ class UPER1_PWM(PWM):
 
         :param period_us: PWM signal period in microseconds.
         :type period_us: int
-        :raise: IoTPy_APIError
         """
         if 0 <= period_us <= self._PWM_PORT_MAX[self.pwm_port]:
             if PWM_PORT_RUNNING[self.pwm_port]['period'] != period_us:
@@ -67,7 +65,6 @@ class UPER1_PWM(PWM):
                 PWM_PORT_RUNNING[self.pwm_port]['period'] = period_us
         else:
             errmsg("UPER API: PWM period for port %d can be only between 0-%d" % (self.pwm_port, self._PWM_PORT_MAX[self.pwm_port]))
-            raise IoTPy_APIError("PWM period is out of range.")
 
     def set_duty_cycle(self, duty_cycle):
         """
@@ -84,7 +81,6 @@ class UPER1_PWM(PWM):
 
         :param pulse_us: Pulse time in microseconds.
         :type pulse_us: int
-        :raise: IoTPy_APIError
         """
         if self.primary:
             self.board.uper_io(0, self.board.encode_sfp(2, [self.logical_pin]))  # set pin secondary function
@@ -99,4 +95,3 @@ class UPER1_PWM(PWM):
             self.board.uper_io(0, self.board.encode_sfp(UPER1_PWM._PWM_PORT_FUNCTIONS[self.pwm_port][1], [self.pwm_pin, high_time]))
         else:
             errmsg("UPER error: PWM high time is out of range on logical pin %d." % self.logical_pin)
-            raise IoTPy_APIError("PWM high time is out of range.")

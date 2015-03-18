@@ -39,7 +39,6 @@ class UPER1_I2C(I2C):
                     dev_list.append(address)
             except IoTPy_APIError:
                 errmsg("UPER API: I2C bus not connected.")
-                raise IoTPy_IOError("I2C bus not connected.")
         return dev_list
 
     def read(self, address, count):
@@ -63,13 +62,11 @@ class UPER1_I2C(I2C):
         :type read_length: int
         :return: Received data or I2C communication error code.
         :rtype: str or int
-        :raise: IoTPy_APIError, IoTPy_ThingError
         """
 
         try:
             result = self.board.decode_sfp(self.board.uper_io(1, self.board.encode_sfp(41, [address, write_data, read_length])))
         except IoTPy_APIError:
             errmsg("UPER API: I2C bus not connected.")
-            raise IoTPy_IOError("I2C bus not connected.")
 
         return result[1][1], result[1][2]  # return read buffer and error
