@@ -77,10 +77,12 @@ class WeioSettingsHandler(SockJSConnection):
         data = {}
         self.user =  rq['data']['user']
         self.password =  rq['data']['password']
+        self.login_required = rq['data']['login_required']
         self.play_composition_on_server_boot = rq['data']['play_composition_on_server_boot']
         config = weioConfig.getConfiguration()
         config["user"] = self.user
         config["play_composition_on_server_boot"] = self.play_composition_on_server_boot
+        config["login_required"] = self.login_required
         # Check if new password is sent
         if self.password:
             config["password"] = self.password

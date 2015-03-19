@@ -132,6 +132,7 @@ $(document).ready(function () {
 function currnetSettingsData(data) {
     var dns_name = data.dns_name.split(".")[0]; //split string to remove domain name.
         play_composition_on_server_boot = "";
+        login_required = "";
         auto_to_ap = "";
         timezone_region = data.timezone_region
 
@@ -142,9 +143,14 @@ function currnetSettingsData(data) {
         play_composition_on_server_boot = true
     } else {
         play_composition_on_server_boot = false
+    } 
+    if(data.login_required === "YES") {
+        login_required = true;  
+    } else {
+        login_required = false;
     }
     $("body").find("#userLatestProjectOnBoot").prop("checked", play_composition_on_server_boot);
-
+    $("body").find("#loginRequiredIDE").prop("checked", login_required);
     if (data.auto_to_ap == "YES") {
         auto_ap_mode = true
     } else {
@@ -187,6 +193,7 @@ function updateUserData() {
         var user = $("body").find("#userDataForm #userName").val();
             password = $("body").find("#userDataForm #userPass").val();
             re_password = $("body").find("#userDataForm #reUserPass").val();
+            login_required = $("body").find("#userDataForm #loginRequiredIDE").is(':checked');
             latest_project_on_boot = $("body").find("#userDataForm #userLatestProjectOnBoot").is(':checked');
        
         if(latest_project_on_boot){
@@ -194,13 +201,20 @@ function updateUserData() {
         } else {
             latest_project_on_boot = "NO"
         }
+
+        if(login_required){
+            login_required = "YES"
+        } else {
+            login_required = "NO"
+        }
         // Check user password matching 
         if(password != re_password){
             ui_disabled = true;
             $("body").find("#reponseMsg").append("<div class='alert alert-message alert-error'>Passwords do not match!</div>").hide().slideToggle( "slow" );
             
         } else {
-            updateData = {"request": "updateSettings", "data": {"user": user, "password": password, "play_composition_on_server_boot" : latest_project_on_boot}};
+            updateData = {"request": "updateSettings", "data": {"user": user, "password": password, 
+                        "login_required":login_required , "play_composition_on_server_boot" : latest_project_on_boot}};
             console.log(updateData);
             settingsSocket.send(JSON.stringify(updateData));
         }

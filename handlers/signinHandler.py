@@ -67,6 +67,7 @@ class WeioSigninHandler(loginHandler.BaseHandler):
         confFile = weioConfig.getConfiguration()
         fullName = self.get_argument("fullName", "")
         passwd = self.get_argument("password", "")
+        login_required = self.get_argument("loginRequired", "NO")
         boardname = self.get_argument("boardname", "")
         timezone = self.get_argument("timezone", "UTC+1")
         # This is two letters country code to be used to setup wifi region
@@ -77,9 +78,11 @@ class WeioSigninHandler(loginHandler.BaseHandler):
         data = {}
         # OK now is time to setup username and password
         confFile['user'] = fullName
+        confFile['login_required'] = login_required
         weioConfig.saveConfiguration(confFile)
         confFile['timezone'] = timezone
         output = "OK PASSWD"
+
         #echo -e "weio\nweio" | passwd
 
         # ATTENTION, DON'T MESS WITH THIS STUFF ON YOUR LOCAL COMPUTER
