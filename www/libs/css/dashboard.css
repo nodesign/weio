@@ -459,3 +459,8 @@ li.dropdown .dropdown-toggle {
 
 
 }
+.error-msg {
+  display: none;
+  color:red;
+
+}

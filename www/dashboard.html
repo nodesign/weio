@@ -76,7 +76,7 @@
     <script src="libs/weio/wifi.js?n=1"> </script> 
     <script src="libs/weio/dashboard.js?n=1"> </script>
     <script src="libs/weio/updater.js?n=1"> </script>
-   
+
     <script src="libs/chartJS/Chart.min.js"> </script>
     
     <!-- main javascript code is at the end of this file-->
@@ -122,7 +122,7 @@
 
                 <div id="controlCenter">
 
-                   <span class="label" id="statusBar">
+                 <span class="label" id="statusBar">
                     <p id="statusBarText1">loading...</p>
                     <p id="statusBarText2">Gimme some good code!</p>
                     <canvas id="weioProgress" class="weioProgressWheel"></canvas>
@@ -245,207 +245,204 @@
 
             <!-- Modal Updater process first screen -->
             <div id="updateWeio" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-             <div class="modal-header">
-                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                 <h3 id="myModalUpdateWeioLabel">Welcome to WeIO updater procedure</h3>
-             </div>
-             <div class="modal-body" id="updateWeioData">
+               <div class="modal-header">
+                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                   <h3 id="myModalUpdateWeioLabel">Welcome to WeIO updater procedure</h3>
+               </div>
+               <div class="modal-body" id="updateWeioData">
 
-             </div>
-             <div class="modal-footer">
-                 <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                 <button class="btn btn-primary" onclick="runUpdateProcedure()" id="updateButton">OK</button>
-             </div>
-         </div>
-         <!-- END Modal Updater process  -->
+               </div>
+               <div class="modal-footer">
+                   <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                   <button class="btn btn-primary" onclick="runUpdateProcedure()" id="updateButton">OK</button>
+               </div>
+           </div>
+           <!-- END Modal Updater process  -->
 
 
-         <!-- Modal Updater process second screen -->
-         <div id="updateWeioProcedure" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-          <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-              <h3 id="myModalUpdateWeioLabel">Update progress</h3>
+           <!-- Modal Updater process second screen -->
+           <div id="updateWeioProcedure" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  <h3 id="myModalUpdateWeioLabel">Update progress</h3>
+              </div>
+              <div class="modal-body" id="updateWeioData">
+
+                  <h4 id="progressStatus"></h4>
+
+                  <canvas id="updateProgressChart"></canvas>
+                  <p id="updaterMessage">WeIO is updating now. Please don't touch anything. If program stucks after progress
+                    bar is done try to reload this page or to reset hardware</p>
+
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-primary" onclick="reloadMe()" id="reloadMeButton">Reload</button>
+              </div>
           </div>
-          <div class="modal-body" id="updateWeioData">
-
-              <h4 id="progressStatus"></h4>
-
-              <canvas id="updateProgressChart"></canvas>
-              <p id="updaterMessage">WeIO is updating now. Please don't touch anything. If program stucks after progress
-                bar is done try to reload this page or to reset hardware</p>
-
+          <!-- END Modal Updater process  -->
+          <!-- Modal Create New project -->
+          <div id="createNewProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3>Create new project</h3>
             </div>
+            <div class="modal-body" id="wifiParameters">
+                <input type="text" class="input-small" placeholder="Name without spaces" id="newProjectName" style="width:200px">
+                <div class="storageUnitChooser"></div>
+                <small id="errorNewPjName" class="error error-msg"></small>
+            </div>
+
             <div class="modal-footer">
-              <button class="btn btn-primary" onclick="reloadMe()" id="reloadMeButton">Reload</button>
-          </div>
-      </div>
-      <!-- END Modal Updater process  -->
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                <button class="btn btn-primary" onclick="createNewProject()">Continue</button>
+            </div>
+        </div>
+        <!-- END Modal Create New project -->
 
+        <!-- Modal Duplicate active project -->
+        <div id="duplicateProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3>Give a name to duplicated project</h3>
+            </div>
+            <div class="modal-body" id="wifiParameters">
 
-      <!-- Modal Create New project -->
-      <div id="createNewProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <input type="text" class="input-small" placeholder="Name without spaces" id="duplicatedProjectName" style="width:200px">
+                <div class="storageUnitChooser"></div>
+                <small id="errorDuplicatePjName" class="error error-msg"></small>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                <button class="btn btn-primary" onclick="duplicateProject()">Continue</button>
+            </div>
+        </div>
+        <!-- END Modal Duplicate active project -->
+
+        <!-- Archive project -->
+        <div id="downloadProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3>Download active project</h3>
+            </div>
+
+            <div class="modal-body" id="wifiParameters">
+             <p>WeIO will archive your project and show it inside file tree. Then you can click to download it</p>
+         </div>
+
+         <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <button class="btn btn-primary" onclick="archiveProject()" data-dismiss="modal">Continue</button>
+        </div>
+    </div>
+    <!-- END Archive project -->
+
+    <!-- Import existing project -->
+    <div id="importProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3>Create new project</h3>
+            <h3>Import existing project</h3>
         </div>
+
         <div class="modal-body" id="wifiParameters">
 
-            <input type="text" class="input-small" placeholder="Name without spaces" id="newProjectName" style="width:200px">
-            
+            <p>Import projet to :</p>
+
             <div class="storageUnitChooser"></div>
-            
+
+
+            <div style="position:relative;">
+               <a class='btn' href='javascript:;'>
+                Choose WeIO project tar file...
+                <input id="importProjectUploader" type="file"
+                style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:
+                "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;'
+                name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'></a>
+                &nbsp;
+                <span class='label label-info' id="upload-file-info"></span>
+            </div>
         </div>
-        
+
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-            <button class="btn btn-primary" onclick="createNewProject()" data-dismiss="modal">Continue</button>
+            <button class="btn btn-primary" onclick="" data-dismiss="modal">Finish</button>
         </div>
     </div>
-    <!-- END Modal Create New project -->
-    
-    <!-- Modal Duplicate active project -->
-    <div id="duplicateProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <!-- END Archive project -->
+
+
+
+    <!-- Modal Something bad happened - deconnection -->
+    <div id="imDead" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3>Give a name to duplicated project</h3>
+            <h3>Oh! I've lost connection!</h3>
         </div>
-        <div class="modal-body" id="wifiParameters">
 
-            <input type="text" class="input-small" placeholder="Name without spaces" id="duplicatedProjectName" style="width:200px">
-            <div class="storageUnitChooser"></div>
+        <div class="modal-body" id="testament">
+
         </div>
-        
+
+        <div class="modal-footer">
+            <button class="btn btn-primary" onclick="location.reload()" data-dismiss="modal">Reload</button>
+        </div>
+    </div>
+    <!-- Modal Something bad happened - deconnexion -->
+
+    <!-- Modal Something bad happened - deconnection -->
+    <div id="reinstallFw" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3>Warning</h3>
+        </div>
+
+        <div class="modal-body" id="reinstallWeIOfw">
+            <p>This procedure will download latest WeIO firmware from Internet server and replace actual one. All data will be lost as flash memory will be formatted. Please backup all your important data before doing this</p>
+        </div>
+
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-            <button class="btn btn-primary" onclick="duplicateProject()" data-dismiss="modal">Continue</button>
+            <button class="btn btn-primary" onclick="reinstallFw()" data-dismiss="modal">Continue</button>
         </div>
     </div>
-    <!-- END Modal Duplicate active project -->
-    
-    <!-- Archive project -->
-    <div id="downloadProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <!-- Modal Something bad happened - deconnexion -->
+
+    <!-- Project already exists please change name -->
+    <div id="alreadyExists" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3>Download active project</h3>
+            <h3>Project already exists</h3>
         </div>
-        
-        <div class="modal-body" id="wifiParameters">
-           <p>WeIO will archive your project and show it inside file tree. Then you can click to download it</p>
-       </div>
 
-       <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-        <button class="btn btn-primary" onclick="archiveProject()" data-dismiss="modal">Continue</button>
-    </div>
-</div>
-<!-- END Archive project -->
+        <div class="modal-body">
+            <p>Project with this name already exists. Please choose another name for the project</p>
+        </div>
 
-<!-- Import existing project -->
-<div id="importProject" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3>Import existing project</h3>
-    </div>
-
-    <div class="modal-body" id="wifiParameters">
-
-        <p>Import projet to :</p>
-
-        <div class="storageUnitChooser"></div>
-
-
-        <div style="position:relative;">
-         <a class='btn' href='javascript:;'>
-            Choose WeIO project tar file...
-            <input id="importProjectUploader" type="file"
-            style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:
-            "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;'
-            name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'></a>
-            &nbsp;
-            <span class='label label-info' id="upload-file-info"></span>
+        <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal">OK</button>
         </div>
     </div>
+    <!-- Project already exists please change name -->
 
-    <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-        <button class="btn btn-primary" onclick="" data-dismiss="modal">Finish</button>
+    <!-- NoInternet -->
+    <div id="noInternet" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3>There is no Internet connection</h3>
+        </div>
+
+        <div class="modal-body">
+            <p>There is no Internet connection. Try to connect to the Internet or try again later</p>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-primary" data-dismiss="modal">OK</button>
+        </div>
     </div>
-</div>
-<!-- END Archive project -->
+    <!-- NoInternet -->
 
 
-
-<!-- Modal Something bad happened - deconnection -->
-<div id="imDead" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3>Oh! I've lost connection!</h3>
-    </div>
-
-    <div class="modal-body" id="testament">
-
-    </div>
-
-    <div class="modal-footer">
-        <button class="btn btn-primary" onclick="location.reload()" data-dismiss="modal">Reload</button>
-    </div>
-</div>
-<!-- Modal Something bad happened - deconnexion -->
-
-<!-- Modal Something bad happened - deconnection -->
-<div id="reinstallFw" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3>Warning</h3>
-    </div>
-
-     <div class="modal-body" id="reinstallWeIOfw">
-        <p>This procedure will download latest WeIO firmware from Internet server and replace actual one. All data will be lost as flash memory will be formatted. Please backup all your important data before doing this</p>
-    </div>
-
-    <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-        <button class="btn btn-primary" onclick="reinstallFw()" data-dismiss="modal">Continue</button>
-    </div>
-</div>
-<!-- Modal Something bad happened - deconnexion -->
-
-<!-- Project already exists please change name -->
-<div id="alreadyExists" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3>Project already exists</h3>
-    </div>
-
-     <div class="modal-body">
-        <p>Project with this name already exists. Please choose another name for the project</p>
-    </div>
-
-    <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal">OK</button>
-    </div>
-</div>
-<!-- Project already exists please change name -->
-
-<!-- NoInternet -->
-<div id="noInternet" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3>There is no Internet connection</h3>
-    </div>
-
-     <div class="modal-body">
-        <p>There is no Internet connection. Try to connect to the Internet or try again later</p>
-    </div>
-
-    <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal">OK</button>
-    </div>
-</div>
-<!-- NoInternet -->
-
-
-<iframe class="iframeContainer" src="" id="weioIframe"></iframe>
-<iframe class="iframeContainerIndex" src="" id="weioIframeIndex"></iframe>
+    <iframe class="iframeContainer" src="" id="weioIframe"></iframe>
+    <iframe class="iframeContainerIndex" src="" id="weioIframeIndex"></iframe>
 </body>
 </html>
