@@ -119,6 +119,9 @@ var playButtonDisabled = false;
 var stopButtonDisabled = false;
 var disableTime = 3000;
 
+// Error messages text 
+var errorProjectName = "You must provide a project name."
+
 $(document).ready(function () {
     updateIframeHeight();
 
@@ -460,23 +463,32 @@ function runSettings() {
     // generate random number to prevent loading page from cache
     var randomNumber = Math.random();
     $(".iframeContainer").attr("src", "settings.html?" + randomNumber);
-
     $("#editorButtonHeader").attr("class", "top_tab");
     $("#previewButtonHeader").attr("class", "top_tab");
-}
+};
 
 function createNewProject() {
     projectName = $("#newProjectName").val();
-    var rq = { "request": "createNewProject", "path":projectName, "storageUnit":selectedStorageUnit};
-    console.log("STORAGE UNIT CREATE NEW PROJECT", selectedStorageUnit);
-    dashboard.send(JSON.stringify(rq));
-}
+    if(projectName !== ""){
+        var rq = { "request": "createNewProject", "path":projectName, "storageUnit":selectedStorageUnit};
+        dashboard.send(JSON.stringify(rq));
+         $("#createNewProject").modal('hide');
+    } else {
+         $("#errorNewPjName").html(errorProjectName).show().delay(5000).fadeOut();   
+    }
+   
+};
 
 function duplicateProject() {
     projectName = $("#duplicatedProjectName").val();
-    var rq = { "request": "duplicateProject", "path":projectName, "storageUnit":selectedStorageUnit};
-    dashboard.send(JSON.stringify(rq));
-}
+    if(projectName !== "") {
+        var rq = { "request": "duplicateProject", "path":projectName, "storageUnit":selectedStorageUnit};
+        dashboard.send(JSON.stringify(rq));
+        $("#duplicateProject").modal('hide');
+    } else {
+        $("#errorDuplicatePjName").html(errorProjectName).show().delay(5000).fadeOut();
+    }
+};
 
 
 /**
@@ -491,7 +503,7 @@ function setStatus(line, message) {
         $( "#statusBarText1" ).html(message);
     else
         $( "#statusBarText2" ).html(message);
-}
+};
 
 
 function prepareToPlay() {
@@ -508,7 +520,7 @@ function prepareToPlay() {
             playButtonDisabled = false;  
         }, disableTime);
     }
-}
+};
 
 function play(){
     var d = new Date();
@@ -531,13 +543,13 @@ function play(){
         console.log("play differ");
     }
 
-}
+};
 
 function sendPlayToServer() {
     var rq = { "request": "play"};
     dashboard.send(JSON.stringify(rq));
     stopTag = new Date();
-}
+};
 
 function stop(){
     if(!stopButtonDisabled){
@@ -554,13 +566,13 @@ function stop(){
             stopButtonDisabled = false;  
         }, disableTime);
     }
-}
+};
 
 
 function countTillPlay() {
     updateWeioProgressWheel(readyToPlay);
     readyToPlay+=2;
-}
+};
 
 
 function updateWeioProgressWheel(data) {
@@ -622,32 +634,32 @@ function updateWeioProgressWheel(data) {
         $( "#weioProgress" ).fadeTo( "slow", 0 );
         updateWeioProgressWheel(0);
     }
-}
+};
 
 function changeProject(path) {
     var rq = { "request": "changeProject", "data": path};
     dashboard.send(JSON.stringify(rq));
-}
+};
 
 function updateConsoleSys(data) {
     if (isEditorActive)
         document.getElementById("weioIframe").contentWindow.updateConsoleSys(data);
-}
+};
 
 function updateConsoleOutput(data) {
     if (isEditorActive)
         document.getElementById("weioIframe").contentWindow.updateConsoleOutput(data);
-}
+};
 
 function updateConsoleError(data) {
     if (isEditorActive)
         document.getElementById("weioIframe").contentWindow.updateConsoleError(data);
-}
+};
 function updateError(data) {
 	console.log(data)
 	if (isEditorActive)
 		document.getElementById("weioIframe").contentWindow.updateError(data);
-}
+};
 
 /**
  * Deletes current project, this function was called from inside editor iFrame
@@ -655,7 +667,7 @@ function updateError(data) {
 function deleteProject() {
     var rq = { "request": "deleteProject"};
     dashboard.send(JSON.stringify(rq));
-}
+};
 
 
 //CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////x
@@ -682,14 +694,14 @@ var callbacks = {
     "archiveProject": projectArchived,
     "getPreviewPortNumber": setPreviewPort,
     "ping": pingServer
-}
+};
 
 /**
  * Set port number for preview
  */
 function setPreviewPort(data){
    userServerPort =  data.data;
-}
+};
 
 /**
  * Notify user that project has been archived and refresh file tree
@@ -697,7 +709,7 @@ function setPreviewPort(data){
 function projectArchived(data) {
     setStatus(1, data.status);
     reloadIFrame(data);
-}
+};
 
 /**
  * This is player status demanded at the beginings play or stop state on player
@@ -705,7 +717,7 @@ function projectArchived(data) {
 function playerStatus(data) {
     if (data.status!=false)
         $("#playButton").attr("class", "top_tab active");
-}
+};
 
 
 /**
@@ -728,14 +740,14 @@ function projectDeleted(data) {
         var url = http_prefix + location.host + '/?'+ randomNumber;
         window.location = url;
     }
-}
+};
 
 /**
  * Shows local ip address on the screen
  */
 function showIpAddress(data){
     setStatus(0, data.status);
-}
+};
 
 /**
  * Shows project name on the dashboard
@@ -744,7 +756,7 @@ function showProjectName(data){
     $("#projectTitle").empty();
     $("#projectTitle").append(data.data);
     projectName = data.data;
-}
+};
 
 /**
  * Updates status of application from server
@@ -752,7 +764,7 @@ function showProjectName(data){
 function updateStatus(data){
     console.log("data.status");
     setStatus(1, data.status);
-}
+};
 
 /**
  * Get project names and put it into dropbox menu
@@ -861,7 +873,7 @@ function updateProjects(data) {
 
 function changeSelectedStorageUnit(unit) {
     selectedStorageUnit = unit;
-}
+};
 
 /**
  * Make tar archive of active project
@@ -869,11 +881,11 @@ function changeSelectedStorageUnit(unit) {
 function archiveProject() {
     var rq = { "request": "archiveProject"};
     dashboard.send(JSON.stringify(rq));
-}
+};
 
 function reloadIFrame(data) {
     document.getElementById('weioIframe').contentWindow.location.reload();
-}
+};
 
 function setPlayerStatus(data) {
     if (data.state!="error") {
@@ -886,21 +898,20 @@ function setPlayerStatus(data) {
 
     }
     updateStatus(data);
-}
+};
 
 function stopped(data) {
     isPlaying = false;
     $("#playButton").attr("class", "top_tab");
     updateStatus(data);
-}
+};
 
 /**
  * Get name of owner
  */
 function updateUserData(data) {
     $("#user").html(data.name);
-
-}
+};
 
 function newProjectIsCreated(data) {
 
@@ -912,4 +923,4 @@ function newProjectIsCreated(data) {
     dashboard.send(JSON.stringify(rq));
     reloadIFrame();
 
-}
+};
