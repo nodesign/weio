@@ -50,7 +50,31 @@
 var boardSocket;
 var socketOpened = false;
 
+// Pins variables 
 
+/// GPIO directions
+var INPUT = 0,
+    OUTPUT = 1,
+
+// GPIO resistors
+    NONE = 2,
+    PULL_UP = 3,
+    PULL_DOWN = 4,
+
+// GPIO events
+    LOW = 0,
+    HIGH = 1,
+    CHANGE = 2,
+    RISING = 3,
+    FALLING = 4,
+
+// Create two groups for input and output pins 
+    PINS_INPUT = [INPUT, CHANGE, RISING, FALLING],
+    PINS_OUTPUT = [OUTPUT, LOW, HIGH],
+
+// Pins group colors 
+   PINS_INPUT_COLOR = "#FF0000",
+   PINS_OUTPUT_COLOR = "#008000";
 
 function connectToBoard() {
     // connection example
@@ -110,6 +134,8 @@ function connectToBoard() {
                 // JSON data is parsed into object
                 data = JSON.parse(e.data);
                 console.log(data);
+                 console.info("Evo podataka", data);
+                $("#boardMsg").html(""); // Clear msg
 
                 // switch
                 if ("requested" in data) {
@@ -127,6 +153,8 @@ function connectToBoard() {
 
             boardSocket.onclose = function() {
                 console.log('Board Web socket is closed');
+                alert("Board Web socket is closed");
+                $("#boardMsg").html("You have to run your project to visualize occupation of pins on the board");
                 socketOpened = false;
                 clearInterval(getInfoFromBoard);
             };
@@ -142,17 +170,38 @@ function connectToBoard() {
 }
 
 function boardData(data) {
+   
     console.log("DATA BOARD ", data.data);
 
     for (var i=0; i<32; i++) {
-     if (data.data.data[i] != -1 ) {
-         $("#pin"+String(i)).attr("class", "pin_on");
-     } else {
-         $("#pin"+String(i)).attr("class", "pin");
+        // Check if pin is active 
+        if (data.data.data[i] == -1 ) {
+            $("#pin"+String(i)).attr("class", "pin");
         }
-    }
-
-}
+        // Pin is off, procced to groups loop 
+        else if ($.inArray(data.data.data[i], PINS_INPUT)) {
+            // Matching PINS_INPUT group
+             $("#pin"+String(i)).children("a").css({
+                            "background": PINS_INPUT_COLOR,
+                            "-webkit-transition":"all .4s ease",
+                            "-moz-transition": "all .4s ease",
+                            "-ms-transition": "all .4s ease",
+                           "-o-transition": "all .4s ease",
+                           "transition": "all .4s ease",
+                            });
+         } else {
+            // Matching PINS_OUTPUT group
+             $("#pin"+String(i)).children("a").css({
+                            "background": PINS_OUTPUT_COLOR,
+                            "-webkit-transition":"all .4s ease",
+                            "-moz-transition": "all .4s ease",
+                            "-ms-transition": "all .4s ease",
+                           "-o-transition": "all .4s ease",
+                           "transition": "all .4s ease",
+                        });
+            }
+        }
+};
 
 //CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
