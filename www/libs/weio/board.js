@@ -73,8 +73,8 @@ var INPUT = 0,
     PINS_OUTPUT = [OUTPUT, LOW, HIGH],
 
 // Pins group colors 
-   PINS_INPUT_COLOR = "#FF0000",
-   PINS_OUTPUT_COLOR = "#008000";
+   PINS_INPUT_COLOR = "#00e0f6",
+   PINS_OUTPUT_COLOR = "#70f647 ";
 
 function connectToBoard() {
     // connection example
@@ -134,7 +134,6 @@ function connectToBoard() {
                 // JSON data is parsed into object
                 data = JSON.parse(e.data);
                 console.log(data);
-                 console.info("Evo podataka", data);
                 $("#boardMsg").html(""); // Clear msg
 
                 // switch
@@ -153,8 +152,7 @@ function connectToBoard() {
 
             boardSocket.onclose = function() {
                 console.log('Board Web socket is closed');
-                alert("Board Web socket is closed");
-                $("#boardMsg").html("You have to run your project to visualize occupation of pins on the board");
+                $("#boardMsg").html("Run project to visualize occupation of pins on the board");
                 socketOpened = false;
                 clearInterval(getInfoFromBoard);
             };
@@ -171,9 +169,14 @@ function connectToBoard() {
 
 function boardData(data) {
    
-    console.log("DATA BOARD ", data.data);
-
     for (var i=0; i<32; i++) {
+         // Set pin tooltip  direction depends on pin order (left or right side of the board)
+        var pin_tooltip_direction = null;
+        if(i > 15) {
+            pin_tooltip_direction = 'left';
+        }else {
+            pin_tooltip_direction = 'right';
+        }
         // Check if pin is active 
         if (data.data.data[i] == -1 ) {
             $("#pin"+String(i)).attr("class", "pin");
@@ -181,7 +184,8 @@ function boardData(data) {
         // Pin is off, procced to groups loop 
         else if ($.inArray(data.data.data[i], PINS_INPUT)) {
             // Matching PINS_INPUT group
-             $("#pin"+String(i)).children("a").css({
+            var pin_selector = $("#pin"+String(i));
+             pin_selector.children("a").css({
                             "background": PINS_INPUT_COLOR,
                             "-webkit-transition":"all .4s ease",
                             "-moz-transition": "all .4s ease",
@@ -189,6 +193,10 @@ function boardData(data) {
                            "-o-transition": "all .4s ease",
                            "transition": "all .4s ease",
                             });
+             pin_selector.tooltip({
+                title: 'INPUT',
+                placement: pin_tooltip_direction,
+            });
          } else {
             // Matching PINS_OUTPUT group
              $("#pin"+String(i)).children("a").css({
@@ -199,6 +207,12 @@ function boardData(data) {
                            "-o-transition": "all .4s ease",
                            "transition": "all .4s ease",
                         });
+
+             pin_selector.tooltip({
+                 title: 'OUTPUT',
+                 placement: pin_tooltip_direction,
+                });
+             
             }
         }
 };
