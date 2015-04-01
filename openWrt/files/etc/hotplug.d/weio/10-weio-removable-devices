@@ -14,11 +14,9 @@ do
             if [ `ls -d $sd |grep 0:0:0:0` ]; then
                 # SD card not mounted
                 mkdir -p /weioUser/sd
-                touch /weioUser/sd
                 mount /dev/$sd_name /weioUser/sd
                 touch /weioUser/sd
                 touch /weioUser/sd/__init__.py
-                chmod 755 /weioUser/sd
                 logger -t DEBUG "hotplug:weio : $sd"
                  logger -t DEBUG "hotplug:weio : Mounted SD Card /dev/$sd_name "
              else
