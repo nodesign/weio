@@ -1,10 +1,10 @@
 WeIO 1.1, not released yet
 -------------------
 - IDE
-  - Improved the console output
-  - Improved the preview
-  - Added an option to enable/disable the login requirement to access the IDE
-  - Improved the way new projects are created
+ - Improved the console output a5c3785ed8d6a35868bc169f07e40e889087fd2e
+ - Improved the preview
+ - Added an option to enable/disable the login requirement to access the IDE
+ - Improved the way new projects are created
 
 - API
   - Added a debounce time parameter for interrupts
