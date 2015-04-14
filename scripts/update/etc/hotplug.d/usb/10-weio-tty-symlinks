@@ -1,0 +1,29 @@
+#!/bin/sh
+PRODID="257f/1/100"
+IFACEID="2/2/0"
+SYMLINK="lpc"
+if [ "${PRODUCT}" = "${PRODID}" ];
+    then if [ "${ACTION}" = "add" ];
+        then
+            DEVICE_NAME=$(ls /sys/$DEVPATH/tty/ | grep tty)
+            if [ -z ${DEVICE_NAME} ]; then
+                exit
+            fi
+            if [ "${INTERFACE}" = "${IFACEID}" ]; then
+                a=`cat /sys/$DEVPATH/bInterfaceNumber`
+                if [ $a = "00" ]; then
+                    ln -s /dev/$DEVICE_NAME /dev/lpc
+                    logger -t Hotplug Symlink from /dev/$DEVICE_NAME to /dev/lpc created
+                elif [ $a = "02" ]; then
+                    ln -s /dev/$DEVICE_NAME /dev/lpcUart
+                    logger -t Hotplug Symlink from /dev/$DEVICE_NAME to /dev/lpcUart created 
+                fi
+            fi
+    fi
+fi
+if [ "${PRODUCT}" = "${PRODID}" ];
+    then if [ "${ACTION}" = "remove" ];
+        then rm -f /dev/${SYMLINK}*
+        logger -t Hotplug Symlink /dev/${SYMLINK} removed
+    fi
+fi

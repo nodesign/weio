@@ -56,10 +56,9 @@ cd /weio/scripts/
 cd /weio
 rm /tmp/config.weio
 
-# Copy new files outside /weio
-mv /weio/scripts/update/samba /etc/config/samba
-mv /weio/scripts/update/smb.conf.template /etc/samba/smb.conf.template
-/etc/init.d/samba restart
+# Populate system with the new files
+cp -r /weio/scripts/update/* /
+rm -r /weio/scripts/update
 
 # flashing new firmware to LPC chip
 cd /weio/scripts/
