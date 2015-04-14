@@ -56,6 +56,10 @@ cd /weio/scripts/
 cd /weio
 rm /tmp/config.weio
 
+# Populate system with the new files
+cp -r /weio/scripts/update/* /
+rm -r /weio/scripts/update
+
 # flashing new firmware to LPC chip
 cd /weio/scripts/
 ./flash_lpc_fw.py
