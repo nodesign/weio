@@ -49,7 +49,10 @@ class IoBoard:
             elif my_platform == "Darwin":
                 ports_list = glob.glob("/dev/tty.usbmodem*")
             elif my_platform == "Linux":
-                ports_list = glob.glob("/dev/ttyACM*")
+		if platform.machine() == 'mips': # MIPS : This is probably WeIO
+		    ports_list = glob.glob("/dev/lpc")
+		else:
+		    ports_list = glob.glob("/dev/ttyACM*")
         for my_port in ports_list:
             try:
                 port_to_try = serial.Serial(
