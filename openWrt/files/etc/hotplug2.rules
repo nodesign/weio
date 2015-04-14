@@ -1,6 +1,6 @@
 $include /etc/hotplug2-common.rules
 
-SUBSYSTEM ~~ (^net$|^input$|button$|^usb$|^ieee1394$|^block$|^atm$|^zaptel$|^tty$|weio$) {
+SUBSYSTEM ~~ (^net$|^input$|button$|usb$|^ieee1394$|^block$|^atm$|^zaptel$|^tty$|weio$) {
 	exec /sbin/hotplug-call %SUBSYSTEM%
 }
 	 
