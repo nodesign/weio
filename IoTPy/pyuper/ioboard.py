@@ -50,7 +50,7 @@ class IoBoard:
                 ports_list = glob.glob("/dev/tty.usbmodem*")
             elif my_platform == "Linux":
 		if platform.machine() == 'mips': # MIPS : This is probably WeIO
-		    ports_list = "/dev/lpc"
+		    ports_list = glob.glob("/dev/lpc")
 		else:
 		    ports_list = glob.glob("/dev/ttyACM*")
         for my_port in ports_list:
