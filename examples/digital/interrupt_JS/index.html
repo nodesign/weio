@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+  <head >
+    <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+    <title>My first Web app</title>
+  </head>
+
+  <body>
+
+  <script> 
+      var state = 0;
+      function onWeioReady() {
+       console.log("DOM is loaded, websocket is opened");
+      }
+      // This function will be called when interrupt occurs
+      function callMe(data){
+        state = 1-state;
+        if (state==1) 
+            $("#phrase").html("11111111111111111111111");
+        else 
+            $("#phrase").html("00000000000000000000000");
+      }
+
+  </script>
+  <!-->This whre interrupt is attached or detached</-->
+  <button onclick="attachInterrupt(0, RISING, callMe)">Attach interrupt on the pin 0</button>
+  <button onclick="detachInterrupt(0)">Detach interrupt on the pin 0</button>
+  <p id="phrase">Hello world!</p>
+  </body>
+</html>

@@ -111,7 +111,17 @@ $(document).ready(function () {
             
             $("#timezones").empty();
             for (var i=0; i<confFile.length; i++) {
-                $("#timezones").append('<option value="'+confFile[i].value+'">'+confFile[i].name+'</option>');
+                var value2 = '';
+                var value3 = '';
+                if(confFile[i].value2){
+                    value2 =  ','+confFile[i].value2;
+                }  
+                if(confFile[i].value3){
+                    value3 = ','+confFile[i].value3;
+                }
+                $("#timezones").append('<option value="'
+                        +confFile[i].value1+value2+value3+'">'
+                        +confFile[i].region+' / '+confFile[i].city+'</option>');
             }
     });
 
@@ -122,8 +132,9 @@ $(document).ready(function () {
 function currnetSettingsData(data) {
     var dns_name = data.dns_name.split(".")[0]; //split string to remove domain name.
         play_composition_on_server_boot = "";
+        login_required = "";
         auto_to_ap = "";
-        timezone = data.timezone
+        timezone_region = data.timezone_region
 
     $("body").find("#userName").val(data.user);
     $("body").find("#networkBoardName").val(dns_name);
@@ -132,17 +143,23 @@ function currnetSettingsData(data) {
         play_composition_on_server_boot = true
     } else {
         play_composition_on_server_boot = false
+    } 
+    if(data.login_required === "YES") {
+        login_required = true;  
+    } else {
+        login_required = false;
     }
     $("body").find("#userLatestProjectOnBoot").prop("checked", play_composition_on_server_boot);
-
+    $("body").find("#loginRequiredIDE").prop("checked", login_required);
     if (data.auto_to_ap == "YES") {
         auto_ap_mode = true
     } else {
         auto_ap_mode = false
     }
     $("body").find("#networkAutoApMode").prop("checked", auto_ap_mode);
-    $("body").find("#timezones").val(timezone);
-};
+    // TODO: Bind user timezone region to select box
+   
+   };
 
 
 /* Function will trigger modal dialog with reload message, 
@@ -176,6 +193,7 @@ function updateUserData() {
         var user = $("body").find("#userDataForm #userName").val();
             password = $("body").find("#userDataForm #userPass").val();
             re_password = $("body").find("#userDataForm #reUserPass").val();
+            login_required = $("body").find("#userDataForm #loginRequiredIDE").is(':checked');
             latest_project_on_boot = $("body").find("#userDataForm #userLatestProjectOnBoot").is(':checked');
        
         if(latest_project_on_boot){
@@ -183,13 +201,20 @@ function updateUserData() {
         } else {
             latest_project_on_boot = "NO"
         }
+
+        if(login_required){
+            login_required = "YES"
+        } else {
+            login_required = "NO"
+        }
         // Check user password matching 
         if(password != re_password){
             ui_disabled = true;
             $("body").find("#reponseMsg").append("<div class='alert alert-message alert-error'>Passwords do not match!</div>").hide().slideToggle( "slow" );
             
         } else {
-            updateData = {"request": "updateSettings", "data": {"user": user, "password": password, "play_composition_on_server_boot" : latest_project_on_boot}};
+            updateData = {"request": "updateSettings", "data": {"user": user, "password": password, 
+                        "login_required":login_required , "play_composition_on_server_boot" : latest_project_on_boot}};
             console.log(updateData);
             settingsSocket.send(JSON.stringify(updateData));
         }
@@ -203,7 +228,7 @@ function updateNetworkData() {
     if(!ui_disabled){
         var board_name = $("body").find("#networkBoardName").val().split(".")[0]; // split string to avoid domain name (e.g avoid .locale)
             auto_ap_mode = $("body").find("#networkAutoApMode").is(":checked");
-            timezone = $("body").find("#timezones").find(":selected").text();
+            timezone = $("body").find("#timezones").find(":selected").val();
 
         if(auto_ap_mode) {
             auto_ap_mode = "YES"

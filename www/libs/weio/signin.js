@@ -66,8 +66,19 @@ $( document ).ready(function() {
             
             $("#timezones").empty();
             for (var i=0; i<confFile.length; i++) {
-                $("#timezones").append('<option value="'+confFile[i].value+'">'+confFile[i].name+'</option>');
+                var value2 = '';
+                var value3 = '';
+                if(confFile[i].value2){
+                    value2 =  ','+confFile[i].value2;
+                }  
+                if(confFile[i].value3){
+                    value3 = ','+confFile[i].value3;
+                }
+                $("#timezones").append('<option value="'
+                        +confFile[i].value1+value2+value3+'">'
+                        +confFile[i].region+' / '+confFile[i].city+'</option>');
             }
+
     });
 
 // Inform user about timezone (changes will be applayed after system reboot) when they change selectbox

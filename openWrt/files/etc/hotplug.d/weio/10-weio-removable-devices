@@ -15,16 +15,18 @@ do
                 # SD card not mounted
                 mkdir -p /weioUser/sd
                 mount /dev/$sd_name /weioUser/sd
+                touch /weioUser/sd
                 touch /weioUser/sd/__init__.py
                 logger -t DEBUG "hotplug:weio : $sd"
-                 logger -t DEBUG "hotplug:weio : Mounted SD Card /dev/$sd_name "
+                logger -t DEBUG "hotplug:weio : Mounted SD Card /dev/$sd_name "
              else
-                 # usbFlash not mounted
-                 mkdir -p /weioUser/usbFlash
-                 mount /dev/$sd_name /weioUser/usbFlash
-                 touch /weioUser/usbFlash/__init__.py
+                # usbFlash not mounted
+                mkdir -p /weioUser/usbFlash
+                mount /dev/$sd_name /weioUser/usbFlash
+                touch /weioUser/usbFlash
+                touch /weioUser/usbFlash/__init__.py
                 logger -t DEBUG "hotplug:weio : $sd"
-                 logger -t DEBUG "hotplug:weio : Mounted usb Flash /dev/$sd_name"
+                logger -t DEBUG "hotplug:weio : Mounted usb Flash /dev/$sd_name"
              fi
         fi
     fi
@@ -52,12 +54,12 @@ done
 devices_idx=0
 for dev in `ls /dev/sd?`;
 do
-	if [ "$dev" != "/dev/sda" ]; then
-		devices_idx=$((devices_idx+1))
-	fi
+    if [ "$dev" != "/dev/sda" ]; then
+        devices_idx=$((devices_idx+1))
+    fi
 done
 if [ $devices_idx == 0 ]; then
-	rm -rf /weioUser/usbFlash
-	logger -t DEBUG "hotplug:weio : Cleaned /weioUser/usbFlash"
+    rm -rf /weioUser/usbFlash
+    logger -t DEBUG "hotplug:weio : Cleaned /weioUser/usbFlash"
 fi
 

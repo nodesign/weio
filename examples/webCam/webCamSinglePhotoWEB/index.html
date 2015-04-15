@@ -1,12 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
     
-<script data-main="weioLibs" src="../require.js"></script>
-<script src="refreshWebCam.js"></script>
+<script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+
 
   <head >
     <title>WebCam refresh example</title>
   </head>
+  
+<script>
+    function onWeioReady() {
+     console.log("WeIO is loaded!");
+     
+     // Define callback that will execute when "refreshImage" is received
+     weioCallbacks.refreshImage = refreshWebCam;
+    }
+    
+    function refreshWebCam(data) {
+        $("#webCam").attr("background", data);
+        console.log(data);
+    }
+
+</script>
 
   <body id="webCam" background="output.jpg">
 

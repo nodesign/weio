@@ -193,11 +193,11 @@ def constrain(x, a, b):
         if (x<a):
             return a
 
-def attachInterrupt(pin, mode, callback, obj):
+def attachInterrupt(pin, mode, callback, obj=None, debounceTime=50):
     try:
-        return gpio.attachInterrupt(pin, mode, callback, obj)
+        return gpio.attachInterrupt(pin, mode, callback, obj, debounceTime)
     except:
-        print "attachInterrupt(", pin,",",mode,",",callback,",",obj,")"
+        print "attachInterrupt(", pin,",",mode,",",callback,",",obj, "debounce time", debounceTime,")"
         return -1
 
 def getInterruptType(mode):
@@ -252,6 +252,10 @@ def getPinInfo():
     print "INFO", gpio
     return gpio.getPinInfo()
 
+def getCurrentPath():
+    config = weioConfig.getConfiguration()
+    return config["last_opened_project"]
+
 # LIST SERIAL PORTS ON THE MACHINE
 def listSerial():
     ser = []
@@ -276,7 +280,7 @@ def initI2C():
 def initSPI(*args):
     return interfaceSPI(gpio.u, *args)
 
-def initSerial(port, baudrate, timeout_=1):
+def initSerial(port='/dev/ttyACM1', baudrate=9600, timeout_=1):
     # toggle RX and TX pins to secondary (UART) mode
     interfaceUART(gpio.u)
     return serial.Serial(port, baudrate, timeout=timeout_)

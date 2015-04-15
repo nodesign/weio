@@ -1,11 +1,11 @@
 from weioLib.weio import *
-
+import random
 import os, time
 from subprocess import Popen, PIPE
 
 videoDevice = "/dev/video0"
 imageFile = "output.jpg"
-imagePath = "./"
+imagePath = "/weio/www/examples/WebCam/webCamSinglePhotoWEB/"
 
 # easy with this, processor needs more time processing for better resolution
 resolution = "320x240"
@@ -21,13 +21,9 @@ def setup():
 def takePicture():
     while True:
         # Use PIPES when calling external processes, otherwise is pretty dangerous, can block app
-        proc = Popen(["fswebcam", "d", videoDevice, "--no-banner", "-r", resolution, imagePath+imageFile], stdout=PIPE, stderr=PIPE)
+        proc = Popen(["fswebcam", "-d", videoDevice, "--no-banner", "-r", resolution, imagePath+imageFile], stdout=PIPE, stderr=PIPE)
         proc.communicate()
         print "Photo Taken"
-        
-        # Tell to all connected clients that they can refresh image in browsers now
-        for client in shared.connectedClients :
-           client.connection.emit("refreshImage",imageFile)
-        
-        # give peace a chance
-        #time.sleep(1)
+        n = random.randint(0,10000)
+        data = "output.jpg" + "/?" +str(n)
+        serverPush("refreshImage", data)
