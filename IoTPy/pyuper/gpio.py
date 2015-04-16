@@ -194,6 +194,8 @@ class UPER1_GPIO(GPIO):
             return False
 
         self.board.interrupts[irq_id] = None
+        del self.board.callbackdict[self.logical_pin]
+        self.board.uper_io(0, self.board.encode_sfp(7, [irq_id]))
         return True
 
     def get_irq_count(self):
