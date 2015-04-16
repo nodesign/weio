@@ -49,6 +49,7 @@
 
 var boardSocket;
 var socketOpened = false;
+var socketRecconectTimeout = 2000;
 
 // Pins variables 
 
@@ -77,10 +78,14 @@ var INPUT = 0,
    PINS_OUTPUT_COLOR = "#70f647 ";
 
 function connectToBoard() {
-    // connection example
-     //   dashboard = new SockJS('http://' + location.host + '/dashboard');
 
-     console.log("Opening board");
+    // Try to connect to board every few in order to detect when user run project (press play button)!
+    setTimeout(function() { 
+        if (!socketOpened) {
+            connectToBoard();
+        } 
+    }, socketRecconectTimeout);
+    
     if (socketOpened==false) {
 
         /*
@@ -182,7 +187,7 @@ function boardData(data) {
             $("#pin"+String(i)).attr("class", "pin");
         }
         // Pin is off, procced to groups loop 
-        else if ($.inArray(data.data.data[i], PINS_INPUT)) {
+        else if ($.inArray(data.data.data[i], PINS_INPUT) > -1 ) {
             // Matching PINS_INPUT group
             var pin_selector = $("#pin"+String(i));
              pin_selector.children("a").css({
