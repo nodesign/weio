@@ -1,0 +1,15 @@
+html, body {
+	height: 100%;
+}
+
+.col-xs-12 {
+    cursor: pointer;
+    height: 50%;
+    padding: 4vmin;
+    font-family: Helvetica;
+    font-size: 8vmin;
+    text-align: center;
+    border-radius: 20px;
+    border: 2px solid;
+    color:white;
+}

@@ -1,31 +1,100 @@
+<!--###################################
+#                                     #
+#      HOW TO ATTACH AND DETACH       #
+#         INTERRUPT ON WEIO           #
+#                                     #
+#######################################
+
+# Descriptions: This example shows how to attach and detach interrupt on
+#               pin 18 from web user interface. Callback that will be
+#               called on interrupt retuns an object with interrupt type
+#               and pin number, this is useful to trace pin on which
+#               interrupt has been rised.
+#
+# syntax = attachInterrupt(pin, type, callback)
+#          detachInterrupt(pin)
+#
+# Available pins: All pins
+# Available modes: RISING, FALLING, HIGH, LOW, CHANGE
+# 
+--> 
+
 <!DOCTYPE html>
 <html lang="en">
     
-  <head >
+<head >
+    <!-- Import weioLibs and link css style -->
     <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
-    <title>My first Web app</title>
-  </head>
+    <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+    <link href="myStyle.css" rel="stylesheet">
+    <!-- Link Bootstrap 3.3.0 lib -->
+ 	<link href="www/libs/bootstrap-3.3.0/css/bootstrap.min.css" 
+ 	      rel="stylesheet" />
+    <script> 
+        
+        // this function is called when DOM is loaded and websocket opened
+        function onWeioReady() {
+            // init digital write state variable
+            var dwState = 0;
+            // set timer to simule interrupts on pin 18 every second
+            setInterval(function(){
+                digitalWrite(18, dwState);
+                dwState = Math.abs(dwState - 1);
+            }, 1000);
+        }
+        
+        // state of interrupt variable
+        var state = 0;
+        // this function is called when button is clicked from UI 
+        function attachdetach(){
+            // if interrupt is not attached
+            if(state == 0) {
+                // attach RISING interrupt and update displayed phrases
+                attachInterrupt(18, RISING, callback);
+                state = 1;
+                $("#button").css( "background-color", "#009933" );
+                $("#stateMsg").html("RISING INTERRUPT ATTACHED TO PIN 18" );
+                $("#clickMsg").html("CLICK HERE TO DETACH " + 
+                                    "RISING INTERRUPT" );
+            }
+            else {
+                // detach interrupt and update displayed phrases
+                detachInterrupt(18);
+                $("#button").css( "background-color", "#990000" );
+                $("#stateMsg").html("NO INTERRUPT ATTACHED TO PIN 18" );
+                $("#clickMsg").html("CLICK HERE TO ATTACH " + 
+                                    "RISING INTERRUPT" );
+                state = 0;
+            }
+        }
+        // interrupt counter variable
+		var counter = 0;
+        // this function will be called when interrupt occurs
+        function callback(data){
+            // increment the interrupt counter
+            counter = counter + 1;
+            // update displayed phrases
+            $("#counter").html("INTERRUPT COUNTER: " + counter);
+            $("#pin").html("PIN: " + data.data);
+            $("#type").html("TYPE: " + data.eventType);
+        }
+    </script>
+</head>
 
-  <body>
+<body>
 
-  <script> 
-      var state = 0;
-      function onWeioReady() {
-       console.log("DOM is loaded, websocket is opened");
-      }
-      // This function will be called when interrupt occurs
-      function callMe(data){
-        state = 1-state;
-        if (state==1) 
-            $("#phrase").html("11111111111111111111111");
-        else 
-            $("#phrase").html("00000000000000000000000");
-      }
+    <!-- This button allows you to attach and detach interrupt -->
+    <div class="col-xs-12" id="button" style="background-color:#990000"
+         onclick="attachdetach()">
+        <p id="stateMsg">NO INTERRUPT ATTACHED TO PIN 18</p>
+        <p id="clickMsg">CLICK HERE TO ATTACH RISING INTERRUPT</p>
+    </div>    
+    <!-- Here are displayed counter, pin and type of interrupt -->
+    <div class="col-xs-12" style="background-color:#303030">    
+        <p id="counter">INTERRUPT COUNTER: 0</p>
+        <p id="pin">PIN:</p>
+        <p id="type">TYPE:</p>
+    </div>
 
-  </script>
-  <!-->This whre interrupt is attached or detached</-->
-  <button onclick="attachInterrupt(0, RISING, callMe)">Attach interrupt on the pin 0</button>
-  <button onclick="detachInterrupt(0)">Detach interrupt on the pin 0</button>
-  <p id="phrase">Hello world!</p>
-  </body>
+</body>
 </html>

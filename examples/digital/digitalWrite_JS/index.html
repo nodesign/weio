@@ -14,13 +14,13 @@
 <html lang="en">
 
 <head >
-	<!-- Import weioLibs and link your css style -->
+    <!-- Import weioLibs and link your css style -->
     <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
     <link rel="stylesheet" type="text/css" href="myStyle.css">
 
     <script>
     
-		// init light variable
+        // init light variable
         var light = false;
         
         // This function is called when DOM is loaded and web socket opened
@@ -35,22 +35,22 @@
                 $("#phrase").html("TURN OFF THE LIGHT!");
                 $("body").css("background","white");
                 $("#phrase").css("color","black");
-				// write LOW on pins
+                // write LOW on pins
                 digitalWrite(18, LOW);
                 digitalWrite(19, LOW);
                 digitalWrite(20, LOW);
-				// toggle light variable
+                // toggle light variable
                 light = !light;
             } else {
                 // Change displayed phrase, background and font color.
                 $("#phrase").html("TURN ON THE LIGHT!");
                 $("body").css("background","black");
                 $("#phrase").css("color","white");
-				// write HIGH on pins
+                // write HIGH on pins
                 digitalWrite(18, HIGH);
                 digitalWrite(19, HIGH);
                 digitalWrite(20, HIGH);
-				// toggle light variable
+                // toggle light variable
                 light = !light;
             }
         }
