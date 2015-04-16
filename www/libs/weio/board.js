@@ -49,14 +49,43 @@
 
 var boardSocket;
 var socketOpened = false;
+var socketRecconectTimeout = 2000;
 
+// Pins variables 
 
+/// GPIO directions
+var INPUT = 0,
+    OUTPUT = 1,
+
+// GPIO resistors
+    NONE = 2,
+    PULL_UP = 3,
+    PULL_DOWN = 4,
+
+// GPIO events
+    LOW = 0,
+    HIGH = 1,
+    CHANGE = 2,
+    RISING = 3,
+    FALLING = 4,
+
+// Create two groups for input and output pins 
+    PINS_INPUT = [INPUT, CHANGE, RISING, FALLING],
+    PINS_OUTPUT = [OUTPUT, LOW, HIGH],
+
+// Pins group colors 
+   PINS_INPUT_COLOR = "#00e0f6",
+   PINS_OUTPUT_COLOR = "#70f647 ";
 
 function connectToBoard() {
-    // connection example
-     //   dashboard = new SockJS('http://' + location.host + '/dashboard');
 
-     console.log("Opening board");
+    // Try to connect to board every few in order to detect when user run project (press play button)!
+    setTimeout(function() { 
+        if (!socketOpened) {
+            connectToBoard();
+        } 
+    }, socketRecconectTimeout);
+    
     if (socketOpened==false) {
 
         /*
@@ -110,6 +139,7 @@ function connectToBoard() {
                 // JSON data is parsed into object
                 data = JSON.parse(e.data);
                 console.log(data);
+                $("#boardMsg").html(""); // Clear msg
 
                 // switch
                 if ("requested" in data) {
@@ -127,6 +157,7 @@ function connectToBoard() {
 
             boardSocket.onclose = function() {
                 console.log('Board Web socket is closed');
+                $("#boardMsg").html("Run project to visualize occupation of pins on the board");
                 socketOpened = false;
                 clearInterval(getInfoFromBoard);
             };
@@ -142,17 +173,54 @@ function connectToBoard() {
 }
 
 function boardData(data) {
-    console.log("DATA BOARD ", data.data);
-
+   
     for (var i=0; i<32; i++) {
-     if (data.data.data[i] != -1 ) {
-         $("#pin"+String(i)).attr("class", "pin_on");
-     } else {
-         $("#pin"+String(i)).attr("class", "pin");
+         // Set pin tooltip  direction depends on pin order (left or right side of the board)
+        var pin_tooltip_direction = null;
+        if(i > 15) {
+            pin_tooltip_direction = 'left';
+        }else {
+            pin_tooltip_direction = 'right';
         }
-    }
+        // Check if pin is active 
+        if (data.data.data[i] == -1 ) {
+            $("#pin"+String(i)).attr("class", "pin");
+        }
+        // Pin is off, procced to groups loop 
+        else if ($.inArray(data.data.data[i], PINS_INPUT) > -1 ) {
+            // Matching PINS_INPUT group
+            var pin_selector = $("#pin"+String(i));
+             pin_selector.children("a").css({
+                            "background": PINS_INPUT_COLOR,
+                            "-webkit-transition":"all .4s ease",
+                            "-moz-transition": "all .4s ease",
+                            "-ms-transition": "all .4s ease",
+                           "-o-transition": "all .4s ease",
+                           "transition": "all .4s ease",
+                            });
+             pin_selector.tooltip({
+                title: 'INPUT',
+                placement: pin_tooltip_direction,
+            });
+         } else {
+            // Matching PINS_OUTPUT group
+             $("#pin"+String(i)).children("a").css({
+                            "background": PINS_OUTPUT_COLOR,
+                            "-webkit-transition":"all .4s ease",
+                            "-moz-transition": "all .4s ease",
+                            "-ms-transition": "all .4s ease",
+                           "-o-transition": "all .4s ease",
+                           "transition": "all .4s ease",
+                        });
 
-}
+             pin_selector.tooltip({
+                 title: 'OUTPUT',
+                 placement: pin_tooltip_direction,
+                });
+             
+            }
+        }
+};
 
 //CALLBACKS////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**

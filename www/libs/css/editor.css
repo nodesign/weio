@@ -324,7 +324,7 @@ div {
 .columns .rightSideBar ul#pinlist1a {
   position: absolute;
   left: 12px;
-  top: 244px;
+  top: 237px;
 }
 .columns .rightSideBar ul#pinlist2 {
   position: absolute;
@@ -334,7 +334,7 @@ div {
 .columns .rightSideBar ul#pinlist2a {
   position: absolute;
   right: 35px;
-  top: 275px;
+  top: 265px;
 }
 .columns .rightSideBar li.pin,
 .columns .rightSideBar li.pin_on {
@@ -346,7 +346,7 @@ div {
   text-indent: -99999px;
   display: block;
   width: 34px;
-  height: 10.5px;
+  height: 9.5px;
   border-radius: 10px;
   cursor: pointer;
 }

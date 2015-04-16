@@ -93,7 +93,7 @@ var playPushed = false;
 /**
  * Autosave lock, deblock on keyup event in editor
  */
-var activeAutoSave = false;
+var activeAutoSave = true;
 
 /*
  * User server port
@@ -600,14 +600,30 @@ function createEditor(){
 
             var iOBJ = findObjectInArray($('#codeEditorAce').parents('.accordion-group').attr('id').split("_")[1]);
             editorsInStack[iOBJ].data = editor.getValue();
-
-            //activeAutoSave = true;
+            console.log(activeAutoSave);
           }
 
         });
+    // Enable save on ctrl+s 
+    $("#codeEditorAce").keydown(function(event) {
+        // If Control or Command key is pressed and the S key is pressed
+        // run save function. 83 is the key code for S.
+        if((event.ctrlKey || event.metaKey) && event.which == 83) {
+            // Save Function
+            console.log("save trigger");
+            if(activeAutoSave) {
+                saveAll();
+            }
+            
+            event.preventDefault();
+            return false;
+        };
+    });
 
     editor.gotoLine(0);
 }
+
+
 
 // Pronalazimo objekat u nizu koji je vezan za file na kojem radimo
 function findObjectInArray(objectID){
@@ -778,7 +794,7 @@ function autoSave() {
                     })
         }
     }
-    activeAutoSave = false;
+    //activeAutoSave = false;
 }
 
 
