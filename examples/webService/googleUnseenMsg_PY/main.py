@@ -23,8 +23,8 @@ def setup():
 def googleInbox():
     # define imap server, username and password
     server   = 'imap.gmail.com'
-    username = 'manu.devialet@gmail.com'
-    password = 'Marleycito'
+    username = '<YOUR MAIL>'
+    password = '<YOUR PASSWORD>'
 
     # connect to server
     account = imaplib.IMAP4_SSL(server, 993)
