@@ -274,7 +274,7 @@ $(document).ready(function () {
                                 if ((path.indexOf(".css") != -1) || (path.indexOf(".py") != -1) || (path.indexOf(".js") != -1) ||
                                     (path.indexOf(".html") != -1) || (path.indexOf(".txt") != -1) || (path.indexOf(".md") != -1) ||
                                     (path.indexOf(".json") != -1) || (path.indexOf(".xml") != -1) || (path.indexOf(".less") != -1) ||
-                                    (path.indexOf(".cofee") != -1) || (path.indexOf(".svg") != -1) ||
+                                    (path.indexOf(".cofee") != -1) || (path.indexOf(".svg") != -1) || (path.indexOf(".sh") != -1) ||
                                     // images
                                     (path.indexOf(".png") != -1) || (path.indexOf(".jpg") != -1) || (path.indexOf(".bmp") != -1) ||
                                     (path.indexOf(".gif") != -1)
@@ -560,7 +560,7 @@ function handleFileSelect(evt) {
         if ((fileName.indexOf(".html") != -1) || (fileName.indexOf(".py") != -1) || (fileName.indexOf(".json") != -1) ||
             (fileName.indexOf(".css") != -1) || (fileName.indexOf(".txt") != -1) || (fileName.indexOf(".js") != -1) ||
             (fileName.indexOf(".md") != -1) || (fileName.indexOf(".svg") != -1) || (fileName.indexOf(".xml") != -1) ||
-            (fileName.indexOf(".less") != -1) || (fileName.indexOf(".coffee") != -1)) {
+            (fileName.indexOf(".less") != -1) || (fileName.indexOf(".coffee") != -1) || (fileName.indexOf(".sh") != -1)) {
             reader.readAsText(f);
         } else {
             reader.readAsDataURL(f);

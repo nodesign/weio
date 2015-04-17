@@ -190,7 +190,7 @@ class WeioEditorHandler(SockJSConnection):
         if ((".html" in name) or (".py" in name) or (".json" in name) or
             (".css" in name) or (".txt" in name) or (".js" in name) or
             (".md" in name) or (".svg" in name) or (".xml" in name) or
-            (".less" in name) or (".coffee" in name)):
+            (".less" in name) or (".coffee" in name) or (".sh" in name)):
 
             weioFiles.saveRawContentToFile(confFile["last_opened_project"] + "/" + name, contents.encode('utf-8'))
         else :
