@@ -63,8 +63,7 @@ body {
   overflow: hidden;
 }
 .navbar-inner {
-  position: absolute;
-  height: 60px;
+  height: auto;
   width: 100%;
   min-height: 60px;
   background: #242424;
@@ -299,13 +298,14 @@ body {
   border-radius: 2px;
 }
 .navbar-inner .container #controlCenter {
+  position: relative;
   color: #cccccc;
   width: 300px;
   height: 30px;
   text-align: center;
-  position: fixed;
   top: 11px;
-  left: 42%;
+  left: 10%;
+  float: left;
 }
 .navbar-inner .container #controlCenter #statusBar {
   color: #cccccc;
@@ -440,27 +440,36 @@ li.dropdown .dropdown-toggle {
 #updateProgressChart {
   margin-left: 110px;
 }
-/* Custom css for 1024*768 resolution */
-@media (min-width: 980px) and (max-width: 1024px) {
-  #controlCenter {
-    width: auto !important;
-    top: 0 !important;
-    left: 0 !important;
-    display: block;
-    float: left;
-    position: relative !important;
-  }
-  #statusBar {
-    width: 100% !important;
-    float: none !important;
-    padding: 2px 6px;
-    margin: 11px 12px 0 0;
-  }
 
-
-}
 .error-msg {
   display: none;
   color:red;
+
+}
+
+
+/* Responsive dashboard navigation */
+@media (min-width: 870px) and (max-width: 1200px) {
+  .navbar-inner .container #controlCenter {
+    left: 0;
+    width: auto !important;
+  }
+
+   #statusBar {
+    width: 100% !important;
+    padding: 2px 6px;
+  }
+  .navbar-inner .container .brand {
+    width: 119px;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 870px) {
+ body {padding-top: 60px}
+ .navbar-inner .container #controlCenter {
+  width: 330px;
+  left: 1%;
+ }
+
 
 }

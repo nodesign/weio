@@ -1,4 +1,3 @@
-#!/bin/sh
 ### 
 #
 # WEIO Web Of Things Platform
@@ -42,28 +41,30 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Authors : 
-# Uros PETREVSKI <uros@nodesign.net>
-# Drasko DRASKOVIC <drasko.draskovic@gmail.com>
+# Author : 
+# Paul RATHGEB <paul.rathgeb@skynet.be>
 #
 ###
 
-echo "This is WeIO post install procedure"
+from weioLib.weio import *
+from things.input.environmental.digitemp.master import UART_Adapter
+from things.input.environmental.digitemp.device import AddressableDevice
+from things.input.environmental.digitemp.device import DS18B20 as __DS18B20__
+from weioLib.weio import initSerial
 
-# migrating old config file to the new one
-cd /weio/scripts/
-./migrateConfig.py
-cd /weio
-rm /tmp/config.weio
+class DS18B20:
+    def __init__(self):
+        dev = "/dev/lpcUart"
+        ser = initSerial(dev, 9600)
+        ser.close()
+        self.bus = UART_Adapter(dev)
 
-# Populate system with the new files
-cp -r /weio/scripts/update/* /
-rm -r /weio/scripts/update
+    def getSensors(self):
+        sensorIdList=AddressableDevice(self.bus).get_connected_ROMs()
+        return sensorIdList
+ 
+    def sensorInfo(self, rom):
+        return __DS18B20__(self.bus, rom).info()
 
-# Fix between v1.0 and v1.1
-chmod +x /etc/init.d/ntpd
-
-# flashing new firmware to LPC chip
-cd /weio/scripts/
-./flash_lpc_fw.py
-cd /
+    def getTemperature(self, rom):
+        return __DS18B20__(self.bus, rom).get_temperature()

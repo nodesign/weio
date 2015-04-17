@@ -14,10 +14,10 @@
     <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
     <link rel="stylesheet" type="text/css" href="myStyle.css">
     <script>
-	
-		// This function is called when DOM is loaded and websocket opened
+        
+        // This function is called when DOM is loaded and websocket opened
         function onWeioReady() {
-            // Do something every 100ms
+			// Do something every 100ms
             setInterval(function() {
             //pinCallback will be called when data arrives from server
             digitalRead(31,pinCallback);
