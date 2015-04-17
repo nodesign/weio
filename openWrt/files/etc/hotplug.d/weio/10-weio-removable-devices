@@ -60,6 +60,5 @@ do
 done
 if [ $devices_idx == 0 ]; then
     rm -rf /weioUser/usbFlash
-    logger -t DEBUG "hotplug:weio : Cleaned /weioUser/usbFlash"
 fi
 
