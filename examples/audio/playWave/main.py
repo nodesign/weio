@@ -24,7 +24,7 @@ def setup():
     # check if soundcard is present
     if (os.path.exists(audioDevice)) :
         print "Sound card found \n"
-        print execute(["amixer"])
+        print execute(["cat", "/proc/asound/cards"])
         
         if not(os.path.exists(audioFile)) :
             url = "http://www.jahozafat.com/0053148414/WAVS/Movies/Star_Wars/starwars.wav"
