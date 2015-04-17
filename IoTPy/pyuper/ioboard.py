@@ -209,7 +209,7 @@ class IoBoard:
         try:
             self.ser.write(output_buf)
         except:
-            errmsg("UPER API: Unrecoverable serial port writing error, dying.")
+            raise IoTPy_APIError("Unrecoverable serial port writing error, dying.")
         data = None
         if ret != 0:
             try:
