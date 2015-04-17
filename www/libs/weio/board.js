@@ -204,6 +204,7 @@ function boardData(data) {
             });
          } else {
             // Matching PINS_OUTPUT group
+             var pin_selector = $("#pin"+String(i));
              $("#pin"+String(i)).children("a").css({
                             "background": PINS_OUTPUT_COLOR,
                             "-webkit-transition":"all .4s ease",
