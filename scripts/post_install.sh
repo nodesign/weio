@@ -60,6 +60,9 @@ rm /tmp/config.weio
 cp -r /weio/scripts/update/* /
 rm -r /weio/scripts/update
 
+# Fix between v1.0 and v1.1
+chmod +x /etc/init.d/ntpd
+
 # flashing new firmware to LPC chip
 cd /weio/scripts/
 ./flash_lpc_fw.py

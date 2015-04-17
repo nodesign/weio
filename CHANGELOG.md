@@ -5,6 +5,9 @@ WeIO 1.1, not released yet
  - Improved the preview [[#146](https://github.com/nodesign/weio/pull/146)]
  - Added an option to enable/disable the login requirement to access the IDE [[#149](https://github.com/nodesign/weio/pull/149)]
  - Improved the way new projects are created [[#156](https://github.com/nodesign/weio/pull/156)]
+ - Added an auto-save function [[b99325f](https://github.com/nodesign/weio/commit/b99325f78c02ed27189bc13bb42c01ea57b94564)]
+ - Fixed dashboard preview on lower resolution [[#166](https://github.com/nodesign/weio/pull/166)]
+ - Improved the pin visualization [[#166](https://github.com/nodesign/weio/pull/166)]
 
 - API
   - Added a debounce time parameter for interrupts [[d2a9fe2](https://github.com/nodesign/weio/commit/d2a9fe2ca3153ad3a22f53810a047d6958fb9f89)]
@@ -13,6 +16,7 @@ WeIO 1.1, not released yet
   - Fixed the initSerial parameters [[0aedb88](https://github.com/nodesign/weio/commit/0aedb8842254a1da21be7f811ead0e0d4ee9d381)]
   - Improved stability of IoTPy [[#148](https://github.com/nodesign/weio/pull/148)]
   - Improved the way the LPC is detected by IoTPy [[#163](https://github.com/nodesign/weio/pull/163)]
+  - Added support for DS18B20 sensors [[#165](https://github.com/nodesign/weio/pull/165)]
 
 - System
   - Support for bluetooth + bluez [[3736872](https://github.com/nodesign/weio/commit/3736872b7d50c9e07f45133f6df1267c954b8b1c)]
@@ -24,6 +28,7 @@ WeIO 1.1, not released yet
   - Fixed webCamSinglePhotoWEB example [[0c18062](https://github.com/nodesign/weio/commit/0c180625e096767da8ed0b1ad9f38fd76bf5e611)]
   - Added twitter_PY example [[#139](https://github.com/nodesign/weio/pull/139)]
   - Added interrupt_JS example [[3ef5b1d](https://github.com/nodesign/weio/commit/3ef5b1ddc7d5093c1ac7a8cd5494f5ea86e4169d)]
+  - Added an example for the DS18B20 temperature sensor [[#165](https://github.com/nodesign/weio/pull/165)]
 
 
 WeIO 1.0, 2015/02/04
