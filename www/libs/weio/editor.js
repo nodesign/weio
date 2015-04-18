@@ -580,6 +580,7 @@ function createEditor(){
     editor.getSession().setUseSoftTabs(true);
     editor.getSession().setUseWrapMode(true);
     editor.setShowPrintMargin(false);
+    editor.$blockScrolling = Infinity;
     // enable autocompletion and snippets
     var langTools = ace.require("ace/ext/language_tools");
     editor.setOptions({
