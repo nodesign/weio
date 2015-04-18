@@ -580,6 +580,14 @@ function createEditor(){
     editor.getSession().setUseSoftTabs(true);
     editor.getSession().setUseWrapMode(true);
     editor.setShowPrintMargin(false);
+    // enable autocompletion and snippets
+    var langTools = ace.require("ace/ext/language_tools");
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true,
+        
+    });
 
     // On chage content
     $('#codeEditorAce').keyup(function(e){
