@@ -11,6 +11,9 @@ WeIO 1.1, not released yet
  - Fixed a bug with duplication [[#104](https://github.com/nodesign/weio/issues/104)] [[#179](https://github.com/nodesign/weio/pull/179)]
  - Added support for creating / editing shell scripts [[2740a52](https://github.com/nodesign/weio/commit/2740a526e458ee3910dbbc7d8cb0c66bb871a3e8)]
  - Added a logo at login screen [[7472dad](https://github.com/nodesign/weio/commit/7472dad7f1c2674a54740509aa66618f44f68b08)]
+ - Examples can't be deleted anymore [[#184](https://github.com/nodesign/weio/pull/184)]
+ - Updated ACE editor to v1.1.9 [[#183](https://github.com/nodesign/weio/pull/183)]
+ - Enable file reopening from the file list [[#183](https://github.com/nodesign/weio/pull/183)]
 
 - API
   - Added a debounce time parameter for interrupts [[d2a9fe2](https://github.com/nodesign/weio/commit/d2a9fe2ca3153ad3a22f53810a047d6958fb9f89)]
