@@ -130,7 +130,8 @@ def getFileType(path):
         ".svg": "svg",
         ".xml":"xml",
         ".less":"less",
-        ".coffee":"coffee"
+        ".coffee":"coffee",
+        ".sh":"shell"
         }
 
         images = {

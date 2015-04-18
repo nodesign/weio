@@ -73,7 +73,8 @@
       .form-signin {
         width: 360px;
         padding: 19px 29px 29px;
-        margin: 0 auto 20px;
+        margin: auto;
+        display: block;
         background-color: #fff;
         border: 1px solid #e5e5e5;
         -webkit-border-radius: 5px;
@@ -99,6 +100,9 @@
         background-color: #fff;
         border: none;
       }
+      .form-signin #password {
+        width:95%;
+      }
 
     </style>
     <link href="libs/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
@@ -115,7 +119,11 @@
     <div class="container">
 
         <form id="signinForm" class="form-signin" action='' method="POST">
-            <h2 class="form-signin-heading">Access WeIO IDE</h2>
+        <div class="text-center">
+            <img src="img/logWeIO.png"></img>
+          </div>
+            <br>
+            <!-- <h2 class="form-signin-heading">Access WeIO IDE</h2> -->
             <h5 id="error" style="color:red"></h5>
             
             <div class="control-group">

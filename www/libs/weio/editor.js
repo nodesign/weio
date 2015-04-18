@@ -196,11 +196,9 @@ $(document).ready(function () {
     $('.accordion').click(function(e){
         // Remove strip
         if ($(e.target).hasClass('icon-remove')){
-            //console.log("fjdhsgjhfgsjkhfdgsjk");
             // Get Id from file
             var currentStrip = getEditorObjectFromParsedId("file_", $($(e.target).parents('.accordion-group')).attr('id'));
             currentStrip = currentStrip.path;
-            //console.log("JHGJKHGJKKJGHKJHJGGHJK ", currentStrip);
             //var killIndex = $.inArray(currentStrip, currentlyOpened);
 
             if ($(e.target).parents('.accordion-group').find('#codeEditorAce').length > 0) {
@@ -236,7 +234,6 @@ $(document).ready(function () {
                 var runTree = true;
                 path = node.name;
                 var lastNode = node;
-
                 // run thru the tree structure to find all parents. Path will be exported
                 while(runTree) {
                     if (lastNode.parent.name != undefined) {
@@ -274,7 +271,7 @@ $(document).ready(function () {
                                 if ((path.indexOf(".css") != -1) || (path.indexOf(".py") != -1) || (path.indexOf(".js") != -1) ||
                                     (path.indexOf(".html") != -1) || (path.indexOf(".txt") != -1) || (path.indexOf(".md") != -1) ||
                                     (path.indexOf(".json") != -1) || (path.indexOf(".xml") != -1) || (path.indexOf(".less") != -1) ||
-                                    (path.indexOf(".cofee") != -1) || (path.indexOf(".svg") != -1) ||
+                                    (path.indexOf(".cofee") != -1) || (path.indexOf(".svg") != -1) || (path.indexOf(".sh") != -1) ||
                                     // images
                                     (path.indexOf(".png") != -1) || (path.indexOf(".jpg") != -1) || (path.indexOf(".bmp") != -1) ||
                                     (path.indexOf(".gif") != -1)
@@ -320,9 +317,20 @@ $(document).ready(function () {
                                // It's more sure to add to currentlyOpened array from
                                // websocket callback than here in case that server don't answer
                             } // if (!doesExist)
+                            
+                            // Reopen closed file, its called when strip exist (file is in the stack)
+                            else {
+                                // Get the name of the file which we want to open (which file is clicked)
+                                var closed_file_name = path.split('/').pop(); 
+                                // Find the closed tab with this file name
+                                var closed_file_tab = $(".accordion-toggle:contains('"+closed_file_name+"')");
+                                // Click on this tab will trigger fixedCollapsing function 
+                                closed_file_tab.click();
+                            }
 
                        } else { // delete file here! and don't open strip
-                           prepareToDeleteFile(path);
+                            prepareToDeleteFile(path);
+
                        }
                } // if (!treeLock)
 
@@ -560,7 +568,7 @@ function handleFileSelect(evt) {
         if ((fileName.indexOf(".html") != -1) || (fileName.indexOf(".py") != -1) || (fileName.indexOf(".json") != -1) ||
             (fileName.indexOf(".css") != -1) || (fileName.indexOf(".txt") != -1) || (fileName.indexOf(".js") != -1) ||
             (fileName.indexOf(".md") != -1) || (fileName.indexOf(".svg") != -1) || (fileName.indexOf(".xml") != -1) ||
-            (fileName.indexOf(".less") != -1) || (fileName.indexOf(".coffee") != -1)) {
+            (fileName.indexOf(".less") != -1) || (fileName.indexOf(".coffee") != -1) || (fileName.indexOf(".sh") != -1)) {
             reader.readAsText(f);
         } else {
             reader.readAsDataURL(f);
@@ -580,6 +588,15 @@ function createEditor(){
     editor.getSession().setUseSoftTabs(true);
     editor.getSession().setUseWrapMode(true);
     editor.setShowPrintMargin(false);
+    editor.$blockScrolling = Infinity;
+    // enable autocompletion and snippets
+    var langTools = ace.require("ace/ext/language_tools");
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true,
+        
+    });
 
     // On chage content
     $('#codeEditorAce').keyup(function(e){
@@ -851,9 +868,12 @@ function addNewFile(data){
 
 var toBeDeleted = ""; // filename to be deleted
 function prepareToDeleteFile(filename) {
-    $("#myModalDeleteFileLabel").html("Delete " + filename + "?");
-    $('#deleteFile').modal('show');
-    toBeDeleted = filename;
+     // Check if we can delete this project/file
+    if(!examplesPermission(filename)) {
+        $("#myModalDeleteFileLabel").html("Delete " + filename + "?");
+        $('#deleteFile').modal('show');
+        toBeDeleted = filename;
+    }
 }
 
 function prepareToDeleteProject() {
@@ -861,19 +881,31 @@ function prepareToDeleteProject() {
 }
 
 function deleteFile() {
-    var pr = toBeDeleted.split(projectRoot);
-     
-    if (pr[1].split("/").length==1) { // delete project
-        deleteProject();
-    } else { // delete only one file
-        var rq = { "request": "deleteFile", "path":toBeDeleted};
-        editorSocket.send(JSON.stringify(rq));
-        toBeDeleted = "";
-    }  
+    // Check if we can delete this project/file
+    if(!examplesPermission(filename)) {
+        var pr = toBeDeleted.split(projectRoot);
+         
+        if (pr[1].split("/").length==1) { // delete project
+            deleteProject();
+        } else { // delete only one file
+            var rq = { "request": "deleteFile", "path":toBeDeleted};
+            editorSocket.send(JSON.stringify(rq));
+            toBeDeleted = "";
+        } 
+    }
 }
 
 function deleteProject() {
     window.top.deleteProject();
+}
+
+// Function check if path contains examples
+function examplesPermission(data) {
+    if(data.split("/")[1] === 'examples'){
+        return true
+    } else {
+        return false
+    }
 }
 
 /*
@@ -1205,7 +1237,10 @@ function insertNewStrip(data) {
     $('.accordion-toggle').click(function(){
                                  fixedCollapsing(this);
                                  });
-
+    $('jqtree-selected').click(function(){
+        console.log("click trigger");
+        fixedCollapsing(this);
+    });
     //currentlyOpened.push(data.data.path);
 
     if (editorsInStack.length == 1){
@@ -1323,5 +1358,3 @@ function resizeRightSideBar(size) {
     $(".rightSideBar").animate({width:size}, 100);
   
 };
-
-

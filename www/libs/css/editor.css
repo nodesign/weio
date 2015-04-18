@@ -302,6 +302,7 @@ div {
   line-height: 16px;
   margin-left: 5px;
   margin-top: 19px;
+  word-wrap: break-word;
 }
 .columns .rightSideBar #consoleOutput #stderr {
   color: #ff0000;
@@ -564,4 +565,10 @@ li #deleteButton:hover {
   top:9px; 
   right:35px;
   color:#0088cc !important;
+}
+
+/* Create new file Boostrap modal custom width  */
+body .modal-createNewFile {
+    width: 580px; 
+    
 }

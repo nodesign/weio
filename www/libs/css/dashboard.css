@@ -470,6 +470,8 @@ li.dropdown .dropdown-toggle {
   width: 330px;
   left: 1%;
  }
-
-
+.navbar-inner .container .brand {
+    width: 119px;
+  }
 }
+
