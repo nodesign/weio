@@ -868,9 +868,12 @@ function addNewFile(data){
 
 var toBeDeleted = ""; // filename to be deleted
 function prepareToDeleteFile(filename) {
-    $("#myModalDeleteFileLabel").html("Delete " + filename + "?");
-    $('#deleteFile').modal('show');
-    toBeDeleted = filename;
+     // Check if we can delete this project/file
+    if(!examplesPermission(filename)) {
+        $("#myModalDeleteFileLabel").html("Delete " + filename + "?");
+        $('#deleteFile').modal('show');
+        toBeDeleted = filename;
+    }
 }
 
 function prepareToDeleteProject() {
@@ -878,19 +881,31 @@ function prepareToDeleteProject() {
 }
 
 function deleteFile() {
-    var pr = toBeDeleted.split(projectRoot);
-     
-    if (pr[1].split("/").length==1) { // delete project
-        deleteProject();
-    } else { // delete only one file
-        var rq = { "request": "deleteFile", "path":toBeDeleted};
-        editorSocket.send(JSON.stringify(rq));
-        toBeDeleted = "";
-    }  
+    // Check if we can delete this project/file
+    if(!examplesPermission(filename)) {
+        var pr = toBeDeleted.split(projectRoot);
+         
+        if (pr[1].split("/").length==1) { // delete project
+            deleteProject();
+        } else { // delete only one file
+            var rq = { "request": "deleteFile", "path":toBeDeleted};
+            editorSocket.send(JSON.stringify(rq));
+            toBeDeleted = "";
+        } 
+    }
 }
 
 function deleteProject() {
     window.top.deleteProject();
+}
+
+// Function check if path contains examples
+function examplesPermission(data) {
+    if(data.split("/")[1] === 'examples'){
+        return true
+    } else {
+        return false
+    }
 }
 
 /*
