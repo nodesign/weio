@@ -566,3 +566,9 @@ li #deleteButton:hover {
   right:35px;
   color:#0088cc !important;
 }
+
+/* Create new file Boostrap modal custom width  */
+body .modal-createNewFile {
+    width: 580px; 
+    
+}
