@@ -844,7 +844,7 @@ function updateProjects(data) {
     tag+='<ul class="nav nav-pills">';
 
     for (var i=0; i<data.data.length; i++) {
-        if (i==0) 
+        if (data.data[i].storageName==selectedStorageUnit)
             tag+='<li class="active" id="' + data.data[i].storageName +
                     'StorageUnit'+'"><a href="#">' + data.data[i].storageName + '</a></li>';
         else
