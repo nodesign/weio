@@ -33,7 +33,7 @@ def myProcess():
             print "--------------"
         else:
             print "Read error at %.0f" %(time.time()-startTime)
-            print "Packet : ",a
+            print "Packet : ",data
             print "--------------"
         # wait 5 seconds    
         delay(5000)
