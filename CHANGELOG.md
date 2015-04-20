@@ -14,6 +14,7 @@ WeIO 1.1, not released yet
  - Examples can't be deleted anymore [[#184](https://github.com/nodesign/weio/pull/184)]
  - Updated ACE editor to v1.1.9 [[#183](https://github.com/nodesign/weio/pull/183)]
  - Enable file reopening from the file list [[#183](https://github.com/nodesign/weio/pull/183)]
+ - main.py is not required anymore on pure HTML projects [[#181](https://github.com/nodesign/weio/pull/181)]
 
 - API
   - Added a debounce time parameter for interrupts [[d2a9fe2](https://github.com/nodesign/weio/commit/d2a9fe2ca3153ad3a22f53810a047d6958fb9f89)]
@@ -37,6 +38,8 @@ WeIO 1.1, not released yet
   - Added an example for the DS18B20 temperature sensor [[#165](https://github.com/nodesign/weio/pull/165)]
   - Added an example to play wave files [[c786e8d](https://github.com/nodesign/weio/commit/c786e8d12e74b82a44c1f1cd481397f27db62a55)]
   - Added an example to play internet radio [[ed10165](https://github.com/nodesign/weio/commit/ed101654b08357e2891450fe45268e20b42f7d73)]
+  - Added examples for bluetooth [[dea3107](https://github.com/nodesign/weio/commit/dea3107e73ce8e3c81f55badaa568286459dc9ad)]
+  - Fixed a bug with DTHxx example [[#192](https://github.com/nodesign/weio/pull/192)]
 
 
 WeIO 1.0, 2015/02/04
