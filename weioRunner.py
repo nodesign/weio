@@ -241,9 +241,8 @@ class UserControl():
             projectModule = lp.replace('/', '.') + ".main"
             
         else :
-            # Use the location of default main.py
+            # Use the location of default www/defaultMain/main.py
             projectModule = "www.defaultMain.main"
-            print "WARNING: Using WeIO default main.py (www/defaultMain/main.py)"
               
         #print "CALL", projectModule
         # Init GPIO object for uper communication

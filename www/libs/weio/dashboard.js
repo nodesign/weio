@@ -41,7 +41,7 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
-* Authors :
+* Authors : 
 * Uros PETREVSKI <uros@nodesign.net>
 * Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 *
@@ -95,7 +95,7 @@ var selectedStorageUnit = null;
 var confFile;
 
 /**
- * Variable stores server state in order to provide ping/pong circle and
+ * Variable stores server state in order to provide ping/pong circle and 
    detect when client lose connection with server and server not responding, e.g Network down etc...
  */
 var serverChechIn = true;
@@ -393,7 +393,7 @@ function runEditor() {
             { queue: false, duration: 500 });
     $(".iframeContainerIndex").css("display","none");
     $(".iframeContainer").css("display", "block");
-
+    
 
     //$(".iframeContainerIndex").hide();
 
@@ -473,6 +473,7 @@ function createNewProject() {
     if(projectName !== ""){
         var rq = { "request": "createNewProject", "path":projectName, "storageUnit":selectedStorageUnit};
         dashboard.send(JSON.stringify(rq));
+         $("#createNewProject").modal('hide');
     } else {
          $("#errorNewPjName").html(errorProjectName).show().delay(5000).fadeOut();
     }
@@ -844,7 +845,10 @@ function updateProjects(data) {
     tag+='<ul class="nav nav-pills">';
 
     for (var i=0; i<data.data.length; i++) {
-        if (i==0)
+        if (i == 0 && selectedStorageUnit == null)
+            tag+='<li class="active" id="' + data.data[i].storageName +
+                    'StorageUnit'+'"><a href="#">' + data.data[i].storageName + '</a></li>';
+        else if (data.data[i].storageName==selectedStorageUnit)
             tag+='<li class="active" id="' + data.data[i].storageName +
                     'StorageUnit'+'"><a href="#">' + data.data[i].storageName + '</a></li>';
         else
@@ -926,4 +930,5 @@ function newProjectIsCreated(data) {
         reloadIFrame();
     }
 
+   
 };
