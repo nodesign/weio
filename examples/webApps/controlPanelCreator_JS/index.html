@@ -82,6 +82,17 @@
                 </a>
                 <ul class="dropdown-menu" id="pwModule"></ul>
             </li>
+            
+            <li class="dropdown">
+                <a href="#" 
+                   class="dropdown-toggle" 
+                   data-toggle="dropdown" 
+                   role="button" 
+                   aria-expanded="false"> attachInterrupt
+                   <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" id="aiModules"></ul>
+            </li>
           
         </div>
         <!-- /.navbar-collapse -->
@@ -94,13 +105,19 @@
     // Create digitalRead dropdown-submenu 
     for (var i=0; i<4; i++) {
         var id = 'drModule' + String(i);
-        $("#drModules").append('<li class="dropdown-submenu"><a tabindex="-1" href="#">Module '+String(i)+'</a><ul class="dropdown-menu" id='+id+'></ul></li>');
+        $("#drModules").append('<li class="dropdown-submenu">' + 
+                               '<a tabindex="-1" href="#">Module '+String(i)
+                               + '</a><ul class="dropdown-menu" id=' + id 
+                               + '></ul></li>');
     }
 
     // Create digitalRead dropdown-submenu 
     for (var i=0; i<4; i++) {
         var id = 'dwModule' + String(i);
-        $("#dwModules").append('<li class="dropdown-submenu"><a tabindex="-1" href="#">Module '+String(i)+'</a><ul class="dropdown-menu" id='+id+'></ul></li>');
+        $("#dwModules").append('<li class="dropdown-submenu">' + 
+                               '<a tabindex="-1" href="#">Module '+String(i)
+                               + '</a><ul class="dropdown-menu" id=' + id 
+                               + '></ul></li>');
     }
     
     // add all pins by module in digitakRead dropdown-menu's
@@ -144,6 +161,27 @@
             creator('pwmWrite',this.id.split("pwmWrite")[1]);
         });
     }
+    
+    // Create digitalRead dropdown-submenu 
+    for (var i=0; i<4; i++) {
+        var id = 'aiModule' + String(i);
+        $("#aiModules").append('<li class="dropdown-submenu">' + 
+                               '<a tabindex="-1" href="#">Module '+String(i)
+                               + '</a><ul class="dropdown-menu" id=' + id 
+                               + '></ul></li>');
+    }
+    
+    // add all pins by module in digitakRead dropdown-menu's
+    for (var j=0; j<4; j++) {
+        for (var i=0; i<8; i++) {
+            var id = "attachInter" + String(i+(j*8)); 
+            $("#aiModule"+j).append('<li id='+ id +'><a href="#">pin '+                                          String(i+(j*8)) +'</a></li>');
+            $("#"+id).click(function() {
+                creator('attachInter',this.id.split("attachInter")[1]);
+            });
+        }
+    }
+    
     </script>  
 
 </body>
