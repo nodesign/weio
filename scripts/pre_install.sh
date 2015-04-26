@@ -51,7 +51,10 @@
 echo "This is WeIO pre install procedure"
 # This will backup configuration file to /tmp directory and in post install procedure will copy back to /weio directory
 # If any changements are required for config.weio they have to be done here in this script
-mv /weioUser /weioUserBackup
+
+# remove all symlinks before moving, othewise we create WORM
+find /weioUser/flash -name "www" -exec rm -rf {} \;
+mv /weioUser/flash /weioUserBackup
 cp /weio/config.weio /weioUserBackup
 
 # Protect directory from deleting 

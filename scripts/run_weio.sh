@@ -133,8 +133,8 @@ then
     echo "===> RETREIVING BACKUP IF EXISTS"
     if [ -d "/weioUserBackup" ]; then
         # Bringing back user projects
-        rm -rf /weioUser
-        mv /weioUserBackup /weioUser
+        rm -rf /weioUser/flash
+        mv /weioUserBackup /weioUser/flash
 
         # migrating old config file to the new one
         cd /weio/scripts/
