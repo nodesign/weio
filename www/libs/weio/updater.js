@@ -274,7 +274,7 @@ function checkVersion(data) {
     if (data.needsUpdate=="YES") {
         console.log("WeIO install duration in s will be : " + data.install_duration);
         needsUpdate = true;
-        $("#needsUpdateStatus").html("Install new update");
+        $("#needsUpdateStatus").html("WeIO update is available!");
         
         $("#updateButton").html("Update WeIO");
         
@@ -302,8 +302,9 @@ function checkVersion(data) {
 };
 
 function bringUpdater(){
-    if (modalIsPopulated) {
-        $("#updateWeio").modal("show");
+    if (modalIsPopulated && weioNeedsUpdate) {
+        //$("#updateWeio").modal("show");
+        $("#reinstallFw").modal("show");
     }
 }
 
