@@ -309,7 +309,8 @@ class WeioUpdaterHandler(SockJSConnection):
                 if (self.fwDownloadSize == sizeOnDisk):
                     # protect user files
                     # kill all symlinks first
-                    p = subprocess.Popen(['find', '/weioUser/flash', '-name', '"www"', '-exec', 'rm', '-rf', '{}', '\;'])
+                    p = subprocess.Popen(["sh", "/weio/scripts/userProjectsLinking.sh"])
+                    print p.communicate()
                     # move to new directory
                     os.rename("/weioUser/flash", "/weioUserBackup")
                     # update FW
