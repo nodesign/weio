@@ -52,7 +52,7 @@
 
 from tornado import web, ioloop, options, websocket, httpserver
 
-import sys, os, logging, platform, json, signal, datetime
+import sys, os, logging, platform, json, signal, datetime, traceback
 
 import multiprocessing
 import threading
@@ -256,14 +256,15 @@ class UserControl():
         # Import userMain from local module
         try :
             self.userMain = __import__(projectModule, fromlist=[''])
+            # Calling user setup() if present
+            if "setup" in vars(self.userMain):
+                self.userMain.setup()
         except :
             print "MODULE CAN'T BE LOADED. Maybe you have some errors in modules that you wish to import?"
+            print traceback.format_exc()
             result = None
 
 
-        # Calling user setup() if present
-        if "setup" in vars(self.userMain):
-            self.userMain.setup()
 
         # Add user events
         #print "ADDING USER EVENTS"
