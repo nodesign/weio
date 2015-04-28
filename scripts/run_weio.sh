@@ -132,15 +132,21 @@ then
     /weio/scripts/flash_lpc_fw.py
     echo "===> RETREIVING BACKUP IF EXISTS"
     if [ -d "/weioUserBackup" ]; then
+
+        # migrating old config file to the new one
+        cd /weio/scripts/
+        # at this moment old config.weio is here : /weioUserBackup/config.weio
+        ./migrateConfig.py
+
+        # destroy old config.weio
+        rm /weioUser/config.weio
+
         # Bringing back user projects
         rm -rf /weioUser/flash
         mv /weioUserBackup /weioUser/flash
 
-        # migrating old config file to the new one
-        cd /weio/scripts/
-        ./migrateConfig.py
-        rm /weioUser/config.weio
-
+        # Be sure that after this step we are no more in the "first time" mode
+        sed 's/"first_time_run": "YES",.*$/"first_time_run": "NO",/' -i config.weio
     fi
 fi
 
