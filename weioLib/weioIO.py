@@ -140,6 +140,13 @@ def dhtRead(pin) :
         print "dhtRead(", pin,")"
         return -1
 
+def HCSR04Read(trigger, pulse):
+    try:
+        return gpio.HCSR04Read(trigger, pulse)
+    except:
+        print "HCSR04Read(", trigger,",",pulse,")"
+        return -1
+
 def analogRead(pin) :
     try:
         return gpio.analogRead(pin)

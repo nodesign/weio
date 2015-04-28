@@ -146,7 +146,16 @@ class UPER1_GPIO(GPIO):
 
         :return: An array containing the humidity, temperature and checksum info
         """
-        return self.board.decode_sfp(self.board.uper_io(5, self.board.encode_sfp(200, [self.logical_pin])))[1][1:]
+        return self.board.decode_sfp(self.board.uper_io(5, self.board.encode_sfp(100, [self.logical_pin])))[1][1:]
+
+    def hc_sr04_read(self, trigger, pulse):
+        """
+        Read the distance from a HC-SR04 ultrasonic sensor
+        :param value: the trigger pin
+        :param value: the pulse pin
+        :return: The distance in cm
+        """
+        return self.board.decode_sfp(self.board.uper_io(1, self.board.encode_sfp(101, [trigger, pulse])))[1][0]
 
     def attach_irq(self, event, callback=None, user_object=None, debounce_time=50):
         """
