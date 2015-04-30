@@ -77,7 +77,7 @@ def getLocalIpAddress() :
         return socket.gethostbyname(socket.gethostname())
 
 @retry
-def getPublicIpAddress() :
+def getPublicIpAddress(retry=None,opt_exception=Exception) :
     """Gets world ip address. TODO test if internet is reachable
         example: getPublicIpAddress(retry=2,opt_exception=Exception('error occured.'))
         
