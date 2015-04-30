@@ -62,6 +62,7 @@ def retry(fn):
                 return fn(*args,**kwargs)
             except Exception,e:
                 if not retry: break
+                print '%d retries' % retry
                 retry = retry - 1 
         if opt_exception:  raise opt_exception 
         else:              raise Exception('No internet or host is down.')
