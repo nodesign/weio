@@ -106,7 +106,7 @@ class WeioIndexHandler(web.RequestHandler):
             path = "www/signin.html"
         else :
             path = "www/userIndex.html"
-            
+
             #if (weioFiles.checkIfFileExists(confFile['last_opened_project'] + "/index.html")):
             #    path = "www/userIndex.html"
 
@@ -229,21 +229,21 @@ class UserControl():
 
     def launcher(self):
         #print "======>>> LAUNCHING..."
-        
-        # get configuration from file       
+
+        # get configuration from file
         confFile = weioConfig.getConfiguration()
         # get location of last opened project
         lp = confFile["last_opened_project"]
-        
+
          # check if main.py exists in current user project
         if (weioFiles.checkIfFileExists(lp+"/main.py")):
             # set the location of current project main.py
             projectModule = lp.replace('/', '.') + ".main"
-            
+
         else :
             # Use the location of default www/defaultMain/main.py
             projectModule = "www.defaultMain.main"
-              
+
         #print "CALL", projectModule
         # Init GPIO object for uper communication
         if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
@@ -328,21 +328,27 @@ def listenerThread():
                 result = {}
 
                 if (msg.callbackJS is not None):
-                    result["serverPush"] = msg.callbackJS
-                    result["data"] = msg.res
-                    #print "RESULT",result
-                    if (weioRunnerGlobals.remoteConnected.value == True):
-                        if (msg.connUuid == "all"):
-                            for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
-                                weioRunnerGlobals.weioConnections[connUuid].send(json.dumps(result))
+                    weioRunnerGlobals.lockConn.acquire()
+                    try:
+                        result["serverPush"] = msg.callbackJS
+                        result["data"] = msg.res
+                        #print "RESULT",result
+                        if (weioRunnerGlobals.remoteConnected.value == True):
+                            if (msg.connUuid == "all"):
+                                for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
+                                    weioRunnerGlobals.weioConnections[connUuid].send(json.dumps(result))
+                            else:
+                                weioRunnerGlobals.weioConnections[msg.connUuid].write_message(json.dumps(result))
                         else:
-                            weioRunnerGlobals.weioConnections[msg.connUuid].write_message(json.dumps(result))
-                    else:
-                        if (msg.connUuid == "all"):
-                            for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
-                                weioRunnerGlobals.weioConnections[connUuid].send(json.dumps(result))
-                        else:
-                            weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
+                            if (msg.connUuid == "all"):
+                                for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
+                                    weioRunnerGlobals.weioConnections[connUuid].send(json.dumps(result))
+                            else:
+                                weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
+                    except:
+                        print "FAILED!"
+                    finally:
+                        weioRunnerGlobals.lockConn.release()
 
 class WeioRemote():
     conn = None
@@ -459,6 +465,9 @@ if __name__ == '__main__':
     signalCallback = functools.partial(signalHandler, userControl)
     signal.signal(signal.SIGTERM, signalCallback)
     signal.signal(signal.SIGINT, signalCallback)
+
+    # Prepare lock for the thread
+    weioRunnerGlobals.lockConn = multiprocessing.Lock()
 
     # Start listener thread
     t = threading.Thread(target=listenerThread)

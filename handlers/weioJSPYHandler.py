@@ -68,9 +68,14 @@ class WeioHandler(SockJSConnection):
 
     def on_open(self, request):
         # Add the connection to the connections dictionary
-        connUuid = uuid.uuid4()
-        weioRunnerGlobals.weioConnections[connUuid] = self
-        weioRunnerGlobals.weioConnUuids.append(connUuid)
+        # Do not forget the lock - this handler is called asynchronoisly,
+        # and the weioRunnerGlobals.weioConnections[] is accessed in the same time by
+        # weioRunner.py. This can lead to iteritems() in weioRunner while dictionary is modified,
+        # which will lead to exception in weioRunner.py listener_thread()
+        with weioRunnerGlobals.lockConn:
+            connUuid = uuid.uuid4()
+            weioRunnerGlobals.weioConnections[connUuid] = self
+            weioRunnerGlobals.weioConnUuids.append(connUuid)
 
         # collect client ip address and user machine info
         # print self.request to see all available info on user connection
@@ -135,14 +140,15 @@ class WeioHandler(SockJSConnection):
 
 
     def on_close(self):
-        self.connection_closed = True
-        print "*SYSOUT* Client with IP address: " + self.ip + " disconnected from server"
-        # Remove client from the clients list and broadcast leave message
-        #self.connections.remove(self)
-        for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
-            if (conn == self):
-                weioRunnerGlobals.weioConnections.pop(connUuid)
-                weioRunnerGlobals.weioConnUuids.remove(connUuid)
+        with weioRunnerGlobals.lockConn:
+            self.connection_closed = True
+            print "*SYSOUT* Client with IP address: " + self.ip + " disconnected from server"
+            # Remove client from the clients list and broadcast leave message
+            #self.connections.remove(self)
+            for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
+                if (conn == self):
+                    weioRunnerGlobals.weioConnections.pop(connUuid)
+                    weioRunnerGlobals.weioConnUuids.remove(connUuid)
 
 
 ###
@@ -166,7 +172,7 @@ class WeioHandlerRemote():
             """Parsing JSON data that is comming from browser into python object"""
             self.serve(json.loads(data))
 
-    def serve(self, data) :
+    def serve(self, data):
         # Create userAgentMessage and send it to the launcher process
         msg = weioRunnerGlobals.userAgentMessage()
         #print "DATA: ", data
@@ -185,8 +191,9 @@ class WeioHandlerRemote():
             weioRunnerGlobals.QOUT.put(msg)
 
     def on_close(self):
-        self.remoteConn = None
+        with weioRunnerGlobals.lockConn:
+            self.remoteConn = None
 
-        # Remove client from the clients list and broadcast leave message
-        weioRunnerGlobals.weioConnections.pop(self.connUuid)
-        self.connUuid = None
+            # Remove client from the clients list and broadcast leave message
+            weioRunnerGlobals.weioConnections.pop(self.connUuid)
+            self.connUuid = None
