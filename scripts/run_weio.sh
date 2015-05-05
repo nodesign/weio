@@ -139,7 +139,7 @@ then
         ./migrateConfig.py
 
         # destroy old config.weio
-        rm /weioUser/config.weio
+        rm /weioUserBackup/config.weio
 
         # Bringing back user projects
         rm -rf /weioUser/flash

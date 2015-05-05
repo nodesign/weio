@@ -63,9 +63,10 @@ B_PATH=`grep "/weioUserBackup/" /lib/upgrade/keep.d/base-files`
 MYSTRING="/weioUserBackup/"
 MYFILE=/lib/upgrade/keep.d/base-files
 if grep -q $MYSTRING $MYFILE; then
-    echo "STRING FOUND!"
+    echo "/weioUserBackup/ already protected!"
 else
     echo $MYSTRING >> $MYFILE
+    echo "/weioUserBackup/ is now protected!"
 fi
 # Now I'm ready to start downloading new FW and reinstall everything
 cd /tmp/weio/scripts/
