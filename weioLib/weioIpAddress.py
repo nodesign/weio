@@ -53,6 +53,21 @@ import re
 import subprocess
 import platform
 
+def retry(fn):
+    def _inner(*args,**kwargs):
+        retry = int(kwargs['retry']) if 'retry' in kwargs and kwargs['retry'] else 0
+        opt_exception = kwargs['opt_exception'] if 'opt_exception' in kwargs and kwargs['opt_exception'] else 0
+        while True or retry:
+            try:
+                return fn(*args,**kwargs)
+            except Exception,e:
+                if not retry: break
+                print '%d retries' % retry
+                retry = retry - 1 
+        if opt_exception:  raise opt_exception 
+        else:              raise Exception('No internet or host is down.')
+    return _inner
+
 def getLocalIpAddress() :
     """Gets local ip address"""
     
@@ -62,14 +77,26 @@ def getLocalIpAddress() :
     else : # Darwin
         return socket.gethostbyname(socket.gethostname())
 
-
-def getPublicIpAddress() :
-    """Gets world ip address. TODO test if internet is reachable"""
-    f = urllib.urlopen("http://www.canyouseeme.org/")
-    html_doc = f.read()
-    f.close()
-    ipAddress = re.search('(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)',html_doc)
-
-    #response = urllib.urlopen('http://api.hostip.info/get_html.php?ip=' + ipAddress.group(0) + '&position=true').read()
-    return urllib.urlopen('http://api.hostip.info/get_html.php?ip=' + ipAddress.group(0)).read()
+@retry
+def getPublicIpAddress(retry=None,opt_exception=Exception) :
+    """Gets world ip address. TODO test if internet is reachable
+        example: getPublicIpAddress(retry=2,opt_exception=Exception('error occured.'))
+        
+        @type retry:int 
+        @param retry: retries before throwing an exception.
+        
+        @type opt_exception:Exception
+        @param opt_exception: optional exception argument to throw. if not any, Exception is raised.
+        
+    """
+    cmd = 'ping -t 2 -c 1 107.20.89.142 > /dev/null 2>&1; echo $?'
+    if int(subprocess.check_output(cmd,shell=True)) == 0:
+        f = urllib.urlopen("http://www.canyouseeme.org/")
+        html_doc = f.read()
+        f.close()
+        ipAddress = re.search('(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)',html_doc)
     
+        #response = urllib.urlopen('http://api.hostip.info/get_html.php?ip=' + ipAddress.group(0) + '&position=true').read()
+        return urllib.urlopen('http://api.hostip.info/get_html.php?ip=' + ipAddress.group(0)).read()
+    else:
+        raise
