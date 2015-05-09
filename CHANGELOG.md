@@ -15,6 +15,7 @@ WeIO 1.1, not released yet
  - Updated ACE editor to v1.1.9 [[#183](https://github.com/nodesign/weio/pull/183)]
  - Enable file reopening from the file list [[#183](https://github.com/nodesign/weio/pull/183)]
  - main.py is not required anymore on pure HTML projects [[#181](https://github.com/nodesign/weio/pull/181)]
+ - Added traceback on python errors [[#208](https://github.com/nodesign/weio/pull/208)]
 
 - API
   - Added a debounce time parameter for interrupts [[d2a9fe2](https://github.com/nodesign/weio/commit/d2a9fe2ca3153ad3a22f53810a047d6958fb9f89)]
@@ -24,12 +25,15 @@ WeIO 1.1, not released yet
   - Improved stability of IoTPy [[#148](https://github.com/nodesign/weio/pull/148)]
   - Improved the way the LPC is detected by IoTPy [[#163](https://github.com/nodesign/weio/pull/163)]
   - Added support for DS18B20 sensors [[#165](https://github.com/nodesign/weio/pull/165)]
+  - Check for internet connectivity [[#213](https://github.com/nodesign/weio/pull/213)]
 
 - System
   - Support for bluetooth + bluez [[3736872](https://github.com/nodesign/weio/commit/3736872b7d50c9e07f45133f6df1267c954b8b1c)]
   - Update of NTPD timezones [[#144](https://github.com/nodesign/weio/pull/144)]
   - Improved samba behavior [[#149](https://github.com/nodesign/weio/pull/159)]   [[#164](https://github.com/nodesign/weio/pull/164)]
   - Added hotplug2 rules to symlink /dev/ttyACM0 and /dev/ttyACM1 [[#163](https://github.com/nodesign/weio/pull/163)]
+  - Refactoring of the update process
+  - Fixed a race condition bug in tornado [[415a3cc5](https://github.com/nodesign/weio/commit/415a3cc5f73d47a9cdce745a8c7ef9292365dcb2)]
 
 - Examples
   - Fixed webCamSinglePhotoWEB example [[0c18062](https://github.com/nodesign/weio/commit/0c180625e096767da8ed0b1ad9f38fd76bf5e611)]
@@ -40,7 +44,11 @@ WeIO 1.1, not released yet
   - Added an example to play internet radio [[ed10165](https://github.com/nodesign/weio/commit/ed101654b08357e2891450fe45268e20b42f7d73)]
   - Added examples for bluetooth [[dea3107](https://github.com/nodesign/weio/commit/dea3107e73ce8e3c81f55badaa568286459dc9ad)]
   - Fixed a bug with DTHxx example [[#192](https://github.com/nodesign/weio/pull/192)]
+  - Added an example + driver for the HC-SR04 [[81c3aefa](https://github.com/nodesign/weio/commit/81c3aefa36e586a15ee046245ae31a1d95265a2a)]
 
+- Firmware
+  - Improved the DHTxx support (fix for the DHT22 sensor) [[#207](https://github.com/nodesign/weio/pull/207)]
+  - Added the support for HC-SR04 [[#209](https://github.com/nodesign/weio/pull/209)]
 
 WeIO 1.0, 2015/02/04
 --------------------
