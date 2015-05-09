@@ -1,4 +1,10 @@
-/etc/config/
+/etc/config/wireless.sta
+/etc/config/wireless.ap
+/etc/config/wireless.ap.rescue
+/etc/config/wireless
+/etc/config/network.sta
+/etc/config/network.ap
+/etc/config/network
 /etc/dropbear/
 /etc/crontabs/
 /weioUserBackup/
