@@ -211,7 +211,7 @@ class WeioGpio():
         else:
             sys.stderr.write("Only 8bit or 16bit precisions are allowed")
 
-    def attachInterrupt(self, pin, mode, callback, obj=None, debounceTime=50):
+    def attachInterrupt(self, pin, mode, callback, obj=None, debounceTime=10):
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
 
         interrupt = self.mainGpio[pin]
