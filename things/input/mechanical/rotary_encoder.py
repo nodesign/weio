@@ -47,7 +47,7 @@
 #
 ###
 
-from IoTPy.pyuper.interrupt import Interrupt
+from weioLib.weio import *
 
 class RotaryEncoder:
 
@@ -74,6 +74,8 @@ class RotaryEncoder:
         #obj = {'previous_states': list(self._null_state), 'position': 0}
 
         self._previous_states = list(self._null_state)
+        self.pin1 = 0
+        self.pin2 = 0
         self.position = 0
 
         self._chan0 = chan0
@@ -81,8 +83,8 @@ class RotaryEncoder:
 
         self._user_callback = callback
 
-        self._id0 = chan0.attach(Interrupt.EDGE_CHANGE, self.call_back, None, 3)
-        self._id1 = chan1.attach(Interrupt.EDGE_CHANGE, self.call_back, None, 3)
+        self._id0 = attachInterrupt(self._chan0, CHANGE, self.cb1, self._chan0, 1)
+        self._id1 = attachInterrupt(self._chan1, CHANGE, self.cb2, self._chan1, 1)
 
     def __enter__(self):
         return self
@@ -90,14 +92,18 @@ class RotaryEncoder:
     def __exit__(self, exc_type, exc_value, traceback):
         pass
 
+    def cb1(self, event, obj):
+        self.pin1 = (event['values'] >> event['id']) & 0x01
+        self.call_back(event, obj)
+
+    def cb2(self, event, obj):
+        self.pin2 = (event['values'] >> event['id']) & 0x01
+        self.call_back(event, obj)
+
     def call_back(self, event, obj):
-        pins = event['values']
-        pin1 = (pins >> self._id0) & 0x01
-        pin2 = (pins >> self._id1) & 0x01
-        
-        if [pin1, pin2] != self._previous_states[2]:
+        if [self.pin1, self.pin2] != self._previous_states[2]:
             self._previous_states[0:2] = self._previous_states[1:3]
-            self._previous_states[2] = [pin1, pin2]
+            self._previous_states[2] = [self.pin1, self.pin2]
 
             if self._previous_states in self._forward_states:
                 self.position += 1
