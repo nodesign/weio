@@ -25,4 +25,5 @@
 ./scripts/feeds install bluez-utils
 ./scripts/feeds install python-bluez
 ./scripts/feeds install bluez-hcidump
+./scripts/feeds install nano
 
