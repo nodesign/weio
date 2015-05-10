@@ -58,18 +58,21 @@ mv /weioUser/flash /weioUserBackup
 cp /weio/config.weio /weioUserBackup
 
 # Protect directory from deleting 
-B_PATH=`grep "/weioUserBackup/" /lib/upgrade/keep.d/base-files`
-
-MYSTRING="/weioUserBackup/"
-MYFILE=/lib/upgrade/keep.d/base-files
-if grep -q $MYSTRING $MYFILE; then
-    echo "/weioUserBackup/ already protected!"
-else
-    echo $MYSTRING >> $MYFILE
-    echo "/weioUserBackup/ is now protected!"
-fi
+# B_PATH=`grep "/weioUserBackup/" /lib/upgrade/keep.d/base-files`
+#
+# MYSTRING="/weioUserBackup/"
+# MYFILE=/lib/upgrade/keep.d/base-files
+# if grep -q $MYSTRING $MYFILE; then
+#     echo "/weioUserBackup/ already protected!"
+# else
+#     echo $MYSTRING >> $MYFILE
+#     echo "/weioUserBackup/ is now protected!"
+# fi
 # Now I'm ready to start downloading new FW and reinstall everything
 cd /tmp/weio/scripts/
+
+# Protect files from deleting
+cp base-files /lib/upgrade/keep.d/base-files
 
 # Free RAM from any possible WeIO application left
 /etc/init.d/weio_run stop
