@@ -64,7 +64,7 @@ def saveConfiguration(path, conf):
 
 print "Running migration program"
 # Open old config file here
-oldConfig = getConfiguration("/tmp/config.weio")
+oldConfig = getConfiguration("/weioUserBackup/config.weio")
 newConfig = getConfiguration("/weio/config.weio")
 
 for parameter in newConfig:

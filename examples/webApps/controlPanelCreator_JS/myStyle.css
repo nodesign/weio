@@ -45,34 +45,50 @@
 }
 
 /* Interface elements */
+html,body {
+    height: 100%;
+}
+
 .col-xs-4 {
-    height:16%;
-    background-color: #FFCC66;
+    height: 16%;
+    background-color: #9966CC;
+    color: white;
     border-radius: 20px;
-    font-size:2.5vw;
+    font-size: 4vh;
     border: 2px solid white;
 }
 
 .col-xs-8 {
     height: 16%;
     color:white;
-    background-color: gray;
+    background-color: #B0B0B0;
     border-radius: 20px;
     border: 2px solid white;
 }
 
 .col-xs-12 {
     height: 16%;
-    font-size:3vw;
+    font-size:5vmin;
     text-align: center;
     color: white;
-    background-color: black;
+    background-color: #B0B0B0;
     border-radius: 20px;
     border: 2px solid white;
 }
-html,body
-{
-    height:100%;
+
+.col-xs-6 {
+    height:16%;
+    background-color: #B0B0B0;
+    text-align: center;
+    color: white;
+    border-radius: 20px;
+    font-size:4vmin;
+    border: 2px solid white;
+}
+
+p {
+    font-size:2.5vmin;
+    text-align:left;
 }
 input[type=range] {
     height: 100%;

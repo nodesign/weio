@@ -46,7 +46,7 @@
 # Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 #
 ###
-
+from weioLib.weio import *
 
 class PowerModule:
     def __init__(self, port):

@@ -2,7 +2,11 @@ var pinFlags = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 var activePins = [];  
 var activeDigPins = []; 
-var weioFunctions = ['digitalRead','digitalWrite','analogRead','pwmWrite']; 
+var weioFunctions = ['digitalRead','digitalWrite','analogRead',
+                     'pwmWrite','attachInter']; 
+var aIcounter = 0;
+var aIpinFlags = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
 function onWeioReady() {
     setInterval(function(){getInputs()}, 500);
@@ -23,6 +27,15 @@ function fromAdc(data) {
 
 function fromDig(data) {
     $("#dR"+data.pin).html("digitalRead pin"+ data.pin + ": "+ data.data);
+}
+
+function callback(data){
+    // increment the interrupt counter
+    aIcounter = aIcounter + 1;
+    // update displayed phrases
+    $("#counter"+data.data).html("COUNTER: "+String(aIcounter));
+    $("#pinP"+data.data).html("PIN: " + data.data);
+    $("#type"+data.data).html("TYPE: " + data.eventType);
 }
 
 // create button
@@ -53,26 +66,26 @@ function creator(func, pin) {
         document.body.appendChild(aR);
     }
     else if(func=='digitalWrite'){
-        var button = document.createElement('div');
-        button.innerHTML = func + " pin" + pin + ": LOW";
-        button.className = 'col-xs-12 col-md-6';
-        button.onclick=function(){
+        var dWbutton = document.createElement('div');
+        dWbutton.innerHTML = func + " pin" + pin + ": LOW";
+        dWbutton.className = 'col-xs-12 col-md-6';
+        dWbutton.onclick=function(){
             if( !pinFlags[pin] ) {
                 digitalWrite(parseInt(pin), HIGH);
                 pinFlags[pin] = 1;
-                button.style.backgroundColor = "#33EE66";
-                button.style.color = "black";
-                button.innerHTML = func + " pin" + pin + ": HIGH";
+                dWbutton.style.backgroundColor = "#33EE66";
+                dWbutton.style.color = "black";
+                dWbutton.innerHTML = func + " pin" + pin + ": HIGH";
             }
             else {
                 digitalWrite(parseInt(pin), LOW);
                 pinFlags[pin] = 0;
-                button.style.backgroundColor = "black";
-                button.style.color = "white";
-                button.innerHTML = func + " pin" + pin + ": LOW";
+                dWbutton.style.backgroundColor = "#B0B0B0";
+                dWbutton.style.color = "white";
+                dWbutton.innerHTML = func + " pin" + pin + ": LOW";
             }
         };
-        document.body.appendChild(button);
+        document.body.appendChild(dWbutton);
     }
     else if(func=='pwmWrite'){
         // create div to display duty cycle value
@@ -96,5 +109,53 @@ function creator(func, pin) {
         sliderDiv.appendChild(slider);
         document.body.appendChild(valDiv);
         document.body.appendChild(sliderDiv);
+    }
+    else if(func=='attachInter'){
+        
+        // create div to display attach/detach button
+        var aIButton = document.createElement('div');
+        aIButton.className = 'col-xs-6 col-md-3';
+        aIButton.innerHTML = "NO INTERRUPT ATTACHED TO PIN " + pin;
+        aIButton.onclick=function(){
+            // attach RISING interrupt and update displayed phrases
+            if( !aIpinFlags[pin] ) {
+                attachInterrupt(parseInt(pin), RISING, callback);
+                aIpinFlags[pin] = 1;
+                aIButton.style.backgroundColor = "#FFFF99";
+                aIButton.style.color = "black";
+                aIButton.innerHTML ="RISING INTERRUPT ATTACHED TO PIN "+pin;
+            }
+            // detach interrupt and update displayed phrases
+            else {
+                detachInterrupt(parseInt(pin));
+                aIpinFlags[pin] = 0;
+                aIButton.style.backgroundColor = "#B0B0B0";
+                aIButton.style.color = "white";
+                aIButton.innerHTML = "NO INTERRUPT ATTACHED TO PIN " + pin;
+            }
+        };
+        
+        // create div to display callback data
+        var aI = document.createElement('div');
+        aI.className = 'col-xs-6 col-md-3';
+        aI.id = "aI" + pin;
+        aI.style.backgroundColor = "#CC6699";
+        
+        // create p
+        var counter = document.createElement('p');
+        counter.id = "counter" + pin;
+        counter.innerHTML = "COUNTER: 0";
+        var pinP = document.createElement('p');
+        pinP.id = "pinP" + pin;
+        pinP.innerHTML = "PIN: ";
+        var type = document.createElement('p');
+        type.id = "type" + pin;
+        type.innerHTML = "TYPE: ";
+        aI.appendChild(counter);
+        aI.appendChild(pinP);
+        aI.appendChild(type);
+        
+        document.body.appendChild(aI);
+        document.body.appendChild(aIButton);
     }
 }

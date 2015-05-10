@@ -4,12 +4,12 @@
 * Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
 * All rights reserved
 *
-*               ##      ## ######## ####  #######  
-*               ##  ##  ## ##        ##  ##     ## 
-*               ##  ##  ## ##        ##  ##     ## 
-*               ##  ##  ## ######    ##  ##     ## 
-*               ##  ##  ## ##        ##  ##     ## 
-*               ##  ##  ## ##        ##  ##     ## 
+*               ##      ## ######## ####  #######
+*               ##  ##  ## ##        ##  ##     ##
+*               ##  ##  ## ##        ##  ##     ##
+*               ##  ##  ## ######    ##  ##     ##
+*               ##  ##  ## ##        ##  ##     ##
+*               ##  ##  ## ##        ##  ##     ##
 *                ###  ###  ######## ####  #######
 *
 *                    Web Of Things Platform
@@ -119,8 +119,9 @@ var playButtonDisabled = false;
 var stopButtonDisabled = false;
 var disableTime = 3000;
 
-// Error messages text 
-var errorProjectName = "You must provide a project name."
+// Error messages text
+var errorProjectName = "You must provide a project name!";
+var errorProjectExist = "Project with this name already exist!";
 
 $(document).ready(function () {
     updateIframeHeight();
@@ -250,7 +251,7 @@ $(document).ready(function () {
     $('#importProjectUploader').change(function(evt){
             handleFileSelect(evt);
     });
-    
+
     window.setInterval(function() {
         if (serverChechIn != false) {
             dashboard.send(JSON.stringify({'request': 'ping'}));
@@ -427,18 +428,18 @@ function runPreview() {
     else {
         http_prefix = "http://";
     }
-    
+
     if (userServerPort==80) {
         _addr = http_prefix + a[0];
     } else {
         _addr = http_prefix + a[0] + ':' + userServerPort;
     }
-    
+
     $(".iframeContainerIndex").attr("src", _addr + "/" + projectName + "/index.html?" + randomNumber);
     /*$(".iframeContainerIndex").css({ "display" : "block","height" : screen.height-60 + "px" });*/
 	$(".iframeContainerIndex").css({ "display" : "block","height" : screen.height-190 + "px" });
     $(".iframeContainerIndex").css("margin-top", screen.height+60 + "px");
-    
+
     //$(".iframeContainer").hide();
 
     /*$(".iframeContainers").animate( { "margin-top": -screen.height }, { queue: false, duration: 500 });*/
@@ -459,7 +460,7 @@ function runPreview() {
 function runSettings() {
     console.log("=========>> runSettings() CALLED")
     updateIframeHeight();
-    
+
     // generate random number to prevent loading page from cache
     var randomNumber = Math.random();
     $(".iframeContainer").attr("src", "settings.html?" + randomNumber);
@@ -474,9 +475,9 @@ function createNewProject() {
         dashboard.send(JSON.stringify(rq));
          $("#createNewProject").modal('hide');
     } else {
-         $("#errorNewPjName").html(errorProjectName).show().delay(5000).fadeOut();   
+         $("#errorNewPjName").html(errorProjectName).show().delay(5000).fadeOut();
     }
-   
+
 };
 
 function duplicateProject() {
@@ -517,7 +518,7 @@ function prepareToPlay() {
             play();
         }
          setTimeout(function () { // Enable play after some time
-            playButtonDisabled = false;  
+            playButtonDisabled = false;
         }, disableTime);
     }
 };
@@ -563,7 +564,7 @@ function stop(){
         readyToPlay = 0;
 
         setTimeout(function () { // Enable stop after some time
-            stopButtonDisabled = false;  
+            stopButtonDisabled = false;
         }, disableTime);
     }
 };
@@ -770,7 +771,7 @@ function updateStatus(data){
  * Get project names and put it into dropbox menu
  */
 function updateProjects(data) {
-    
+
     var tag = "";
     tag+='<li><a tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>';
     tag+='<li><a tabindex="-1" href="#importProject" role="button" data-toggle="modal">Import existing project</a></li>';
@@ -784,18 +785,18 @@ function updateProjects(data) {
         tag+='<li class="dropdown-submenu">\n';
         tag+='<a tabindex="-1" href="#">' + val.storageName + '</a>\n';
         tag+='<ul class="dropdown-menu" id="' + val.storageName + 'UserProjects">\n';
-        
+
         if (val.projects.length==0) {
             tag += '<li><a class="cells" tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>\n';
         }
           $.map(val.projects, function(examples, key) {
                 // Get directory structure
-                $.each(examples, function(dir, idx){ 
+                $.each(examples, function(dir, idx){
                     tag+='<li class="dropdown-submenu scroll-menu">\n';
                     tag+='<a href="#">' + dir + '</a>\n';
                     tag+='<ul class="dropdown-menu">\n';
                     tag+='<ul class="dropdown-menu scroll-menu id="' + dir + 'UserProjects"">\n';
-                    
+
                     // Get subdirectory structure
                     $.each(idx, function(subdir){
                         var s ="'" + val.storageName + "/" + String(dir) + '/' + String(subdir) + "'\n";
@@ -811,11 +812,11 @@ function updateProjects(data) {
             });
         tag+='</ul></li>\n';
     });
-    
+
     tag+='<li class="dropdown-submenu">\n';
     tag+='<a tabindex="-1" href="#">myProjects</a>\n';
     tag+='<ul class="dropdown-menu" id="UserProjects">\n';
-    
+
     // Parse user projects structure
     $.each( data.data, function( idx, val ) {
              tag+='<li class="dropdown-submenu scroll-menu">\n';
@@ -826,8 +827,8 @@ function updateProjects(data) {
                 tag+='<ul class="dropdown-menu scroll-menu id="' + val.storageName + 'UserProjects"">\n';
                 if (jQuery.isEmptyObject(examples)) {
                     tag += '<li><a class="cells" tabindex="-1" href="#createNewProject" role="button" data-toggle="modal">Create new project</a></li>\n';
-                } 
-                $.each(examples, function(dir, idx){ 
+                }
+                $.each(examples, function(dir, idx){
                     var s ="'" + val.storageName + "/" + String(dir) + "'\n";
                     tag+= '<li><a class="cells" tabindex="-1" href="javascript:changeProject('+s+')">' + dir + '</a></li>\n';
                 });
@@ -917,13 +918,17 @@ function updateUserData(data) {
 };
 
 function newProjectIsCreated(data) {
+    if(data.error) {
+        $("#errorNewPjName").html(errorProjectExist).show().delay(5000).fadeOut();
+    } else {
+        updateStatus(data);
+        $("#createNewProject").modal('hide');
+        var rq = { "request": "getUserProjetsFolderList"};
+        dashboard.send(JSON.stringify(rq));
+        rq = { "request": "getLastProjectName"};
+        dashboard.send(JSON.stringify(rq));
+        reloadIFrame();
+    }
 
-    updateStatus(data);
-
-    var rq = { "request": "getUserProjetsFolderList"};
-    dashboard.send(JSON.stringify(rq));
-    rq = { "request": "getLastProjectName"};
-    dashboard.send(JSON.stringify(rq));
-    reloadIFrame();
-
+   
 };

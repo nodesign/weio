@@ -156,6 +156,13 @@ class WeioGpio():
         gpio = self.mainGpio[pin]
         return gpio.dht_read()
 
+    def HCSR04Read(self, trigger, pulse) :
+        """Read the distance from a HC-SR04 ultrasonic distance sensor"""
+        weioRunnerGlobals.DECLARED_PINS[trigger] = GPIO.OUTPUT
+        weioRunnerGlobals.DECLARED_PINS[pulse] = GPIO.INPUT
+        gpio = self.mainGpio[trigger]
+        return gpio.hc_sr04_read(self.mainGpio[trigger].logical_pin, self.mainGpio[pulse].logical_pin)
+
     def pwmWrite(self, pin, value) :
         """Pulse with modulation is available at 6 pins from 19-24 and has 16bits of precision. By default WeIO sets PWM frequency at 20000ms and 8bit precision or from 0-255. This setup is well situated for driving LED lighting. Precision and frequency can be changed separately by calling additional functions for other uses : setPwmPeriod and setPwmLimit. PWM can also drive two different frequencies on two separate banks of 3 pins. For this feature look functions : setPwmPeriod0, setPwmPeriod1, setPwmLimit0 and setPwmLimit1."""
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.OUTPUT
@@ -204,7 +211,7 @@ class WeioGpio():
         else:
             sys.stderr.write("Only 8bit or 16bit precisions are allowed")
 
-    def attachInterrupt(self, pin, mode, callback, obj=None, debounceTime=50):
+    def attachInterrupt(self, pin, mode, callback, obj=None, debounceTime=10):
         weioRunnerGlobals.DECLARED_PINS[pin] = GPIO.INPUT
 
         interrupt = self.mainGpio[pin]

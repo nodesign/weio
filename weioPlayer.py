@@ -166,7 +166,7 @@ class WeioPlayer():
         if self.lastLaunched is not None :
             consoleWelcome = {}
             consoleWelcome['serverPush'] = "sysConsole"
-            consoleWelcome['data'] = 'WeIO user program stoped. It was runnig since : ' + self.lastLaunched
+            consoleWelcome['data'] = 'WeIO user program stopped. It was running since : ' + self.lastLaunched
             if (weioIdeGlobals.CONSOLE != None):
                 weioIdeGlobals.CONSOLE.send(json.dumps(consoleWelcome))
 
