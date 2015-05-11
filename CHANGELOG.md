@@ -16,6 +16,7 @@ WeIO 1.1, not released yet
  - Enable file reopening from the file list [[#183](https://github.com/nodesign/weio/pull/183)]
  - main.py is not required anymore on pure HTML projects [[#181](https://github.com/nodesign/weio/pull/181)]
  - Added traceback on python errors [[#208](https://github.com/nodesign/weio/pull/208)]
+ - Corrected bug in preview display (server starts too late on a preview without prior PLAY) [[#227](https://github.com/nodesign/weio/pull/227)]
 
 - API
   - Added a debounce time parameter for interrupts [[d2a9fe2](https://github.com/nodesign/weio/commit/d2a9fe2ca3153ad3a22f53810a047d6958fb9f89)]
@@ -38,6 +39,8 @@ WeIO 1.1, not released yet
   - Refactoring of the update process
   - Fixed a race condition bug in tornado [[415a3cc5](https://github.com/nodesign/weio/commit/415a3cc5f73d47a9cdce745a8c7ef9292365dcb2)]
   - Added *nano* editor [[b008bb9](https://github.com/nodesign/weio/commit/b008bb95afca910acff2a37fb19f82572f7e1d3b)]
+  - Added additional webcam drivers [[7903688](https://github.com/nodesign/weio/commit/790368861af8991fb8e60e665d9d5ebfbb8f1793)]
+
 
 - Examples
   - Fixed webCamSinglePhotoWEB example [[0c18062](https://github.com/nodesign/weio/commit/0c180625e096767da8ed0b1ad9f38fd76bf5e611)]
@@ -49,6 +52,7 @@ WeIO 1.1, not released yet
   - Added examples for bluetooth [[dea3107](https://github.com/nodesign/weio/commit/dea3107e73ce8e3c81f55badaa568286459dc9ad)]
   - Fixed a bug with DTHxx example [[#192](https://github.com/nodesign/weio/pull/192)]
   - Added an example for the HC-SR04 [[81c3aefa](https://github.com/nodesign/weio/commit/81c3aefa36e586a15ee046245ae31a1d95265a2a)]
+  - Added an example for the rotary encoder [[3079c01](https://github.com/nodesign/weio/commit/3079c017e2f9c9c319e395c586efd2196f6f34e4)]
 
 - Firmware
   - Improved the DHTxx support (fix for the DHT22 sensor) [[#207](https://github.com/nodesign/weio/pull/207)]
