@@ -130,6 +130,24 @@ if grep -q '"first_time_run": "YES"' /weio/config.weio
 then
     echo "===> FLASHING LPC FIRMWARE"
     /weio/scripts/flash_lpc_fw.py
+    echo "===> RETREIVING BACKUP IF EXISTS"
+    if [ -d "/weioUserBackup" ]; then
+
+        # migrating old config file to the new one
+        cd /weio/scripts/
+        # at this moment old config.weio is here : /weioUserBackup/config.weio
+        ./migrateConfig.py
+
+        # destroy old config.weio
+        rm /weioUserBackup/config.weio
+
+        # Bringing back user projects
+        rm -rf /weioUser/flash
+        mv /weioUserBackup /weioUser/flash
+
+        # Be sure that after this step we are no more in the "first time" mode
+        sed 's/"first_time_run": "YES",.*$/"first_time_run": "NO",/' -i config.weio
+    fi
 fi
 
 echo "===> STARTING THE SERVER"
@@ -147,13 +165,13 @@ then
     if [ -d "/tmp/weio" ]; then
       echo "Running pre install procedure"
       sh /tmp/weio/scripts/pre_install.sh
-      echo "Deleting old WeIO"
-      rm -r /weio
-      echo "Moving from RAM to target place new WeIO"
-      mv /tmp/weio /weio
-      echo "Running post install procedure"
-      sh /weio/scripts/post_install.sh
-      echo "Installation done!"
+      # echo "Deleting old WeIO"
+      # rm -r /weio
+      # echo "Moving from RAM to target place new WeIO"
+      # mv /tmp/weio /weio
+      # echo "Running post install procedure"
+      # sh /weio/scripts/post_install.sh
+      # echo "Installation done!"
     fi
 fi
 

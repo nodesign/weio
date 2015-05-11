@@ -307,7 +307,16 @@ class WeioUpdaterHandler(SockJSConnection):
                 sizeOnDisk = os.path.getsize(self.fwPath)
                 print "Size matching", self.fwDownloadSize, sizeOnDisk
                 if (self.fwDownloadSize == sizeOnDisk):
-                    p = subprocess.Popen(["sysupgrade", "-v", "-n", self.fwPath])
+                    # protect user files
+                    # kill all symlinks first
+                    p = subprocess.Popen(["sh", "/weio/scripts/userProjectsLinking.sh"])
+                    print p.communicate()
+                    # move to new directory
+                    os.rename("/weioUser/flash", "/weioUserBackup")
+                    # update FW
+                    p = subprocess.Popen(["sysupgrade", "-v", self.fwPath]) 
+                    # don't protect user files
+                    #p = subprocess.Popen(["sysupgrade", "-v", "-n", self.fwPath])
                     print p.communicate()
                 else :
                     a = {}

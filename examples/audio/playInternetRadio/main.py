@@ -26,7 +26,8 @@ def setup():
         print "Sound card found \n"
 
         # play Internet radio sound 
-        stream = Popen(["sh", "/weioUser/flash/playInternetRadio/streaming.txt", url], stdout=PIPE, stderr=PIPE)
+
+        stream = Popen(["sh", "/weio/examples/audio/playInternetRadio/streaming.sh", url], stdout=PIPE, stderr=PIPE)
         pid = stream.pid
     else :
         print "Soundcard is not connected or not recognized"

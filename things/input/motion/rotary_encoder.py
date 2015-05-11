@@ -46,3 +46,72 @@
 # Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 #
 ###
+
+from weioLib.weio import *
+
+class RotaryEncoder:
+
+    FORWARD = 1
+    BACKWARD = -1
+
+    _backward_states = [
+        [[0, 0], [1, 0], [1, 1]],  # missing 1st
+        [[0, 1], [1, 0], [1, 1]],  # missing 2nd
+        [[0, 1], [0, 0], [1, 1]],  # missing 3rd
+        [[0, 1], [0, 0], [1, 0]],  # missing 4th
+    ]
+
+    _forward_states = [
+        [[0, 0], [0, 1], [1, 1]],  # missing 1st or perfect
+        [[1, 0], [0, 1], [1, 1]],  # missing 2nd
+        [[1, 0], [0, 0], [1, 1]],  # missing 3rd
+        [[1, 0], [0, 0], [0, 1]],  # missing 4th
+    ]
+
+    _null_state = [[-1, -1], [-1, -1], [-1, -1]]
+    
+    def __init__(self, chan0, chan1, callback=None):
+        #obj = {'previous_states': list(self._null_state), 'position': 0}
+
+        self._previous_states = list(self._null_state)
+        self.pin1 = 0
+        self.pin2 = 0
+        self.position = 0
+
+        self._chan0 = chan0
+        self._chan1 = chan1
+
+        self._user_callback = callback
+
+        self._id0 = attachInterrupt(self._chan0, CHANGE, self.cb1, self._chan0, 1)
+        self._id1 = attachInterrupt(self._chan1, CHANGE, self.cb2, self._chan1, 1)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        pass
+
+    def cb1(self, event, obj):
+        self.pin1 = (event['values'] >> event['id']) & 0x01
+        self.call_back(event, obj)
+
+    def cb2(self, event, obj):
+        self.pin2 = (event['values'] >> event['id']) & 0x01
+        self.call_back(event, obj)
+
+    def call_back(self, event, obj):
+        if [self.pin1, self.pin2] != self._previous_states[2]:
+            self._previous_states[0:2] = self._previous_states[1:3]
+            self._previous_states[2] = [self.pin1, self.pin2]
+
+            if self._previous_states in self._forward_states:
+                self.position += 1
+                self._previous_states = list(self._null_state)
+                if self._user_callback:
+                    self._user_callback(RotaryEncoder.FORWARD, self.position)
+            elif self._previous_states in self._backward_states:
+                self.position -= 1
+                self._previous_states = list(self._null_state)
+                if self._user_callback:
+                    self._user_callback(RotaryEncoder.BACKWARD, self.position)

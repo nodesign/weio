@@ -4,12 +4,12 @@
 * Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
 * All rights reserved
 *
-*               ##      ## ######## ####  #######  
-*               ##  ##  ## ##        ##  ##     ## 
-*               ##  ##  ## ##        ##  ##     ## 
-*               ##  ##  ## ######    ##  ##     ## 
-*               ##  ##  ## ##        ##  ##     ## 
-*               ##  ##  ## ##        ##  ##     ## 
+*               ##      ## ######## ####  #######
+*               ##  ##  ## ##        ##  ##     ##
+*               ##  ##  ## ##        ##  ##     ##
+*               ##  ##  ## ######    ##  ##     ##
+*               ##  ##  ## ##        ##  ##     ##
+*               ##  ##  ## ##        ##  ##     ##
 *                ###  ###  ######## ####  #######
 *
 *                    Web Of Things Platform
@@ -41,7 +41,7 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
-* Authors : 
+* Authors :
 * Uros PETREVSKI <uros@nodesign.net>
 * Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 *
@@ -307,24 +307,24 @@ $(document).ready(function () {
                                                 //console.log("GET TAR ARCHIVE!!!!!!!!!!!!!!!!!!!!!!!!!!!", _addr +"/"+target);
                                                 //window.open(_addr +"/"+target);
                                                 window.location.href = _addr +"/"+target;
-                                        }); /** getJSON */  
+                                        }); /** getJSON */
                                     }
                                 }
-                                
+
                                 treeLock = false;
 
 
                                // It's more sure to add to currentlyOpened array from
                                // websocket callback than here in case that server don't answer
                             } // if (!doesExist)
-                            
+
                             // Reopen closed file, its called when strip exist (file is in the stack)
                             else {
                                 // Get the name of the file which we want to open (which file is clicked)
-                                var closed_file_name = path.split('/').pop(); 
+                                var closed_file_name = path.split('/').pop();
                                 // Find the closed tab with this file name
                                 var closed_file_tab = $(".accordion-toggle:contains('"+closed_file_name+"')");
-                                // Click on this tab will trigger fixedCollapsing function 
+                                // Click on this tab will trigger fixedCollapsing function
                                 closed_file_tab.click();
                             }
 
@@ -428,7 +428,7 @@ $(document).ready(function () {
                     // turn on red light if disconnected
                     console.log('Dashboard Web socket is closed');
                 };
-    }); /** getJSON */  
+    }); /** getJSON */
 
     //////////////// CONSOLE TABS
     $("#tabConsole").click(function(e) {
@@ -448,7 +448,7 @@ $(document).ready(function () {
         resizeRightSideBar(rightSideBarWidth);
         $(".editorContainer").animate( { right: rightSideBarWidth }, { queue: false, duration: 100 });
 
-  
+
     });
 
     $("#tabStats").click(function(e) {
@@ -465,31 +465,31 @@ $(document).ready(function () {
         stopDataViz();
         // resize side bar for documentatio preview
         rightSideBarWidth = "800px";
-        resizeRightSideBar(rightSideBarWidth); 
+        resizeRightSideBar(rightSideBarWidth);
         $(".editorContainer").animate( { right: rightSideBarWidth }, { queue: false, duration: 100 });
 
     });
-    
+
     $("#tabJavascript").click(function(e) {
         flatdocInit('weioJS.md');
     });
-    
+
     $("#tabPython").click(function(e) {
         flatdocInit('weioPY.md');
     });
-    
+
    var flatdocInit = function(file){
         Flatdoc.run({
           fetcher: Flatdoc.file(file)
         });
     };
-  
+
     // On flatdoc load, scroll to top of section
    $(document).on('flatdoc:ready', function() {
      $('#flatdoc-container').animate({
         scrollTop: $('#flatdoc-container').offset().top
         }, 500);
-    }); 
+    });
 
     ////////////////////// ADD FILES EVENT
     $('#updateFiles').change(function(evt){
@@ -595,7 +595,7 @@ function createEditor(){
         enableBasicAutocompletion: true,
         enableSnippets: true,
         enableLiveAutocompletion: true,
-        
+
     });
 
     // On chage content
@@ -621,7 +621,7 @@ function createEditor(){
           }
 
         });
-    // Enable save on ctrl+s 
+    // Enable save on ctrl+s
     $("#codeEditorAce").keydown(function(event) {
         // If Control or Command key is pressed and the S key is pressed
         // run save function. 83 is the key code for S.
@@ -631,7 +631,7 @@ function createEditor(){
             if(activeAutoSave) {
                 saveAll();
             }
-            
+
             event.preventDefault();
             return false;
         };
@@ -882,16 +882,16 @@ function prepareToDeleteProject() {
 
 function deleteFile() {
     // Check if we can delete this project/file
-    if(!examplesPermission(filename)) {
+    if(!examplesPermission(toBeDeleted)) {
         var pr = toBeDeleted.split(projectRoot);
-         
+
         if (pr[1].split("/").length==1) { // delete project
             deleteProject();
         } else { // delete only one file
             var rq = { "request": "deleteFile", "path":toBeDeleted};
             editorSocket.send(JSON.stringify(rq));
             toBeDeleted = "";
-        } 
+        }
     }
 }
 
@@ -1071,9 +1071,9 @@ function fileSaved(data) {
 function updateFileTree(data) {
     $(".icon-remove.delButton").unbind("click");
     deleteButtonClicked = false;
-    
+
     projectRoot = data.projectRoot;
-    // If example project is loaded, disable editing! 
+    // If example project is loaded, disable editing!
     if(projectRoot.split("/")[1] === 'examples'){
         console.log("This is example project, read only mode acitvated");
         editor.setReadOnly(true);
@@ -1101,7 +1101,7 @@ function updateFileTree(data) {
     //$('#tree1').load(addDeleteButtons());
     var tag = "<i class='icon-remove delButton' id='deleteButton' role='button' data-toggle='modal'></i>";
     $(tag).appendTo("div.jqtree-element.jqtree_common");
- 
+
     $(".icon-remove.delButton").bind("click", clickDeleteButton);
 
 
@@ -1356,5 +1356,5 @@ function isMainExists() {
 /* Resize right side bar for better documentation preview */
 function resizeRightSideBar(size) {
     $(".rightSideBar").animate({width:size}, 100);
-  
+
 };

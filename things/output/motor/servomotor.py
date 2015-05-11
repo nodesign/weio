@@ -72,9 +72,11 @@ from weioLib.weio import *
 
 class Servo:
 
-    def __init__(self, pin, minangle=0.0, maxangle=180.0):
+    def __init__(self, pin, minangle=0.0, maxangle=180.0, minperiod=5.0, maxperiod=10.0):
         self.minangle = float(minangle)
         self.maxangle = float(maxangle)
+        self.minperiod = float(minperiod)
+        self.maxperiod = float(maxperiod)
         self.pin = pin
         # At first angle is unknown after first setting of angle this variable is updated
         # This is just simple mechanism of tracking no real feedback
@@ -95,7 +97,7 @@ class Servo:
             print "Warning, min allowed angle is " , self.minangle , " value is set to " , self.minangle
         
         self.angle = data
-        out = proportion(data, self.minangle, self.maxangle, 5.0, 10.0)
+        out = proportion(data, self.minangle, self.maxangle, self.minperiod, self.maxperiod)
 
         pwmWrite(self.pin, out)
 
