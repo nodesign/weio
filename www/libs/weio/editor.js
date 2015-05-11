@@ -768,7 +768,6 @@ function saveFile(data) {
  */
 function saveAll() {
     // Check if any file is opened and if user program is not running (play is not pressed)
-    console.log("Jel trci server", window.top.isPlaying);
     if (editorsInStack.length > 0 && !window.top.isPlaying) {
         /*
         for (var i=0; i <  editorsInStack.length; i++) {
