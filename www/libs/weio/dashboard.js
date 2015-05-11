@@ -432,12 +432,9 @@ function runPreview() {
         _addr = http_prefix + a[0] + ':' + userServerPort;
     }
 
-<<<<<<< HEAD
     if (!isPlaying)
         prepareToPlay();
 
-=======
->>>>>>> upstream/next
     $(".iframeContainerIndex").attr("src", _addr + "/" + projectName + "/index.html?" + randomNumber);
     /*$(".iframeContainerIndex").css({ "display" : "block","height" : screen.height-60 + "px" });*/
 	$(".iframeContainerIndex").css({ "display" : "block","height" : screen.height-190 + "px" });
