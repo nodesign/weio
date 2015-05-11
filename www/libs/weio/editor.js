@@ -767,7 +767,8 @@ function saveFile(data) {
  * Save all opened files on the server
  */
 function saveAll() {
-    if (editorsInStack.length > 0) {
+    // Check if any file is opened and if user program is not running (play is not pressed)
+    if (editorsInStack.length > 0 && !window.top.isPlaying) {
         /*
         for (var i=0; i <  editorsInStack.length; i++) {
             var toUtf = encodeURI(editorsInStack[i].data);

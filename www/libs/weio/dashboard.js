@@ -411,9 +411,6 @@ function runPreview() {
     if (isEditorActive)
         document.getElementById("weioIframe").contentWindow.saveAll();
 
-    if (!isPlaying)
-        play();
-
     // generate random number to prevent loading page from cache
     var randomNumber = Math.random();
 
@@ -434,6 +431,9 @@ function runPreview() {
     } else {
         _addr = http_prefix + a[0] + ':' + userServerPort;
     }
+
+    if (!isPlaying)
+        prepareToPlay();
 
     $(".iframeContainerIndex").attr("src", _addr + "/" + projectName + "/index.html?" + randomNumber);
     /*$(".iframeContainerIndex").css({ "display" : "block","height" : screen.height-60 + "px" });*/
