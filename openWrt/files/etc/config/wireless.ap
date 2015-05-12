@@ -1,6 +1,6 @@
 config wifi-device 'radio0'
        option type 'mac80211'
-       option channel '11'
+       option channel 'auto'
        option hwmode '11ng'
        option macaddr C4:93:00:00:24:5A
        option htmode 'HT20'
