@@ -40,7 +40,7 @@ WeIO 1.1, not released yet
   - Fixed a race condition bug in tornado [[415a3cc5](https://github.com/nodesign/weio/commit/415a3cc5f73d47a9cdce745a8c7ef9292365dcb2)]
   - Added *nano* editor [[b008bb9](https://github.com/nodesign/weio/commit/b008bb95afca910acff2a37fb19f82572f7e1d3b)]
   - Added additional webcam drivers [[7903688](https://github.com/nodesign/weio/commit/790368861af8991fb8e60e665d9d5ebfbb8f1793)]
-
+  - Set the AP channel to automatic mode. [[#230](https://github.com/nodesign/weio/pull/230)]
 
 - Examples
   - Fixed webCamSinglePhotoWEB example [[0c18062](https://github.com/nodesign/weio/commit/0c180625e096767da8ed0b1ad9f38fd76bf5e611)]
