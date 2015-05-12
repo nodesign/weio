@@ -5,6 +5,7 @@
 /etc/config/network.sta
 /etc/config/network.ap
 /etc/config/network
+/etc/samba/smbpasswd
 /etc/shadow
 /etc/dropbear/
 /etc/crontabs/
