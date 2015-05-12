@@ -67,9 +67,10 @@ print "Running migration program"
 oldConfig = getConfiguration("/weioUserBackup/config.weio")
 newConfig = getConfiguration("/weio/config.weio")
 
+# exceptions
 for parameter in newConfig:
     if (parameter in oldConfig):
-        if not("weio_version" in parameter): # don't take the old version of sw, just migrate personal data
+        if not("weio_version" in parameter) and not("timezone" in parameter): # don't take the old version of sw, just migrate personal data
             newConfig[parameter] = oldConfig[parameter]
 
 saveConfiguration("/weio/config.weio", newConfig)
