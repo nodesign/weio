@@ -433,7 +433,7 @@ function runPreview() {
     }
 
     if (!isPlaying)
-        play();
+        prepareToPlay();
 
     $(".iframeContainerIndex").attr("src", _addr + "/" + projectName + "/index.html?" + randomNumber);
     /*$(".iframeContainerIndex").css({ "display" : "block","height" : screen.height-60 + "px" });*/
