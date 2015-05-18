@@ -47,6 +47,8 @@
 #
 ###
 from weioLib.weio import *
+from weioLib.weioSPI import SPILib
+
 
 class PowerModule:
     def __init__(self, port):
