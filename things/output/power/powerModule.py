@@ -63,10 +63,16 @@ class PowerModule:
                 self.latchPin = 13
 
             self.output = 0
+            # Pin mapping
+            self.mapping = [8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7]
 
     def digitalWrite(self, pin, value):
-        mask = value << (15-pin)
-        self.output = self.output ^ mask
+        # Due to the hardware mapping, some swapping must be done
+        if value == 0:
+            self.output &= ~(1 << self.mapping[pin])
+        else:
+            self.output |= (1 << self.mapping[pin])
+
         self.fire()
 
     def portWrite(self, value): # 16 bit value here please
