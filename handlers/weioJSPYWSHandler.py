@@ -125,13 +125,15 @@ class WeioWSHandler(websocket.WebSocketHandler):
 
                 if (type(data) is dict):
                     #print "keys : %s" %  data.keys()
-                    for key in data:
-                        if key == "request":
-                            msg.req = data["request"]
-                        elif key == "data":
-                            msg.data = data["data"]
-                        elif key == "callback":
-                            msg.callbackJS = data["callback"]
+                    if "payload" in data :
+                        payload = data["payload"]
+                        for key in payload:
+                            if key == "request":
+                                msg.req = payload["request"]
+                            elif key == "data":
+                                msg.data = payload["data"]
+                            elif key == "callback":
+                                msg.callbackJS = payload["callback"]
 
                 # Send message to launcher process
                 weioRunnerGlobals.QOUT.put(msg)
