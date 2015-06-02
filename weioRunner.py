@@ -67,6 +67,7 @@ import pickle
 # JS to PYTHON handler
 from handlers.weioJSPYHandler import WeioHandler, WeioHandlerRemote
 
+from handlers.weioJSPYWSHandler import WeioWSHandler
 # IMPORT BASIC CONFIGURATION FILE ALL PATHS ARE DEFINED INSIDE
 from weioLib import weioConfig
 
@@ -431,10 +432,12 @@ if __name__ == '__main__':
 
     apiRouter = SockJSRouter(WeioHandler, '/api')
 
+
     # Instantiate all handlers for user Tornado
     app = web.Application(apiRouter.urls + [
-    ('/', WeioIndexHandler),
-    (r"/(.*)", web.StaticFileHandler, {"path": "www"})
+    (r"/ws", WeioWSHandler),
+    ("/", WeioIndexHandler),
+    (r"/(.*)", web.StaticFileHandler, {"path": "www"}),
     ])
     #app.listen(options.options.port, "0.0.0.0")
 

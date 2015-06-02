@@ -82,12 +82,13 @@ $(document).ready(function() {
         /*
          * Identify server address and port to open websocket
          */
+        
         var _addr = location.host;
         if (location.port == "8080") {
             var a = _addr.split(":");
-            _addr = 'http://' + a[0] + ':' + port + '/api';
+            _addr = 'ws://' + a[0] + ':' + port + '/ws';
         } else {
-            var a = 'http://' + _addr + '/api';
+            var a = 'ws://' + _addr + '/ws';
             _addr = a;
         }
         console.log("WebSocket connecting to " + _addr);
@@ -104,7 +105,8 @@ $(document).ready(function() {
         (function() {
         // Initialize the socket & handlers
         var connectToServer = function() {
-            _weio = new SockJS(_addr);
+            _weio = new WebSocket(_addr);
+            //_weio = new SockJS(_addr);
         
             _weio.onopen = function() {
             //clearInterval(connectRetry);
