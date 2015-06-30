@@ -144,7 +144,7 @@ $(document).ready(function () {
             $(".leftSideBar").animate({width: closedSideBarWidth}, {queue: false, duration: 100});
             $("#leftSideBarButton").animate({left: "-5px"}, {queue: false, duration: 100});
             $("#leftSideBarButton").attr("class", "closed");
-            $("#leftSideBarButton i").attr("class", "icon-chevron-right");
+            $("#leftSideBarButton img").attr("src", "img/righArrowWhite.png");
             $(".tree").hide();
             $(".bottomButtons").hide();
         } else {
@@ -153,7 +153,7 @@ $(document).ready(function () {
             $(".leftSideBar").animate({width: leftSideBarWidth}, {queue: false, duration: 100});
             $("#leftSideBarButton").animate({left: "177px"}, {queue: false, duration: 100});
             $("#leftSideBarButton").attr("class", "opened");
-            $("#leftSideBarButton i").attr("class", "icon-chevron-left");
+            $("#leftSideBarButton img").attr("src", "img/leftArrow.png");
             $(".tree").show();
             $(".bottomButtons").show();
         }
@@ -170,7 +170,7 @@ $(document).ready(function () {
             $(".rightSideBar").animate( { width: closedSideBarWidth }, { queue: false, duration: 100 });
             $("#rightSideBarButton").animate( { left: "-5px"}, { queue: false, duration: 100 });
             $("#rightSideBarButton").attr("class", "closed");
-            $("#rightSideBarButton i").attr("class", "icon-chevron-left");
+            $("#rightSideBarButton img").attr("src", "img/leftArrowBlack.png");
             $("#trashConsole").hide();
             $("#consoleTabs").hide();
 
@@ -181,7 +181,7 @@ $(document).ready(function () {
             $(".rightSideBar").animate( { width: rightSideBarWidth }, { queue: false, duration: 100 });
             $("#rightSideBarButton").animate( { left: "0px"}, { queue: false, duration: 100 });
             $("#rightSideBarButton").attr("class", "opened");
-            $("#rightSideBarButton i").attr("class", "icon-chevron-right");
+            $("#rightSideBarButton img").attr("src", "img/rightArrow.png");
             $("#trashConsole").show();
             $("#consoleTabs").show();
 
@@ -1100,7 +1100,7 @@ function updateFileTree(data) {
     $('#tree').tree('loadData', data.data);
     // when tree is loaded then add x buttons
     //$('#tree1').load(addDeleteButtons());
-    var tag = "<i class='icon-remove delButton' id='deleteButton' role='button' data-toggle='modal'></i>";
+    var tag = "<a id='deleteButton' role='button' data-toggle='modal'><img src='img/xIcon.png'></img></a>";
     $(tag).appendTo("div.jqtree-element.jqtree_common");
 
     $(".icon-remove.delButton").bind("click", clickDeleteButton);
@@ -1119,7 +1119,7 @@ function clickDeleteButton(){
 }
 
 function addDeleteButtons() {
-    var tag = "<i class='icon-remove delButton' id='deleteButton' role='button' data-toggle='modal'></i>";
+    var tag = "<a id='deleteButton' role='button' data-toggle='modal'><img src='img/xIcon.png'></img></a>";
     $(tag).appendTo("div.jqtree-element.jqtree_common");
     $(".icon-remove.delButton").click(function(){
      console.log("deleteButton clicked!");
@@ -1225,7 +1225,7 @@ function insertNewStrip(data) {
 
     // Element
     var el = $('<div />').html('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" id="att_' +
-            idEl + '" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a class="read-only-msg">' + readOnlyModeMsg + '</a><a role="button" id="closeButton"><i class="icon-remove"></i></a></div></div><div id="acc_'
+            idEl + '" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a class="read-only-msg">' + readOnlyModeMsg + '</a><a role="button" id="closeButton"><img src="img/xIcon.png"></img></a></div></div><div id="acc_'
             + idEl + '" class="accordion-body collapse"><div class="accordion-inner"></div></div>').addClass('accordion-group').attr("id", "file_" + data.data.id);
 
     // Add new strip here

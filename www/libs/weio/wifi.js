@@ -218,10 +218,10 @@ function injectWifiNetworksInDropMenu() {
 
         wifiMode =  wifiCellsFiltered[cell].mode;
         
-        var secureWifi = (wifiCellsFiltered[cell].opened==false) ? '<i class="icon-lock" id="wifiIcons"></i>' : '';
+        var secureWifi = (wifiCellsFiltered[cell].opened==false) ? '<img src="img/lock.png" id="wifiLocked"></img>' : '';
 
         // detect where is my current network
-        var currentConnection = (wifiCellsFiltered[cell].essid==connectedToWifiId) ? '<i class="icon-caret-right" id="wifiPrefixIcons"></i>' : '';
+        var currentConnection = (wifiCellsFiltered[cell].essid==connectedToWifiId) ? '<img src="img/triangle.png" id="wifiPrefixIcons"></img>' : '';
         
         // transform wifiQuality object into html
         var wifiQuality = '<img src="img/wifi' + getCellQuality(wifiCellsFiltered[cell]) + '.png" id="wifiIcons"></img>';
