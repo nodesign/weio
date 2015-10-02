@@ -53,10 +53,10 @@
 from weioLib.weio import initSPI
 from struct import pack, unpack
 
-SPI_FUNC_READ_BLOCK_DATA = 32
 
 class SPILib(object):
     _spi = None
+    SPI_FUNC_READ_BLOCK_DATA = 32
 
     def __init__(self, port=0, divider=1, mode=0):
         self.open(port, divider, mode)
@@ -77,6 +77,12 @@ class SPILib(object):
         Connects the object to the specified SPI port.
         """
         self._spi = initSPI(port, divider, mode)
+
+    def get_block_size(self):
+        return self.SPI_FUNC_READ_BLOCK_DATA
+
+    def set_block_size(self, block_size):
+	self.SPI_FUNC_READ_BLOCK_DATA = block_size
 
     def read_byte(self):
         """read_byte(self) -> result
@@ -129,12 +135,12 @@ class SPILib(object):
         Perform SPI Read Block Data transaction.
         """
         receiveFlags = ""
-        sendFlags = "B"
-        for flag in range(SPI_FUNC_READ_BLOCK_DATA):
-            sendFlags+="B"
+	cmdString = pack('B', cmd)
+        for flag in range(self.SPI_FUNC_READ_BLOCK_DATA):
+            cmdString+=pack('B', 0)
             receiveFlags+="B"
 
-        result = self._spi.transaction(pack(sendFlags, cmd, chr(0)*SPI_FUNC_READ_BLOCK_DATA), read_from_slave=True)
+        result = self._spi.transaction(cmdString, read_from_slave=True)
         return list(unpack(receiveFlags, result[0]))
 
     def write_block_data(self, cmd, vals):
