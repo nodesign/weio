@@ -357,19 +357,29 @@ class Reader:
 
     def reader(self):
         while self.alive:
+	    # In some case, when the SFP frame to receive is larger than an USB frame,
+	    # the SFP frame is received incomplete. This is a major problem as the sfp 
+	    # decoder can crash.
+	    # To fix this problem, a pre-decodage is done here to get the size of the
+	    # expected SFP frame. This prevent incomplete SFP frames to be sent to the
+	    # decoder.
             try:
-                data = self.serial.read(1)            #read one, blocking
-                n = self.serial.inWaiting()           #look if there is more
-                if n:
-                    data = data + self.serial.read(n)    #and get as much as possible
-                if data:
-                    if data[3] == '\x08':
-                        interrupt = self.decodefun(data)
-                        with self.irq_available:
-                            self.irq_requests.append(interrupt)
-                            self.irq_available.notify()
-                    else:
-                        self.outq.put(data)
+		data = self.serial.read(3)
+	        if data[0:1] == '\xd4':
+                    expected_len = struct.unpack('>H', data[1:3])[0]
+
+		    while (self.serial.inWaiting() < expected_len):
+		        pass
+
+                    data = data + self.serial.read(expected_len) # get the needed bytes
+                    if data:
+                        if data[3] == '\x08':
+                            interrupt = self.decodefun(data)
+                            with self.irq_available:
+                                self.irq_requests.append(interrupt)
+                                self.irq_available.notify()
+                        else:
+                            self.outq.put(data)
             except:
                 errmsg("UPER API: serial port reading error.")
                 break
