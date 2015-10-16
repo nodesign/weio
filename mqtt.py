@@ -1,6 +1,4 @@
 #!/usr/bin/python -u
-
-###
 #
 # WEIO Web Of Things Platform
 # Copyright (C) 2013 Nodesign.net, Uros PETREVSKI, Drasko DRASKOVIC
@@ -17,35 +15,8 @@
 #                    Web Of Things Platform
 #
 # This file is part of WEIO and is published under BSD license.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-# 1. Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright
-#    notice, this list of conditions and the following disclaimer in the
-#    documentation and/or other materials provided with the distribution.
-# 3. All advertising materials mentioning features or use of this software
-#    must display the following acknowledgement:
-#    This product includes software developed by the WeIO project.
-# 4. Neither the name of the WeIO nor the
-# names of its contributors may be used to endorse or promote products
-# derived from this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY WEIO PROJECT AUTHORS AND CONTRIBUTORS ''AS IS'' AND ANY
-# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-# DISCLAIMED. IN NO EVENT SHALL WEIO PROJECT AUTHORS AND CONTRIBUTORS BE LIABLE FOR ANY
-# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
-# Authors :
-# Uros PETREVSKI <uros@nodesign.net>
-# Drasko DRASKOVIC <drasko.draskovic@gmail.com>
+# All rights not explicitly granted in the BSD license are reserved.
+# See the included LICENSE file for more details.
 #
 ###
 
@@ -63,6 +34,10 @@ from weioLib import weioParser
 from weioLib import weioUserApi
 from weioLib import weioGpio
 from weioLib import weioIO
+
+# MQTT clinet
+mqttClient = None
+
 
 ###
 # MQTT cb handlers
@@ -92,13 +67,6 @@ def on_message(client, userdata, msg):
 ###
 def weioStart():
 
-    weioUserApi.attach =  weioUserApi.WeioAttach()
-    #weioUserApi.shared =  weioUserApi.WeioSharedVar()
-    weioUserApi.console =  weioUserApi.WeioPrint()
-
-    ###
-    # Configuration stuff
-    ###
     # Get configuration from file
     confFile = weioConfig.getConfiguration()
     
@@ -124,21 +92,14 @@ def weioStart():
     try:
         userMain = __import__(projectModule, fromlist=[''])
 
-        print "userMain = ", userMain
-            
         # Calling user setup() if present
         if "setup" in vars(userMain):
-            print "SETUP"
             userMain.setup()
     except:
         print "MODULE CAN'T BE LOADED." \
                 "Maybe you have some errors in modules that you wish to import?"
-        #print traceback.format_exc()
-        #result = None
 
-    ###
     # Add user callback handlers for events
-    ###
     for key in weioUserApi.attach.events:
         weioParser.addUserEvent(weioUserApi.attach.events[key].event,
                 weioUserApi.attach.events[key].handler)
@@ -150,12 +111,36 @@ def weioStart():
                     args=weioUserApi.attach.procs[key].procArgs)
         t.daemon = True
         t.start()
+
+        weioRunnerGlobals.WEIO_SERIAL_LINKED = True
         
+
+###
+# Signal handler
+###
+def signalHandler(sig, frame):
+
+    # Stop the MQTT loop
+    if (mqttClient is not None):
+        mqttClient.disconnect()
+
+    if (weioIO.gpio != None):
+        if (weioRunnerGlobals.WEIO_SERIAL_LINKED == True):
+            weioIO.gpio.stopReader()
+            weioIO.gpio.reset()
+
+    # Bail out
+    sys.exit(0)
+
 
 ###
 # CLIENT MAIN
 ###
 if __name__ == '__main__':
+
+    # Install signal handlers
+    signal.signal(signal.SIGTERM, signalHandler)
+    signal.signal(signal.SIGINT, signalHandler)
     
     # Start WeIO stuff
     weioStart()
@@ -163,14 +148,14 @@ if __name__ == '__main__':
     ###
     # MQTT stuff
     ###
-    client = mqtt.Client()
-    client.on_connect = on_connect
-    client.on_message = on_message
+    mqttClient = mqtt.Client()
+    mqttClient.on_connect = on_connect
+    mqttClient.on_message = on_message
 
-    client.connect("iot.eclipse.org", 1883, 60)
+    mqttClient.connect("iot.eclipse.org", 1883, 60)
 
     # Blocking call that processes network traffic, dispatches callbacks and
     # handles reconnecting.
     # Other loop*() functions are available that give a threaded interface and a
     # manual interface.
-    client.loop_forever()
+    mqttClient.loop_forever()

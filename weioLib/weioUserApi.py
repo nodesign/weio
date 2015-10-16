@@ -176,11 +176,11 @@ def serverPush(callback, data):
 ###
 # Global instances
 ###
-attach = None
-console = None
+attach = WeioAttach()
+console = WeioPrint()
 
 # Global shared dict
-sharedVar = None
+#sharedVar = WeioSharedVar()
 
 # Global connections
 weioConns = None
