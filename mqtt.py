@@ -52,7 +52,7 @@ def on_connect(client, userdata, flags, rc):
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe("weio/api")   
+    client.subscribe("weio/api/in")   
 
 ###
 # on_message
@@ -60,6 +60,25 @@ def on_connect(client, userdata, flags, rc):
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
+
+    #req = json.loads(msg.payload)
+
+    # Test with: mosquitto_pub -t "weio/api/in" -m '{ "request": "tst-event", "data" : "data" }'
+    from StringIO import StringIO
+    io = StringIO(msg.payload)
+    req = json.load(io)
+    print req['request']
+
+    res = None
+    if req['request'] in weioParser.weioSpells or req['request'] in weioParser.weioUserSpells:
+        if req['request'] in weioParser.weioSpells:
+            res = weioParser.weioSpells[req['request']](req['data'])
+        elif req['request'] in weioParser.weioUserSpells:
+            res = weioParser.weioUserSpells[req['request']](req['data'])
+    else:
+        res = None
+
+    mqttClient.publish("weio/api/out", res)
 
 
 ###
@@ -152,7 +171,9 @@ if __name__ == '__main__':
     mqttClient.on_connect = on_connect
     mqttClient.on_message = on_message
 
-    mqttClient.connect("iot.eclipse.org", 1883, 60)
+    mqttClient.connect("localhost", 1883, 60)
+
+    print "if anything goes wrong kill process with: kill -9 `ps aux | grep mqtt | grep python | awk '{print $2}'`"
 
     # Blocking call that processes network traffic, dispatches callbacks and
     # handles reconnecting.

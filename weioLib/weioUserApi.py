@@ -81,7 +81,7 @@ def lockedMethod(method):
     return newmethod
 
 ###
-# Thread-safe (locaked) print
+# Thread-safe (locked) print
 ###
 class WeioPrint():
     def __init__(self, *args, **kwargs):
