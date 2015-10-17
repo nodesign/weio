@@ -15,6 +15,13 @@ def setup() :
     # Attaches blinky function to infinite loop
     attach.process(blinky)
 
+    attach.event('tst-event', myEvent)
+
+def myEvent(dataIn):
+    print "EVENT"
+    print dataIn
+
+
 def blinky() :
     
     while True:
@@ -25,12 +32,14 @@ def blinky() :
         digitalWrite(20, HIGH) # blue led
         
         # wait 100ms
-        delay(100)
+        delay(1000)
         
         # write LOW value to digital PINS 18, 19 & 20
         digitalWrite(18, LOW) # red led
         digitalWrite(19, LOW) # green led
         digitalWrite(20, LOW) # blue led
+
+        print "HELLO!"
         
         # wait 100ms
         delay(100)
