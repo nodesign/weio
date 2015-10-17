@@ -1,5 +1,6 @@
 {
     "absolut_root_path": "", 
+    "auto_to_ap": "YES",
     "debug_mode": "False", 
     "dependencies_path": "www", 
     "dns_name": "weio.local", 
