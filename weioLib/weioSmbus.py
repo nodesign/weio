@@ -53,12 +53,12 @@
 from weioLib.weio import initI2C
 from struct import pack, unpack
 
-I2C_FUNC_SMBUS_READ_BLOCK_DATA = 32
 
 class SMBus(object):
     _i2c = None
     _addr = -1
     _compat = False
+    I2C_FUNC_SMBUS_READ_BLOCK_DATA = 32
 
     def __init__(self, bus=-1):
         # WeIO don't care about bus as there is only one.
@@ -83,6 +83,12 @@ class SMBus(object):
         Connects the object to the specified SMBus.
         """
         self._i2c = initI2C()
+
+    def get_block_size(self):
+        return self.I2C_FUNC_SMBUS_READ_BLOCK_DATA
+
+    def set_block_size(self, block_size):
+	self.I2C_FUNC_SMBUS_READ_BLOCK_DATA = block_size
 
     def _set_addr(self, addr):
         """private helper method"""
@@ -178,9 +184,9 @@ class SMBus(object):
         Perform SMBus Read Block Data transaction.
         """
         self._set_addr(addr)
-        result = self._i2c.transaction(self._addr, pack('B', cmd), I2C_FUNC_SMBUS_READ_BLOCK_DATA)
+        result = self._i2c.transaction(self._addr, pack('B', cmd), self.I2C_FUNC_SMBUS_READ_BLOCK_DATA)
         dataFlags = ""
-        for flag in range(I2C_FUNC_SMBUS_READ_BLOCK_DATA):
+        for flag in range(self.I2C_FUNC_SMBUS_READ_BLOCK_DATA):
             dataFlags+="B"
         return list(unpack(dataFlags, result[0]))
 
@@ -208,10 +214,10 @@ class SMBus(object):
             cmdString+=pack('B', val)
 
         dataFlags = ""
-        for flag in range(I2C_FUNC_SMBUS_READ_BLOCK_DATA):
+        for flag in range(self.I2C_FUNC_SMBUS_READ_BLOCK_DATA):
             dataFlags+="B"
 
-        result = self._i2c.transaction(self._addr, cmdString, I2C_FUNC_SMBUS_READ_BLOCK_DATA)
+        result = self._i2c.transaction(self._addr, cmdString, self.I2C_FUNC_SMBUS_READ_BLOCK_DATA)
 
         return list(unpack(dataFlags, result[0]))
 

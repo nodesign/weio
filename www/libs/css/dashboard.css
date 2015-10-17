@@ -384,9 +384,15 @@ body {
   margin-left: 5px;
   margin-right: 5px;
 }
+#wifiLocked {
+  margin-top: -2px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
 #wifiPrefixIcons {
   display: inline;
   margin-left: -5px;
+  margin-top: -4px;
 }
 #wifiNetworks {
   overflow-y: scroll;

@@ -473,7 +473,6 @@ function createNewProject() {
     if(projectName !== ""){
         var rq = { "request": "createNewProject", "path":projectName, "storageUnit":selectedStorageUnit};
         dashboard.send(JSON.stringify(rq));
-         $("#createNewProject").modal('hide');
     } else {
          $("#errorNewPjName").html(errorProjectName).show().delay(5000).fadeOut();
     }
@@ -485,7 +484,6 @@ function duplicateProject() {
     if(projectName !== "") {
         var rq = { "request": "duplicateProject", "path":projectName, "storageUnit":selectedStorageUnit};
         dashboard.send(JSON.stringify(rq));
-        $("#duplicateProject").modal('hide');
     } else {
         $("#errorDuplicatePjName").html(errorProjectName).show().delay(5000).fadeOut();
     }

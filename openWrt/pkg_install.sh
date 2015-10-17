@@ -19,8 +19,8 @@
 ./scripts/feeds install madplay
 ./scripts/feeds install alsa-lib
 ./scripts/feeds install alsa-utils
-./scripts/feeds install cython
-./scripts/feeds install gevent
+#./scripts/feeds install cython
+#./scripts/feeds install gevent
 ./scripts/feeds install bluez-libs
 ./scripts/feeds install bluez-utils
 ./scripts/feeds install python-bluez

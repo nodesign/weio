@@ -62,7 +62,7 @@
     <meta http-equiv="pragma" content="no-cache" />
 
     <link href="libs/css/editor.css" rel="stylesheet" />
-    <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+
 
     <script src="libs/jquery/jquery-2.0.2.min.js"> </script>
     <script src="libs/bootstrap/js/bootstrap.min.js"> </script>
@@ -92,7 +92,7 @@
 <body>
     <div class="columns">
         <div class="leftSideBar">
-            <button class="opened" id="leftSideBarButton"> <i class="icon-chevron-left"></i> </button>
+            <button class="opened" id="leftSideBarButton"> <img src="img/leftArrow.png"></img> </button>
 
 
             <!-- FILE TREE TEMPLATE STARTS HERE -->
@@ -105,11 +105,11 @@
             <!-- Bottom buttons start here -->
             <div class="bottomButtons">
                 <button id="addNewFile" class="open" href="#createNewFile" role="button" data-toggle="modal"
-                onmouseover="$(this).tooltip()" data-placement="top" title="Create new file"> <i class="icon-plus-sign icon-2x"></i> </button>
+                onmouseover="$(this).tooltip()" data-placement="top" title="Create new file"> <img src="img/addFileIcon.png"></img> </button>
                 
                 <input type="file" id="updateFiles" name="upload" style="visibility: hidden; width: 1px; height: 1px" multiple />
                 <button id="addNewFile" onmouseover="$(this).tooltip()" data-placement="top" title="Upload files"
-                onclick="document.getElementById('updateFiles').click(); return false"><i class="icon-circle-arrow-up icon-2x"></i></button>
+                onclick="document.getElementById('updateFiles').click(); return false"><img src="img/arrowImportFile.png"></img></button>
 
                 
                 <!--<button class="btn" type="button"> <i class="icon-remove-sign icon-2x"></i></button>-->
@@ -218,7 +218,7 @@
 
             <div class="alert alert-error" id="errorAlert">
                <div id="errorAlertContent"></div>
-               <a role="button" id="closeButton"><i class="icon-remove" onclick="hideAlert()"></i></a>
+               <a role="button" id="closeButton"><img src="img/xIcon.png" onclick="hideAlert()"></img></a>
            </div>
 
            <!-- EDITOR TEMPLATE STARTS HERE -->
@@ -229,8 +229,8 @@
        <!-- editor container-->
 
        <div class="rightSideBar">
-        <button class="closed" id="rightSideBarButton"> <i class="icon-chevron-left"></i> </button>
-        <button id="trashConsole" class="open" onclick="clearConsole()"> <i class="icon-trash"></i> </button>
+        <button class="closed" id="rightSideBarButton"> <img src="img/rightArrow.png"></img> </button>
+        <button id="trashConsole" class="open" onclick="clearConsole()"> <img src="img/trash.png"></img> </button>
 
         <div id="consoleTabs">
             <ul class="nav nav-pills" id="consoleTabsElements">

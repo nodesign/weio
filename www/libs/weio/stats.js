@@ -180,11 +180,11 @@ function updateDataViz(data) {
     $("#cpuSystem").html(cpu.system + "%");
     $("#cpuIdle").html(cpu.idle + "%");
     
-    $("#ramUsed").html(ram.used + "Mb");
-    $("#ramFree").html(ram.free + "Mb");
+    $("#ramUsed").html(ram.used + "MB");
+    $("#ramFree").html(ram.free + "MB");
     
-    $("#flashUsed").html(flash.used + "Mb");
-    $("#flashFree").html(flash.free + "Mb");
+    $("#flashUsed").html(flash.used + "MB");
+    $("#flashFree").html(flash.free + "MB");
     
     $("#temperature").html(temperature + "°C");
     

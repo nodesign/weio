@@ -1,4 +1,4 @@
-WeIO 1.1, not released yet
+WeIO 1.1, 2015/05/16
 -------------------
 - IDE
  - Improved the console output [[#143](https://github.com/nodesign/weio/pull/143)]

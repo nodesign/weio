@@ -47,6 +47,9 @@
 #
 ###
 from weioLib.weio import *
+from weioLib.weioSPI import SPILib
+
+
 
 class PowerModule:
     def __init__(self, port):
@@ -61,14 +64,23 @@ class PowerModule:
                 self.latchPin = 13
 
             self.output = 0
+            # Pin mapping
+            self.mapping = [8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7]
 
     def digitalWrite(self, pin, value):
-        mask = value << (15-pin)
-        self.output = self.output ^ mask
+        # Due to the hardware mapping, some swapping must be done
+        if value == 0:
+            self.output &= ~(1 << self.mapping[pin])
+        else:
+            self.output |= (1 << self.mapping[pin])
+
         self.fire()
 
     def portWrite(self, value): # 16 bit value here please
-        self.output = self.reverseBits(value)
+        byteA = value & 0xFF
+        byteB = value >> 8
+        result = (byteA << 8) | byteB
+        self.output = result
         self.fire()
 
     def fire(self):
@@ -79,11 +91,3 @@ class PowerModule:
         digitalWrite(self.latchPin, LOW)
         self.spi.write_byte_data(first, second)
         digitalWrite(self.latchPin, HIGH)
-
-    def reverseBits(self, x):
-        x = ((x & 0x55555555) << 1) | ((x & 0xAAAAAAAA) >> 1)
-        x = ((x & 0x33333333) << 2) | ((x & 0xCCCCCCCC) >> 2)
-        x = ((x & 0x0F0F0F0F) << 4) | ((x & 0xF0F0F0F0) >> 4)
-        x = ((x & 0x00FF00FF) << 8) | ((x & 0xFF00FF00) >> 8) # for 16bits
-        #x = ((x & 0x0000FFFF) << 16) | ((x & 0xFFFF0000) >> 16) # for 32 bits etc..
-        return x
