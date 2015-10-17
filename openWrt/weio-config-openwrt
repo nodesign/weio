@@ -95,6 +95,7 @@ CONFIG_TARGET_ar71xx_generic=y
 # CONFIG_TARGET_ar71xx_generic_DIR615C1 is not set
 # CONFIG_TARGET_ar71xx_generic_DIR615E1 is not set
 # CONFIG_TARGET_ar71xx_generic_DIR615E4 is not set
+# CONFIG_TARGET_ar71xx_generic_DIR615IX is not set
 # CONFIG_TARGET_ar71xx_generic_DIR825B1 is not set
 # CONFIG_TARGET_ar71xx_generic_DIR825C1 is not set
 # CONFIG_TARGET_ar71xx_generic_DIR835A1 is not set
