@@ -1,3 +1,22 @@
+#                                     
+#   Call a firmware defined function  
+#                                     
+# This example explains how to call a user defined function
+# in the co-processor firmware.
+# This example will call the example user function, compiled
+# in the co-processor firmware. See this page :
+# https://github.com/nodesign/UPER/tree/master/UserFunctions
+# to understand how to write your own function.
+#
+# Usage :
+# ret = userDefinedFunction(FID, args)
+# param FID : The SFP command ID to call
+# param args : A list of arguments (the arguments of your
+#              own co-processor function
+# return : A list containing the returned value of your
+#          own co-processor function
+#
+
 from weioLib.weio import *
 
 def setup():
