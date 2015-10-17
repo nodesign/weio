@@ -58,6 +58,7 @@ import iwInfo
 
 from weioLib import weioSubprocess
 from weioLib import weioIpAddress
+from weioLib import weioConfig
 
 
 logging.basicConfig()
@@ -112,7 +113,10 @@ class WeioWifi() :
         else:
             self.disconnectedCounter = 0
 
-        if ( self.disconnectedCounter >= 2 or (self.mode == "sta" and weioIpAddress.getLocalIpAddress() == '') ):
+        config = weioConfig.getConfiguration()
+
+        if ((self.disconnectedCounter >= 2 or (self.mode == "sta" and weioIpAddress.getLocalIpAddress() == ''))
+             and config['auto_to_ap'] == "YES"):
             # Move to Master mode
             print "Trying to move to AP RESCUE mode..."
             subprocess.call("scripts/wifi_set_mode.sh rescue", shell=True)
