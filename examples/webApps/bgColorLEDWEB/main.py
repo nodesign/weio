@@ -37,9 +37,12 @@ def buttonHandler(dataIn) :
        setColor(red,green,blue)
  
 def setColor(r,g,b):
-    pwmWrite(19,b)
-    pwmWrite(20,r)
-    pwmWrite(21,g)
+    # LED values are comprised between 0 and 100(%).
+    # For hardware reasons, LEDs lit when pin is LOW (0V)
+    # This is why the value is inverted here : 100% - led value
+    pwmWrite(18,100-r)
+    pwmWrite(19,100-g)
+    pwmWrite(20,100-b)
  
     colorData = {}
     colorData["red"] = r
