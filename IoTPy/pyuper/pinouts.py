@@ -92,11 +92,11 @@ WEIO_PINOUT = IoPinout({
     5 : IoParams(CAP_GPIO,              1,  "PIO0_2"),
     6 : IoParams(CAP_GPIO,              8,  "PIO0_7"),
     7 : IoParams(CAP_GPIO,              21, "PIO0_17"),
-    8 : IoParams(CAP_GPIO | CAP_SPI,    5,  "PIO0_21"), #SPI1 MOSI
-    9 : IoParams(CAP_GPIO | CAP_SPI,    11, "PIO1_21"), #SPI1 MISO
-    10: IoParams(CAP_GPIO | CAP_SPI,    4,  "PIO1_20"), #SPI1 SCK
-    11: IoParams(CAP_GPIO,              0,  "PIO0_20"),
-    12: IoParams(CAP_GPIO,              18, "PIO1_16"),
+    8 : IoParams(CAP_GPIO,              0,  "PIO0_20"),
+    9 : IoParams(CAP_GPIO,              18, "PIO1_16"),
+    10: IoParams(CAP_GPIO | CAP_SPI,    5,  "PIO0_21"), #SPI1 MOSI
+    11: IoParams(CAP_GPIO | CAP_SPI,    11, "PIO1_21"), #SPI1 MISO
+    12: IoParams(CAP_GPIO | CAP_SPI,    4,  "PIO1_20"), #SPI1 SCK
     13: IoParams(CAP_GPIO,              16, "PIO1_19"),
     14: IoParams(CAP_GPIO,              27, "PIO1_22"),
     15: IoParams(CAP_GPIO,              6,  "PIO1_23"),
