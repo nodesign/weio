@@ -37,9 +37,9 @@ def buttonHandler(dataIn) :
        setColor(red,green,blue)
  
 def setColor(r,g,b):
-    pwmWrite(19,b)
-    pwmWrite(20,r)
-    pwmWrite(21,g)
+    pwmWrite(18,100-r)
+    pwmWrite(19,100-g)
+    pwmWrite(20,100-b)
  
     colorData = {}
     colorData["red"] = r
