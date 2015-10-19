@@ -1,3 +1,30 @@
+
+WeIO 1.2, not released
+-------------------
+
+- System
+ - Upgraded the system to OpenWRT Chaos Calmer (15.05). WeIO is now officially supported on OpenWRT, since version 15.05 (see git commit [here](http://git.openwrt.org/?p=15.05/openwrt.git;a=commit;h=21823760547b26d6b04a057583d25a0e346eced1)). Additionnal packages can now be installed via ```opkg``` from the official OpenWRT packages repository. 
+ - Added a way to extend the root filesystem to an SD Card ([How-to](https://github.com/nodesign/weio/wiki/How-to-extend-WeIO-flash-space))
+
+- Firmware
+ - The LPC Firmware can be compiled with ```make```, and now use ```newlib``` instead of ```redlib```. [LPC firmware repository](https://github.com/nodesign/UPER)
+ - Possibility to add user defined functions in the firmware ([How-to](https://github.com/nodesign/UPER/blob/master/UserFunctions/README.md))
+
+- API
+ - New API function to call a user defined function in the LPC Firmware [[#243](https://github.com/nodesign/weio/pull/243)]
+ - Fixed a bug with weioSPI [[#242](https://github.com/nodesign/weio/pull/242)]
+ - Improved the reader loop in IoTPy [[#242](https://github.com/nodesign/weio/pull/242)]
+ - Possibility to change the data size in bulk mode, both in weioSmbus and weioSPI [[#242](https://github.com/nodesign/weio/pull/242)]
+ - Added a configuration to not fallback in AP mode when the STA network is not reachable [[#248](https://github.com/nodesign/weio/pull/248)]
+ - Fixed the port mapping for the powerModule [[#239](https://github.com/nodesign/weio/pull/239)]
+
+- Examples
+ - Fixed LED colors and values for bgColorLEDWEB [[#252](https://github.com/nodesign/weio/pull/252)]
+
+- IDE
+ - Fixed the size units in the stat panel [[#244](https://github.com/nodesign/weio/pull/244)]
+
+
 WeIO 1.1, 2015/05/16
 -------------------
 - IDE

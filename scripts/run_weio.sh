@@ -48,6 +48,12 @@
 #
 ###
 
+# OpenWRT patch python to disable the byte compilation by default
+# https://github.com/openwrt/packages/pull/541
+# This change is annoying as WeIO is mainly composed of python code.
+# This environment variable tells python to byte compile the code, which drastically
+# speed up the execution time
+export PYTHONDONTWRITEBYTECODE=0
 
 # Launching WeIO application, if application crashes WeIO will rerun automaticaly
 # On each exit from application script checks if an update is needed
