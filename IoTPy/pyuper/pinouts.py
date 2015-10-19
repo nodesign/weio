@@ -39,50 +39,7 @@ class IoPinout(dict):
     def __setitem__(self, key, value):
         errmsg("UPER API: IoPinout can not be modified.")
 
-
-UPER1_PINOUT = IoPinout({
-    1 : IoParams(CAP_GPIO,              0,  "PIO0_20"),
-    2 : IoParams(CAP_GPIO,              1,  "PIO0_2"),
-    3:  IoParams(CAP_GPIO | CAP_PWM,    2,  "PIO1_26",  [1,2]),
-    4:  IoParams(CAP_GPIO,              3,  "PIO1_27"),
-    5:  IoParams(CAP_GPIO | CAP_SPI,    4,  "PIO1_20",  [1,2]),  #SPI1 SCK
-    6:  IoParams(CAP_RESERVED,          -1, "PIO0_4"),
-    7:  IoParams(CAP_RESERVED,          -1, "PIO0_5"),
-    8 : IoParams(CAP_GPIO | CAP_SPI,    5,  "PIO0_21",  [1,1]),  #SPI1 MOSI
-    9 : IoParams(CAP_GPIO,              6,  "PIO1_23"),
-    10 : IoParams(CAP_GPIO | CAP_PWM,   7,  "PIO1_24",  [1,0]),
-    11 : IoParams(CAP_GPIO,             8,  "PIO0_7"),
-    12 : IoParams(CAP_GPIO,             9,  "PIO1_28"),
-    13 : IoParams(CAP_GPIO,             10, "PIO1_31"),
-    14 : IoParams(CAP_GPIO | CAP_SPI,   11, "PIO1_21",  [1,0]),  #SPI1 MISO
-    15 : IoParams(CAP_GPIO,             12, "PIO0_8"),
-    16 : IoParams(CAP_GPIO,             13, "PIO0_9"),
-    17 : IoParams(CAP_GPIO,             14, "PIO0_10"),
-    18 : IoParams(CAP_GPIO,             15, "PIO1_29"),
-    19 : IoParams(CAP_RESERVED,         -1, "5V"),
-    20 : IoParams(CAP_RESERVED,         -1, "GND"),
-    21 : IoParams(CAP_RESERVED,         -1, "GND"),
-    22 : IoParams(CAP_RESERVED,         -1, "3.3V"),
-    23 : IoParams(CAP_GPIO | CAP_ADC,   33, "PIO0_11",  [0]),
-    24 : IoParams(CAP_GPIO | CAP_ADC,   32, "PIO0_12",  [1]),
-    25 : IoParams(CAP_GPIO | CAP_ADC,   31, "PIO0_13",  [2]),
-    26 : IoParams(CAP_GPIO | CAP_ADC,   30, "PIO0_14",  [3]),
-    27 : IoParams(CAP_GPIO | CAP_PWM,   29, "PIO1_13",  [0,0]),
-    28 : IoParams(CAP_GPIO | CAP_PWM,   28, "PIO1_14",  [0,1]),
-    29 : IoParams(CAP_GPIO,             27, "PIO1_22"),
-    30 : IoParams(CAP_GPIO | CAP_ADC,   26, "PIO0_15",  [4]),
-    31 : IoParams(CAP_GPIO | CAP_ADC,   25, "PIO0_16",  [5]),
-    32 : IoParams(CAP_GPIO | CAP_ADC,   24, "PIO0_22",  [6]),
-    33 : IoParams(CAP_GPIO | CAP_ADC,   23, "PIO0_23",  [7]),
-    34 : IoParams(CAP_GPIO | CAP_PWM,   22, "PIO1_15",  [0,2]),
-    35 : IoParams(CAP_GPIO,             21, "PIO0_17"),
-    36 : IoParams(CAP_GPIO,             20, "PIO0_18"),
-    37 : IoParams(CAP_GPIO,             19, "PIO0_19"),
-    38 : IoParams(CAP_GPIO,             18, "PIO0_16"),
-    39 : IoParams(CAP_GPIO | CAP_PWM,   17, "PIO1_25",  [1,1]),
-    40 : IoParams(CAP_GPIO,             16, "PIO1_19")
-})
-
+# Actual WeIO pinout
 WEIO_PINOUT = IoPinout({
     0 : IoParams(CAP_GPIO,              20, "PIO0_18"),
     1 : IoParams(CAP_GPIO,              19, "PIO0_19"),
@@ -118,6 +75,14 @@ WEIO_PINOUT = IoPinout({
     31: IoParams(CAP_GPIO | CAP_ADC,    23, "PIO0_23",  [7])
 })
 
+# Pre-production boards have a different pinout (pin 8 to 12)
+# This mapping handle these old boards. By default, the 
+# production pinout is selected. To switch to the 'old' pinout,
+# change line 8 of weio.py this way :
+# --- IoBoard.__init__(self, WEIO_PINOUT, serial_port)
+# +++ IoBoard.__init__(self, WEIO_PINOUT_OLD, serial_port)
+# and restart the server with the command 
+# /etc/init.d/weio_run restart
 WEIO_PINOUT_OLD = IoPinout({
     0 : IoParams(CAP_GPIO,              20, "PIO0_18"),
     1 : IoParams(CAP_GPIO,              19, "PIO0_19"),
