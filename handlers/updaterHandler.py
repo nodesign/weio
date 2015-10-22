@@ -47,7 +47,7 @@
 #
 ###
 
-import os, stat, signal, sys, platform, subprocess, urllib2
+import os, signal, sys, platform, subprocess, urllib2
 
 from tornado import web, ioloop, iostream, gen, httpclient, httputil
 sys.path.append(r'./');
