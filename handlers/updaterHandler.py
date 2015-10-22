@@ -196,7 +196,7 @@ class WeioUpdaterHandler(SockJSConnection):
                     self.updateScript = self.fwPath + file["name"]
                     rsp['needsUpdate'] = "YES"
                     print "found update script"
-                    self.fwDownloadLink = file["browser_download_url"]
+                    self.fwDownloadLink = file["download_url"]
                     self.fwDownloadSize = file["size"]
                     self.fwDownloadMD5 = file["md5"]
 
