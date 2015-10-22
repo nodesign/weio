@@ -47,7 +47,7 @@
 #
 ###
 
-import os, signal, sys, platform, subprocess, urllib2
+import os, stat, signal, sys, platform, subprocess, urllib2
 
 from tornado import web, ioloop, iostream, gen, httpclient, httputil
 sys.path.append(r'./');
@@ -102,10 +102,12 @@ class WeioUpdaterHandler(SockJSConnection):
         self.fwDownloadSize = None
         self.fwSizeWatcherThread = None
 
+        self.updateScript = None
+
         if (platform.machine()=="mips") :
-            self.fwPath = "/tmp/update.sh"
+            self.fwPath = "/tmp/"
         else :
-            self.fwPath = "./update.sh"
+            self.fwPath = "./"
 
     def isConnected(self, address):
         try:
@@ -189,14 +191,13 @@ class WeioUpdaterHandler(SockJSConnection):
             self.downloadUpdateLink = ""
 
             for file in lastUpdate["assets"]:
-                if ("update.sh" in file["name"]):
-                    # An update script is present in the server, so update can
-                    # be performed
-                    rsp['needsUpdate'] = "YES"
-                    print "found update script"
-                    self.fwDownloadLink = file["browser_download_url"]
-                    self.fwDownloadSize = file["size"]
-                    self.fwDownloadMD5 = file["md5"]
+                # Get the update script
+                self.updateScript = self.fwPath + file["name"]
+                rsp['needsUpdate'] = "YES"
+                print "found update script"
+                self.fwDownloadLink = file["browser_download_url"]
+                self.fwDownloadSize = file["size"]
+                self.fwDownloadMD5 = file["md5"]
 
         self.send(json.dumps(rsp))
 
@@ -216,10 +217,10 @@ class WeioUpdaterHandler(SockJSConnection):
             if (self.isConnected("we-io.net") or self.isConnected("www.github.com")):
                 print "will download fw from", self.fwDownloadLink
 
-                sw = functools.partial(self.sizeWatcher, self.fwPath, self.fwDownloadSize)
+                sw = functools.partial(self.sizeWatcher, self.updateScript, self.fwDownloadSize)
                 sizeCheckerCallback = ioloop.PeriodicCallback(sw, 1000)
                 sizeCheckerCallback.start()
-                self.startDownload(self.fwDownloadLink, self.fwPath)
+                self.startDownload(self.fwDownloadLink, self.updateScript)
                 sizeCheckerCallback.stop()
                 a = {}
                 a['serverPush'] = "downloadingFw"
@@ -231,11 +232,13 @@ class WeioUpdaterHandler(SockJSConnection):
                 a['data'] = ""
                 self.send(json.dumps(a))
 
-                fileMD5 = self.getMd5sum(self.fwPath)
+                fileMD5 = self.getMd5sum(self.updateScript)
                 print "MD5 matching", self.fwDownloadMD5, fileMD5
                 if (self.fwDownloadMD5 == fileMD5):
                     print "MD5 match !"
-                    p = subprocess.Popen(["sh", self.fwPath])
+                    # Make the file executable
+                    os.chmod(self.updateScript, 0755)
+                    p = subprocess.Popen([self.updateScript])
                     # XXX following should be moved in the remote script
                     # protect user files
                     # kill all symlinks first
