@@ -90,7 +90,6 @@ class WeioUpdaterHandler(SockJSConnection):
         # key is comming from socket and call associated function
         self.callbacks = {
             'checkVersion' : self.checkForUpdates,
-            'downloadUpdate' : self.downloadUpdate,
             'reinstallFw' : self.reinstallFw
         }
 
@@ -105,9 +104,9 @@ class WeioUpdaterHandler(SockJSConnection):
         self.fwSizeWatcherThread = None
 
         if (platform.machine()=="mips") :
-            self.fwPath = "/tmp/weio_recovery.bin"
+            self.fwPath = "/tmp/update.sh"
         else :
-            self.fwPath = "./weio_recovery.bin"
+            self.fwPath = "./update.sh"
 
     def isConnected(self, address):
         try:
@@ -139,19 +138,9 @@ class WeioUpdaterHandler(SockJSConnection):
             data = {}
             if (self.isConnected("we-io.net") or self.isConnected("www.github.com")):
                 config = weioConfig.getConfiguration()
-                repository = ""
-                print "REPO", config["weio_update_use_official_repository"]
-                if (config["weio_update_use_official_repository"] == "YES") :
-                    repository = config["weio_update_official_repository"]
-                else :
-                    repository = config["weio_update_alternate_repository"]
+                repository = config["weio_update_official_repository"]
 
-                h = httputil.HTTPHeaders({"Accept" : "application/vnd.github.v3+json","User-Agent" : "weio"})
-                req = None
-                if (config["weio_update_use_official_repository"] == "YES"):
-                    req = httpclient.HTTPRequest(repository, headers=h)
-                else :
-                    req = httpclient.HTTPRequest(repository)
+                req = httpclient.HTTPRequest(repository)
 
                 http_client = httpclient.AsyncHTTPClient()
                 http_client.fetch(req, callback=self.checkVersion)
@@ -173,14 +162,17 @@ class WeioUpdaterHandler(SockJSConnection):
         config = weioConfig.getConfiguration()
 
         data = json.loads(response.body)
-        #f = open("github.json", "w")
-        #f.write(json.dumps(data, indent=4, sort_keys=True))
-        #f.close()
-        #print json.dumps(data, indent=4, sort_keys=True)
+
         lastUpdate = data[0]
+
+        # Fetch the distant version
+        # XXX it supposes that the distant version number is prefixed with 'v'
+        # The updater will break here if this prefix is removed in the future
         distantVersion = float(lastUpdate["tag_name"].split("v")[1])
 
+        # Check the current version
         currentVersion = float(config["weio_version"])
+
         print "current",currentVersion,"distant", distantVersion
         rsp = {}
 
@@ -189,7 +181,7 @@ class WeioUpdaterHandler(SockJSConnection):
         rsp['distantVersion'] = str(distantVersion)
 
         if (distantVersion > currentVersion): 
-            print "OK update is needed"
+            print "Update is available"
             # OK we have to update weio version
             rsp['needsUpdate'] = "YES"
             rsp['description'] = lastUpdate["name"]
@@ -197,83 +189,24 @@ class WeioUpdaterHandler(SockJSConnection):
             rsp['install_duration'] = self.estimatedInstallTime
             self.downloadUpdateLink = ""
 
-            for file in lastUpdate["assets"]:
-                if ("weio.tar.gz" in file["name"]):
-                    self.downloadUpdateLink = file["browser_download_url"]
-                    self.updateDownloadSize = file["size"]
-                    print self.updateDownloadSize, "size", file["size"]
+            # XXX weio.tar.gz is not used anymore ?
+            #for file in lastUpdate["assets"]:
+            #    if ("weio.tar.gz" in file["name"]):
+            #        self.downloadUpdateLink = file["browser_download_url"]
+            #        self.updateDownloadSize = file["size"]
+            #        print self.updateDownloadSize, "size", file["size"]
         else :
             rsp['needsUpdate'] = "NO"
 
         # You can always reflash with last version even if there are no new updates
         for file in lastUpdate["assets"]:
-            if ("weio_recovery.bin" in file["name"]):
-                print "found weio_recovery"
+            if ("update.sh" in file["name"]):
+                print "found update script"
                 self.fwDownloadLink = file["browser_download_url"]
                 self.fwDownloadSize = file["size"]
 
         self.send(json.dumps(rsp))
 
-    @weioUnblock.unblock
-    def downloadUpdate(self, data):
-        config = weioConfig.getConfiguration()
-
-        # ok now save binary in /tmp (folder in RAM)
-        print "downloaded"
-
-        fileToStoreUpdate = ""
-        if (platform.machine()=="mips") :
-            fileToStoreUpdate = "/tmp/weioUpdate.tar.gz"
-            pathToDecompressUpdate = "/tmp"
-        else :
-            fileToStoreUpdate = "./weioUpdate.tar.gz"
-            pathToDecompressUpdate = "./"
-
-        if not(self.downloadUpdateLink is None):
-
-            sw = functools.partial(self.sizeWatcher, fileToStoreUpdate, self.updateDownloadSize)
-            sizeCheckerCallback = ioloop.PeriodicCallback(sw, 500)
-            sizeCheckerCallback.start()
-            self.startDownload(self.downloadUpdateLink, fileToStoreUpdate)
-            sizeCheckerCallback.stop()
-
-        # Check is file size is the same as on the server
-        sizeOnDisk = os.path.getsize(fileToStoreUpdate)
-        print "comparing sizes", sizeOnDisk, self.updateDownloadSize
-        if (sizeOnDisk == self.updateDownloadSize):
-            # OK
-            print "File size is OK"
-            self.progressInfo("50%", "File size OK")
-            print "Bundle decompressing"
-            tar = tarfile.open(fileToStoreUpdate)
-            tar.extractall(pathToDecompressUpdate)
-            tar.close()
-            print "Bundle decompressed"
-            #self.progressInfo("80%", "WeIO Bundle decompressed")
-
-            # kill arhive that we don't need anymore to free RAM
-            os.remove(fileToStoreUpdate)
-            global currentWeioConfigurator
-            print "Setting kill flag to YES in current config.weio"
-            print "Now I'm ready to exit Tornado and install new version"
-            config["kill_flag"] = "YES"
-            weioConfig.saveConfiguration(config)
-            #self.progressInfo("81%", "WeIO installing")
-            # Now quit Tornado and leave script to do his job
-            ioloop.IOLoop.instance().stop()
-            exit()
-
-        else :
-            print "MD5 checksum is not OK, retrying..."
-            if (self.downloadTries<2):
-                self.progressInfo("5%", "Downloading Bundle again, MD5 checkum was not correct")
-                self.downloadUpdate(None)
-            else:
-                print "Something went wrong. Check Internet connection and try again later"
-                self.progressInfo("0%", "Something went wrong. Check Internet connection and try again later")
-
-            self.downloadTries+=1
-    
     # Automatic status sender
     def progressInfo(self, progress, info):
         data = {}
@@ -286,6 +219,7 @@ class WeioUpdaterHandler(SockJSConnection):
     @weioUnblock.unblock
     def reinstallFw(self, data):
         if not(self.fwDownloadLink is None):
+            # XXX Is it to check the internet connection ?
             if (self.isConnected("we-io.net") or self.isConnected("www.github.com")):
                 print "will download fw from", self.fwDownloadLink
 
@@ -307,18 +241,21 @@ class WeioUpdaterHandler(SockJSConnection):
                 sizeOnDisk = os.path.getsize(self.fwPath)
                 print "Size matching", self.fwDownloadSize, sizeOnDisk
                 if (self.fwDownloadSize == sizeOnDisk):
+                    p = subprocess.Popen(["sh", self.fwPath])
+                    # XXX following should be moved in the remote script
                     # protect user files
                     # kill all symlinks first
-                    p = subprocess.Popen(["sh", "/weio/scripts/userProjectsLinking.sh"])
-                    print p.communicate()
+                    #p = subprocess.Popen(["sh", "/weio/scripts/userProjectsLinking.sh"])
+                    #print p.communicate()
                     # move to new directory
-                    os.rename("/weioUser/flash", "/weioUserBackup")
+                    #os.rename("/weioUser/flash", "/weioUserBackup")
                     # update FW
-                    p = subprocess.Popen(["sysupgrade", "-v", self.fwPath]) 
+                    #p = subprocess.Popen(["sysupgrade", "-v", self.fwPath])
                     # don't protect user files
                     #p = subprocess.Popen(["sysupgrade", "-v", "-n", self.fwPath])
-                    print p.communicate()
+                    #print p.communicate()
                 else :
+                    # XXX errorDownloading need to be linked to a modal view
                     a = {}
                     a['serverPush'] = "errorDownloading"
                     a['data'] = ""
