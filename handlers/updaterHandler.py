@@ -56,7 +56,6 @@ import functools
 
 # pure websocket implementation
 #from tornado import websocket
-
 from sockjs.tornado import SockJSRouter, SockJSConnection
 
 from weioLib import weioFiles
@@ -179,31 +178,25 @@ class WeioUpdaterHandler(SockJSConnection):
         rsp['requested'] = "checkVersion"
         rsp['localVersion'] = str(currentVersion)
         rsp['distantVersion'] = str(distantVersion)
+        rsp['needsUpdate'] = "NO"
 
         if (distantVersion > currentVersion): 
             print "Update is available"
             # OK we have to update weio version
-            rsp['needsUpdate'] = "YES"
             rsp['description'] = lastUpdate["name"]
             rsp['whatsnew'] = lastUpdate["body"]
             rsp['install_duration'] = self.estimatedInstallTime
             self.downloadUpdateLink = ""
 
-            # XXX weio.tar.gz is not used anymore ?
-            #for file in lastUpdate["assets"]:
-            #    if ("weio.tar.gz" in file["name"]):
-            #        self.downloadUpdateLink = file["browser_download_url"]
-            #        self.updateDownloadSize = file["size"]
-            #        print self.updateDownloadSize, "size", file["size"]
-        else :
-            rsp['needsUpdate'] = "NO"
-
-        # You can always reflash with last version even if there are no new updates
-        for file in lastUpdate["assets"]:
-            if ("update.sh" in file["name"]):
-                print "found update script"
-                self.fwDownloadLink = file["browser_download_url"]
-                self.fwDownloadSize = file["size"]
+            for file in lastUpdate["assets"]:
+                if ("update.sh" in file["name"]):
+                    # An update script is present in the server, so update can
+                    # be performed
+                    rsp['needsUpdate'] = "YES"
+                    print "found update script"
+                    self.fwDownloadLink = file["browser_download_url"]
+                    self.fwDownloadSize = file["size"]
+                    self.fwDownloadMD5 = file["md5"]
 
         self.send(json.dumps(rsp))
 
@@ -238,9 +231,10 @@ class WeioUpdaterHandler(SockJSConnection):
                 a['data'] = ""
                 self.send(json.dumps(a))
 
-                sizeOnDisk = os.path.getsize(self.fwPath)
-                print "Size matching", self.fwDownloadSize, sizeOnDisk
-                if (self.fwDownloadSize == sizeOnDisk):
+                fileMD5 = self.getMd5sum(self.fwPath)
+                print "MD5 matching", self.fwDownloadMD5, fileMD5
+                if (self.fwDownloadMD5 == fileMD5):
+                    print "MD5 match !"
                     p = subprocess.Popen(["sh", self.fwPath])
                     # XXX following should be moved in the remote script
                     # protect user files
