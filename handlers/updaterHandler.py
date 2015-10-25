@@ -175,7 +175,7 @@ class WeioUpdaterHandler(SockJSConnection):
 
         data = json.loads(response.body)
 
-        lastUpdate = data
+        lastUpdate = data["recipe"]
 
         # Read version form json file
         # XXX it supposes that the distant version number is prefixed with 'v'
@@ -204,7 +204,7 @@ class WeioUpdaterHandler(SockJSConnection):
 
             # set all parameters for download, but DON'T download yet
             # this is a just version check
-            self.updateFileName = self.fwPath + "weio_recovery.bin"
+            self.updateFileName = self.fwPath + "recipe"
             rsp['needsUpdate'] = "YES"
             print "setting parameters :"
             self.fwDownloadLink = lastUpdate["download_url"]
@@ -255,21 +255,11 @@ class WeioUpdaterHandler(SockJSConnection):
                 print "MD5 matching", self.fwDownloadMD5, fileMD5
                 if (self.fwDownloadMD5 == fileMD5):
                     print "MD5 match !"
-                    print "now exiting Tornado and executing update procedure"
-                    ioloop.IOLoop.instance().stop()
-                    exit()
-                    # XXX following should be moved in the remote script
-                    # protect user files
-                    # kill all symlinks first
-                    #p = subprocess.Popen(["sh", "/weio/scripts/userProjectsLinking.sh"])
-                    #print p.communicate()
-                    # move to new directory
-                    #os.rename("/weioUser/flash", "/weioUserBackup")
-                    # update FW
-                    #p = subprocess.Popen(["sysupgrade", "-v", self.fwPath])
-                    # don't protect user files
-                    #p = subprocess.Popen(["sysupgrade", "-v", "-n", self.fwPath])
-                    #print p.communicate()
+                    print "now executing update procedure"
+                    # Make the file executable
+                    os.chmod(self.updateFileName, 0755)
+                    p = subprocess.call(self.updateFileName)
+                    # after this tornado will be killed from recipe script...
                 else :
                     # XXX errorDownloading need to be linked to a modal view
                     print "MD5 don't match!!! Please retry"

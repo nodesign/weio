@@ -14,7 +14,6 @@ def checkIfFileExists(path):
     else :
         return False
 
-
 def saveConfiguration(path, conf):
     inputFile = open(path+"/updateWeio.json", 'w')
     print(inputFile)
@@ -24,25 +23,30 @@ def saveConfiguration(path, conf):
 
 if (len(sys.argv)==3):
 
-    filePath = sys.argv[1]
-    directoryPath = None
-
+    directoryPath = sys.argv[1]
     version = sys.argv[2]
 
     # check if file exists :
-    if (checkIfFileExists(filePath)):
+    if (checkIfFileExists(directoryPath)):
         # path exists
-        # extract directroy name for path where json will be created later
-        directoryPath = os.path.dirname(filePath)
- 
-        weioConfig = {}
-        weioConfig['download_url'] = 'http://we-io.net/downloads/'+version+"/weio_recovery.bin"
-        weioConfig['version'] = version
-        weioConfig['md5'] = getMd5sum(filePath)
-        weioConfig['size'] = os.path.getsize(filePath)
-        weioConfig['title'] = "Update to " + version 
-        weioConfig['body'] = "This is a brand new version of WeIO great software"
+        recipePath = directoryPath+"recipe"
+        recoveryPath = directoryPath+"weio_recovery.bin"
 
+        # Put all relevant files here for update
+        weioRecipe = {}
+        weioRecipe['download_url'] = 'http://we-io.net/downloads/'+version+"/recipe"
+        weioRecipe['version'] = version
+        weioRecipe['md5'] = getMd5sum(recipePath)
+        weioRecipe['size'] = os.path.getsize(recipePath)
+        weioRecipe['title'] = "Update to " + version 
+        weioRecipe['body'] = "This is a brand new version of WeIO great software"
+
+        weioRecovery = {}
+        weioRecovery['download_url'] = 'http://we-io.net/downloads/'+version+"/weio_recovery.bin"
+        weioRecovery['md5'] = getMd5sum(recoveryPath)
+        weioRecovery['size'] = os.path.getsize(recoveryPath)
+
+        weioConfig = {"recipe":weioRecipe, "recovery":weioRecovery}
         saveConfiguration(directoryPath, weioConfig)
     else :
             print "Filename is incorrect! Please provide valid path and filename"
