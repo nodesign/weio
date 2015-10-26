@@ -24,20 +24,17 @@ import paho.mqtt.client as mqtt
 import time
 import threading
 
-import sys, os, logging, platform, json, signal, datetime, traceback
+import sys, json, signal
 
 # WeIO stuff
-from weioLib import weioConfig
-from weioLib import weioFiles
 from weioLib import weioRunnerGlobals
-from weioLib import weioParser
-from weioLib import weioUserApi
-from weioLib import weioGpio
-from weioLib import weioIO
+from weioLib import weioControl
 
 # MQTT clinet
 mqttClient = None
 
+# weioCtrl
+weioCtrl = weioControl.weioControl()
 
 ###
 # MQTT cb handlers
@@ -69,69 +66,9 @@ def on_message(client, userdata, msg):
     req = json.load(io)
     print req['request']
 
-    res = None
-    if req['request'] in weioParser.weioSpells or req['request'] in weioParser.weioUserSpells:
-        if req['request'] in weioParser.weioSpells:
-            res = weioParser.weioSpells[req['request']](req['data'])
-        elif req['request'] in weioParser.weioUserSpells:
-            res = weioParser.weioUserSpells[req['request']](req['data'])
-    else:
-        res = None
+    res = weioCtrl.execute(req)
 
     mqttClient.publish("weio/api/out", res)
-
-
-###
-# WeIO stuff
-###
-def weioStart():
-
-    # Get configuration from file
-    confFile = weioConfig.getConfiguration()
-    
-    # Path of last opened project
-    lp = confFile["last_opened_project"]
-
-    # Check if main.py exists in current user project
-    if (weioFiles.checkIfFileExists(lp+"/main.py")):
-        # set the location of current project main.py
-        projectModule = lp.replace('/', '.') + ".main"
-    else:
-        # Use the location of default www/defaultMain/main.py
-        projectModule = "www.defaultMain.main"
-
-    # Init GPIO object for uper communication
-    if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
-        try:
-            weioIO.gpio = weioGpio.WeioGpio()
-        except:
-            print "LPC coprocessor is not present"
-            weioIO.gpio = None
-
-    try:
-        userMain = __import__(projectModule, fromlist=[''])
-
-        # Calling user setup() if present
-        if "setup" in vars(userMain):
-            userMain.setup()
-    except:
-        print "MODULE CAN'T BE LOADED." \
-                "Maybe you have some errors in modules that you wish to import?"
-
-    # Add user callback handlers for events
-    for key in weioUserApi.attach.events:
-        weioParser.addUserEvent(weioUserApi.attach.events[key].event,
-                weioUserApi.attach.events[key].handler)
-
-    # Launching threads
-    for key in weioUserApi.attach.procs:
-        #print key
-        t = threading.Thread(target=weioUserApi.attach.procs[key].procFnc,
-                    args=weioUserApi.attach.procs[key].procArgs)
-        t.daemon = True
-        t.start()
-
-        weioRunnerGlobals.WEIO_SERIAL_LINKED = True
         
 
 ###
@@ -139,14 +76,12 @@ def weioStart():
 ###
 def signalHandler(sig, frame):
 
+    # Stop WeIO
+    weioCtrl.stop()
+
     # Stop the MQTT loop
     if (mqttClient is not None):
         mqttClient.disconnect()
-
-    if (weioIO.gpio != None):
-        if (weioRunnerGlobals.WEIO_SERIAL_LINKED == True):
-            weioIO.gpio.stopReader()
-            weioIO.gpio.reset()
 
     # Bail out
     sys.exit(0)
@@ -162,7 +97,7 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, signalHandler)
     
     # Start WeIO stuff
-    weioStart()
+    weioCtrl.start()
 
     ###
     # MQTT stuff
