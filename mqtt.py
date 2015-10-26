@@ -27,7 +27,6 @@ import threading
 import sys, json, signal
 
 # WeIO stuff
-from weioLib import weioRunnerGlobals
 from weioLib import weioControl
 
 # MQTT clinet
