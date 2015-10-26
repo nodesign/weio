@@ -87,6 +87,10 @@ else:
     # On PC save in the place
     targetPath = "./"
 
+# Kill WeIO at FIRST!
+p = subprocess.Popen(["/etc/init.d/weio_run", "stop"])
+print p.communicate()
+
 # get json to extract MD5 data
 print "getting JSON configuration from WeIO server"
 startDownload("http://we-io.net/downloads/update/updateWeio.json", targetPath+"/updateWeio.json")
@@ -102,8 +106,6 @@ if (recoveryMd5Distant == recoveryMd5Local):
     print "MD5 matches. Starting sysupgrade procedure"
     if (platform.machine() == 'mips') :
         print "killing WeIO application to free RAM"
-        # do we need this as sysupgrade kills every process that is currently running?
-        p = subprocess.Popen(["/etc/init.d/weio_run", "stop"])
         # start upgrade
         p = subprocess.Popen(["sysupgrade", "-v", targetPath+"/weio_recovery.bin"])
         print p.communicate()
