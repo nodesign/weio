@@ -29,20 +29,22 @@ if (len(sys.argv)==3):
     # check if file exists :
     if (checkIfFileExists(directoryPath)):
         # path exists
-        recipePath = directoryPath+"recipe"
+        recipePath = directoryPath+"updateRecipe"
         recoveryPath = directoryPath+"weio_recovery.bin"
 
         # Put all relevant files here for update
+        # RECIPE
         weioRecipe = {}
-        weioRecipe['download_url'] = 'http://we-io.net/downloads/'+version+"/recipe"
+        weioRecipe['download_url'] = 'http://we-io.net/downloads/update/bundle/updateRecipe'
         weioRecipe['version'] = version
         weioRecipe['md5'] = getMd5sum(recipePath)
         weioRecipe['size'] = os.path.getsize(recipePath)
         weioRecipe['title'] = "Update to " + version 
         weioRecipe['body'] = "This is a brand new version of WeIO great software"
 
+        # RECOVERY
         weioRecovery = {}
-        weioRecovery['download_url'] = 'http://we-io.net/downloads/'+version+"/weio_recovery.bin"
+        weioRecovery['download_url'] = 'http://we-io.net/downloads/update/bundle/weio_recovery.bin'
         weioRecovery['md5'] = getMd5sum(recoveryPath)
         weioRecovery['size'] = os.path.getsize(recoveryPath)
 

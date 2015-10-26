@@ -204,7 +204,7 @@ class WeioUpdaterHandler(SockJSConnection):
 
             # set all parameters for download, but DON'T download yet
             # this is a just version check
-            self.updateFileName = self.fwPath + "recipe"
+            self.updateFileName = self.fwPath + "updateRecipe"
             rsp['needsUpdate'] = "YES"
             print "setting parameters :"
             self.fwDownloadLink = lastUpdate["download_url"]

@@ -89,7 +89,7 @@ else:
 
 # get json to extract MD5 data
 print "getting JSON configuration from WeIO server"
-startDownload("http://we-io.net/downloads/updateWeio.json", targetPath+"/updateWeio.json")
+startDownload("http://we-io.net/downloads/update/updateWeio.json", targetPath+"/updateWeio.json")
 
 data = getJsonFromDisk(targetPath+"/updateWeio.json")
 
@@ -107,4 +107,6 @@ if (recoveryMd5Distant == recoveryMd5Local):
         # start upgrade
         p = subprocess.Popen(["sysupgrade", "-v", targetPath+"/weio_recovery.bin"])
         print p.communicate()
-
+    else:
+        print "Doing nothing on PC, exiting"
+        exit()
