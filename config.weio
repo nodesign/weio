@@ -29,7 +29,7 @@
     "weio_board": "WeIO", 
     "weio_lib_path": "weioLib", 
     "weio_update_alternate_repository": "http://we-io.net/downloads/updateWeio.json", 
-    "weio_update_official_repository": "http://we-io.net/downloads/updateWeio.json", 
+    "weio_update_official_repository": "http://we-io.net/downloads/update/updateWeio.json", 
     "weio_update_use_official_repository": "YES", 
     "weio_version": "1.1"
 }
