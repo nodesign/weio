@@ -47,7 +47,7 @@
 # Drasko DRASKOVIC <drasko.draskovic@gmail.com>
 #
 ###
-import urllib2, urllib, subprocess, platform, json, hashlib
+import urllib2, urllib, subprocess, platform, json, hashlib, os, shutil
 
 def startDownload(fwUrl, targetFile):
     print "download init"
@@ -91,6 +91,22 @@ else:
 p = subprocess.Popen(["/etc/init.d/weio_run", "stop"])
 print p.communicate()
 
+# Now we can start update procedure
+
+# SAFE HOUSE
+# Backup config.weio and userProjects
+# this will be backuped after flashing with run_weio script (first time)
+if (platform.machine() == 'mips') :
+    bckpdir = "/weioUserBackup"
+    # kill all symlinks in user projects otherwise it's not possible to move them or copy
+    p = subprocess.Popen(["sh", "/weio/scripts/killUserProjectSymlinks.sh"])
+    print p.communicate()
+    # move user projects to the backup directory
+    shutil.move("/weioUser/flash", bckpdir)
+    # add config.weio to the safe house
+    shutil.copyfile("/weio/config.weio", bckpdir+"/config.weio")
+
+# DOWNLOADING PROCEDURE
 # get json to extract MD5 data
 print "getting JSON configuration from WeIO server"
 startDownload("http://we-io.net/downloads/update/updateWeio.json", targetPath+"/updateWeio.json")
@@ -102,6 +118,7 @@ startDownload(data["recovery"]["download_url"], targetPath+"/weio_recovery.bin")
 recoveryMd5Distant = data["recovery"]["md5"]
 recoveryMd5Local = getMd5sum(targetPath+"/weio_recovery.bin")
 
+# SYSTEM UPGRADE
 if (recoveryMd5Distant == recoveryMd5Local):
     print "MD5 matches. Starting sysupgrade procedure"
     if (platform.machine() == 'mips') :
