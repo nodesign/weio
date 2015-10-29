@@ -10,3 +10,4 @@
 /etc/dropbear/
 /etc/crontabs/
 /weioUserBackup/
+/etc/config/fstab
