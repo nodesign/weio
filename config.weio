@@ -29,5 +29,5 @@
     "weio_board": "WeIO", 
     "weio_lib_path": "weioLib", 
     "weio_update_official_repository": "http://we-io.net/downloads/update/updateWeio.json", 
-    "weio_version": "1.1"
+    "weio_version": "1.2"
 }
