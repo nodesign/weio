@@ -1,5 +1,5 @@
 
-WeIO 1.2, not released
+WeIO 1.2
 -------------------
 
 - System
