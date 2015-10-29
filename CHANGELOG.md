@@ -5,6 +5,7 @@ WeIO 1.2, not released
 - System
  - Upgraded the system to OpenWRT Chaos Calmer (15.05). WeIO is now officially supported on OpenWRT, since version 15.05 (see git commit [here](http://git.openwrt.org/?p=15.05/openwrt.git;a=commit;h=21823760547b26d6b04a057583d25a0e346eced1)). Additionnal packages can now be installed via ```opkg``` from the official OpenWRT packages repository. 
  - Added a way to extend the root filesystem to an SD Card ([How-to](https://github.com/nodesign/weio/wiki/How-to-extend-WeIO-flash-space))
+ - Modified system Updater to follow new OTA upgrade specification: https://github.com/nodesign/weio/wiki/Updater
 
 - Firmware
  - The LPC Firmware can be compiled with ```make```, and now use ```newlib``` instead of ```redlib```. [LPC firmware repository](https://github.com/nodesign/UPER)
