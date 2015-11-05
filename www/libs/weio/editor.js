@@ -1100,10 +1100,10 @@ function updateFileTree(data) {
     $('#tree').tree('loadData', data.data);
     // when tree is loaded then add x buttons
     //$('#tree1').load(addDeleteButtons());
-    var tag = "<a id='deleteButton' role='button' data-toggle='modal'><img src='img/xIcon.png'></img></a>";
+    var tag = "<a class='deleteButton' id='deleteButton' role='button' data-toggle='modal'><img src='img/xIcon.png'></img></a>";
     $(tag).appendTo("div.jqtree-element.jqtree_common");
 
-    $(".icon-remove.delButton").bind("click", clickDeleteButton);
+    $(".deleteButton").bind("click", clickDeleteButton);
 
 
     // $(".icon-remove.delButton").click(function(){
@@ -1119,9 +1119,10 @@ function clickDeleteButton(){
 }
 
 function addDeleteButtons() {
-    var tag = "<a id='deleteButton' role='button' data-toggle='modal'><img src='img/xIcon.png'></img></a>";
+    var tag = "<a class='deleteButton' id='deleteButton' role='button' data-toggle='modal'><img src='img/xIcon.png'></img></a>";
+
     $(tag).appendTo("div.jqtree-element.jqtree_common");
-    $(".icon-remove.delButton").click(function(){
+    $(".deleteButton").click(function(){
      console.log("deleteButton clicked!");
      deleteButtonClicked = true;
     });
@@ -1225,7 +1226,7 @@ function insertNewStrip(data) {
 
     // Element
     var el = $('<div />').html('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" id="att_' +
-            idEl + '" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a class="read-only-msg">' + readOnlyModeMsg + '</a><a role="button" id="closeButton"><img src="img/xIcon.png"></img></a></div></div><div id="acc_'
+            idEl + '" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a class="read-only-msg">' + readOnlyModeMsg + '</a><a role="button" id="closeButton" class="icon-remove"></a></div></div><div id="acc_'
             + idEl + '" class="accordion-body collapse"><div class="accordion-inner"></div></div>').addClass('accordion-group').attr("id", "file_" + data.data.id);
 
     // Add new strip here
