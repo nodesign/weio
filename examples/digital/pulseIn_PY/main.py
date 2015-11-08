@@ -30,3 +30,4 @@ def myProcess():
         digitalWrite(18, HIGH)
         # wait 500ms
         delay(500)
+
