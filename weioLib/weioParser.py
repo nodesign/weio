@@ -89,6 +89,22 @@ def callDigitalRead(data) :
         bck["pin"] = data[0] # pin
     return bck
 
+def callPulseIn(data) :
+    bck = {}
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        value = pulseIn(data[0], data[1], data[2])
+        bck["data"]    = value
+        bck["pin"]     = data[0]
+        bck["level"]   = data[1]
+        bck["timeout"] = data[1]
+    else :
+        print "pulseIn ON PC", data
+        bck["data"]    = 1       # faked value
+        bck["pin"]     = data[0] # pin
+        bck["level"]   = data[1] # level
+        bck["timeout"] = data[2] # timeout
+    return bck
+
 def callPortWrite(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         portWrite(data[0], data[1])
@@ -304,6 +320,7 @@ def callReadSPI(data):
 weioSpells = {
     "digitalWrite":callDigitalWrite,
     "digitalRead":callDigitalRead,
+    "pulseIn":callPulseIn,
     "portWrite":callPortWrite,
     "portRead":callPortRead,
     "dhtRead":callDHTRead,
