@@ -244,6 +244,14 @@ function digitalRead(pin, callback) {
     genericMessage("digitalRead", [pin],fName);
 };
 
+function pulseIn(pin, level, timeout, callback) {
+    // create new callback call
+    var fName = callback.name;
+    //console.log("callback name:" + fName);
+    weioCallbacks[fName] = callback
+    genericMessage("pulseIn", [pin, level, timeout],fName);
+};
+
 function portWrite(port, value) {
     genericMessage("portWrite", [port, value], null);
 };

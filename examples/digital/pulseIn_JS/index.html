@@ -1,0 +1,51 @@
+<!--###################################
+#                                     #
+#    HOW TO READ A PULSEIN ON WEIO    #
+#                                     #
+#######################################
+
+# Descriptions: This example shows how to read a pulse (either HIGH or LOW)
+#               on a pin and get the length in microseconds or 0 if no
+#               complete pulse was received within the timeout.
+#
+# Syntax: pulseIn(pin, level, timeout)
+#
+# pin : all pins availables
+# mode : HIGH, LOW
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head >
+    <script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+    <link rel="stylesheet" type="text/css" href="myStyle.css">
+    <script>
+
+        // This function is called when DOM is loaded and websocket opened
+        function onWeioReady() {
+            //pulseInCallback will be called when data arrives from server
+            pulseIn(23, LOW, 900000, pulseInCallback);
+        }
+
+        function pulseInCallback(callback) {
+            // update displayed phrase with callback data
+            $("#phrase").html(callback.data + "µs");
+            // Turn on the red LED while pulse is read
+            digitalWrite(18, LOW);
+            // Print the value of pulse duration
+            pulseIn(23, LOW, 900000, pulseInCallback);
+            // Turn off the red LED at the end of the reading
+            digitalWrite(18, HIGH);
+            delay(200);
+        }
+
+    </script>
+</head>
+
+<body>
+    <p>pulseIn</p>
+    <p id="phrase" >0µs</p>
+</body>
+
+</html>

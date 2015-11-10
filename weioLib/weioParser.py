@@ -82,11 +82,27 @@ def callDigitalRead(data) :
     if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
         value = digitalRead(data[0])
         bck["data"] = value
-        bck["pin"] = data[0]
+        bck["pin"]  = data[0]
     else :
         print "digitalRead ON PC", data
         bck["data"] = 1 # faked value
-        bck["pin"] = data[0] # pin
+        bck["pin"]  = data[0] # pin
+    return bck
+
+def callPulseIn(data) :
+    bck = {}
+    if (weioRunnerGlobals.WEIO_SERIAL_LINKED is True):
+        value = pulseIn(data[0], data[1], data[2])
+        bck["data"]    = value
+        bck["pin"]     = data[0]
+        bck["level"]   = data[1]
+        bck["timeout"] = data[1]
+    else :
+        print "pulseIn ON PC", data
+        bck["data"]    = 1       # faked value
+        bck["pin"]     = data[0] # pin
+        bck["level"]   = data[1] # level
+        bck["timeout"] = data[2] # timeout
     return bck
 
 def callPortWrite(data) :
@@ -121,11 +137,11 @@ def callAnalogRead(data) :
         #print "From browser ", data
         value = analogRead(data[0]) # this is pin number
         bck["data"] = value
-        bck["pin"] = data[0]
+        bck["pin"]  = data[0]
     else :
         print "analogRead ON PC", data
         bck["data"] = 1023 # faked value
-        bck["pin"] = data[0]
+        bck["pin"]  = data[0]
     return bck
 
 def callSetPwmPeriod(data) :
@@ -213,7 +229,7 @@ def callConstrain(data) :
     else :
         print "contrain ON PC", data
         bck["data"] = 1 # faked value
-        bck["pin"] = data[0] # pin
+        bck["pin"]  = data[0] # pin
     return bck
 
 
@@ -302,32 +318,33 @@ def callReadSPI(data):
 # WeIO native spells
 ###
 weioSpells = {
-    "digitalWrite":callDigitalWrite,
-    "digitalRead":callDigitalRead,
-    "portWrite":callPortWrite,
-    "portRead":callPortRead,
-    "dhtRead":callDHTRead,
-    "analogRead":callAnalogRead,
-    "pinMode":callPinMode,
-    "portMode":callPortMode,
-    "setPwmPeriod":callSetPwmPeriod,
-    "pwmWrite":callPwmWrite,
-    "proportion":callProportion,
-    "attachInterrupt":callAttachInterrupt,
-    "detachInterrupt":callDetachInterrupt,
-    "tone": callTone,
-    "noTone": callNotone,
-    "constrain":callConstrain,
-    "millis":callMillis,
-    "getTemperature": callGetTemperature,
-    "delay":callDelay,
-    "pinsInfo": pinsInfo,
-    "listSerials": callListSerials,
-    "initSerial": callInitSerial,
-    "serialWrite": callSerialWrite,
-    "initSPI": callInitSPI,
-    "readSPI": callReadSPI,
-    "writeSPI": callWriteSPI
+    "digitalWrite"    :callDigitalWrite,
+    "digitalRead"     :callDigitalRead,
+    "pulseIn"         :callPulseIn,
+    "portWrite"       :callPortWrite,
+    "portRead"        :callPortRead,
+    "dhtRead"         :callDHTRead,
+    "analogRead"      :callAnalogRead,
+    "pinMode"         :callPinMode,
+    "portMode"        :callPortMode,
+    "setPwmPeriod"    :callSetPwmPeriod,
+    "pwmWrite"        :callPwmWrite,
+    "proportion"      :callProportion,
+    "attachInterrupt" :callAttachInterrupt,
+    "detachInterrupt" :callDetachInterrupt,
+    "tone"            :callTone,
+    "noTone"          :callNotone,
+    "constrain"       :callConstrain,
+    "millis"          :callMillis,
+    "getTemperature"  :callGetTemperature,
+    "delay"           :callDelay,
+    "pinsInfo"        :pinsInfo,
+    "listSerials"     :callListSerials,
+    "initSerial"      :callInitSerial,
+    "serialWrite"     :callSerialWrite,
+    "initSPI"         :callInitSPI,
+    "readSPI"         :callReadSPI,
+    "writeSPI"        :callWriteSPI
   # "message":callUserMesage
 }
 
