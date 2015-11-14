@@ -24,7 +24,7 @@
 
         // This function is called when DOM is loaded and websocket opened
         function onWeioReady() {
-            //pulseInCallback will be called when data arrives from server
+            // Read a LOW pulse for 0.9s on pin 23 and call pulseInCallback
             pulseIn(23, LOW, 900000, pulseInCallback);
         }
 
@@ -33,7 +33,7 @@
             $("#phrase").html(callback.data + "µs");
             // Turn on the red LED while pulse is read
             digitalWrite(18, LOW);
-            // Print the value of pulse duration
+            // Read a LOW pulse for 0.9s on pin 23 and call pulseInCallback
             pulseIn(23, LOW, 900000, pulseInCallback);
             // Turn off the red LED at the end of the reading
             digitalWrite(18, HIGH);
