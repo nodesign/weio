@@ -103,6 +103,7 @@ class Upgrader:
 		self._gpio("0",self.uper_reset)
 		time.sleep(2) # wait for linux to settle after UPER reboot in to pgm state
 		self._gpio("0",self.uper_program)
+		time.sleep(2)
 
 		# find UPER block device
 		list_block_devs = glob.glob("/sys/block/sd*")
