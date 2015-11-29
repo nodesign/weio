@@ -1,5 +1,20 @@
+WeIO 1.3, not released
+-------------------
 
-WeIO 1.2
+- System
+ - Added some missing native language support which causes issues when mounting removable devices. [[#261](https://github.com/nodesign/weio/issues/261)] and [[#264](https://github.com/nodesign/weio/issues/264)]
+ - Changed the hotplug2 rules to try to mount devices without partition tables [[#269](https://github.com/nodesign/weio/issues/269)]
+ - Added a delay in ```flash_lpc_fw.py``` for compatibility with the new boards [[#272](https://github.com/nodesign/weio/pull/272)]
+
+- API
+ - Fixed a bug with the ```auto_to_ap``` switch that was not working at system boot [[#172](https://github.com/nodesign/weio/issues/172)] 
+
+- IDE
+ - Remove the autosave function [[#270](https://github.com/nodesign/weio/issues/270)]
+ - Re-enable to delete and close files [[#259](https://github.com/nodesign/weio/issues/259)]
+ - Fixed a bug to not end up in the signin page during the first boot [[#136](https://github.com/nodesign/weio/issues/136)]
+
+WeIO 1.2, 2015/10/29
 -------------------
 
 - System
