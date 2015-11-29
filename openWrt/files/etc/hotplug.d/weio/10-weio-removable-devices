@@ -6,7 +6,7 @@
 for sd in `ls -d /sys/bus/scsi/drivers/sd/*/block/sd?`
 do
     block detect > /dev/null
-    sd_name=`basename $sd`1
+    [ -e $sd/`basename $sd`1 ] && sd_name=`basename $sd`1 || sd_name=`basename $sd`
     size=$(cat $sd/size)
     if [ "$size" != 0 -a "$size" != "" ]; then
         if !(mount |grep -q $sd_name); then

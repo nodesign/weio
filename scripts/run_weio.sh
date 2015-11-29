@@ -115,16 +115,18 @@ fi
 # First check if WiFi is UP
 check_wifi
 
-while [ $WIFI_READY -ne 1 ]; do
-    echo "WiFi network is not ready. Switching to RESCUE mode."
+if grep -q '"auto_to_ap": "YES"' /weio/config.weio; then
+    while [ $WIFI_READY -ne 1 ]; do
+        echo "WiFi network is not ready. Switching to RESCUE mode."
 
-    # We did not connect even after whole delay expired
-    # Something went wrong - got to RESCUE
-    /weio/scripts/wifi_set_mode.sh rescue
+        # We did not connect even after whole delay expired
+        # Something went wrong - got to RESCUE
+        /weio/scripts/wifi_set_mode.sh rescue
 
-    # Re-check WiFi
-    check_wifi
-done
+        # Re-check WiFi
+        check_wifi
+    done
+fi
 
 # Restart avahi
 # First kill it

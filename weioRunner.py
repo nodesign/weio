@@ -99,6 +99,9 @@ httpServer = None
 # This is user project index.html
 class WeioIndexHandler(web.RequestHandler):
     def get(self):
+        # The configuration must be refreshed to detect 'first_time_run' change.
+        # ref nodesign/weio #136
+        confFile = weioConfig.getConfiguration()
         firstTimeSwitch = confFile['first_time_run']
         #print firstTimeSwitch
 
