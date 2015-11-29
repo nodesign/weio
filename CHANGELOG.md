@@ -1,5 +1,5 @@
-WeIO 1.3, not released
--------------------
+WeIO 1.3
+--------
 
 - System
  - Added some missing native language support which causes issues when mounting removable devices. [[#261](https://github.com/nodesign/weio/issues/261)] and [[#264](https://github.com/nodesign/weio/issues/264)]
