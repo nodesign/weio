@@ -8,7 +8,7 @@
     "extern_projects_path_flash": "/weioUser/flash", 
     "extern_projects_path_sd": "/weioUser/sd", 
     "extern_projects_path_usbFlash": "/weioUser/usbFlash", 
-    "first_time_run": "NO", 
+    "first_time_run": "YES", 
     "https": "NO", 
     "ip": "0.0.0.0", 
     "kill_flag": "YES", 
@@ -18,16 +18,16 @@
     ], 
     "last_opened_project": "", 
     "login_required": "NO", 
-    "password": "weio", 
+    "password": "", 
     "play_composition_on_server_boot": "NO", 
     "port": 8080, 
     "remote": "", 
     "timezone": "GMT0", 
-    "user": "ukicar", 
+    "user": "", 
     "userAppPort": 80, 
     "userApp_debug_mode": "False", 
     "weio_board": "WeIO", 
     "weio_lib_path": "weioLib", 
     "weio_update_official_repository": "http://we-io.net/downloads/update/updateWeio.json", 
-    "weio_version": "1.2"
+    "weio_version": "1.3"
 }
