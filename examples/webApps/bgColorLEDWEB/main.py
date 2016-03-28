@@ -6,7 +6,6 @@ import time
 def setup():
     # Attaches interrupt from Web client to "message" string
     attach.event('message', buttonHandler)
-    attach.process(potar)
     sharedVar[0] = 0
  
 def buttonHandler(dataIn) :
@@ -25,7 +24,6 @@ def buttonHandler(dataIn) :
        hue = proportion(beta,-88.0,88.0, 0.0,1.0)
        # drive HUE color and transform to rgb for LED
        rgb = colorsys.hsv_to_rgb(hue, 1.0, 1.0)
- 
  
        # rgb output is 0.0-1.0 transform to 0-255
        red = int(rgb[0]*100.0)
@@ -50,27 +48,6 @@ def setColor(r,g,b):
     colorData["blue"] = b
  
     serverPush("usrMsg", colorData)
- 
-def potar() :
-   val = 0
-   val_p = 0
-   while True:
-       val = analogRead(25)
- 
-       if (abs(val-val_p)>10):
-           hue = proportion(val,0,1023, 0.0,1.0)
-           # drive HUE color and transform to rgb for LED
-           rgb = colorsys.hsv_to_rgb(hue, 1.0, 1.0)
- 
-           # rgb output is 0.0-1.0 transform to 0-255
-           red = int(rgb[0]*100.0)
-           green = int(rgb[1]*100.0)
-           blue = int(rgb[2]*100.0)
- 
-           setColor(red,green,blue)
- 
-       val_p = val
-       time.sleep(0.05)
  
 def proportion(value,istart,istop,ostart,ostop) :
        return float(ostart) + (float(ostop) - float(ostart)) * ((float(value) - float(istart)) / (float(istop) - float(istart)))
