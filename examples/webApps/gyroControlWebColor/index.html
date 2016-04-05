@@ -1,7 +1,7 @@
 <!DOCTYPE html> 
 <html lang="en"> 
   
-<script data-main="weioLibs" src="www/libs/require.js"></script>
+<script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
 <script src="gyro.js"></script>
 
 <head> 
@@ -32,15 +32,22 @@
     
     <script>
 
-        gyro.frequency = 50;
-        var beta_buff = 0;
-    	gyro.startTracking(function(o) {
-            var delta = Math.abs(beta_buff-o.beta);
-            if (delta > 2.0) {
-                genericMessage("message", o.beta);
-            }
-            beta_buff = o.beta;
-    	});
+        gyro.frequency = 200;
+        // This is gyro callback that will be fired
+        // each time value is refreshed
+        gyro.startTracking(function(o) {
+
+        // get rounded gyroscope angles using parseInt()
+        var gyroAngles = [parseInt(o.alpha), parseInt(o.beta), parseInt(o.gamma)];
+
+            // sending angles to python
+            genericMessage("gyro", gyroAngles);
+
+            // Update displayed values
+            $("#alpha").html("alpha :"+gyroAngles[0]);
+            $("#beta").html("beta :"+gyroAngles[1]);
+            $("#gamma").html("gamma :"+gyroAngles[2]);
+        });
 
         function onWeioReady() {
           weioCallbacks.usrMsg = changeColorFromWeio;
