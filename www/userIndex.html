@@ -50,42 +50,26 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>WeIO</title>
-        <script src="libs/jquery/jquery-2.0.2.min.js"> </script>
-        <link rel="SHORTCUT ICON" href="favicon.ico">
-        <style>
-
-            body {
-                margin: 0;
-            }
-            .userIndex {
-                position:absolute;
-                width:100%;
-                height:100%;
-                border:0px;
-            }
-
-        </style>
-
-        <script>
-
-            $(document).ready(function () {
-                $.getJSON('config.json', function(data) {
-                      confFile = data;
-                      // generate random number to prevent loading page from cache
-                      var randomNumber = Math.random();
-
-                      var path = confFile.last_opened_project.split("www/");
-                      //$(".userIndex").attr("src", path[1] + "/index.html?"+randomNumber);
-					  window.location = path[1] + "/index.html?"+randomNumber;
-                      });
-
-
-            }); /* end of document on ready event */
-
-        </script>
-
     </head>
     <body>
+		
+        <script>
+		(function() {
+		   // the DOM will be available here
+			// get json in the pure JS
+				var xmlhttp = new XMLHttpRequest();
+				xmlhttp.open('GET', 'config.json', true);
+				xmlhttp.onreadystatechange = function() {
+				    if (xmlhttp.readyState == 4) {
+				        if(xmlhttp.status == 200) {
+				            var confFile = JSON.parse(xmlhttp.responseText);
+							var path = confFile.last_opened_project.split("www/");
+							window.location = path[1] + "/index.html?";
+				         }
+				    }
+				};
+				xmlhttp.send(null);
+			})();
+        </script>
     </body>
 </html>
