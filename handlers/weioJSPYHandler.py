@@ -52,6 +52,7 @@ from weioLib.weioIO import *
 import json
 
 from sockjs.tornado import SockJSConnection
+from tornado import websocket
 
 from weioLib.weioParser import weioSpells
 from weioLib.weioParser import weioUserSpells
@@ -61,12 +62,18 @@ import uuid
 import os
 
 
-class WeioHandler(SockJSConnection):
-    def __init__(self, *args, **kwargs):
-        SockJSConnection.__init__(self, *args, **kwargs)
-        #self.connections = weioRunnerGlobals.weioConnections
+#class WeioHandler(SockJSConnection):
+class WeioHandler(websocket.WebSocketHandler):
 
-    def on_open(self, request):
+    def check_origin(self, origin):
+        return True
+    
+    # def __init__(self, *args, **kwargs):
+    #     SockJSConnection.__init__(self, *args, **kwargs)
+    #     #self.connections = weioRunnerGlobals.weioConnections
+
+#    def on_open(self, request):
+    def open(self):
         # Add the connection to the connections dictionary
         # Do not forget the lock - this handler is called asynchronoisly,
         # and the weioRunnerGlobals.weioConnections[] is accessed in the same time by
@@ -80,9 +87,11 @@ class WeioHandler(SockJSConnection):
         # collect client ip address and user machine info
         # print self.request to see all available info on user connection
         self.userAgent = None
-        self.ip = request.ip
+        #self.ip = request.ip
 
-        print "*SYSOUT* Client with IP address: " + self.ip + " connected to server"
+        #print "*SYSOUT* Client with IP address: " + self.ip + " connected to server"
+        
+        print "*SYSOUT* Client with IP address: " + self.request.host + " connected to server"
 
         #print "============="
         #print self.session.conn_info.get_header('x-client-ip')
@@ -142,7 +151,7 @@ class WeioHandler(SockJSConnection):
     def on_close(self):
         with weioRunnerGlobals.lockConn:
             self.connection_closed = True
-            print "*SYSOUT* Client with IP address: " + self.ip + " disconnected from server"
+            print "*SYSOUT* Client with IP address: " + self.request.host + " disconnected from server"
             # Remove client from the clients list and broadcast leave message
             #self.connections.remove(self)
             for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
