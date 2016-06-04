@@ -48,18 +48,47 @@
 ###
 # configuration file
 import json
+import os.path
 
 
 def getConfiguration():
     inputFile = open("config.weio", 'r')
+    passFile = None
+    passRead = None
+    if (os.path.isfile("pass.weio")):
+        passFile = open("pass.weio", 'r')
+        passRead = json.loads(passFile.read())
+        passFile.close()
+    else :
+        print "Error, password file don't exist"
+    
     rawData = inputFile.read()
+    
+    conf = json.loads(rawData)
+    if not(passRead is None):
+        conf["password"] = passRead["password"]
+    else :
+        conf["password"] = None
+
     inputFile.close()
-    return json.loads(rawData)
+    
+    
+    return conf 
 
 
 def saveConfiguration(conf):
     inputFile = open("config.weio", 'w')
-    print(inputFile)
+    passFile = open("pass.weio", 'w')
+    
+    pswd = {}
+    pswd["password"] = conf["password"]
+    
+    passFile.write(json.dumps(pswd, indent=4, sort_keys=True))
+    passFile.close()
+    
+    del conf["password"]
+    
+    #print(inputFile)
     ret = inputFile.write(json.dumps(conf, indent=4, sort_keys=True))
     inputFile.close()
     

@@ -48,7 +48,7 @@
 #
 ###
 
-import json
+import json, shutil
 
 def getConfiguration(path):
     inputFile = open(path, 'r')
@@ -74,3 +74,4 @@ for parameter in newConfig:
             newConfig[parameter] = oldConfig[parameter]
 
 saveConfiguration("/weio/config.weio", newConfig)
+shutil.copyfile("/weioUserBackup/pass.weio", "/weio/pass.weio")

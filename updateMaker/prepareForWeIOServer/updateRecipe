@@ -103,8 +103,9 @@ if (platform.machine() == 'mips') :
     print p.communicate()
     # move user projects to the backup directory
     shutil.move("/weioUser/flash", bckpdir)
-    # add config.weio to the safe house
+    # add config.weio and password to the safe house
     shutil.copyfile("/weio/config.weio", bckpdir+"/config.weio")
+    shutil.copyfile("/weio/pass.weio", bckpdir+"/pass.weio")
 
 # DOWNLOADING PROCEDURE
 # get json to extract MD5 data
