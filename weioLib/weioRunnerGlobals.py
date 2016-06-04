@@ -65,7 +65,7 @@ weioConnUuids = None
 # Lock the connections dictionary not to mutate it during the iterations
 # I.e. prevent weioJSPYHandler to mdify it while weioRunner listener_thread()
 # is iterating it
-locakConn = None
+lockConn = None
 
 # Running flag
 running = multiprocessing.Value(ctypes.c_bool, False)
