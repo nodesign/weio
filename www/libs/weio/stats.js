@@ -180,11 +180,22 @@ function updateDataViz(data) {
     $("#cpuSystem").html(cpu.system + "%");
     $("#cpuIdle").html(cpu.idle + "%");
     
-    $("#ramUsed").html(ram.used + "Mb");
-    $("#ramFree").html(ram.free + "Mb");
-    
-    $("#flashUsed").html(flash.used + "Mb");
-    $("#flashFree").html(flash.free + "Mb");
+    $("#ramUsed").html(ram.used + "MB");
+    $("#ramFree").html(ram.free + "MB");
+
+    if (flash.used > 1024) {
+        $("#flashUsed").html((flash.used/1024).toFixed(2) + "GB");
+    }
+    else {
+        $("#flashUsed").html(flash.used + "MB");
+    }
+
+    if (flash.free > 1024) {
+        $("#flashFree").html((flash.free/1024).toFixed(2) + "GB");
+    }
+    else {
+        $("#flashFree").html(flash.free + "MB");
+    }
     
     $("#temperature").html(temperature + "°C");
     

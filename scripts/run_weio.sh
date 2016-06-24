@@ -48,6 +48,12 @@
 #
 ###
 
+# OpenWRT patch python to disable the byte compilation by default
+# https://github.com/openwrt/packages/pull/541
+# This change is annoying as WeIO is mainly composed of python code.
+# This environment variable tells python to byte compile the code, which drastically
+# speed up the execution time
+export PYTHONDONTWRITEBYTECODE=0
 
 # Launching WeIO application, if application crashes WeIO will rerun automaticaly
 # On each exit from application script checks if an update is needed
@@ -109,16 +115,18 @@ fi
 # First check if WiFi is UP
 check_wifi
 
-while [ $WIFI_READY -ne 1 ]; do
-    echo "WiFi network is not ready. Switching to RESCUE mode."
+if grep -q '"auto_to_ap": "YES"' /weio/config.weio; then
+    while [ $WIFI_READY -ne 1 ]; do
+        echo "WiFi network is not ready. Switching to RESCUE mode."
 
-    # We did not connect even after whole delay expired
-    # Something went wrong - got to RESCUE
-    /weio/scripts/wifi_set_mode.sh rescue
+        # We did not connect even after whole delay expired
+        # Something went wrong - got to RESCUE
+        /weio/scripts/wifi_set_mode.sh rescue
 
-    # Re-check WiFi
-    check_wifi
-done
+        # Re-check WiFi
+        check_wifi
+    done
+fi
 
 # Restart avahi
 # First kill it

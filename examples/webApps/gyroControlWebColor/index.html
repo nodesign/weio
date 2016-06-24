@@ -1,0 +1,72 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+  
+<script data-main="www/libs/weioLibs" src="www/libs/require.js"></script>
+<script src="gyro.js"></script>
+
+<head> 
+    <meta charset="utf-8" /> 
+    <title>My first Web app</title>
+</head>
+
+    <style>
+        
+      #logoContainer {
+        position:fixed;
+        top:0;
+        bottom:0;
+        width:100%;
+        height:100%;
+        text-indent:-9999em;
+        background:url("weioLogo.png") center center no-repeat;
+      }
+        
+    </style>
+    
+    
+<body>
+    
+    <div id="logoContainer"> 
+        weio logo goes here
+    </div>
+    
+    <script>
+
+        gyro.frequency = 200;
+        // This is gyro callback that will be fired
+        // each time value is refreshed
+        gyro.startTracking(function(o) {
+
+        // get rounded gyroscope angles using parseInt()
+        var gyroAngles = [parseInt(o.alpha), parseInt(o.beta), parseInt(o.gamma)];
+
+            // sending angles to python
+            genericMessage("gyro", gyroAngles);
+
+            // Update displayed values
+            $("#alpha").html("alpha :"+gyroAngles[0]);
+            $("#beta").html("beta :"+gyroAngles[1]);
+            $("#gamma").html("gamma :"+gyroAngles[2]);
+        });
+
+        function onWeioReady() {
+          weioCallbacks.usrMsg = changeColorFromWeio;
+        }
+
+        function changeColorFromWeio(data) {
+            rgb = "rgb("+ 
+                  String(data.red) + "," + 
+                  String(data.green) + "," + 
+                  String(data.blue) + ")"; 
+            //console.log(data.data.red);
+            $("body").css("background-color", rgb);
+            //console.log(data);
+        }
+        
+    </script>
+    
+</body>
+</html>
+
+
+

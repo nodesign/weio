@@ -12,8 +12,7 @@
 # In this case shared object is shared.val
 # In most of cases this usage will work. If sync problems are encountered use lock library to lock
 
-from weioLib.weioUserApi import attach, shared
-from weioLib.weioIO import *
+from weioLib.weio import *
 
 ledPin = 20
 potentiometerPin = 25

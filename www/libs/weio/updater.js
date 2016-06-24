@@ -115,7 +115,6 @@ $(document).ready(function() {
                         callbacksUpdater[instruction](data);
                 } else if ("serverPush" in data) {
                         // this is instruction that was echoed from server + data as response
-                        
                         instruction = data.serverPush;  
                         if (instruction in callbacksUpdater) 
                             callbacksUpdater[instruction](data);
@@ -136,41 +135,18 @@ $(document).ready(function() {
 /**
  * Update check. Asks server to compare it's own version with distant one
  */
-
 function updateCheck() {
     $("#needsUpdateStatus").html("<i class='icon-spinner'></i> Checking updates...");
     var rq = { "request": "checkVersion"};
     updaterSocket.send(JSON.stringify(rq));
 }
 
-
-function runUpdateProcedure() {
-    var rq = { "request": "checkVersion"};
-    updaterSocket.send(JSON.stringify(rq));
-    
-    $("#updateWeio").modal("hide");
-    if (weioNeedsUpdate) {
-        $("#updateWeioProcedure").modal("show");
-        var rq = { "request": "downloadUpdate"};
-        updaterSocket.send(JSON.stringify(rq));
-        updateMode = true;
-        $("#reloadMeButton").hide(); 
-    }
-    
-}
-
 function updateProgressBar(data) {
-    //$("#progressStatus").html(data.info + " " + data.progress);
-    //$("#updateProgressBar").css("width", data.progress);
-    //estimatedInstallTime = data.estimatedInstallTime;
-    
     updaterTimerInterval = setInterval(function(){countTimeTillReload()},1000);
-    
 }
 
 function countTimeTillReload(data) {
     // normal update needs 35 secs to be done
-    
     delayTime = 100.0/estimatedInstallTime;
     weioUpdaterTimeTillReload+=delayTime;
     
@@ -254,6 +230,7 @@ function noInternet() {
  * Define callbacks here and request keys
  * Each key is binded to coresponding function
  */
+ // XXX need a modal view for errorDownloading
 var callbacksUpdater = {
     "checkVersion": checkVersion,
     "updateProgress" : updateProgressBar,
@@ -277,7 +254,8 @@ function checkVersion(data) {
         $("#needsUpdateStatus").html("WeIO update is available!");
         
         $("#updateButton").html("Update WeIO");
-        
+
+        // XXX Where is this message displayed ?
         txt = "";
         txt+="Your current version is " + data.localVersion + " and the latest available is " + data.distantVersion;
         txt+="<br>";
@@ -303,7 +281,6 @@ function checkVersion(data) {
 
 function bringUpdater(){
     if (modalIsPopulated && weioNeedsUpdate) {
-        //$("#updateWeio").modal("show");
         $("#reinstallFw").modal("show");
     }
 }

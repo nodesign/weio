@@ -183,7 +183,7 @@ def saveRawContentToFile(path, data):
      can explore the whole OS. Use checkIfPathIsInUserFolder(path) function to check if path is in user
      only folder."""
 
-    tmp = "./"+str(uuid.uuid1())+".tmp"
+    tmp = "/tmp/"+str(uuid.uuid1())+".tmp"
 
     try :
         inputFile = open(tmp, 'w')

@@ -292,3 +292,10 @@ def initSerial(port='/dev/ttyACM1', baudrate=9600, timeout_=1):
     interfaceUART(gpio.u)
     return serial.Serial(port, baudrate, timeout=timeout_)
 
+# User defined functions
+def userDefinedFunction(fid, ret, args):
+    if ret:
+        return gpio.u.decode_sfp(gpio.u.uper_io(ret, gpio.u.encode_sfp(fid, args)))[1]
+    else:
+        gpio.u.uper_io(ret, gpio.u.encode_sfp(fid, args))
+        return True

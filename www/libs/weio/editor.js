@@ -83,7 +83,7 @@ var treeLock = false;
 /**
  * Milliseconds interval for autosave
  */
-var autoSaveInterval = 4000;
+//var autoSaveInterval = 4000;
 
 /**
  * Play is activated from dashboard,
@@ -93,7 +93,7 @@ var playPushed = false;
 /**
  * Autosave lock, deblock on keyup event in editor
  */
-var activeAutoSave = true;
+//var activeAutoSave = false;
 
 /*
  * User server port
@@ -190,7 +190,7 @@ $(document).ready(function () {
     });
 
     $("#rightSideBarButton").trigger("click");
-    window.setInterval("autoSave()",autoSaveInterval);
+    //window.setInterval("autoSave()",autoSaveInterval);
 
 
     $('.accordion').click(function(e){
@@ -601,7 +601,7 @@ function createEditor(){
     // On chage content
     $('#codeEditorAce').keyup(function(e){
           // exclude arrowkeys
-          if ((e.keyCode!=38) && (e.keyCode!=40) && (e.keyCode!=37) && (e.keyCode!=39)) {
+          if ((e.keyCode!=38) && (e.keyCode!=40) && (e.keyCode!=37) && (e.keyCode!=39) && (e.keyCode!=91)) {
 
             // Remove previous change note
             $('#codeEditorAce').parents('.accordion-group')
@@ -615,9 +615,10 @@ function createEditor(){
             .addClass('hasChanged')
             .text('*'));
 
+
             var iOBJ = findObjectInArray($('#codeEditorAce').parents('.accordion-group').attr('id').split("_")[1]);
             editorsInStack[iOBJ].data = editor.getValue();
-            console.log(activeAutoSave);
+            //console.log(activeAutoSave);
           }
 
         });
@@ -628,9 +629,9 @@ function createEditor(){
         if((event.ctrlKey || event.metaKey) && event.which == 83) {
             // Save Function
             console.log("save trigger");
-            if(activeAutoSave) {
-                saveAll();
-            }
+            //if(activeAutoSave) {
+            autoSave();
+                //}
 
             event.preventDefault();
             return false;
@@ -796,7 +797,7 @@ function play() {
  * Auto save if there were changes
  */
 function autoSave() {
-    if (activeAutoSave) {
+    //if (activeAutoSave) {
         saveAll();
 
         for (var i=0; i<editorsInStack.length; i++){
@@ -811,7 +812,7 @@ function autoSave() {
                     $(this).remove();
                     })
         }
-    }
+        //}
     //activeAutoSave = false;
 }
 
@@ -1078,11 +1079,11 @@ function updateFileTree(data) {
     if(projectRoot.split("/")[1] === 'examples'){
         console.log("This is example project, read only mode acitvated");
         editor.setReadOnly(true);
-        activeAutoSave = false;
+        //activeAutoSave = false;
         readOnlyModeMsg = 'Read only';
     } else {
         editor.setReadOnly(false);
-        activeAutoSave = true;
+        //activeAutoSave = true;
         readOnlyModeMsg = '';
     }
 
@@ -1100,10 +1101,10 @@ function updateFileTree(data) {
     $('#tree').tree('loadData', data.data);
     // when tree is loaded then add x buttons
     //$('#tree1').load(addDeleteButtons());
-    var tag = "<a id='deleteButton' role='button' data-toggle='modal'><img src='img/xIcon.png'></img></a>";
+    var tag = "<a class='deleteButton' id='deleteButton' role='button' data-toggle='modal'><img src='img/xIcon.png'></img></a>";
     $(tag).appendTo("div.jqtree-element.jqtree_common");
 
-    $(".icon-remove.delButton").bind("click", clickDeleteButton);
+    $(".deleteButton").bind("click", clickDeleteButton);
 
 
     // $(".icon-remove.delButton").click(function(){
@@ -1119,9 +1120,10 @@ function clickDeleteButton(){
 }
 
 function addDeleteButtons() {
-    var tag = "<a id='deleteButton' role='button' data-toggle='modal'><img src='img/xIcon.png'></img></a>";
+    var tag = "<a class='deleteButton' id='deleteButton' role='button' data-toggle='modal'><img src='img/xIcon.png'></img></a>";
+
     $(tag).appendTo("div.jqtree-element.jqtree_common");
-    $(".icon-remove.delButton").click(function(){
+    $(".deleteButton").click(function(){
      console.log("deleteButton clicked!");
      deleteButtonClicked = true;
     });
@@ -1225,7 +1227,7 @@ function insertNewStrip(data) {
 
     // Element
     var el = $('<div />').html('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" id="att_' +
-            idEl + '" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a class="read-only-msg">' + readOnlyModeMsg + '</a><a role="button" id="closeButton"><img src="img/xIcon.png"></img></a></div></div><div id="acc_'
+            idEl + '" href="#'+'acc_'+idEl+'">'+title+'</a><div class="actions"><a class="read-only-msg">' + readOnlyModeMsg + '</a><a role="button" id="closeButton" class="icon-remove"></a></div></div><div id="acc_'
             + idEl + '" class="accordion-body collapse"><div class="accordion-inner"></div></div>').addClass('accordion-group').attr("id", "file_" + data.data.id);
 
     // Add new strip here

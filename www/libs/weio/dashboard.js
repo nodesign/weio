@@ -201,7 +201,7 @@ $(document).ready(function () {
                 //setTimeout(function(){dashboard.send(JSON.stringify(rq))},1000);
 
 
-
+                $(".dropdown").bind("click", saveAll);
                 /*
                 var rq = { "request": "getPlatform"};
                 dashboard.send(JSON.stringify(rq));
@@ -265,7 +265,10 @@ $(document).ready(function () {
 
 }); /* end of document on ready event */
 
-
+/* Saves actual project */
+function saveAll(){
+    document.getElementById("weioIframe").contentWindow.saveAll();
+}
  // Pong server callback from keep alive ping
 
 function pingServer(pong) {
@@ -871,6 +874,7 @@ function updateProjects(data) {
        changeSelectedStorageUnit($(this).attr("id").split("StorageUnit")[0]);
 
     });
+
 }
 
 function changeSelectedStorageUnit(unit) {

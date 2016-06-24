@@ -19,7 +19,7 @@ start() {
     # MAC address can be detected in eeprom inside the art block
     # This address is used only for ssid to match address on the sticker
 
-    MACSTICKER=`hexdump -C /dev/mtdblock7 | head -n 1 | awk '{for (i=8; i<=12; i++) print $i ":"; print $13}' ORS=''`
+    MACSTICKER=`hexdump -C /dev/mtdblock6 | head -n 1 | awk '{for (i=8; i<=12; i++) print $i ":"; print $13}' ORS=''`
 
     sed "s/option ssid.*$/option ssid \'WeIO ${MACSTICKER}\'/" -i /etc/config/wireless.ap.rescue
 }
