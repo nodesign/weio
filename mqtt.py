@@ -95,7 +95,8 @@ if __name__ == '__main__':
     signal.signal(signal.SIGTERM, signalHandler)
     signal.signal(signal.SIGINT, signalHandler)
     
-    # Start WeIO stuff
+    # Init and start WeIO stuff
+    weioCtrl.init()
     weioCtrl.start()
 
     ###

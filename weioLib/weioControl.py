@@ -33,6 +33,17 @@ import threading
 
 
 class weioControl(object):
+    ###
+    # Connect to UPER
+    ###
+    def init(self):
+        # Init GPIO object for uper communication
+        if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
+            try:
+                weioIO.gpio = weioGpio.WeioGpio()
+            except:
+                print "LPC coprocessor is not present"
+                weioIO.gpio = None
 
     ###
     # Load user module and start threads
@@ -55,14 +66,6 @@ class weioControl(object):
             print "Does not exist!"
             # Use the location of default www/defaultMain/main.py
             projectModule = confFile["absolut_root_path"] + '/' + "www/defaultMain/main.py"
-
-        # Init GPIO object for uper communication
-        if (weioRunnerGlobals.WEIO_SERIAL_LINKED == False):
-            try:
-                weioIO.gpio = weioGpio.WeioGpio()
-            except:
-                print "LPC coprocessor is not present"
-                weioIO.gpio = None
 
         try:
             #userMain = __import__(projectModule, fromlist=[''])
