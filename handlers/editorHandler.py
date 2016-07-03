@@ -52,7 +52,9 @@ import os, signal, sys, platform, subprocess, datetime
 
 from tornado import web, ioloop, iostream, gen
 sys.path.append(r'./');
-from sockjs.tornado import SockJSRouter, SockJSConnection
+#from sockjs.tornado import SockJSRouter, SockJSConnection
+
+from tornado import websocket
 
 import functools
 import json
@@ -68,7 +70,8 @@ from weioLib import weioConfig
 clients = set()
 
 # Wifi detection route handler
-class WeioEditorHandler(SockJSConnection):
+#class WeioEditorHandler(SockJSConnection):
+class WeioEditorHandler(websocket.WebSocketHandler):
     global callbacks
 
     # DEFINE CALLBACKS HERE
@@ -265,7 +268,7 @@ class WeioEditorHandler(SockJSConnection):
                 callbacks[request](self, uniqueRq)
             else :
                 print "unrecognised request ", uniqueRq['request']
-                
+
     def sendUserPortNumber(self, rq):
 
         # get configuration from file
@@ -302,7 +305,11 @@ class WeioEditorHandler(SockJSConnection):
 
     }
 
-    def on_open(self, info) :
+    def broadcast(self, connectedClients, data):
+        for c in connectedClients:
+            c.write_message(data)
+
+    def open(self) :
         global clients
         clients.add(self)
         

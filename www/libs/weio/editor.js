@@ -366,7 +366,7 @@ $(document).ready(function () {
                 /*
                 * SockJS object, Web socket
                 */
-                editorSocket = new SockJS(http_prefix + location.host + '/editorSocket');
+                editorSocket = new WebSocket("ws://" + location.host + '/editorSocket');
                 /*
                 * On opening of wifi web socket ask server to scan wifi networks
                 */

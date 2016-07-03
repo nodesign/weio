@@ -88,7 +88,6 @@ from handlers import updaterHandler
 # IMPORT STATS HANDLER
 from handlers import statsHandler
 
-
 # IMPORT WEIO BUTTONS OBJECT
 from weioLib import weioWifiButtons
 
@@ -165,7 +164,7 @@ if __name__ == '__main__':
     # Routers
     ###
     # EDITOR ROUTES
-    WeioEditorRouter = SockJSRouter(editorHandler.WeioEditorHandler, '/editorSocket')
+    #WeioEditorRouter = SockJSRouter(editorHandler.WeioEditorHandler, '/editorSocket')
 
     # DASHBOARD ROUTE websocket
     WeioDashboardRouter = SockJSRouter(dashboardHandler.WeioDashBoardHandler, '/dashboard')
@@ -179,7 +178,7 @@ if __name__ == '__main__':
     WeioUpdaterRouter = SockJSRouter(updaterHandler.WeioUpdaterHandler, '/updater')
 
     # STATS ROUTER
-    WeioStatsRouter = SockJSRouter(statsHandler.WeioStatsHandler, '/stats')
+   # WeioStatsRouter = SockJSRouter(statsHandler.WeioStatsHandler, '/stats')
 
 
     secret = loginHandler.generateCookieSecret()
@@ -196,20 +195,23 @@ if __name__ == '__main__':
     else :
         debugMode = True
 
-    app = tornado.web.Application(list(WeioEditorRouter.urls) +
+    app = tornado.web.Application(#list(WeioEditorRouter.urls) +
                             list(WeioDashboardRouter.urls) +
                             list(WeioSettingsHandler.urls) +
                             list(WeioWifiRouter.urls) +
                             list(WeioUpdaterRouter.urls) +
-                            list(WeioStatsRouter.urls)+
+                            #list(WeioStatsRouter.urls)+
 
                             # pure websocket implementation
                             #[(r"/editor/baseFiles", Editor.WeioEditorHandler)] +
                             #[(r"/close", WeioCloseConnection)] +
-                            [(r"/", WeioEditorWebHandler),
-                                (r"/signin", signinHandler.WeioSigninHandler),
-                                (r"/login", loginHandler.WeioLoginHandler),
-                           (r"/(.*)", tornado.web.StaticFileHandler,{"path": "www"})],
+                            #(r"/dashboard", dashboardHandler.WeioDashBoardHandler),
+                            [(r"/editorSocket", editorHandler.WeioEditorHandler),
+                            (r"/", WeioEditorWebHandler),
+                            (r"/stats", statsHandler.WeioStatsHandler),
+                            (r"/signin", signinHandler.WeioSigninHandler),
+                            (r"/login", loginHandler.WeioLoginHandler),
+                            (r"/(.*)", tornado.web.StaticFileHandler,{"path": "www"})],
                             debug=debugMode, **settings
                           )
                           # DEBUG WILL DECREASE SPEED!!! HOW TO AVOID THIS??? see Watchers section down here
