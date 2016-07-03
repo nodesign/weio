@@ -105,19 +105,20 @@ $(document).ready(function () {
     /** Get global configuration */
     $.getJSON('config.json', function(data) {
                 confFile = data;
-                var http_prefix = "http://";
+                var http_prefix = "ws://";
 
                 if (confFile.https == "YES") {
-                    http_prefix = "https://";
+                    http_prefix = "ws://";
                 }
                 else {
-                    http_prefix = "http://";
+                    http_prefix = "ws://";
                 }
                 /*
                 * SockJS object, Web socket
                 */
-                statSocket = new SockJS(http_prefix + location.host + '/stats');
-                            
+                //statSocket = new SockJS(http_prefix + location.host + '/stats');
+			
+                statSocket = new WebSocket(http_prefix + location.host + '/stats');          
                 //////////////////////////////////////////////////////////////// SOCK JS STATS        
             
                 /*

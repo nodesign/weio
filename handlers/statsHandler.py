@@ -54,9 +54,7 @@ from tornado import web, ioloop, iostream, gen, httpclient
 sys.path.append(r'./');
 
 # pure websocket implementation
-#from tornado import websocket
-
-from sockjs.tornado import SockJSRouter, SockJSConnection
+from tornado import websocket
 
 from weioLib import weioTopStats
 from weioLib import weioUnblock
@@ -74,7 +72,7 @@ clients = set()
 from weioLib.weioUserApi import *
 
 # Wifi detection route handler
-class WeioStatsHandler(SockJSConnection):
+class WeioStatsHandler(websocket.WebSocketHandler):
     global callbacks
 
     # cadence for periodic sampling in millis
@@ -158,7 +156,7 @@ class WeioStatsHandler(SockJSConnection):
         'getTop' : getTopOnce
     }
 
-    def on_open(self, info) :
+    def open(self) :
         self.periodic = ioloop.PeriodicCallback(self.getData, self.cadence)
         global clients
         clients.add(self)
@@ -178,6 +176,10 @@ class WeioStatsHandler(SockJSConnection):
             callbacks[request](self, rq)
         else :
             print "unrecognised request"
+
+    def broadcast(self, connectedClients, data):
+        for c in connectedClients:
+            c.write_message(data)
 
     def on_close(self) :
         global clients
