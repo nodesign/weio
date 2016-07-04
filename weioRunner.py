@@ -108,10 +108,17 @@ class WeioIndexHandler(web.RequestHandler):
         if (firstTimeSwitch=="YES") :
             path = "www/signin.html"
         else :
-            # find index and launch
             path = "www/userIndex.html"
 
+            #if (weioFiles.checkIfFileExists(confFile['last_opened_project'] + "/index.html")):
+            #    path = "www/userIndex.html"
+
+            #else :
+            #    path = "www/error404.html"
+        #path = confFile['last_opened_project'] + "index.html"
+
         self.render(path, error="")
+
 
 ###
 # WeIO User Event Handler
@@ -425,12 +432,11 @@ if __name__ == '__main__':
 
     options.define("addr", default=confFile['ip'])
 
-    #apiRouter = SockJSRouter(WeioHandler, '/api')
+    apiRouter = SockJSRouter(WeioHandler, '/api')
 
     # Instantiate all handlers for user Tornado
-    app = web.Application([
-    (r'/', WeioIndexHandler),
-    (r'/api', WeioHandler),
+    app = web.Application(apiRouter.urls + [
+    ('/', WeioIndexHandler),
     (r"/(.*)", web.StaticFileHandler, {"path": "www"})
     ])
     #app.listen(options.options.port, "0.0.0.0")

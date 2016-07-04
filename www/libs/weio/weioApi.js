@@ -66,108 +66,13 @@ var weioCallbacks = {
 */
 var weioInterrupts = [];
 
-// Implementation of document ready function in pure JS
-// thanks to guys from stockoverflow
-// http://stackoverflow.com/questions/9899372/pure-javascript-equivalent-to-jquerys-ready-how-to-call-a-function-when-the
-
-(function(funcName, baseObj) {
-    // The public function name defaults to window.docReady
-    // but you can pass in your own object and own function name and those will be used
-    // if you want to put them in a different namespace
-    funcName = funcName || "docReady";
-    baseObj = baseObj || window;
-    var readyList = [];
-    var readyFired = false;
-    var readyEventHandlersInstalled = false;
-
-    // call this when the document is ready
-    // this function protects itself against being called more than once
-    function ready() {
-        if (!readyFired) {
-            // this must be set to true before we start calling callbacks
-            readyFired = true;
-            for (var i = 0; i < readyList.length; i++) {
-                // if a callback here happens to add new ready handlers,
-                // the docReady() function will see that it already fired
-                // and will schedule the callback to run right after
-                // this event loop finishes so all handlers will still execute
-                // in order and no new ones will be added to the readyList
-                // while we are processing the list
-                readyList[i].fn.call(window, readyList[i].ctx);
-            }
-            // allow any closures held by these functions to free
-            readyList = [];
-        }
-    }
-
-    function readyStateChange() {
-        if ( document.readyState === "complete" ) {
-            ready();
-        }
-    }
-
-    // This is the one public interface
-    // docReady(fn, context);
-    // the context argument is optional - if present, it will be passed
-    // as an argument to the callback
-    baseObj[funcName] = function(callback, context) {
-        // if ready has already fired, then just schedule the callback
-        // to fire asynchronously, but right away
-        if (readyFired) {
-            setTimeout(function() {callback(context);}, 1);
-            return;
-        } else {
-            // add the function and context to the list
-            readyList.push({fn: callback, ctx: context});
-        }
-        // if document already ready to go, schedule the ready function to run
-        if (document.readyState === "complete") {
-            setTimeout(ready, 1);
-        } else if (!readyEventHandlersInstalled) {
-            // otherwise if we don't have event handlers installed, install them
-            if (document.addEventListener) {
-                // first choice is DOMContentLoaded event
-                document.addEventListener("DOMContentLoaded", ready, false);
-                // backup is window load event
-                window.addEventListener("load", ready, false);
-            } else {
-                // must be IE
-                document.attachEvent("onreadystatechange", readyStateChange);
-                window.attachEvent("onload", ready);
-            }
-            readyEventHandlersInstalled = true;
-        }
-    }
-})("docReady", window);
-
-
-// use an anonymous function
-docReady(function() {
-    // code here
+$(document).ready(function() {
 
     // Change this port when running on PC
     var port = "8082";
-	// get configuration file in here
-	var confFile;
-    //$.getJSON('www/config.json', function(data) {
-		(function() {
-		   // the DOM will be available here
-			// get json in the pure JS
-				var xmlhttp = new XMLHttpRequest();
-				xmlhttp.open('GET', 'www/config.json', true);
-				xmlhttp.onreadystatechange = function() {
-				    if (xmlhttp.readyState == 4) {
-				        if(xmlhttp.status == 200) {
-				            confFile = JSON.parse(xmlhttp.responseText);
-							port = confFile.userAppPort;
-				         }
-				    }
-				};
-				xmlhttp.send(null);
-		})(); // get json
-
-	    //confFile = data;
-        
+    $.getJSON('www/config.json', function(data) {
+        confFile = data;
+        port = confFile.userAppPort;
 
         /**
          * N.B. All the handling using the port must go inside .getJSON(),
@@ -180,9 +85,9 @@ docReady(function() {
         var _addr = location.host;
         if (location.port == "8080") {
             var a = _addr.split(":");
-            _addr = 'ws://' + a[0] + ':' + port + '/api';
+            _addr = 'http://' + a[0] + ':' + port + '/api';
         } else {
-            var a = 'ws://' + _addr + '/api';
+            var a = 'http://' + _addr + '/api';
             _addr = a;
         }
         console.log("WebSocket connecting to " + _addr);
@@ -199,9 +104,7 @@ docReady(function() {
         (function() {
         // Initialize the socket & handlers
         var connectToServer = function() {
-            //_weio = new SockJS(_addr);
-			console.log("ADDRESS IS" + _addr)
-			_weio = new WebSocket(_addr);
+            _weio = new SockJS(_addr);
         
             _weio.onopen = function() {
             //clearInterval(connectRetry);
@@ -257,20 +160,14 @@ docReady(function() {
             console.log('socket is closed or not opened for weioApi');
         
             };
-			
-		    _weio.onerror = function(ev){
-		         console.log('error occurred');
-		    };
         
         };
         //var connectRetry = setInterval(connectToServer, 500);
         connectToServer();
         })();
-
-
-	        
-		//}); /* getJSON */
-});
+               
+    }); /* getJSON */
+}); /* document.ready() */
 
 
 /* 

@@ -51,7 +51,7 @@
 from weioLib.weioIO import *
 import json
 
-from tornado import websocket
+from sockjs.tornado import SockJSConnection
 
 from weioLib.weioParser import weioSpells
 from weioLib.weioParser import weioUserSpells
@@ -61,13 +61,12 @@ import uuid
 import os
 
 
-#class WeioHandler(SockJSConnection):
-class WeioHandler(websocket.WebSocketHandler):
+class WeioHandler(SockJSConnection):
+    def __init__(self, *args, **kwargs):
+        SockJSConnection.__init__(self, *args, **kwargs)
+        #self.connections = weioRunnerGlobals.weioConnections
 
-    def check_origin(self, origin):
-        return True
-    
-    def open(self):
+    def on_open(self, request):
         # Add the connection to the connections dictionary
         # Do not forget the lock - this handler is called asynchronoisly,
         # and the weioRunnerGlobals.weioConnections[] is accessed in the same time by
@@ -75,22 +74,34 @@ class WeioHandler(websocket.WebSocketHandler):
         # which will lead to exception in weioRunner.py listener_thread()
         with weioRunnerGlobals.lockConn:
             connUuid = uuid.uuid4()
-            self.uuid = connUuid
             weioRunnerGlobals.weioConnections[connUuid] = self
             weioRunnerGlobals.weioConnUuids.append(connUuid)
 
         # collect client ip address and user machine info
         # print self.request to see all available info on user connection
         self.userAgent = None
-        #self.ip = request.ip
+        self.ip = request.ip
 
-        #print "*SYSOUT* Client with IP address: " + self.ip + " connected to server"
-        
-        try :
-            print "*SYSOUT* Client with IP address: " + self.request.host + " connected to server with: " + self.request.headers["User-Agent"]
-        except:
-            print "*SYSOUT* Client with unknown IP address connected to server"
- 
+        print "*SYSOUT* Client with IP address: " + self.ip + " connected to server"
+
+        #print "============="
+        #print self.session.conn_info.get_header('x-client-ip')
+        #print self.session.conn_info.ip
+        #print self.session.conn_info.path
+        #print self.session.conn_info.arguments
+
+        #print "++++++++++++++"
+        #print request.headers['User-Agent']
+
+        # list all members of object
+        #members = [attr for attr in dir(request) if not callable(attr) and not attr.startswith("__")]
+
+        #if ("User-Agent" in self.request.headers):
+        #    self.userAgent = self.request.headers["User-Agent"]
+        #    print "*SYSOUT* " + self.userAgent + " with IP address : " + self.ip + " connected to server!"
+        #else :
+        #    print "*SYSOUT* Client with IP address : " + self.ip + " connected to server!"
+        #print self.request.headers
         self.connection_closed = False
 
     def emit(self, instruction, rq):
@@ -131,18 +142,15 @@ class WeioHandler(websocket.WebSocketHandler):
     def on_close(self):
         with weioRunnerGlobals.lockConn:
             self.connection_closed = True
-            try :
-                print "*SYSOUT* Client with IP address: " + self.request.host + " disconnected from server with: " + self.request.headers["User-Agent"]
-            except:
-                print "*SYSOUT* Client with unknown IP address disconnected from server"
-            
+            print "*SYSOUT* Client with IP address: " + self.ip + " disconnected from server"
             # Remove client from the clients list and broadcast leave message
-                    
-            if (self.uuid in weioRunnerGlobals.weioConnections):
-                weioRunnerGlobals.weioConnections.pop(self.uuid)
-            if (self.uuid in weioRunnerGlobals.weioConnUuids):
-                weioRunnerGlobals.weioConnUuids.remove(self.uuid)
-            
+            #self.connections.remove(self)
+            for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
+                if (conn == self):
+                    weioRunnerGlobals.weioConnections.pop(connUuid)
+                    weioRunnerGlobals.weioConnUuids.remove(connUuid)
+
+
 ###
 # This is used for remote apps - Tornado User opens __client__ socket
 # and puths everything that comes from this socket to WeioHandlerRemote()
