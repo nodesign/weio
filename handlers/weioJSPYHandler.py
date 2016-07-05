@@ -97,6 +97,7 @@ class WeioHandler(websocket.WebSocketHandler):
         data = {}
         data['serverPush'] = instruction
         data['data'] = rq
+
         self.send(json.dumps(data))
 
     def on_message(self, data):
@@ -142,7 +143,7 @@ class WeioHandler(websocket.WebSocketHandler):
                 weioRunnerGlobals.weioConnections.pop(self.uuid)
             if (self.uuid in weioRunnerGlobals.weioConnUuids):
                 weioRunnerGlobals.weioConnUuids.remove(self.uuid)
-            
+
 ###
 # This is used for remote apps - Tornado User opens __client__ socket
 # and puths everything that comes from this socket to WeioHandlerRemote()

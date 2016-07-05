@@ -108,6 +108,7 @@ class WeioIndexHandler(web.RequestHandler):
         if (firstTimeSwitch=="YES") :
             path = "www/signin.html"
         else :
+            print "RELOADED"
             # find index and launch
             path = "www/userIndex.html"
 
@@ -432,7 +433,7 @@ if __name__ == '__main__':
     (r'/', WeioIndexHandler),
     (r'/api', WeioHandler),
     (r"/(.*)", web.StaticFileHandler, {"path": "www"})
-    ])
+    ], debug=True)
     #app.listen(options.options.port, "0.0.0.0")
 
     if (confFile["remote"] != ""):
