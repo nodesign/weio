@@ -1,5 +1,6 @@
 from weioLib.weio import *
 import weioLib.weioParser as wp
+from weioLib.weioSerial import Serial
 import json
 
 import time
@@ -10,6 +11,7 @@ def setup():
     attach.process(electrolink)
 
 MQTT_CLIENT = None
+ser = None
 
 def iCb(event, cbName):
     print ">>> INTERRUPT"
@@ -36,6 +38,23 @@ def electrolink():
         if (data["method"] == "attachInterrupt"):
             attachInterrupt(data["params"][0],
                 data["params"][1], iCb, data["params"][2])
+        # UART uses standard pySerial functions, but need a firmware init
+        # to put pin0 and pin1 in their alternate function and init the
+        # CDC interface with the correct baudrate.
+        elif (data["method"] == "uartStart"):
+            global ser
+            if ser == None:
+                ser = Serial(data["params"][0])
+        elif (data["method"] == "uartSend"):
+            ret = ser.write(data["params"][0])
+        elif (data["method"] == "uartReceive"):
+            n = ser.inWaiting()
+            if n:
+                r = {}
+                r["data"] = ser.read(n)
+        elif(data["method"] == "uartStop"):
+            ser.close()
+            ser = None
         else:
             r = wp.weioSpells[data["method"]](data["params"])
         
