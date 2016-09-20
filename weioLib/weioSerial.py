@@ -50,10 +50,10 @@
 import serial, os
 from weioLib.weio import initSerial
 
-def Serial(baudrate, port='/dev/ttyACM1', timeout=1):
-    if (port is '/dev/ttyACM1'):
+def Serial(baudrate, port='/dev/lpcUart', timeout=1):
+    if (port == '/dev/lpcUart'):
         # Switch GPIO to UART on WeIO, this is not necessary if some other port is asked
-        return initSerial(port, baudrate, timeout=timeout)
+        return initSerial(port, baudrate, timeout_=timeout)
     else :
         return serial.Serial(port, baudrate, timeout=timeout)
 
