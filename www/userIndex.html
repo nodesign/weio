@@ -63,7 +63,7 @@
 				        if(xmlhttp.status == 200) {
 				            var confFile = JSON.parse(xmlhttp.responseText);
 							var path = confFile.last_opened_project.split("www/");
-							window.location = path[1] + "/index.html?";
+							window.location = path[1] + "/index.html";
 				         }
 				    }
 				};
