@@ -48,7 +48,7 @@
 #
 ###
 
-import json, shutil
+import json, shutil, os.path
 
 def getConfiguration(path):
     inputFile = open(path, 'r')
@@ -64,14 +64,17 @@ def saveConfiguration(path, conf):
 
 print "Running migration program"
 # Open old config file here
-oldConfig = getConfiguration("/weioUserBackup/config.weio")
-newConfig = getConfiguration("/weio/config.weio")
+oldConfFilename = "/weioUserBackup/config.weio"
 
-# exceptions
-for parameter in newConfig:
-    if (parameter in oldConfig):
-        if not("weio_version" in parameter) and not("timezone" in parameter): # don't take the old version of sw, just migrate personal data
-            newConfig[parameter] = oldConfig[parameter]
+if (os.path.exists(oldConfFilename)):
+    oldConfig = getConfiguration(oldConfFilename)
+    newConfig = getConfiguration("/weio/config.weio")
 
-saveConfiguration("/weio/config.weio", newConfig)
-shutil.copyfile("/weioUserBackup/pass.weio", "/weio/pass.weio")
+    # exceptions
+    for parameter in newConfig:
+        if (parameter in oldConfig):
+            if not("weio_version" in parameter) and not("timezone" in parameter): # don't take the old version of sw, just migrate personal data
+                newConfig[parameter] = oldConfig[parameter]
+
+    saveConfiguration("/weio/config.weio", newConfig)
+    shutil.copyfile("/weioUserBackup/pass.weio", "/weio/pass.weio")
