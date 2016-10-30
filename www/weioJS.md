@@ -3,27 +3,40 @@ Javascript
 Boilerplate
 -----------
 ### HTML & JS boilerplate
-This is html boilerplate for WeIO. WeIO includes dependencies : jQuery, sockJS and weioApi.
-
+This is html boilerplate for WeIO. WeIO needs weioApi library to work properly. 
+Other dependencies are optional like p5js, jQuery, Chart and Bootstrap. 
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<script data-main="weioLibs/weio" src="weioLibs/require.js"></script>
 
   <head >
+    <!-- This is main weio api please call it always at first place -->
+    <script src="www/libs/weio/weioApi.js"></script>
+    <!-- This is p5 js - Processing for javascript library, desactivate if you d'ont need it -->
+    <script src="www/libs/p5/p5.min.js"></script>
+
+    <!-- Here you can add other local libraries -->
+    <!-- <script src="www/libs/jquery/jquery-2.0.2.min.js"></script> -->
+    <!-- <script src="www/libs/chartJS/Chart.min.js"></script> -->
+
+    <!-- This is your processing p5 sketch -->
+    <script src="sketch.js"></script>
+
     <title>My first Web app</title>
+
+    <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
+
   </head>
 
   <body>
 
-    <p>Hello world!</p>
-    
-    <script>
-        function onWeioReady() {
-            console.log("DOM is loaded, websocket is opened");
-        }
-    </script>
+  <script> 
 
+    function onWeioReady() {
+       console.log("DOM is loaded, websocket is opened");
+    }
+
+  </script>
   </body>
 </html>
 ```
@@ -39,8 +52,11 @@ Digital I/O
 -----------
 ### digitalWrite(pin, value)
 Sets voltage to +3.3V or Ground on corresponding pin. This function takes two parameters : pin number and it's state that can be HIGH = +3.3V or LOW = Ground.
-
-In index.html add one button in the body section
+First add support for jQuery in index.html uncommenting this line inside head section
+```html
+<script src="www/libs/jquery/jquery-2.0.2.min.js"></script>
+```
+Continue to edit index.html by adding one button in the body section
 ```html
 <button type="button" id="myButton">ON</button>
 ```
@@ -180,6 +196,28 @@ function pinCallback(pinInput) {
 }
 ```
 
+### pulseIn(pin, level, timeout, callback)
+*pulseIn* reads a pulse (either HIGH or LOW) on a pin. For example, if value is HIGH, pulseIn() waits for the pin to go HIGH, starts timing, then waits for the pin to go LOW and stops timing. Returns the length of the pulse in microseconds or 0 if no complete pulse was received within the timeout.
+
+Please also note that if the pin is already high when the function is called, it will wait for the pin to go LOW and then HIGH before it starts counting.
+
+```javascript
+var pin = 23;
+var timeout = 500000;
+
+function onWeioReady() {
+	// Read a LOW pulse for 0.5s on pin 23 and call pulseInCallback
+	var time = pulseIn(pin, LOW, timeout, pulseInCallback);
+}
+
+function pulseInCallback(callback) {
+	// Print pulseIn duration
+	console.log( "PulseIn duration = " + callback.data );
+	// Read a LOW pulse for 0.5s on pin 23 and call pulseInCallback
+	pulseIn(23, LOW, 500000, pulseInCallback);
+}
+```
+
 Analog I/O
 ----------
 ### analogRead(pin, callback)
@@ -282,6 +320,49 @@ for (var j=0; j<7; j++) {
 sendPackage();
 ```
 
+Interrupts
+----
+Interrupts allow to execute code when the state of an IO is changed without the need to continuously watch its state. WeIO allows upto eight, user defined, interrupts sources.
+Interrupts can be trigged on levels (HIGH or LOW) or transitions (RISING, FALLING, CHANGE). 
+
+### attachInterrupt(pin, mode, callback, obj)
+*attachInterrupt* register and configure the interrupts. This function takes four parameters :
+* pin : The pin number which will generate an interrupt
+* mode : The mode : LOW; HIGH; CHANGE; RISING or FALLING
+* callback : The callback function to execute when an interrupt occurs
+* obj : A user defined object which will be passed to the callback function.
+
+```javascript
+var pin = 18;
+
+function onWeioReady() {
+	var obj = {pinNum:pin, mode:"RISING", callbackName:"interruptCallback"}; 
+	attachInterrupt(pin,RISING,interruptCallback,obj);
+}
+
+function interruptCallback(data) {
+    console.log( data.event + ", User object : " + data.obj );
+}
+```
+
+### detachInterrupt(pin)
+This function detach the interrupt on the specified *pin*.
+
+```javascript
+var pin = 18;
+
+function onWeioReady() {
+	var obj = { pinNum:pin, mode:"RISING", callbackName:"interruptCallback"}; 
+	attachInterrupt(pin,RISING,interruptCallback,obj);
+}
+
+function interruptCallback(data) {
+    console.log( data.event + ", User object : " + data.obj );
+	detachInterrupt(pin);
+    console.log( "and is now detached from pin" + String(pin) );
+}
+```
+
 WeIO info
 =========
 ### versionWeIO
@@ -377,5 +458,26 @@ function onWeioReady() {
 function onReceiveMessage(data) {
     console.log("Received from ", data.from);
     console.log("Contents ", data.data);
+}
+```
+
+### genericMessage(eventName, data)
+This function is the WeIO Remote Procedure Call, is used to send messages from JavaScript to Python. To use it you need to previously define in python side which function call when corresponding message is received with **attach.event()** function.
+<br></br>
+When you send a genericMessage Tornado server gets this message from WebSocket that is constantly open between frontend (browser) and backend (Tornado server), decodes it, sees function name "eventName", gets "data" and calls function that you have previously defined in python.
+
+
+```python
+def setup():
+    attach.event("msgFromJStoPy", myFunction)
+
+def myFunction(data):
+	if(data == 1):
+    	digitalWrite(18,HIGH)
+```
+
+```javascript
+function pushButton() {
+	genericMessage("msgFromJStoPy", 1);
 }
 ```
