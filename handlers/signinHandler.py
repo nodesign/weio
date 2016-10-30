@@ -73,7 +73,7 @@ class WeioSigninHandler(loginHandler.BaseHandler):
         # This is two letters country code to be used to setup wifi region
         countryCode = self.get_argument("countryCode", "")
 
-        print "************ ", fullName, passwd, boardname, countryCode
+        #print "************ ", fullName, passwd, boardname, countryCode
 
         data = {}
         # OK now is time to setup username and password
@@ -81,6 +81,7 @@ class WeioSigninHandler(loginHandler.BaseHandler):
         confFile['login_required'] = login_required
         weioConfig.saveConfiguration(confFile)
         confFile['timezone'] = timezone
+        confFile['password'] = passwd
         output = "OK PASSWD"
 
         #echo -e "weio\nweio" | passwd
