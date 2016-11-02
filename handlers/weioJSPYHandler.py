@@ -98,7 +98,7 @@ class WeioHandler(websocket.WebSocketHandler):
         data['serverPush'] = instruction
         data['data'] = rq
 
-        self.send(json.dumps(data))
+        self.write_message(json.dumps(data))
 
     def on_message(self, data):
         if (weioRunnerGlobals.running.value == True):

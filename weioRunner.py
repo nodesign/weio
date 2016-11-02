@@ -333,17 +333,17 @@ def listenerThread():
                         if (weioRunnerGlobals.remoteConnected.value == True):
                             if (msg.connUuid == "all"):
                                 for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
-                                    weioRunnerGlobals.weioConnections[connUuid].send(json.dumps(result))
+                                    weioRunnerGlobals.weioConnections[connUuid].emit(result["serverPush"], result["data"])
                             else:
                                 weioRunnerGlobals.weioConnections[msg.connUuid].write_message(json.dumps(result))
                         else:
                             if (msg.connUuid == "all"):
                                 for connUuid, conn in weioRunnerGlobals.weioConnections.iteritems():
-                                    weioRunnerGlobals.weioConnections[connUuid].send(json.dumps(result))
+                                    weioRunnerGlobals.weioConnections[connUuid].emit(result["serverPush"], result["data"])
                             else:
-                                weioRunnerGlobals.weioConnections[msg.connUuid].send(json.dumps(result))
-                    except:
-                        print "FAILED!"
+                                weioRunnerGlobals.weioConnections[msg.connUuid].emit(result["serverPush"], result["data"])
+                    except Exception as e:
+                        print "FAILED!", e
                     finally:
                         weioRunnerGlobals.lockConn.release()
 
