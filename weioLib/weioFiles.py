@@ -248,6 +248,12 @@ def createTarfile(output_filename, source_dir):
     for f in filelist:
         os.remove(source_dir+f)
 
+    # Delete www symlink or folder before making tar archive, otherwise all www folder will be tarred
+    try :
+        os.unlink(source_dir+"www")
+    except :
+        removeFile(source_dir+"www")
+
     # compress
     tar = tarfile.open(output_filename, "w:gz")
     tar.add(source_dir, arcname=os.path.basename(source_dir)) # arcname=os.path.basename(source_dir)
